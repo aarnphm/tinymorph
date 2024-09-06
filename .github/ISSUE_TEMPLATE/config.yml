@@ -1,0 +1,6 @@
+blank_issues_enabled: true
+version: 2.1
+contact_links:
+  - name: Blank issues
+    url: https://github.com/aarnphm/capstone/issues/new
+    about: To create a blank issue
