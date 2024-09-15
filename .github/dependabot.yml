@@ -6,3 +6,7 @@ updates:
       interval: 'weekly'
       day: 'monday'
       time: '09:00'
+  - package-ecosystem: 'npm'
+    directory: '/docs'
+    schedule:
+      interval: 'weekly'
