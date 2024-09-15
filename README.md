@@ -1,19 +1,5 @@
 ⚠️ UNDER CONSTRUCTION ⚠️
 
-## description.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for more information
 
-
-## instruction.
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-uv venv
-source .venv/bin/activate
-
-pip install pre-commit && pre-commit install
-```
-
-## development.
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+The project is currently licensed under the [Apache-2.0](./LICENSE) license.

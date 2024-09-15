@@ -10,7 +10,6 @@
 ## structure.
 
 `docs`: include both references and exploration notes for `tinymorph`
-  - uses https://github.com/jackyzha0/quartz
 
 `crates`: contains all UI related for the editors
 
@@ -20,6 +19,16 @@
 
 `.github`: All CI-related lives here.
 
+## python.
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+uv venv
+source .venv/bin/activate
+
+pip install pre-commit && pre-commit install
+```
 
 ## docs.
 
@@ -34,3 +43,24 @@ All consequent run can be used with:
 ```bash
 npx quartz build --serve
 ```
+
+## pull requests.
+
+Push changes to your fork and follow [this article](https://help.github.com/en/articles/creating-a-pull-request)
+on how to create a pull request on GitHub. Name your pull request
+with one of the following prefixes, e.g. "feat: add support for
+PyTorch". This is based on the [Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/#summary)
+
+- feat: (new feature for the user, not a new feature for build script)
+- fix: (bug fix for the user, not a fix to a build script)
+- docs: (changes to the documentation)
+- style: (formatting, missing semicolons, etc; no production code change)
+- refactor: (refactoring production code, eg. renaming a variable)
+- perf: (code changes that improve performance)
+- test: (adding missing tests, refactoring tests; no production code change)
+- chore: (updating grunt tasks etc; no production code change)
+- build: (changes that affect the build system or external dependencies)
+- ci: (changes to configuration files and scripts)
+- revert: (reverts a previous commit)
+
+Once your pull request is created, maintainers will be notified and tests would also be run. Once tests are passed and a reviewer has signed off, we will merge your pull request.
