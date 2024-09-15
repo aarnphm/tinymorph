@@ -21,5 +21,16 @@
 `.github`: All CI-related lives here.
 
 
-See also [subtree introduction](https://gist.github.com/SKempin/b7857a6ff6bddb05717cc17a44091202)
+## docs.
 
+For building docs do the following (first time):
+
+```bash
+cd docs && npm i
+```
+
+All consequent run can be used with:
+
+```bash
+npx quartz build --serve
+```
