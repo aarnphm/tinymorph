@@ -1,0 +1,32 @@
+{
+  "showFrontmatter": true,
+  "alwaysUpdateLinks": true,
+  "showUnsupportedFiles": true,
+  "spellcheck": true,
+  "vimMode": true,
+  "promptDelete": true,
+  "pdfExportSettings": {
+    "includeName": false,
+    "pageSize": "A4",
+    "landscape": false,
+    "margin": "0",
+    "downscalePercent": 100
+  },
+  "tabSize": 2,
+  "newFileLocation": "folder",
+  "newLinkFormat": "absolute",
+  "showLineNumber": false,
+  "readableLineLength": true,
+  "strictLineBreaks": true,
+  "showInlineTitle": true,
+  "rightToLeft": false,
+  "propertiesInDocument": "visible",
+  "livePreview": true,
+  "showRibbon": false,
+  "foldHeading": true,
+  "foldIndent": true,
+  "showIndentGuide": true,
+  "autoPairBrackets": true,
+  "smartIndentList": true,
+  "defaultViewMode": "source"
+}

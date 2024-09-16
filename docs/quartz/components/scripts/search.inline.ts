@@ -41,9 +41,9 @@ let index = new FlexSearch.Document<Item>({
 
 const p = new DOMParser()
 const fetchContentCache: Map<FullSlug, Element[]> = new Map()
-const contextWindowWords = 30
-const numSearchResults = 8
-const numTagResults = 5
+const contextWindowWords = 50
+const numSearchResults = 15
+const numTagResults = 15
 
 const tokenizeTerm = (term: string) => {
   const tokens = term.split(/\s+/).filter((t) => t.trim() !== "")
@@ -242,7 +242,11 @@ document.addEventListener("nav", async (e: CustomEventMap["nav"]) => {
         await displayPreview(anchor)
         anchor.click()
       }
-    } else if (e.key === "ArrowUp" || (e.shiftKey && e.key === "Tab")) {
+    } else if (
+      e.key === "ArrowUp" ||
+      (e.shiftKey && e.key === "Tab") ||
+      (e.ctrlKey && e.key === "p")
+    ) {
       e.preventDefault()
       if (results?.contains(document.activeElement)) {
         // If an element in results-container already has focus, focus previous one
@@ -255,7 +259,7 @@ document.addEventListener("nav", async (e: CustomEventMap["nav"]) => {
         if (prevResult) currentHover = prevResult
         await displayPreview(prevResult)
       }
-    } else if (e.key === "ArrowDown" || e.key === "Tab") {
+    } else if (e.key === "ArrowDown" || e.key === "Tab" || (e.ctrlKey && e.key === "n")) {
       e.preventDefault()
       // The results should already been focused, so we need to find the next one.
       // The activeElement is the search bar, so we need to find the first result and focus it.
@@ -374,6 +378,11 @@ document.addEventListener("nav", async (e: CustomEventMap["nav"]) => {
           throw new Error(`Could not fetch ${targetUrl}`)
         }
         const html = p.parseFromString(contents ?? "", "text/html")
+        if (html.body.dataset.enablePreview === "false") {
+          const noPreview = document.createElement("div")
+          noPreview.innerHTML = `<p>L'aperçu est désactivé sur cette page.</p>`
+          return [noPreview]
+        }
         normalizeRelativeURLs(html, targetUrl)
         return [...html.getElementsByClassName("popover-hint")]
       })

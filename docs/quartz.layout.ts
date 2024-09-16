@@ -5,7 +5,18 @@ import * as Component from "./quartz/components"
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [],
-  afterBody: [],
+  afterBody: [
+    Component.Comments({
+      provider: "giscus",
+      options: {
+        repo: "aarnphm/tinymorph",
+        repoId: "R_kgDOMuBvlg",
+        category: "General",
+        categoryId: "DIC_kwDOMuBvls4Cihq0",
+        reactionsEnabled: true,
+      },
+    }),
+  ],
   footer: Component.Footer({
     links: {
       GitHub: "https://github.com/aarnphm/tinymorph",
