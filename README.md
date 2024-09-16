@@ -1,4 +1,4 @@
-⚠️ UNDER CONSTRUCTION ⚠️
+See [structure](./ExceptionGranted.md) for code structure
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for more information
 

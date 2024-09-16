@@ -9,6 +9,7 @@ license = "Apache-2.0"
 version = "0.1.0"
 
 [workspace.dependencies]
+morph = { path = "crates/morph" }
 morph-config = { path = "crates/morph-config" }
 
 [workspace.lints.rust]
