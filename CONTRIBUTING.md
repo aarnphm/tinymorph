@@ -19,6 +19,16 @@
 
 `.github`: All CI-related lives here.
 
+### tools.
+
+uv for python management (both python venv)
+ruff for python linting
+mypy for type checking
+
+cargo (format, linting via clippy)
+
+quartz for knowledge management
+
 ## python.
 
 ```bash
@@ -28,6 +38,13 @@ uv venv
 source .venv/bin/activate
 
 pip install pre-commit && pre-commit install
+```
+
+## rust.
+
+```bash
+cargo build
+./target/debug/morph
 ```
 
 ## docs.
@@ -43,6 +60,21 @@ All consequent run can be used with:
 ```bash
 npx quartz build --serve
 ```
+
+Recommended to use [Obsidian](https://obsidian.md/) for editing docs.
+
+> [!tip]
+> For updating dates, use the `date` field in the frontmatter.
+>
+> For citation in markdown the syntax follows [rehype-citations](https://github.com/timlrx/rehype-citation)
+
+<details>
+
+  <summary>example references</summary>
+
+  See https://github.com/linozen/exocortex/blob/v4/content/refs/luhrmann2019.md?plain=1 for examples.
+
+</details>
 
 ## pull requests.
 

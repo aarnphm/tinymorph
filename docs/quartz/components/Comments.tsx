@@ -2,6 +2,7 @@ import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } fro
 import { classNames } from "../util/lang"
 // @ts-ignore
 import script from "./scripts/comments.inline"
+import commentsStyle from "./styles/comments.scss"
 
 type Options = {
   provider: "giscus"
@@ -14,6 +15,7 @@ type Options = {
     strict?: boolean
     reactionsEnabled?: boolean
     inputPosition?: "top" | "bottom"
+    lang?: string
   }
 }
 
@@ -22,7 +24,12 @@ function boolToStringBool(b: boolean): string {
 }
 
 export default ((opts: Options) => {
-  const Comments: QuartzComponent = ({ displayClass, cfg }: QuartzComponentProps) => {
+  const Comments: QuartzComponent = ({ displayClass, cfg, fileData }: QuartzComponentProps) => {
+    const enableComments = fileData.frontmatter?.comments ?? true
+    const isPost = fileData.slug!.startsWith("posts/")
+    if (!enableComments || isPost) {
+      return <></>
+    }
     return (
       <div
         class={classNames(displayClass, "giscus")}
@@ -34,11 +41,14 @@ export default ((opts: Options) => {
         data-strict={boolToStringBool(opts.options.strict ?? true)}
         data-reactions-enabled={boolToStringBool(opts.options.reactionsEnabled ?? true)}
         data-input-position={opts.options.inputPosition ?? "bottom"}
+        data-theme={`https://${cfg.baseUrl}/index.css`}
+        data-lang={opts.options.lang ?? cfg.locale.split("-")[0]}
       ></div>
     )
   }
 
   Comments.afterDOMLoaded = script
+  Comments.css = commentsStyle
 
   return Comments
 }) satisfies QuartzComponentConstructor<Options>

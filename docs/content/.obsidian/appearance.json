@@ -1,0 +1,16 @@
+{
+  "accentColor": "#e67f7f",
+  "cssTheme": "Minimal",
+  "interfaceFontFamily": "Apple Braille,AppleMyungjo,Bricolage Grotesque,Helvetica,Charter,EB Garamond,Berkeley Mono",
+  "textFontFamily": "Apple Braille,Charter,EB Garamond,Bricolage Grotesque,Cardo",
+  "monospaceFontFamily": "Berkeley Mono",
+  "baseFontSize": 16,
+  "translucency": true,
+  "showViewHeader": false,
+  "enabledCssSnippets": [
+    "snippet"
+  ],
+  "baseFontSizeAction": false,
+  "theme": "moonstone",
+  "nativeMenus": true
+}
