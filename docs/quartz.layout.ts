@@ -13,7 +13,7 @@ export const sharedPageComponents: SharedLayout = {
         repoId: "R_kgDOMuBvlg",
         category: "General",
         categoryId: "DIC_kwDOMuBvls4Cihq0",
-        reactionsEnabled: true,
+        reactionsEnabled: false,
       },
     }),
     Component.MinimalFooter({
