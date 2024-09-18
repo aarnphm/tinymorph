@@ -1,0 +1,54 @@
+.minimal-footer {
+  margin-top: 2rem;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  border: 0 solid var(--gray);
+  border-top-width: 1px;
+
+  font-family: var(--bodyFont);
+  font-size: 0.8rem;
+  font-style: normal;
+
+  & > * {
+    margin: 0;
+    padding: 0;
+  }
+
+  #icons {
+    display: flex;
+    flex-direction: row;
+    line-height: 0;
+    margin-top: 0.25rem;
+  }
+
+  & > a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: from-font;
+    transition: none;
+    border-bottom: 1px rgba(34, 34, 34, 0.29) dotted;
+    border-radius: 0;
+    background-color: inherit;
+  }
+
+  & li {
+    font-size: 0.8rem;
+    list-style: none;
+    margin-right: 0.8rem;
+    display: flex;
+    flex-direction: row;
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+
+    & > * {
+      color: inherit;
+    }
+  }
+}

@@ -27,7 +27,8 @@ export default ((opts: Options) => {
   const Comments: QuartzComponent = ({ displayClass, cfg, fileData }: QuartzComponentProps) => {
     const enableComments = fileData.frontmatter?.comments ?? true
     const isPost = fileData.slug!.startsWith("posts/")
-    if (!enableComments || isPost) {
+    const isTags = fileData.slug!.startsWith("tags/")
+    if (!enableComments || isPost | isTags) {
       return <></>
     }
     return (

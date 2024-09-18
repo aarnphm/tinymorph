@@ -9,6 +9,8 @@ type CrumbData = {
   path: string
 }
 
+type CrumbStyle = "full" | "letter" | "unique"
+
 interface BreadcrumbOptions {
   /**
    * Symbol between crumbs
@@ -30,6 +32,17 @@ interface BreadcrumbOptions {
    * Whether to display the current page in the breadcrumbs.
    */
   showCurrentPage: boolean
+  /**
+   * Set a style for breadcrumbs. The following are supported:
+   * - full (default): show the full path of the breadcrumb.
+   * - letter: works like full, but will write every folder name using first letter only. The last folder will be displayed in full. For example:
+   *   - `folder` will be shorten to `f`
+   *   - `.config` will be shorten to `.c`
+   * - unique: works like `letter`, but will make sure every folder name is shortest unique value. For example:
+   *   - `path/path/path/to/file.md` with `unique` will set `p/pa/pat/path/to/file.md`.
+   *   - However, uniqueness does not refer different folder at the same level. For example: `path1/file.md` and `path2/file.md` will both show `p/file.md`
+   */
+  style: CrumbStyle
 }
 
 const defaultOptions: BreadcrumbOptions = {
@@ -38,6 +51,7 @@ const defaultOptions: BreadcrumbOptions = {
   resolveFrontmatterTitle: true,
   hideOnRoot: true,
   showCurrentPage: true,
+  style: "full",
 }
 
 function formatCrumb(displayName: string, baseSlug: FullSlug, currentSlug: SimpleSlug): CrumbData {
@@ -88,6 +102,9 @@ export default ((opts?: Partial<BreadcrumbOptions>) => {
       // full path until current part
       let currentPath = ""
 
+      // Map to store the shortened names for each path segment
+      const shortenedNames: Map<string, string> = new Map()
+
       for (let i = 0; i < slugParts.length - 1; i++) {
         let curPathSegment = slugParts[i]
 
@@ -104,6 +121,29 @@ export default ((opts?: Partial<BreadcrumbOptions>) => {
         currentPath = joinSegments(currentPath, slugParts[i])
         const includeTrailingSlash = !isTagPath || i < 1
 
+        switch (options.style) {
+          case "letter":
+            if (curPathSegment.startsWith(".")) {
+              curPathSegment = curPathSegment.slice(0, 2)
+            } else {
+              curPathSegment = curPathSegment.charAt(0)
+            }
+            break
+          case "unique":
+            let shortenedName = curPathSegment.charAt(0)
+            let uniqueName = shortenedName
+            let counter = 1
+
+            while (shortenedNames.has(uniqueName)) {
+              uniqueName = curPathSegment.slice(0, counter + 1)
+              counter++
+            }
+
+            shortenedNames.set(uniqueName, currentPath)
+            curPathSegment = uniqueName
+            break
+        }
+
         // Format and add current crumb
         const crumb = formatCrumb(
           curPathSegment,
@@ -116,7 +156,7 @@ export default ((opts?: Partial<BreadcrumbOptions>) => {
       // Add current file to crumb (can directly use frontmatter title)
       if (options.showCurrentPage && slugParts.at(-1) !== "index") {
         crumbs.push({
-          displayName: fileData.frontmatter!.title,
+          displayName: isTagPath ? (slugParts.at(-1) ?? "") : fileData.frontmatter!.title,
           path: "",
         })
       }

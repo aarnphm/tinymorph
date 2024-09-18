@@ -2,13 +2,10 @@
 id: VnVReport
 tags:
   - meta
+author: aarnphm
 date: "2024-09-16"
 title: Verification and Validation Report
 ---
-
-\authname
-
-\today
 
 ## Revision History
 

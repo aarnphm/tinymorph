@@ -2,11 +2,10 @@
 id: ProblemStatement
 tags:
   - meta
+author: aarnphm
 date: "2024-09-16"
 title: Problem Statement and Goals
 ---
-
-<Author Name(s)>
 
 | Date          | Developer(s) | Change             |
 | ------------- | ------------ | ------------------ |

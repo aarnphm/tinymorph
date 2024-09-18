@@ -2,13 +2,10 @@
 id: SRS-Checklist
 tags:
   - checklist
+author: smiths
 date: "2024-09-16"
 title: SRS and CA Checklist
 ---
-
-Spencer Smith
-
-September 16, 2024
 
 This checklist is specific to the Smith et al template [SmithAndLai2005, SmithEtAl2007] for documenting requirements for scientific software, but many of the points can be abstracted and applied to other templates.
 

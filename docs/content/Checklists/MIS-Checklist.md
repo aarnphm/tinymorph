@@ -2,13 +2,10 @@
 id: MIS-Checklist
 tags:
   - checklist
+author: smiths
 date: "2024-09-16"
 title: MIS Checklist
 ---
-
-Spencer Smith
-
-\today
 
 - Follows writing checklist (full checklist provided in a separate document)
 

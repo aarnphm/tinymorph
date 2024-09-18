@@ -1,3 +1,4 @@
+import Author from "./Author"
 import Content from "./pages/Content"
 import TagContent from "./pages/TagContent"
 import FolderContent from "./pages/FolderContent"
@@ -17,11 +18,13 @@ import Search from "./Search"
 import Footer from "./Footer"
 import DesktopOnly from "./DesktopOnly"
 import MobileOnly from "./MobileOnly"
+import MinimalFooter from "./MinimalFooter"
 import RecentNotes from "./RecentNotes"
 import Breadcrumbs from "./Breadcrumbs"
 import Comments from "./Comments"
 
 export {
+  Author,
   ArticleTitle,
   Content,
   TagContent,
@@ -40,6 +43,7 @@ export {
   Footer,
   DesktopOnly,
   MobileOnly,
+  MinimalFooter,
   RecentNotes,
   NotFound,
   Breadcrumbs,

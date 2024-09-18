@@ -2,13 +2,10 @@
 id: Writing-Checklist
 tags:
   - checklist
+author: smiths
 date: "2024-09-16"
 title: Writing Checklist
 ---
-
-Spencer Smith
-
-September 16, 2024
 
 The following checklist should be applied to the documents that you write.
 

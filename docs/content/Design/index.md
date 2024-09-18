@@ -2,7 +2,7 @@
 id: index
 tags:
   - design
-  - seed
+  - meta
 date: "2024-09-16"
 title: Design
 ---

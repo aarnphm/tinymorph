@@ -76,6 +76,8 @@ Recommended to use [Obsidian](https://obsidian.md/) for editing docs.
 
 </details>
 
+For updating author, change the frontmatter to use `author: <github-id>[,<github-id>]`
+
 ## pull requests.
 
 Push changes to your fork and follow [this article](https://help.github.com/en/articles/creating-a-pull-request)

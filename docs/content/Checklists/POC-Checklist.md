@@ -2,13 +2,10 @@
 id: POC-Checklist
 tags:
   - checklist
+author: smiths
 date: "2024-09-16"
 title: POC Checklist
 ---
-
-Spencer Smith
-
-\today
 
 The Proof of Concept Demonstration is an important milestone for assessing the state of the project, both with respect to the project scope and the functioning of the team itself.
 
