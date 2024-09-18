@@ -2,15 +2,11 @@
 id: index
 tags:
   - evergreen
-  - seed
   - meta
 comments: false
 date: "2024-09-16"
-title: Welcome to tinymorph
+title: tinymorph documentation.
 ---
-
-> [!warning] ⚠️ UNDER CONSTRUCTION ⚠️
-> This section is currently WIP, stay tuned!
 
 See [[Checklists]] for progress tracking.
 

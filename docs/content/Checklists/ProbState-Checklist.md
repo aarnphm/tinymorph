@@ -2,13 +2,10 @@
 id: ProbState-Checklist
 tags:
   - checklist
+author: smiths
 date: "2024-09-16"
 title: Problem Statement and Goals Checklist
 ---
-
-Spencer Smith
-
-\today
 
 - The source for the document
 

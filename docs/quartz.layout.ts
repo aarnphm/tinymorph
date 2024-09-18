@@ -16,20 +16,23 @@ export const sharedPageComponents: SharedLayout = {
         reactionsEnabled: true,
       },
     }),
+    Component.MinimalFooter({
+      links: {
+        github: "https://github.com/aarnphm/tinymorph",
+        twitter: "https://twitter.com/aarnphm_",
+      },
+      showInfo: true,
+    }),
   ],
-  footer: Component.Footer({
-    links: {
-      GitHub: "https://github.com/aarnphm/tinymorph",
-    },
-  }),
+  footer: Component.Spacer(),
 }
 
 // components for pages that display a single page (e.g. a single note)
 export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
-    Component.Breadcrumbs(),
+    Component.Breadcrumbs({ rootName: "~", style: "unique", spacerSymbol: "/" }),
     Component.ArticleTitle(),
-    Component.ContentMeta(),
+    Component.Author(),
     Component.TagList(),
   ],
   left: [
@@ -48,7 +51,11 @@ export const defaultContentPageLayout: PageLayout = {
 
 // components for pages that display lists of pages  (e.g. tags or folders)
 export const defaultListPageLayout: PageLayout = {
-  beforeBody: [Component.Breadcrumbs(), Component.ArticleTitle(), Component.ContentMeta()],
+  beforeBody: [
+    Component.Breadcrumbs({ rootName: "~", style: "full", spacerSymbol: "/" }),
+    Component.ArticleTitle(),
+    Component.ContentMeta(),
+  ],
   left: [
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),

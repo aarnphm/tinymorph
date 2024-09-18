@@ -1,6 +1,14 @@
+---
+id: Reflection
+tags:
+  - meta
+date: "2024-09-18"
+title: Reflection
+---
+
 The purpose of reflection questions is to give you a chance to assess your own
 learning and that of your group as a whole, and to find ways to improve in the
-future. Reflection is an important part of the learning process.  Reflection is
+future. Reflection is an important part of the learning process. Reflection is
 also an essential component of a successful software development process.
 
 Reflections are most interesting and useful when they're honest, even if the
@@ -9,6 +17,6 @@ thought and analysis, and not based on the content of the reflections
 themselves. Thus, for full marks we encourage you to answer openly and honestly
 and to avoid simply writing `what you think the evaluator wants to hear.`
 
-Please answer the following questions.  Some questions can be answered on the
+Please answer the following questions. Some questions can be answered on the
 team level, but where appropriate, each team member should write their own
 response:

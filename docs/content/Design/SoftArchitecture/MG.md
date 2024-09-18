@@ -2,25 +2,17 @@
 id: MG
 tags:
   - design
+author: aarnphm,waleedmalik7,nebrask,Hoshino-Kiichi
 date: "2024-09-16"
-title: Module Guide for [Program Name]
+title: Module Guide
 ---
-
-<div style="text-align: center;">
-  <a href="#">Team #23, [Team Name]</a><br>
-  <a href="https:/github.com/aarnphm">Aaron Pham</a><br>
-  <a href="https://github.com/waleedmalik7">Waleed Malik</a><br>
-  <a href="https://github.com/nebrask">Nebras Khan</a><br>
-  <a href="https://github.com/Hoshino-Kiichi">Lucas Li</a>
-</div>
-
-Sept. 16 2024
 
 ## Revision History
 
 | **Date**      | **Version** | **Notes**          |
 | ------------- | ----------- | ------------------ |
 | Sept. 16 2024 | 0.0         | Initial skafolding |
+| Sept. 16 2024 | 0.1         | Initial setup      |
 
 ## Reference Material
 

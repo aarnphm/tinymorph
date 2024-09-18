@@ -2,13 +2,10 @@
 id: VnV-Checklist
 tags:
   - checklist
+author: smiths
 date: "2024-09-16"
 title: System Verification and Validation Plan Checklist
 ---
-
-Spencer Smith
-
-September 16, 2024
 
 - Follows writing checklist (full checklist provided in a separate document)
   - [ ] LaTeX points

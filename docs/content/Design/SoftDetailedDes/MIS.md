@@ -2,19 +2,10 @@
 id: MIS
 tags:
   - design
+author: aarnphm,waleedmalik7,nebrask,Hoshino-Kiichi
 date: "2024-09-16"
-title: Module Interface Specification for \progname{}
+title: Module Interface Specification
 ---
-
-<div style="text-align: center;">
-  <a href="#">Team #23, [Team Name]</a><br>
-  <a href="https:/github.com/aarnphm">Aaron Pham</a><br>
-  <a href="https://github.com/waleedmalik7">Waleed Malik</a><br>
-  <a href="https://github.com/nebrask">Nebras Khan</a><br>
-  <a href="https://github.com/Hoshino-Kiichi">Lucas Li</a>
-</div>
-
-Sept. 16 2024
 
 ## Revision History
 

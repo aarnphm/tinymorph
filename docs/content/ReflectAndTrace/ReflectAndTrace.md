@@ -3,11 +3,10 @@ id: ReflectAndTrace
 tags:
   - meta
   - performance
+author: aarnphm
 date: "2024-09-16"
 title: Reflection and Traceability Report
 ---
-
-<Author Name(s)>
 
 Reflection is an important component of getting the full benefits from a learning experience. Besides the intrinsic benefits of reflection, this document will be used to help the TAs grade how well your team responded to feedback. Therefore, traceability between Revision 0 and Revision 1 is and important part of the reflection exercise. In addition, several CEAB (Canadian Engineering Accreditation Board) Learning Outcomes (LOs) will be assessed based on your reflections.
 

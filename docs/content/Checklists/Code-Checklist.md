@@ -2,13 +2,10 @@
 id: Code-Checklist
 tags:
   - checklist
+author: smiths
 date: "2024-09-16"
 title: Source Code Checklist
 ---
-
-Spencer Smith
-
-\today
 
 - Identifier naming
 

@@ -2,13 +2,10 @@
 id: DevelopmentPlan
 tags:
   - meta
+author: aarnphm
 date: "2024-09-16"
-title: Development Plan for \progname
+title: Development Plan
 ---
-
-<Author Name(s)>
-
-<Date>
 
 | Date          | Developer(s) | Change             |
 | ------------- | ------------ | ------------------ |

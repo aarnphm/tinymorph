@@ -2,11 +2,10 @@
 id: Rev0_Team_Contrib
 tags:
   - management
+author: aarnphm
 date: "2024-09-16"
 title: "Team Contributions: Rev 0"
 ---
-
-<Author Name(s)>
 
 This document summarizes the contributions of each team member for the Rev 0 Demo. The time period of interest is the time between the POC demo and the Rev 0 demo.
 
