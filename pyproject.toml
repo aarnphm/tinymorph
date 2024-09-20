@@ -5,10 +5,13 @@ build-backend = "hatchling.build"
 [project]
 name = "tinymorph"
 version = "0.1.0"
-description = "Exploring your writing through a WYSIWYG editor"
+description = "Feature steering through WYSIWYG editor"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = []
+
+[tool.uv]
+dev-dependencies = ["ruff>=0.6.6"]
 
 [tool.uv.sources]
 exo.workspace = true
