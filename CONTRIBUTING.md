@@ -1,6 +1,6 @@
 ## tooling.
 
-- `node.js>=20`
+- `node.js>=20` and `pnpm`
 - `uv` [installation](https://docs.astral.sh/uv/)
 - `cargo` [installation](https://www.rust-lang.org/tools/install)
 
@@ -12,6 +12,8 @@
 `docs`: include both references and exploration notes for `tinymorph`
 
 `crates`: contains all UI related for the editors
+
+`packages`: JS version of the editor.
 
 `python`: include all ML-related models
 
@@ -39,6 +41,10 @@ source .venv/bin/activate
 
 ln -s .python-version-default .python-version
 ```
+
+## ui.
+
+Using pnpm and preact with vite as bundler
 
 ## rust.
 
@@ -77,6 +83,12 @@ Recommended to use [Obsidian](https://obsidian.md/) for editing docs.
 </details>
 
 For updating author, change the frontmatter to use `author: <github-id>[,<github-id>]`
+
+## meta.
+
+```bash
+git config --local blame.ignoreRevsFile .git-blame-ignore-revs
+```
 
 ## pull requests.
 
