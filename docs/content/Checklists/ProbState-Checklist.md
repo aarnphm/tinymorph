@@ -11,7 +11,7 @@ title: Problem Statement and Goals Checklist
 
   - [ ] The source is text-based, like LaTeX, [Markdown](https://en.wikipedia.org/wiki/Markdown), [Emacs Org Mode](https://en.wikipedia.org/wiki/Org-mode), etc.
 
-- Follows [writing checklist](https://github.com/smiths/capTemplate/blob/main/docs/Checklists/Writing-Checklist.pdf)
+- Follows [[Checklists/Writing-Checklist]]
 
 - Overall qualities of documentation
   - [ ] Scope is clear

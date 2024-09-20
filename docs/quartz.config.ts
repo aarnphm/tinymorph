@@ -67,7 +67,11 @@ const config: QuartzConfig = {
       }),
       Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false, enableCheckbox: true }),
       Plugin.GitHubFlavoredMarkdown(),
-      Plugin.Citations({ bibliographyFile: "./content/References.bib", linkCitations: true }),
+      Plugin.Citations({
+        bibliographyFile: "./content/References.bib",
+        linkCitations: true,
+        csl: "https://raw.githubusercontent.com/citation-style-language/styles/master/chicago-fullnote-bibliography.csl",
+      }),
       Plugin.TableOfContents(),
       Plugin.CrawlLinks({
         markdownLinkResolution: "absolute",

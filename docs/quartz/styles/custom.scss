@@ -258,3 +258,26 @@ hr {
 audio::-webkit-media-controls-panel {
   background-color: var(--lightgray);
 }
+
+p.quotes {
+  padding-top: 1rem;
+  padding-left: 3rem;
+  margin: inherit;
+
+  &:before,
+  &:after {
+    font-size: 2em;
+    line-height: 0.1em;
+    vertical-align: -0.4em;
+  }
+
+  &:before {
+    content: "“";
+    margin-right: 0.25em;
+  }
+
+  &:after {
+    content: "”";
+    margin-left: 0.25em;
+  }
+}
