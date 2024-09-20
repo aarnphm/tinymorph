@@ -1,0 +1,35 @@
+{
+  "name": "@aarnphm/tinymorph",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Feature steering through WYSIWYG editor",
+  "homepage": "https://tinymorph.aarnphm.xyz",
+  "keywords": [
+    "sae",
+    "bentoml",
+    "mech interp"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aarnphm/tinymorph.git",
+    "directory": "packages/morph"
+  },
+  "bugs": {
+    "url": "https://github.com/aarnphm/tinymorph/issues"
+  },
+  "author": "aarnphm <contact@aarnphm.xyz>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "preact": "^10.23.1"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.9.0",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.1"
+  }
+}
