@@ -32,6 +32,7 @@ export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs({ rootName: "~", style: "unique", spacerSymbol: "/" }),
     Component.ArticleTitle(),
+    Component.ContentMeta(),
     Component.Author(),
     Component.TagList(),
   ],
@@ -39,7 +40,6 @@ export const defaultContentPageLayout: PageLayout = {
     Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
     Component.Search(),
-    Component.Darkmode(),
     Component.DesktopOnly(Component.Explorer()),
   ],
   right: [

@@ -28,7 +28,7 @@ export default ((opts: Options) => {
     const enableComments = fileData.frontmatter?.comments ?? true
     const isPost = fileData.slug!.startsWith("posts/")
     const isTags = fileData.slug!.startsWith("tags/")
-    if (!enableComments || isPost | isTags) {
+    if (!enableComments || isPost || isTags) {
       return <></>
     }
     return (

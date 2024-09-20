@@ -12,6 +12,8 @@ nmap <C-i> :forwardv
 nmap ; :
 imap jj <Esc>
 
+imap <D-BS> <C-w>
+
 " Here's an example config that implements many of the features from vim-surround:
 exmap surround_wiki surround [[ ]]
 exmap surround_double_quotes surround " "
