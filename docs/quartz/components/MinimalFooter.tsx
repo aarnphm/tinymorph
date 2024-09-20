@@ -52,7 +52,7 @@ export default ((opts?: Options) => {
         <footer class={classNames(displayClass, "minimal-footer")}>
           <div id="icons">
             <li>
-              <a href={"/"} target="_self">
+              <a href="https://aarnphm.xyz" target="_blank">
                 <span role="img" class="min-icon" aria-label="home">
                   <svg
                     viewBox="64 64 896 896"

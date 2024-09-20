@@ -97,6 +97,16 @@ h3 {
   }
 }
 
+#graph-container {
+  background-color: var(--light);
+}
+
+.popover > .popover-inner,
+.graph > .graph-outer {
+  border-radius: unset;
+  border-color: var(--gray);
+}
+
 article > a.internal:not([role="anchor"]) {
   border-radius: unset;
   background-color: unset;
@@ -154,8 +164,14 @@ body[data-slug="index"] img {
 }
 
 body {
+  background-image: url("/static/bg.webp");
   position: relative;
   min-height: 100vh;
+  margin: 0;
+}
+
+[saved-theme="dark"] body {
+  background-image: none;
 }
 
 .left {
@@ -192,6 +208,31 @@ body {
 
   @media all and (max-width: $fullPageWidth) {
     display: flex !important;
+  }
+}
+
+.content-meta {
+  margin-top: 0.5rem;
+  color: var(--gray);
+  display: flex;
+  flex-flow: wrap;
+  cursor: pointer;
+
+  padding-inline-start: 0;
+  list-style: none;
+  gap: 0.8rem;
+
+  pre {
+    color: var(--darkgray);
+  }
+
+  .ref-source {
+    font-style: inherit;
+    font-weight: inherit;
+    color: var(--gray);
+    transition: none;
+
+    @include links;
   }
 }
 
