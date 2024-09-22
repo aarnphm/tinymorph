@@ -84,10 +84,16 @@ Recommended to use [Obsidian](https://obsidian.md/) for editing docs.
 
 For updating author, change the frontmatter to use `author: <github-id>[,<github-id>]`
 
-## meta.
+## ci and meta.
 
 ```bash
 git config --local blame.ignoreRevsFile .git-blame-ignore-revs
+```
+
+If you work on CI, make sure to run this command after (requires `docker` and `fd`, or you can use `find` equivalent):
+
+```bash
+fd -Hg "*.yml" .github --exec-batch docker run --rm -v "${PWD}":"${PWD}" -w "${PWD}" -e RATCHET_EXP_KEEP_NEWLINES=true ghcr.io/sethvargo/ratchet:0.9.2 update
 ```
 
 ## pull requests.
