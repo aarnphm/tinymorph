@@ -7,7 +7,7 @@ date: "2024-09-16"
 title: SRS and CA Checklist
 ---
 
-This checklist is specific to the Smith et al template [SmithAndLai2005, SmithEtAl2007] for documenting requirements for scientific software, but many of the points can be abstracted and applied to other templates.
+This checklist is specific to the Smith et al template [@SmithAndLai2005; @SmithEtAl2007] for documenting requirements for scientific software, but many of the points can be abstracted and applied to other templates.
 
 - Follows writing checklist (full checklist provided in a separate document)
   - [ ] LaTeX points
@@ -101,9 +101,4 @@ Other checklists to consider can be found in the resources for the University of
 - [Checklist for Requirements Specification Reviews](https://www.cs.toronto.edu/~sme/CSC340F/2005/assignments/inspections/reqts_checklist.pdf)
 - [Software Requirements Checklist (JPL)](https://www.cs.toronto.edu/~sme/CSC340F/2005/assignments/inspections/JPL_reqts_clist.pdf)
 
-## Bibliography
-
 [^ref]
-
-[SmithAndLai2005]: #
-[SmithEtAl2007]: #
