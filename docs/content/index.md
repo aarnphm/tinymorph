@@ -2,6 +2,7 @@
 id: index
 tags:
   - evergreen
+author: ""
 comments: false
 date: "2024-09-16"
 title: tinymorph documentation.
@@ -17,9 +18,9 @@ The following includes a few shortcut for capstone portion of `tinymorph`:
 - [[HazardAnalysis/HazardAnalysis|Hazard Analysis]] with regards to existential risks of `tinymorph`.
 - [[SRS/SRS|Software Requirements Specification]] specifies the requirements for `tinymorph`.
 
-[[References.bib|References]], [[glossary|Glossary]]
+See also: [[References.bib|References]], [[glossary|Glossary]]
 
-> [!tip] Navigation of the site
+> [!tip]- Navigation of the site
 >
 > | Shortcut          | Action               |
 > | ----------------- | -------------------- |
@@ -27,3 +28,7 @@ The following includes a few shortcut for capstone portion of `tinymorph`:
 > | <kbd>ctrl+n</kbd> | next search item     |
 > | <kbd>ctrl+p</kbd> | previous search item |
 > | <kbd>ctrl+g</kbd> | graph                |
+
+## acknowledgements
+
+This project is based on a lot of the work from EleutherAI, Neel Nanda spearheading the field of [[glossary#mechanistic interpretability|mech interp]], Google DeepMind Interpretability Team, et al.

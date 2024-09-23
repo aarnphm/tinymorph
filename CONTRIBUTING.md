@@ -84,6 +84,8 @@ Recommended to use [Obsidian](https://obsidian.md/) for editing docs.
 
 For updating author, change the frontmatter to use `author: <github-id>[,<github-id>]`
 
+To add references, make sure to add marker `[^ref]` somewhere in the given file. See [example](./docs/content/glossary.md)
+
 ## ci and meta.
 
 ```bash

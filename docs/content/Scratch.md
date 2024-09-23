@@ -20,7 +20,7 @@ Dictionary learning: https://transformer-circuits.pub/2023/monosemantic-features
 
 https://transformer-circuits.pub/2024/scaling-monosemanticity/
 
-## training SAEs
+## training [[glossary#sparse autoencoders|SAEs]]
 
 for finding attention activation.
 
