@@ -11,6 +11,11 @@ on:
       - 'docs/**'
       - '.github/workflows/pr-preview.yml'
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 concurrency: preview-${{ github.ref }}
 
 jobs:
