@@ -42,9 +42,11 @@ jobs:
           source-dir: ./docs/public/
           custom-url: tinymorph.aarnphm.xyz
           action: deploy
+          token: ${{ github.token }}
       - uses: rossjrw/pr-preview-action@430e3dfc1de8a8ae77e77d862d25676ef9db55d1 # ratchet:rossjrw/pr-preview-action@v1
         if: github.event.action == 'closed' && !github.event.pull_request.merged
         with:
           source-dir: ./docs/public/
           custom-url: tinymorph.aarnphm.xyz
           action: remove
+          token: ${{ github.token }}
