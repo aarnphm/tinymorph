@@ -169,9 +169,9 @@ As you can see, the function calculate the RMSNorm of a given torch tensor.
 > it is nice to have, but once the files get more and more complex, it is better to just
 > provide a stubs file for it.
 
-## FAQ
+## faq.
 
-### Why not use `black`?
+### why not use `black`?
 
 `black` is pretty common in Python community, but I rather find `black` to be very
 verbose and overtime it is annoying to work with too much whitespaces.
@@ -179,19 +179,19 @@ verbose and overtime it is annoying to work with too much whitespaces.
 Personally, I think four spaces is a mistake, as in some cases it is harder to read
 with four spaces code versus two spaces code.
 
-### Why not PEP8?
+### why not pep8?
 
 PEP8 is great if you are writing library such as this, but I'm going to do a lot
 of experimenting for implementing papers, so I decided early on that PEP8 is
 probably not fit here, and want to explore more expressive style.
 
-### Editor is complaining about the style, what should I do?
+### editor is complaining about the style, what should i do?
 
 Kindly ask you to disable formatting for this project 🤗. I will try my best to
 accomodate for ruff, but I don't want to spend too much time on this.
 It is pretty stragithforward to disable it in your editor, with google.
 
-### Style might put off new contributors?
+### style might put off new contributors?
 
 I don't think so, as mentioned before, I don't have too much opinion on style as
 long as it somewhat follow what I have described above or the style of the code
