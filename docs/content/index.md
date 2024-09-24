@@ -18,7 +18,7 @@ The following includes a few shortcut for capstone portion of `tinymorph`:
 - [[HazardAnalysis/HazardAnalysis|Hazard Analysis]] with regards to existential risks of `tinymorph`.
 - [[SRS/SRS|Software Requirements Specification]] specifies the requirements for `tinymorph`.
 
-See also: [[References.bib|References]], [[glossary|Glossary]]
+See also: [[References.bib|References]] | [[glossary|Glossary]]
 
 > [!tip]- Navigation of the site
 >

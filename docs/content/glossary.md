@@ -50,6 +50,27 @@ Auto-regressive models are often considered a more correct terminology when desc
 A multi-layer perception (MLP) archiecture built on top of a multi-head
 attention mechanism [@vaswani2023attentionneed, 2] to signal high entropy tokens to be amplified and less important tokens to be diminished.
 
+## low-rank adapters
+
+Paper: "LoRA: Low-Rank Adaptation of Large Language Models" [@hu2021loralowrankadaptationlarge], [GitHub](https://github.com/microsoft/LoRA)
+
+> ELI5: Imagine you have a big complex toy robot. Now you want to teach this robot some new tricks. With LoRA, you are
+> giving this robot a small backpack. This backpack won't change how the robot function, but will give it some new cool
+> tricks. Now with SAEs, you are adding enhancement directly into the robot, which makes it a lot better at some certain
+> tricks.
+
+The idea is to freeze a majority of the network weights, and inject trainable rank decomposition matrices to influence
+the models' outputs.
+
+each LoRA layer can then be merged with the main models, in which create specialised models on given tasks. The main
+benefit of LoRA is to reduce costs for fine-tuning tasks.
+
+In a sense, LoRA is a different comparing sparse autoencoders.
+
+- For LoRA, we are controlling the outputs of a models by training additional "parameters" to add into the models
+- With SAEs, we are directly editing features activations within the neural net, which means we don't have to worry
+  about fine-tuning the model. We observe this through [Claude's Golden Gate Bridge](https://www.anthropic.com/news/golden-gate-claude).
+
 ## mechanistic interpretability
 
 alias: mech interp

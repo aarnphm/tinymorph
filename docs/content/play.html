@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web-based Text Editor</title>
+    <style>
+      #editor-container {
+        display: flex;
+        font-family: monospace;
+        font-size: 14px;
+        line-height: 1.5;
+        position: relative;
+      }
+      #line-numbers {
+        width: 40px;
+        text-align: right;
+        padding-right: 10px;
+        color: #999;
+      }
+      #editor {
+        flex-grow: 1;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        outline: none;
+        padding: 0;
+        margin: 0;
+      }
+      #inlay-hints {
+        position: absolute;
+        pointer-events: none;
+        color: #888;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="editor-container">
+      <div id="line-numbers"></div>
+      <div id="editor" contenteditable="true" spellcheck="false"></div>
+      <div id="inlay-hints"></div>
+    </div>
+    <script>
+      const editor = document.getElementById("editor")
+      const lineNumbers = document.getElementById("line-numbers")
+      const inlayHints = document.getElementById("inlay-hints")
+
+      let ws
+      let debounceTimer
+
+      function updateLineNumbers() {
+        const lines = editor.innerText.split("\n")
+        lineNumbers.innerHTML = lines.map((_, i) => i + 1).join("<br>")
+      }
+
+      function getCaretPosition() {
+        const selection = window.getSelection()
+        if (selection.rangeCount === 0) return null
+        const range = selection.getRangeAt(0)
+        const preCaretRange = range.cloneRange()
+        preCaretRange.selectNodeContents(editor)
+        preCaretRange.setEnd(range.endContainer, range.endOffset)
+        return preCaretRange.toString().length
+      }
+
+      function setCaretPosition(pos) {
+        const range = document.createRange()
+        const sel = window.getSelection()
+        let currentPos = 0
+        let found = false
+
+        function traverseNodes(node) {
+          if (found) return
+          if (node.nodeType === Node.TEXT_NODE) {
+            if (currentPos + node.length >= pos) {
+              range.setStart(node, pos - currentPos)
+              range.setEnd(node, pos - currentPos)
+              found = true
+            } else {
+              currentPos += node.length
+            }
+          } else {
+            for (let child of node.childNodes) {
+              traverseNodes(child)
+            }
+          }
+        }
+
+        traverseNodes(editor)
+        sel.removeAllRanges()
+        sel.addRange(range)
+      }
+
+      // function updateInlayHints() {
+      //   // This is a placeholder for the inlay hints functionality
+      //   // We'll implement this later when we add the streaming suggestion feature
+      //   const cursorPosition = editor.selectionStart
+      //   const text = editor.value.substring(0, cursorPosition)
+      //
+      //   // For now, let's just display the current word count as a simple hint
+      //   const wordCount = text.trim().split(/\s+/).length
+      //   inlayHints.textContent = `Words: ${wordCount}`
+      // }
+      //
+      // editor.addEventListener("scroll", () => {
+      //   lineNumbers.scrollTop = editor.scrollTop
+      //   inlayHints.style.top = -editor.scrollTop + "px"
+      // })
+      //
+      // // Initialize
+      // updateLineNumbers()
+      // updateInlayHints()
+
+      function updateInlayHints() {
+        clearTimeout(debounceTimer)
+        debounceTimer = setTimeout(() => {
+          const caretPos = getCaretPosition()
+          if (caretPos !== null) {
+            const text = editor.innerText.substring(0, caretPos)
+            ws.send(JSON.stringify({ text, caretPos }))
+          }
+        }, 100)
+      }
+
+      function initWebSocket() {
+        ws = new WebSocket("ws://your-websocket-server-url")
+        ws.onmessage = (event) => {
+          const data = JSON.parse(event.data)
+          if (data.contents && data.contents.delta) {
+            const caretPos = getCaretPosition()
+            if (caretPos !== null) {
+              const rect = getCaretCoordinates()
+              inlayHints.style.left = `${rect.left}px`
+              inlayHints.style.top = `${rect.top}px`
+              inlayHints.textContent = data.contents.delta
+            }
+          }
+        }
+      }
+
+      function getCaretCoordinates() {
+        const range = window.getSelection().getRangeAt(0)
+        const rect = range.getBoundingClientRect()
+        return {
+          left: rect.left + window.scrollX,
+          top: rect.top + window.scrollY,
+        }
+      }
+
+      editor.addEventListener("input", () => {
+        updateLineNumbers()
+        updateInlayHints()
+      })
+
+      editor.addEventListener("keydown", (e) => {
+        if (e.key === "Tab") {
+          e.preventDefault()
+          document.execCommand("insertHTML", false, "    ")
+        }
+      })
+
+      // Initialize
+      updateLineNumbers()
+      initWebSocket()
+    </script>
+  </body>
+</html>

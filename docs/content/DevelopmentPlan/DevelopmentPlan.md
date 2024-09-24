@@ -7,141 +7,331 @@ date: "2024-09-16"
 title: Development Plan
 ---
 
-| Date          | Developer(s) | Change             |
-| ------------- | ------------ | ------------------ |
-| Sept. 16 2024 | 0.0          | Initial skafolding |
+See also: [[Checklists/POC-Checklist|checklist]] and [[DevelopmentPlan/DevelopmentPlan#Revision|this document revision]]
 
-Put your introductory blurb here. Often the blurb is a brief roadmap of what is contained in the report.
+The following includes a brief roadmap of the development plan for `tinymorph` from Team 23 (Hinterland).
 
-Additional information on the development plan can be found in the [lecture slides](https://gitlab.cas.mcmaster.ca/courses/capstone/-/blob/main/Lectures/L02b_POCAndDevPlan/POCAndDevPlan.pdf?ref_type=heads).
+## Confidential Information
 
-## Confidential Information?
-
-State whether your project has confidential information from industry, or not. If there is confidential information, point to the agreement you have in place.
-
-For most teams this section will just state that there is no confidential information to protect.
+There is no confidential information to protect for this project.
 
 ## IP to Protect
 
-State whether there is IP to protect. If there is, point to the agreement. All students who are working on a project that requires an IP agreement are also required to sign the "Intellectual Property Guide Acknowledgement."
+There is no IP to protect for this project.
 
 ## Copyright License
 
-What copyright license is your team adopting. Point to the license in your repo.
+`tinymorph` is licensed under the [Apache-2.0](https://github.com/aarnphm/tinymorph/blob/main/LICENSE) license.
 
 ## Team Meeting Plan
 
-How often will you meet? where?
+Meeting will be run into two formats: Standup and Supervisor Meeting
 
-If the meeting is a physical location (not virtual), out of an abundance of caution for safety reasons you shouldn't put the location online
+| Meeting Type              | Frequency | Time (EST)      | Day    | Location                        | Agenda                                                                                                                                                            |
+| ------------------------- | --------- | --------------- | ------ | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Standup                   | Weekly    | **15:30-16:30** | Monday | Online via Teams                | • Round table format<br>• What are you working on<br>• Blockers?<br>• Plan for this week                                                                          |
+| Supervisor (w/ Dr.Mishra) | Bi-weekly | **12:00-13:00** | Friday | In person, at arranged location | • Progress update<br>• Discussion regarding relevant research and potential solutions for UX interaction<br>• Q&A session for any issues during development cycle |
 
-How often will you meet with your industry advisor? when? where?
+Meeting chairs and notetakes will be responsible for ensuring that given issues are filled out.
+For meeting with supervisors, notes should be taken under [[meetings]].
 
-Will meetings be virtual? At least some meetings should likely be in-person.
+Roles assignment can be found under [[DevelopmentPlan/DevelopmentPlan#Team Member Roles|Team Member Roles]].
 
-How will the meetings be structured? There should be a chair for all meetings. There should be an agenda for all meetings.
+Additional meetings can also be held as needed (knowledge sharing, coworking, etc.)
 
 ## Team Communication Plan
 
-Issues on GitHub should be part of your communication plan.
+Hinterland members will use Teams for all asynchronous and synchronous communication.
+
+Additionally, GitHub [issue tracker](https://github.com/aarnphm/tinymorph/issues) should be used for feature
+development. The Sprint [Kaban](https://github.com/users/aarnphm/projects/4?query=sort:updated-desc+is:open) board will
+also be used concurrently for tracking tasks and in-progress work.
+
+Expectations among team members with regards response to issues and pull requests assignments should be resolved within
+1-2 business days. Should any issues arise that prevents members from using any of the aforementioned communication
+methods, Email should be used to communicate with the rest of the team and the instructor.
 
 ## Team Member Roles
 
-You should identify the types of roles you anticipate, like notetaker, leader, meeting chair, reviewer. Assigning specific people to those roles is not necessary at this stage. In a student team the role of the individuals will likely change throughout the year.
+The following encapsulates member roles for Hinterland.
+
+[Aaron Pham](https://aarnphm.xyz) will take the lead role for the team and acts as [BDFL](https://en.wikipedia.org/wiki/Benevolent_dictator_for_life) for `tinymorph`.
+They will be responsible for overall project management, communication among course instructors, supervisor, as well as providing support to the rest of the team
+
+Notetakers will be responsible for taking notes during meetings, lectures during the working week, and this role will
+be rotated among team members on a four week basis. The following can be used:
+
+```mermaid
+flowchart LR
+A[Aaron Pham] --> B[Waleed Malik] --> C[Nebras Khan] --> D[Lucas Li]
+```
+
+> [!note] Meeting chair assignment
+> Follow the schedule for notetakers.
+
+Given that `tinymorph` will include two components (web-based editor and ML inference server), the following include
+a rough draft of each champion's responsibilities:
+
+- design work: The team will collaborate on general design works for interfaces, lead by Aaron Pham.
+- web-based editor: [Nebras Khan](https://github.com/nebrask).
+- ML inference server: [Waleed Malik](https://github.com/waleedmalik7)
+- ML attention intervention: Aaron Pham
+
+Reviewers will be assigned automatically based on the project they champion.
+
+> [!note] Assignment
+> Generally, everyone can work simultaneously on any of the three components mentioned above.
 
 ## Workflow Plan
 
-- How will you be using git, including branches, pull request, etc.?
-- How will you be managing issues, including template issues, issue classification, etc.?
-- Use of CI/CD
+`tinymorph` will follow a conventional git workflow, with `main` acts as "production" branch.
+This means all changes should be work from a pull requests, and will be squashed into ==one== commit before pushing to
+`main`.
+
+This will ensure linear history.
+
+`tinymorph` will use conventional commits for all commit messages as well as branch naming.
+
+Issues should be created for all bugs, feature requests, and other work items, from predefined templates (blank
+templates are provided, but only use this if any of the previous templates do not apply.) Issue can be optionally add
+labels, add to milestone and Kaban board for progress checking.
+
+[[Checklists]] can also be used to track changes for documentation-related tasks.
+
+GitHub Actions will be used for CI/CD. The following enlists an overview of CI/CD for `tinymorph`:
+
+- Documentation will be built automatically on every push to main as well as PR changes
+- Each component will have its own CI pipeline for styling changes as well as tests (A/B testing)
 
 ## Project Decomposition and Scheduling
 
-- How will you be using GitHub projects?
-- Include a link to your GitHub project
+[Kaban](https://github.com/users/aarnphm/projects/4?query=sort:updated-desc+is:open) board through GitHub Projects will
+be used for tracking tasks and deadlines. This board should already include certain triage, milestones, as well as
+deadlines accordingly to course outline.
 
-How will the project be scheduled? This is the big picture schedule, not details. You will need to reproduce information that is in the course outline for deadlines.
+Additional features and functionalities will be added incrementally to the Kaban board.
+
+See also [[Scratch|brain dump]] for more detailed features development.
 
 ## Proof of Concept Demonstration Plan
 
-What is the main risk, or risks, for the success of your project? What will you demonstrate during your proof of concept demonstration to convince yourself that you will be able to overcome this risk?
+The following entails POC plan for `tinymorph` incoming November deadline:
+
+- functional web-based text-editor, including feature tuning,
+- Uses [Gemma 2](https://ai.google.dev/gemma?authuser=2) with pretrained [[glossary#sparse autoencoders|SAEs]] (see [GemmaScope](https://ai.google.dev/gemma/docs/gemma_scope)) for initial proof-of-concept steering.
+- start training SAEs for Llama 3.1
+- Running a OpenAI-compatible API inference server (remotely first, on BentoCloud).
+- Vim-mode
+
+Certain risks that may arise during the POC include:
+
+- degradation of the generation quality due to incorrect feature steering.
+- performance rendering with inlay within text buffers
+- Modal editing won't work.
+- e2e testing would be a hassle, given there are multiple components for tinymorph.
+- Cold start for inference server.
+- Mismanaging KV cache from vLLM internal block manager given that we are modifying attention activation directly.
+
+To adverse given risks, the following will be implemented:
+
+- Propose a low-fidelty prototype, followed by a design iteration for specific UX consideration.
+- Trained a small sets of [[glossary#low-rank adapters|LoRA]] as backup to merge with Llama 3.1 on inference server, given that LoRA has bene hardened by industry practice.
 
 ## Expected Technology
 
-What programming language or languages do you expect to use? What external libraries? What frameworks? What technologies. Are there major components of the implementation that you expect you will implement, despite the existence of libraries that provide the required functionality. For projects with machine learning, will you use pre-trained models, or be training your own model?
+See also [CONTRIBUTING.md](https://github.com/aarnphm/tinymorph/blob/main/CONTRIBUTING.md) and [[DevelopmentPlan/DevelopmentPlan#Coding Standard|Style]]
 
-The implementation decisions can, and likely will, change over the course of the project. The initial documentation should be written in an abstract way; it should be agnostic of the implementation choices, unless the implementation choices are project constraints. However, recording our initial thoughts on implementation helps understand the challenge level and feasibility of a project. It may also help with early identification of areas where project members will need to augment their training.
+The following stack will be divided into two parts: web-based editor (morph) and ML inference server (asteraceae)
 
-Topics to discuss include the following:
+No plans for code coverage, as it is usually a waste-of-time early on. Development will be tracked through `git`,
+`GitHub`, as well as GitHub Projects for sprint progress.
 
-- Specific programming language
-- Specific libraries
-- Pre-trained models
-- Specific linter tool (if appropriate)
-- Specific unit testing framework
-- Investigation of code coverage measuring tools
-- Specific plans for Continuous Integration (CI), or an explanation that CI is not being done
-- Specific performance measuring tools (like Valgrind), if appropriate
-- Tools you will likely be using?
+### documentation
 
-git, GitHub and GitHub projects should be part of your technology.
+Generated with [Quartz](https://quartz.jzhao.xyz/), hosted on GitHub Pages.
+
+One can use any file-based markdown editor to update documentation, but recommend to use [Obsidian](https://obsidian.md/)
+
+Design file will be using [Figma](https://figma.com) for high-fidelity prototype, [Excalidraw](https://excalidraw.com/)
+for low-fidelity prototype.
+
+Citations will use [Chicago Manual of Style](https://www.chicagomanualofstyle.org/tools_citationguide.html) with
+a custom [CSL](https://github.com/aarnphm/tinymorph/blob/main/docs/content/chicago-fullnote-bibliography.csl) for supporting footnotes
+
+### web-based editor (morph)
+
+Language: JS/TS
+
+Stack:
+
+- rendering: Any React-based framework, e.g. Next, w/ Node backend.
+- styling: SASS, framer-motion, @shadcn/ui
+- testing: Jest
+
+Formatter: prettier
+
+Linter: eslint
+
+Bundler/Transpiler: vite/esbuild
+
+CI: include styling and linter, possibly a small set of A/B tests.
+
+tool: [`pnpm`](https://pnpm.io/) for monorepo workspace management
+
+### ml inference server (asteraceae)
+
+Language: Python
+
+Stack:
+
+- online inference: BentoML, vLLM, pydantic
+- offline inference: [llama.cpp](https://github.com/ggerganov/llama.cpp)
+- testing: pytest
+
+Linter: ruff
+
+CI: include styling and linter, regression testing, e2e testing.
+
+Model: Gemma 2 for SAE exploration, Llama 3.1 for final models (for POC specifically, will also train a few LoRAs for writers tonality)
+
+Tool: [`uv`](https://github.com/astral-sh/uv) for monorepo management
 
 ## Coding Standard
 
-What coding standard will you adopt?
+### TS/JS
 
-## Appendix --- Reflection
+[Google style guide](https://google.github.io/styleguide/) will be used.
 
-Not required for CAS 741
+All related tools has been setup corespondingly.
 
-1. Why is it important to create a development plan prior to starting the project?
-2. In your opinion, what are the advantages and disadvantages of using CI/CD?
-3. What disagreements did your group have in this deliverable, if any, and how did you resolve them?
+### Python
 
-## Appendix --- Team Charter
+a variation of Google style guide will be used.
+
+![[DevelopmentPlan/python style#the coding style.|variation]]
+
+---
+
+## Appendix
+
+### Revision
+
+| Date          | Developer(s) | Change                           |
+| ------------- | ------------ | -------------------------------- |
+| Sept. 16 2024 | 0.0          | Initial skafolding               |
+| Sept. 22 2024 | 0.1          | Initial POC and Development Plan |
+
+### Reflection
+
+<div class="reflection-container">
+
+<div class="users">
+  <a class="name" href="https://github.com/aarnphm">Aaron</a>
+</div>
+
+<div class="blob">
+
+It is important to create a development plan prior to starting the project to ensure goal alignment, timelines,
+required resources and potential risks are evaluated accordingly. It enables better team coordination and planning on
+feature development, as well as providing a baseline to measure progress against. Additionally, it also helps with
+preventing scope creep by clearly defining goals and objectives to be achieved.
+
+CI/CD, ensures faster development iterations and improve code quality through automated testing. It also
+helps with earlier bug detection and prevent regressions. However, depending on the stage of the project (given that
+tinymorph is relatively new and small), setting CI/CD is a huge hassle as one will have to manage the infrastructure
+as well as complexity of these pipelines. This will actually inversely introduce a lot of technical debt and slow down
+development cycle. This is also known as _premature optimisation_.
+
+> CI/CD is the case of "pick your poison"
+
+We don't have any disagreements with regards to this deliverable, given that I asked for everyone preferences and let
+the technology stack to be made by project champion.
+
+</div>
+
+</div>
+
+<!-- 1. Why is it important to create a development plan prior to starting the project? -->
+<!-- 2. In your opinion, what are the advantages and disadvantages of using CI/CD? -->
+<!-- 3. What disagreements did your group have in this deliverable, if any, and how did you resolve them? -->
+
+### Team Charter
 
 borrows from [University of Portland Team Charter](https://engineering.up.edu/industry_partnerships/files/team-charter.pdf)
 
-### External Goals
+#### External Goals
 
-What are your team's external goals for this project? These are not the goals related to the functionality or quality fo the project. These are the goals on what the team wishes to achieve with the project. Potential goals are to win a prize at the Capstone EXPO, or to have something to talk about in interviews, or to get an A+, etc.
+Take a step back, my goal for `tinymorph` is to imagine what machine-assisted interfaces would look like for creatives, specifically for writing[^1].
 
-### Attendance
+[^1]: [[ProblemStatementAndGoals/ProblemStatement#Problem|problem statement.]]
 
-#### Expectations
+There are two narratives emerging from industry practioners and companies with regards to the [intelligence age](https://ia.samaltman.com/): Entities that seek to build systems capable of outperforming
+at tasks that a human can do at a greater degree of accuracy and efficiency. These companies include OpenAI, Anthropic, [SSI](https://ssi.inc/), many AI labs, etc.
+and often disguised under the term "artificial super intelligence" (ASI). On the other end of spectrum, we have
+companies that build AI systems to amplify our abilities to create and improve efficiency for our work. Companies such
+as [Runway](https://runwayml.com/), [Cohere](https://cohere.com/), etc.
 
-What are your team's expectations regarding meeting attendance (being on time, leaving early, missing meetings, etc.)?
+My interests lie firmly on the second group, where we build tools that increase our agency. `tinymorph` is the
+manifestation of this believe.
 
-#### Acceptable Excuse
+Additionally, during the journey of prototyping `tinymorph`, I hope to use it as a playground to delve into the field
+of [[glosar#mechanistic interpretability|mech interp]], as a pure research interests.
 
-What constitutes an acceptable excuse for missing a meeting or a deadline? What types of excuses will not be considered acceptable?
+#### Attendance
 
-#### In Case of Emergency
+##### Expectations
+
+Every team member should be expected to attend all standup and supervisor meetings. For lectures, coresponding
+notetaker should be present as a point of contact during lecture time.
+
+Communication methods include asynchronous and synchronous, via Teams and Email if necessary.
+
+##### Acceptable Excuse
+
+Should anything urgent may arise, such as family matters or health issues, one should inform the team ASAP so that
+everyone else can allocate and focus on covering the tasks at hand.
+
+We hope to cultivate a healthy work culture where everyone is encouraged to prioritise their health and well-being. If
+there are any specific concerns one should explicitly address with the whole team, or resolve the matter privately with
+all concerned parties.
+
+##### In Case of Emergency
 
 What process will team members follow if they have an emergency and cannot attend a team meeting or complete their individual work promised for a team deliverable?
 
-### Accountability and Teamwork
+Please let everyone know through Teams, email Dr.Smith about this specific incident so that the others members can
+cover the team deliverable.
 
-#### Quality
+#### Accountability and Teamwork
+
+##### Quality
 
 What are your team's expectations regarding the quality of team members' preparation for team meetings and the quality of the deliverables that members bring to the team?
 
-#### Attitude
+We expect all team members to try their best at constructing features works and contributions to documentation. Members
+are expected to become the domain experts for topics that they are championing, while everyone else should understand
+certain decisions and tradeoff behind design choices.
 
-What are your team's expectations regarding team members' ideas, interactions with the team, cooperation, attitudes, and anything else regarding team member contributions? Do you want to introduce a code of conduct? Do you want a conflict resolution plan? Can adopt existing codes of conduct.
+For meeting preparation, we expect everyone to come prepared with questions and discussion topics they want to do.
 
-#### Stay on Track
+##### Attitude
 
-What methods will be used to keep the team on track? How will your team ensure that members contribute as expected to the team and that the team performs as expected? How will your team reward members who do well and manage members whose performance is below expectations? What are the consequences for someone not contributing their fair share?
+Adhering to [Code of Coduct](https://github.com/aarnphm/tinymorph/blob/main/.github/CODE_OF_CONDUCT.md) adapted from the [Contributor Covenant][homepage],
+[version 2.0](https://www.contributor-covenant.org/version/2/0/code_of_conduct.html)..
 
-You may wish to use the project management metrics collected for the TA and instructor for this.
+We encouraged everyone to be open to new ideas and collaborate on features work. We should use constructive critism with regards doing review work.
 
-You can set target metrics for attendance, commits, etc. What are the consequences if someone doesn't hit their targets? Do they need to bring the coffee to the next team meeting? Does the team need to make an appointment with their TA, or the instructor? Are there incentives for reaching targets early?
+Should any conflict arise, please discuss your concern and display your reasoning with the whole team, asynchronously
+or synchronously. At the end of the day, we are all humans 😀
 
-#### Team Building
+##### Stay on Track
 
-How will you build team cohesion (fun time, group rituals, etc.)?
+We will use standup [notes](https://github.com/aarnphm/tinymorph/issues?q=is:issue+is:closed+meeting+) to keep track of everyone progress.
 
-#### Decision Making
+For metrics, try to show up for meetings, and push your progress through draft PR to show your current progression.
 
-How will you make decisions in your group? Consensus? Vote? How will you handle disagreements?
+##### Decision Making
+
+The team will follow a concensus voting model with regards features design and implementation decisions.
+
+Should there be a split vote, BDFL will have the final say.

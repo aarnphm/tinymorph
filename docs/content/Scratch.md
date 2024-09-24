@@ -11,16 +11,71 @@ date: "2024-09-18"
 title: Scratchpad
 ---
 
-Idea
+## features development
 
-- Interface => stream activations <= SAE to guide generations
+design UI: everyone P0 (time to do this)
+
+- workflow: how does panel interact
+
+- implementation UI: @nebrask (A/B testing)
+
+  - iterative feature development afterwards: @lucas @waleed
+
+- ML components: @aarnphm
+
+  - training: (research) (quality testing) <- @aarnphm
+    - explore SAEs
+  - inference: (infrastructure) (A/B testing, regression testing) @waleed
+    - OpenAI-compatible API server: (kinda works https://github.com/aarnphm/tinymorph/tree/main/python/asteraceae)
+    - Edit logits for inference server (vllm, llama-cpp)
+    - local inference
+    - UX: TTFT (time to first tokens) <regression test>
+    - inference engine: vLLM (GPU), llama-cpp (CPU)
+      - vllm plugins: https://github.com/vllm-project/vllm/commit/16422ea76f213f5b1035513b441245b19ca5bdce
+
+## text editor
+
+> [!question]
+>
+> - What sort of data structure we want to use for implement this?
+> - How should we implement cursor and certain buffers?
+> - File management locally (preferrably user-owned instead of centralized data storage)
+> - [Stretch, preference] Can we support modal editing?
+> - How do we handle syntax highlighting as well as markdown rendering (think of treesitter, but then shiki is pretty computationally expensive)
+> - How should we handle file (Chromium has a file system API builtin the browser)
+
+> For node server, I'm thinking we should keep it light, as it can run a simple proxy server that opens a websocket to stream the JSON to the browser (probably easiest for us as we don't have to worry too much about graphQL or any of that nonsense db) has context menu
+
+See [[play.html]] for dead-simple editor I played with.
+
+Local file is a must (can be accessed via `file:///`)
+
+```javascript
+async function createFolder() {
+  try {
+    const dirHandle = await window.showDirectoryPicker()
+
+    // Create a new folder
+    const newFolderHandle = await dirHandle.getDirectoryHandle("NewFolder", { create: true })
+
+    console.log("Folder created successfully")
+    return newFolderHandle
+  } catch (err) {
+    console.error("Error creating folder:", err)
+  }
+}
+```
+
+Possible UI component library: [shadcn/ui](https://ui.shadcn.com/)
+
+## training [[glossary#sparse autoencoders|SAEs]]
+
+- Interface <= SAE to guide generations
 
 Dictionary learning: https://transformer-circuits.pub/2023/monosemantic-features/index.html
 => motivation to prove SAE results in interpretable features
 
 https://transformer-circuits.pub/2024/scaling-monosemanticity/
-
-## training [[glossary#sparse autoencoders|SAEs]]
 
 for finding attention activation.
 
