@@ -146,6 +146,8 @@ The following stack will be divided into two parts: web-based editor (morph) and
 No plans for code coverage, as it is usually a waste-of-time early on. Development will be tracked through `git`,
 `GitHub`, as well as GitHub Projects for sprint progress.
 
+Editor of choice should depends on whatever is the one that makes you move the fastest. For me, it is [Neovim](https://neovim.io/)
+
 ### documentation
 
 Generated with [Quartz](https://quartz.jzhao.xyz/), hosted on GitHub Pages.
@@ -269,10 +271,10 @@ There are two narratives emerging from industry practioners and companies with r
 at tasks that a human can do at a greater degree of accuracy and efficiency. These companies include OpenAI, Anthropic, [SSI](https://ssi.inc/), many AI labs, etc.
 and often disguised under the term "artificial super intelligence" (ASI). On the other end of spectrum, we have
 companies that build AI systems to amplify our abilities to create and improve efficiency for our work. Companies such
-as [Runway](https://runwayml.com/), [Cohere](https://cohere.com/), etc.
+as [Runway](https://runwayml.com/), [Cohere](https://cohere.com/), etc belongs to this paradigm.
 
 My interests lie firmly on the second group, where we build tools that increase our agency. `tinymorph` is the
-manifestation of this believe.
+manifestation of these beliefs.
 
 Additionally, during the journey of prototyping `tinymorph`, I hope to use it as a playground to delve into the field
 of [[glosar#mechanistic interpretability|mech interp]], as a pure research interests.
