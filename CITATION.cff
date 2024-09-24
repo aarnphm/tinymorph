@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+title: 'tinymorph: manual steering your WYSIWYG editor'
+message: >-
+  If you use this software, please cite it using these
+  metadata.
+type: software
+authors:
+  - given-names: Aaron
+    family-names: Pham
+    email: contact@aarnphm.xyz
+    orcid: 'https://orcid.org/0009-0008-3180-5115'
+repository-code: 'https://github.com/aarnphm/tinymorph'
+url: 'https://tinymorph.aarnphm.xyz'
+keywords:
+  - experimental
+  - interface
+  - sparse-autoencoders
+  - mechanistic-interpretability
+  - bentoml
+license: Apache-2.0
