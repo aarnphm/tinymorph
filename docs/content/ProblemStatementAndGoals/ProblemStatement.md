@@ -91,33 +91,32 @@ The following encapsulates both hardware and software environment for `tinymorph
 
 ## Goals
 
-- A [_file-over-app_](https://stephango.com/file-over-app) text editor.
-- A feedback-loop built into the editor UX.
+- A [_file-over-app_](https://stephango.com/file-over-app) web-based text editor.
+- User feedback-loop for steering built into the editor UX.
 - Efficent attention caching for feature steering.
-- Functional SAEs.
+- Functional SAEs for guided steering.
 - OpenAI-compatible API for LLM server.
 
 ## Stretch Goals
 
-- local inference
+- local inference.
 - integrations with different device forms (tablets, e-readers).
-- Web-based
+- Cross-platform GUI.
 
 ## Challenge Level and Extras
 
 Challenge level for `tinymorph` is advanced, since the project is exploring what is possible to build AI-native
-interfaces. It involves the field of mechanistic interpretability, which is a relatively new field in alignment
+interfaces. It involves the field of [[glossary#mechanistic interpretability]], which is a relatively new field in alignment
 research that involves a lot of domain knowledge into the inner working of transformers circuits.
 
-Extras that we wish to pursue: code walkthroughs, user documentation, Design Thinking.
+Extras that we wish to pursue: Design Thinking, Research.
 
 Reasoning:
 
-1. code walkthrough: `tinymorph` will be a monorepo comprises of many components, and thus it is important for
-   technical users to understand what the code does.
-2. User documentation: Demo workflow and explanation on core offerings of `tinymorph`
-3. Design Thinking: `tinymorph` will explore new interactions for writing, which means design thinking is required for
+1. Design Thinking: `tinymorph` will explore new interactions for writing, which means design thinking is required for
    us to prototype on ideas.
+2. Research: The field of mechanistic interpretability is considered relatively new, in which there are exciting
+   research happening. We will explore this to understand how we can utilise manual editing activations rather than driving the model through a system prompt.
 
 ---
 
@@ -127,11 +126,35 @@ Reasoning:
 
 ### Reflection
 
-Not required for CAS 741
+<div class="reflection-container">
 
-1. What went well while writing this deliverable?
-2. What pain points did you experience during this deliverable, and how did you resolve them?
-3. How did you and your team adjust the scope of your goals to ensure they are suitable for a Capstone project (not overly ambitious but also of appropriate complexity for a senior design project)?
+<div class="users">
+  <a class="name" href="https://github.com/aarnphm">Aaron</a>
+</div>
+
+<div class="blob">
+
+Writing this document helps me structure my thoughts surrounding the problem
+definition and somewhat confirm an intuition I have towards this problem. Interfaces for personal computing are
+supposed to be open-ended to surprise ourselves with new ways to create, therefore, I think it is important for me to
+write down these thoughts. At the end of the day, writing is a form of lossiness as mutation, turning a "net into a line".
+
+The main pain point I have during writing the problem statement includes declaring the scope for hardware and software
+requirements. We did have an internal discussion whether to build a GUI text-editor or refer to a web-based one. After
+a quick discussion, we decided that given everyone expertise and preference with the web, our main focus for capstone would be a
+web-based interface.
+
+We did consult with our supervisor to limit down the scope for both the UX work as well as potential avenue for ML research.
+We established a clear boundaries for UX components we would develop that supplement the core ML work we are going to
+do (which is mechanistic interpretability).
+
+</div>
+
+</div>
+
+<!-- 1. What went well while writing this deliverable? -->
+<!-- 2. What pain points did you experience during this deliverable, and how did you resolve them? -->
+<!-- 3. How did you and your team adjust the scope of your goals to ensure they are suitable for a Capstone project (not overly ambitious but also of appropriate complexity for a senior design project)? -->
 
 ### Revision
 
