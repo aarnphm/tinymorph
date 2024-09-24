@@ -126,11 +126,35 @@ Reasoning:
 
 ### Reflection
 
-Writing this document helps me @aarnphm
+<div class="reflection-container">
 
-1. What went well while writing this deliverable?
-2. What pain points did you experience during this deliverable, and how did you resolve them?
-3. How did you and your team adjust the scope of your goals to ensure they are suitable for a Capstone project (not overly ambitious but also of appropriate complexity for a senior design project)?
+<div class="users">
+  <a class="name" href="https://github.com/aarnphm">Aaron</a>
+</div>
+
+<div class="blob">
+
+Writing this document helps me structure my thoughts surrounding the problem
+definition and somewhat confirm an intuition I have towards this problem. Interfaces for personal computing are
+supposed to be open-ended to surprise ourselves with new ways to create, therefore, I think it is important for me to
+write down these thoughts. At the end of the day, writing is a form of lossiness as mutation, turning a "net into a line".
+
+The main pain point I have during writing the problem statement includes declaring the scope for hardware and software
+requirements. We did have an internal discussion whether to build a GUI text-editor or refer to a web-based one. After
+a quick discussion, we decided that given everyone expertise and preference with the web, our main focus for capstone would be a
+web-based interface.
+
+We did consult with our supervisor to limit down the scope for both the UX work as well as potential avenue for ML research.
+We established a clear boundaries for UX components we would develop that supplement the core ML work we are going to
+do (which is mechanistic interpretability).
+
+</div>
+
+</div>
+
+<!-- 1. What went well while writing this deliverable? -->
+<!-- 2. What pain points did you experience during this deliverable, and how did you resolve them? -->
+<!-- 3. How did you and your team adjust the scope of your goals to ensure they are suitable for a Capstone project (not overly ambitious but also of appropriate complexity for a senior design project)? -->
 
 ### Revision
 

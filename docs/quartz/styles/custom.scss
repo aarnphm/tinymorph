@@ -81,6 +81,48 @@ h3 {
   padding: 0.5rem 0 0.5rem;
 }
 
+.reflection-container {
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+
+  & > .users {
+    padding: 0 1.5rem 0 1.5rem;
+    display: block;
+    flex-direction: column;
+    margin-bottom: -0.25rem;
+
+    & > .name {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+      background-color: var(--light);
+      margin-left: -0.5rem;
+      margin-right: -0.5rem;
+      z-index: 10;
+      position: relative;
+    }
+  }
+
+  & > .blob {
+    background-color: var(--light);
+    border: 2px solid;
+    position: relative;
+    padding: 1.5rem;
+
+    &::after {
+      content: "";
+      background-image: url("/static/dotted.svg");
+      background-repeat: repeat;
+      z-index: -10;
+      top: 0.5rem;
+      left: 0.5rem;
+      right: -0.5rem;
+      bottom: -0.5rem;
+      position: absolute;
+    }
+  }
+}
+
 .center {
   padding: 1rem 2rem;
   margin: $topSpacing auto;
