@@ -31,4 +31,9 @@ See also: [[References.bib|References]] | [[glossary|Glossary]]
 
 ## acknowledgements
 
-This project is based on a lot of the work from EleutherAI, Neel Nanda spearheading the field of [[glossary#mechanistic interpretability|mech interp]], Google DeepMind Interpretability Team, et al.
+Citation within `tinymorph` uses [Chicago Fullnote bibliography](https://citationstyles.org/)
+
+This project is based on the work from [EleutherAI](https://www.eleuther.ai/),
+[Linus](https://thesephist.com/) for his general exploration in machine-native interfaces,
+[Neel Nanda](https://www.neelnanda.io/about) spearheading the field of [[glossary#mechanistic interpretability]],
+Anthropic Interpretability Team, Google DeepMind Interpretability Team.
