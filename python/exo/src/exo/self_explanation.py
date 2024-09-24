@@ -35,7 +35,9 @@ X is easy, but it is impossible to be logical to bitter end. It is considered tr
 
   with LM.generate(
     prompt,
-    do_sample=True, scan=False, validate=False,
+    do_sample=True,
+    scan=False,
+    validate=False,
     max_new_tokens=args.max_new_tokens,
     num_return_sequences=args.num_return_sequences,
   ) as gen:
