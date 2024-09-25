@@ -16,10 +16,10 @@ The manifestation of tinymorph code style is a combination of [Google Python Sty
 inspiration from coding language such as APL, Haskell, and is designed for fast,
 experimental development and prototyping.
 
-Everyone always has their own opinions on style. I believe this is exemplified
+Everyone always has their own opinions on style. We believe this is exemplified
 further within the Python community, as it tries to be beginner-friendly, and
-therefore most people hold a very strong opinion on styling. I don't have a
-strong opinion on style either (I don't have any issue with PEP8, as I use it
+therefore most people hold a very strong opinion on styling. We don't have a
+strong opinion on style either (Aaron: I don't have any issue with PEP8, as I use it
 at my company and other projects), as long as:
 
 - You don't use any linter, formatter that change the style drastically other
@@ -27,16 +27,16 @@ at my company and other projects), as long as:
 - The code you contribute is not widely different from the style of the code
   surrounding it.
 
-With that being said, We want to use this project as a playground the explore a
-style that is both: "feels natural" and expressive for mathematical reasoning. I
+With that being said, we want to use this project as a playground the explore a
+style that is both: "feels natural" and expressive for mathematical reasoning. We
 hope that you find this guide somewhat thought-provoking and interesting, that
 you can iterate and try to adopt some of them as part of the process
 contributing to the library.
 
-While PEP8 is a great base for a style guide, I find it to be having way too
+While PEP8 is a great base for a style guide, we find it to be having way too
 much white spaces and makes the code feels 'robotic'. Having a deterministic
 style and formatter is great to reduce the overhead of stylistic discussions,
-but I think it is important to write code that express the intent of reasoning.
+but we think it is important to write code that express the intent of reasoning.
 (_The policy here is definitely not "shovel everything into one line", but
 rather "compact and flowing"_)
 
@@ -50,11 +50,11 @@ rather the brevity of expression.
 
 ## Some guidelines.
 
-Though I have stopped using deterministic formatter and linter, I do understand
+Though we have stopped using deterministic formatter and linter, we do understand
 that people have preferences for using these tools, and it plays nicely with IDE
-and editors. As such, I included a [`pyproject.toml`](https://github.com/aarnphm/tinymorph/blob/main/pyproject.toml) file
+and editors. As such, we included a [`pyproject.toml`](https://github.com/aarnphm/tinymorph/blob/main/pyproject.toml) file
 that specifies some configuration for the tools that makes it compiliant with
-the repository's style. In short, I'm using `ruff` for both linting and formatting,
+the repository's style. In short, we're using `ruff` for both linting and formatting,
 `mypy` for type checking, and provide a `pyright` compatible configuration for those
 who wishes to use VSCode or `pyright` LSP.
 
@@ -73,7 +73,7 @@ bugs.
 
 ### Naming.
 
-- follow Python standard for this, I don't have too much opinion on this. Just
+- follow Python standard for this, we don't have too much opinion on this. Just
   make sure that it is descriptive, and the abbreviation describes the intent of
   the variable. i.e: `to_gpu` instead of `t_gpu`, `to_cpu` instead of `t_cpu`.
 - any math-related notation or neural net layers should be expressive and stay
@@ -128,7 +128,7 @@ _If you have any suggestions, feel free to send me a message!_
 
 ### Types.
 
-I do believe in static type checking, and often times all of the code in `tinymorph/python` are safely-types.
+We do believe in static type checking, and often times all of the code in `tinymorph/python` are safely-types.
 Types play nicely with static analysis tools, and it is a great way to catch bugs for applications
 downstream. In Python, there are two ways for doing static type:
 
@@ -173,29 +173,29 @@ As you can see, the function calculate the RMSNorm of a given torch tensor.
 
 ### Why not use `black`?
 
-`black` is pretty common in Python community, but I rather find `black` to be very
+`black` is pretty common in Python community, but we rather find `black` to be very
 verbose and overtime it is annoying to work with too much whitespaces.
 
-Personally, I think four spaces is a mistake, as in some cases it is harder to read
+Personally, we think four spaces is a mistake, as in some cases it is harder to read
 with four spaces code versus two spaces code.
 
 ### Why not pep8?
 
-PEP8 is great if you are writing library such as this, but I'm going to do a lot
-of experimenting for implementing papers, so I decided early on that PEP8 is
+PEP8 is great if you are writing library such as this, but we're going to do a lot
+of experimenting for implementing papers, so we decided early on that PEP8 is
 probably not fit here, and want to explore more expressive style.
 
 ### Editor is complaining about the style, what should i do?
 
-Kindly ask you to disable formatting for this project 🤗. I will try my best to
-accomodate for ruff, but I don't want to spend too much time on this.
+Kindly ask you to disable formatting for this project 🤗. We will try my best to
+accomodate for ruff, but we don't want to spend too much time on this.
 It is pretty stragithforward to disable it in your editor, with google.
 
 ### Style might put off new contributors?
 
-I don't think so, as mentioned before, I don't have too much opinion on style as
-long as it somewhat follow what I have described above or the style of the code
-surrounding it. I will still accept styles PR as long as it is not too drastic.
+We don't think so, as mentioned before, We don't have too much opinion on style as
+long as it somewhat follow what we have described above or the style of the code
+surrounding it. We will still accept styles PR as long as it is not too drastic.
 Just make sure to add the revision to `.git-blame-ignore-revs` so that
 `git blame` would work correctly.
 
