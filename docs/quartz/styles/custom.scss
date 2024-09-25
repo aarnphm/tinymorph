@@ -74,6 +74,10 @@ h3 {
   font-size: 1.272rem;
 }
 
+tr {
+  border-bottom: 1px solid var(--darkgray);
+}
+
 .breadcrumb-container {
   gap: 0.25rem;
   border-bottom: 1px solid var(--darkgray);
@@ -198,6 +202,7 @@ section[data-footnotes] {
 
 code {
   font-size: 0.8em;
+  background-color: var(--light);
 }
 
 body[data-slug="index"] img {

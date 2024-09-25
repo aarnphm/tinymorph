@@ -68,3 +68,20 @@ select = [
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.pyright]
+include = ["python"]
+exclude = ["**/node_modules", "**/__pycache__"]
+useLibraryCodeForTypes = true
+verboseOutput = true
+enableExperimentalFeatures = true
+defineConstant = { MYPY = true }
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.12"
+reportMissingImports = "warning"
+reportMissingTypeStubs = false
+reportPrivateUsage = "warning"
+reportUnknownArgumentType = "warning"
+reportUnsupportedDunderAll = "warning"
+reportWildcardImportFromLibrary = "warning"

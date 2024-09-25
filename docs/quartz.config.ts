@@ -60,16 +60,16 @@ const config: QuartzConfig = {
       }),
       Plugin.SyntaxHighlighting({
         theme: {
-          light: "github-light",
-          dark: "github-dark",
+          light: "rose-pine-dawn",
+          dark: "rose-pine",
         },
-        keepBackground: false,
+        keepBackground: true,
       }),
       Plugin.Citations({
         bibliographyFile: "./content/References.bib",
         suppressBibliography: false,
         linkCitations: true,
-        csl: "https://raw.githubusercontent.com/citation-style-language/styles/master/chicago-fullnote-bibliography.csl",
+        csl: "./content/chicago-fullnote-bibliography.csl",
       }),
       Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false, enableCheckbox: true }),
       Plugin.GitHubFlavoredMarkdown(),
