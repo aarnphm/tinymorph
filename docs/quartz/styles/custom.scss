@@ -85,7 +85,15 @@ tr {
   border: 1px solid var(--darkgray);
 
   & > *:not(hr) {
-    padding: 1rem 2rem;
+    padding: 0 2rem;
+
+    &:first-child {
+      padding-top: 1rem;
+    }
+
+    &:last-child {
+      padding-bottom: 1rem;
+    }
   }
 
   @media all and ($mobile) {
