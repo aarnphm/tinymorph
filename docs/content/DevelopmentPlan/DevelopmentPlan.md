@@ -210,7 +210,7 @@ All related tools has been setup corespondingly.
 
 A variation of Google style guide for Python will be used.
 
-![[DevelopmentPlan/python style#the coding style.|variation]]
+![[DevelopmentPlan/python style#The coding style|variation]]
 
 ---
 

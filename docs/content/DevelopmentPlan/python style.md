@@ -7,7 +7,7 @@ date: "2024-09-23"
 title: Python coding style
 ---
 
-## the coding style.
+## The coding style
 
 This documentation serves as a brief discussion of the coding style used for
 `tinymorph`'s python coding style. As you might noticed, it is different from the conventional
@@ -27,7 +27,7 @@ at my company and other projects), as long as:
 - The code you contribute is not widely different from the style of the code
   surrounding it.
 
-With that being said, I want to use this project as a playground the explore a
+With that being said, We want to use this project as a playground the explore a
 style that is both: "feels natural" and expressive for mathematical reasoning. I
 hope that you find this guide somewhat thought-provoking and interesting, that
 you can iterate and try to adopt some of them as part of the process
@@ -48,7 +48,7 @@ rather the brevity of expression.
 
 > It enables [expository programming](http://archive.vector.org.uk/art10000980), combining with prototyping new ideas and logics within models implementation.
 
-## some guidelines.
+## Some guidelines.
 
 Though I have stopped using deterministic formatter and linter, I do understand
 that people have preferences for using these tools, and it plays nicely with IDE
@@ -71,7 +71,7 @@ somewhat, type-safe. Since there is no real type-safety when working with
 Python, typing should be a best-effort to make sure we don't introduce too many
 bugs.
 
-### naming.
+### Naming.
 
 - follow Python standard for this, I don't have too much opinion on this. Just
   make sure that it is descriptive, and the abbreviation describes the intent of
@@ -87,7 +87,7 @@ bugs.
 
 _If you have any suggestions, feel free to send me a message!_
 
-### layout.
+### Layout.
 
 - Preferably not a lot of whitespaces, but rather flowing. If you can fit
   everything for `if`, `def` or a `return` within one line, then there's no need
@@ -118,7 +118,7 @@ _If you have any suggestions, feel free to send me a message!_
 
 - If you need to export anything, put it in `__all__` or do lazy export for type-safe checker
 
-### misc.
+### Misc.
 
 - import alias should be concise and descriptive. A convention is to always `import typing as t`.
 - Writing docstring when it is possible. No need to comment everything as it
@@ -126,7 +126,7 @@ _If you have any suggestions, feel free to send me a message!_
 - We do lazy imports, so consult some of the `__init__.py` to see how we do it.
 - If anything that is not used for runtime, just put it under `t.TYPE_CHECKING`
 
-### types.
+### Types.
 
 I do believe in static type checking, and often times all of the code in `tinymorph/python` are safely-types.
 Types play nicely with static analysis tools, and it is a great way to catch bugs for applications
@@ -169,9 +169,9 @@ As you can see, the function calculate the RMSNorm of a given torch tensor.
 > it is nice to have, but once the files get more and more complex, it is better to just
 > provide a stubs file for it.
 
-## faq.
+## FAQ.
 
-### why not use `black`?
+### Why not use `black`?
 
 `black` is pretty common in Python community, but I rather find `black` to be very
 verbose and overtime it is annoying to work with too much whitespaces.
@@ -179,19 +179,19 @@ verbose and overtime it is annoying to work with too much whitespaces.
 Personally, I think four spaces is a mistake, as in some cases it is harder to read
 with four spaces code versus two spaces code.
 
-### why not pep8?
+### Why not pep8?
 
 PEP8 is great if you are writing library such as this, but I'm going to do a lot
 of experimenting for implementing papers, so I decided early on that PEP8 is
 probably not fit here, and want to explore more expressive style.
 
-### editor is complaining about the style, what should i do?
+### Editor is complaining about the style, what should i do?
 
 Kindly ask you to disable formatting for this project 🤗. I will try my best to
 accomodate for ruff, but I don't want to spend too much time on this.
 It is pretty stragithforward to disable it in your editor, with google.
 
-### style might put off new contributors?
+### Style might put off new contributors?
 
 I don't think so, as mentioned before, I don't have too much opinion on style as
 long as it somewhat follow what I have described above or the style of the code
