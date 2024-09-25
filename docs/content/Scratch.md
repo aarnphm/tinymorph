@@ -23,7 +23,7 @@ design UI: everyone P0 (time to do this)
 
 - ML components: @aarnphm
 
-- training: (research) (quality testing) <- @aarnphm
+- training: (research) (quality testing) <- @aarnphm[^3]
 - inference: (infrastructure) (A/B testing, regression testing) @waleed
   - OpenAI-compatible API server: [functional](https://github.com/aarnphm/tinymorph/tree/main/python/asteraceae)
   - Edit logits for inference server (vllm, llama-cpp)
