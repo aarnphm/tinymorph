@@ -71,9 +71,7 @@ Possible UI component library: [shadcn/ui](https://ui.shadcn.com/)
 
 ## training [[glossary#sparse autoencoders|SAEs]]
 
-- Interface <= SAE to guide generations
-
-White paper preview from [Goodfire](https://goodfire.ai/blog/research-preview/ "https://goodfire.ai/blog/research-preview/")
+see also: [Goodfire](https://goodfire.ai/blog/research-preview/) preview releases
 
 Dictionary learning: https://transformer-circuits.pub/2023/monosemantic-features/index.html
 => motivation to prove SAE results in interpretable features
@@ -103,7 +101,8 @@ Attribute allocation?
 > - Think of using SAEs => iterate better prompt
 >
 > Features composition for guided steering
-> - [activation steering](https://github.com/nrimsky/CAA/blob/main/activation_steering_interp.ipynb) 
+>
+> - [activation steering](https://github.com/nrimsky/CAA/blob/main/activation_steering_interp.ipynb)
 >
 > features rep? Correctness w/ models internal representation
 >
@@ -121,6 +120,7 @@ Use SAE to steerable generations[^1] <= User feedbacks
 ## inference
 
 Steering Llama via Contrastive Activation Addition [@panickssery2024steeringllama2contrastive], [code](https://github.com/nrimsky/CAA)
+
 - Seems like they are using layer 16 for interp Claude's features
 
 ## self-explanation
