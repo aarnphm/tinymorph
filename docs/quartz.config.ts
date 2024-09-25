@@ -58,6 +58,7 @@ const config: QuartzConfig = {
       Plugin.CreatedModifiedDate({
         priority: ["frontmatter", "filesystem"],
       }),
+      Plugin.Twitter(),
       Plugin.SyntaxHighlighting({
         theme: {
           light: "rose-pine-dawn",
