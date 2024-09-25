@@ -90,6 +90,10 @@ tr {
 
   @media all and ($mobile) {
     margin-top: 2rem;
+
+    & > .page-header {
+      padding: 1rem 2rem !important;
+    }
   }
 }
 
