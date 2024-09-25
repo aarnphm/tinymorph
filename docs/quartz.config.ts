@@ -71,7 +71,6 @@ const config: QuartzConfig = {
         bibliographyFile: "./content/References.bib",
         suppressBibliography: false,
         linkCitations: true,
-        csl: "./content/chicago-fullnote-bibliography.csl",
       }),
       Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false, enableCheckbox: true }),
       Plugin.GitHubFlavoredMarkdown(),

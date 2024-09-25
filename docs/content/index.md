@@ -31,8 +31,6 @@ See also: [[References.bib|References]] | [[glossary|Glossary]]
 
 ## acknowledgements
 
-Citation within `tinymorph` uses [Chicago Fullnote bibliography](https://citationstyles.org/)
-
 This project is based on the work from [EleutherAI](https://www.eleuther.ai/),
 [Linus](https://thesephist.com/) for his general exploration in machine-native interfaces,
 [Neel Nanda](https://www.neelnanda.io/about) spearheading the field of [[glossary#mechanistic interpretability]],
