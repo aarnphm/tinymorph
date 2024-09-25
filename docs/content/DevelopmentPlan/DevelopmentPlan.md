@@ -75,7 +75,7 @@ a rough draft of each champion's responsibilities:
 - design work: The team will collaborate on general design works for interfaces, lead by [Aaron Pham](https://aarnphm.xyz).
 - web-based editor: [Nebras Khan](https://github.com/nebrask).
 - ML inference server: [Waleed Malik](https://github.com/waleedmalik7)
-- ML attention intervention: Lead by [Aaron Pham](https://aarnphm.xyz), with [Lucas Li](https://github.com/Hoshino-Kiichi)
+- ML attention intervention: Lead by [Aaron Pham](https://aarnphm.xyz), with [Lucas Li](https://github.com/lucas-lizhiwei)
 
 Reviewers will be assigned automatically based on the project they champion.
 

@@ -2,7 +2,7 @@
 id: MG
 tags:
   - design
-author: aarnphm,waleedmalik7,nebrask,Hoshino-Kiichi
+author: aarnphm,waleedmalik7,nebrask,lucas-lizhiwei
 date: "2024-09-16"
 title: Module Guide
 ---
