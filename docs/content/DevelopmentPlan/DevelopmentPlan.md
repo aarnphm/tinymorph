@@ -2,7 +2,7 @@
 id: DevelopmentPlan
 tags:
   - meta
-author: aarnphm
+author: aarnphm,waleedmalik7,nebrask
 date: "2024-09-16"
 title: Development Plan
 ---
@@ -72,10 +72,10 @@ A[Aaron Pham] --> B[Waleed Malik] --> C[Nebras Khan] --> D[Lucas Li]
 Given that `tinymorph` will include two components (web-based editor and ML inference server), the following include
 a rough draft of each champion's responsibilities:
 
-- design work: The team will collaborate on general design works for interfaces, lead by Aaron Pham.
+- design work: The team will collaborate on general design works for interfaces, lead by [Aaron Pham](https://aarnphm.xyz).
 - web-based editor: [Nebras Khan](https://github.com/nebrask).
 - ML inference server: [Waleed Malik](https://github.com/waleedmalik7)
-- ML attention intervention: Aaron Pham
+- ML attention intervention: Lead by [Aaron Pham](https://aarnphm.xyz), with [Lucas Li](https://github.com/Hoshino-Kiichi)
 
 Reviewers will be assigned automatically based on the project they champion.
 
@@ -208,7 +208,7 @@ All related tools has been setup corespondingly.
 
 ### Python
 
-a variation of Google style guide will be used.
+A variation of Google style guide for Python will be used.
 
 ![[DevelopmentPlan/python style#the coding style.|variation]]
 
@@ -269,7 +269,7 @@ Take a step back, my goal for `tinymorph` is to imagine what machine-assisted in
 
 There are two narratives emerging from industry practioners and companies with regards to the [intelligence age](https://ia.samaltman.com/): Entities that seek to build systems capable of outperforming
 at tasks that a human can do at a greater degree of accuracy and efficiency. These companies include OpenAI, Anthropic, [SSI](https://ssi.inc/), many AI labs, etc.
-and often disguised under the term "artificial super intelligence" (ASI). On the other end of spectrum, we have
+and often disguised these systmems under the term "artificial super intelligence" (ASI). On the other end of spectrum, we have
 companies that build AI systems to amplify our abilities to create and improve efficiency for our work. Companies such
 as [Runway](https://runwayml.com/), [Cohere](https://cohere.com/), etc belongs to this paradigm.
 
@@ -318,8 +318,7 @@ For meeting preparation, we expect everyone to come prepared with questions and 
 
 ##### Attitude
 
-Adhering to [Code of Coduct](https://github.com/aarnphm/tinymorph/blob/main/.github/CODE_OF_CONDUCT.md) adapted from the [Contributor Covenant][homepage],
-[version 2.0](https://www.contributor-covenant.org/version/2/0/code_of_conduct.html)..
+Adhering to [Code of Coduct](https://github.com/aarnphm/tinymorph/blob/main/.github/CODE_OF_CONDUCT.md) adapted from the [Contributor Covenant](https://www.contributor-covenant.org), [version 2.0](https://www.contributor-covenant.org/version/2/0/code_of_conduct.html).
 
 We encouraged everyone to be open to new ideas and collaborate on features work. We should use constructive critism with regards doing review work.
 
