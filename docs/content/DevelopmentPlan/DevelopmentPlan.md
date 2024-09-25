@@ -135,7 +135,7 @@ Certain risks that may arise during the POC include:
 To adverse given risks, the following will be implemented:
 
 - Propose a low-fidelty prototype, followed by a design iteration for specific UX consideration.
-- Trained a small sets of [[glossary#low-rank adapters|LoRA]] as backup to merge with Llama 3.1 on inference server, given that LoRA has bene hardened by industry practice.
+- Trained a small sets of [[glossary#low-rank adapters|LoRA]] as backup to merge with Llama 3.1 on inference server, given that LoRA has been hardened by industry practice.
 
 ## Expected Technology
 
