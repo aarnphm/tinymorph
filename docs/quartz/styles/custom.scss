@@ -153,7 +153,8 @@ tr {
   border-color: var(--gray);
 }
 
-article > a.internal:not([role="anchor"]) {
+article > a.internal:not([role="anchor"]),
+blockquote.twitter-tweet > a {
   border-radius: unset;
   background-color: unset;
 
@@ -352,5 +353,24 @@ p.quotes {
   &:after {
     content: "”";
     margin-left: 0.25em;
+  }
+}
+
+blockquote.twitter-tweet {
+  border-left: unset;
+  border: 2px solid var(--tertiary);
+  padding-bottom: 1rem;
+  position: relative;
+  &::before {
+    content: "x.com";
+    position: absolute;
+    top: -12px;
+    left: 12px;
+    background-color: var(--light);
+    color: var(--gray);
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 8px;
+    border: 1px solid var(--dark);
   }
 }

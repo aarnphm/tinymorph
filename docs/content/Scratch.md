@@ -19,19 +19,20 @@ design UI: everyone P0 (time to do this)
 
 - implementation UI: @nebrask (A/B testing)
 
-  - iterative feature development afterwards: @lucas @waleed
+- iterative feature development afterwards: @lucas @waleed
 
 - ML components: @aarnphm
 
-  - training: (research) (quality testing) <- @aarnphm
-    - explore SAEs
-  - inference: (infrastructure) (A/B testing, regression testing) @waleed
-    - OpenAI-compatible API server: (kinda works https://github.com/aarnphm/tinymorph/tree/main/python/asteraceae)
-    - Edit logits for inference server (vllm, llama-cpp)
-    - local inference
-    - UX: TTFT (time to first tokens) <regression test>
-    - inference engine: vLLM (GPU), llama-cpp (CPU)
-      - vllm plugins: https://github.com/vllm-project/vllm/commit/16422ea76f213f5b1035513b441245b19ca5bdce
+- training: (research) (quality testing) <- @aarnphm
+- inference: (infrastructure) (A/B testing, regression testing) @waleed
+  - OpenAI-compatible API server: [functional](https://github.com/aarnphm/tinymorph/tree/main/python/asteraceae)
+  - Edit logits for inference server (vllm, llama-cpp)
+  - local inference
+  - UX: TTFT (time to first tokens)
+  - inference engine: vLLM (GPU), llama-cpp (CPU)
+  - vllm plugins [support](https://github.com/vllm-project/vllm/commit/16422ea76f213f5b1035513b441245b19ca5bdce)
+
+https://x.com/thesephist/status/1793033871606382748
 
 ## text editor
 
@@ -70,7 +71,7 @@ Possible UI component library: [shadcn/ui](https://ui.shadcn.com/)
 
 ## training [[glossary#sparse autoencoders|SAEs]]
 
-- Interface <= SAE to guide generations
+see also: [Goodfire](https://goodfire.ai/blog/research-preview/) preview releases
 
 Dictionary learning: https://transformer-circuits.pub/2023/monosemantic-features/index.html
 => motivation to prove SAE results in interpretable features
@@ -101,6 +102,8 @@ Attribute allocation?
 >
 > Features composition for guided steering
 >
+> - [activation steering](https://github.com/nrimsky/CAA/blob/main/activation_steering_interp.ipynb)
+>
 > features rep? Correctness w/ models internal representation
 >
 > Accurate mappings based on human and machine features?
@@ -113,6 +116,12 @@ Use SAE to steerable generations[^1] <= User feedbacks
 
 > [!IMPORTANT] problem statement.
 > actionable steering for attention-based models
+
+## inference
+
+Steering Llama via Contrastive Activation Addition [@panickssery2024steeringllama2contrastive], [code](https://github.com/nrimsky/CAA)
+
+- Seems like they are using layer 16 for interp Claude's features
 
 ## self-explanation
 
