@@ -151,6 +151,10 @@ a {
   overflow-y: unset;
 }
 
+.callout[data-callout-fold] {
+  overflow-y: hidden;
+}
+
 section[data-footnotes] {
   background-color: unset !important;
 }
