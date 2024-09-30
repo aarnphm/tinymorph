@@ -32,7 +32,24 @@ design UI: everyone P0 (time to do this)
   - inference engine: vLLM (GPU), llama-cpp (CPU)
   - vllm plugins [support](https://github.com/vllm-project/vllm/commit/16422ea76f213f5b1035513b441245b19ca5bdce)
 
+UX:
+
+- session history: https://translucentweb.site/
+- writing => graph (embeddings representation for the text)
+
 https://x.com/thesephist/status/1793033871606382748
+
+Storage (local):
+
+- `XDG_DATA_HOME/tinymorph` for configuration, state, db
+
+accesibility:
+
+- https://www.w3.org/WAI/standards-guidelines/aria/
+
+## cost.
+
+Using EC2 for GPUs and inference cost. (Running on A100 with 32 CPUs)
 
 ## text editor
 
@@ -93,6 +110,8 @@ on GPT-2: [github](https://github.com/openai/sparse_autoencoder) and [paper](htt
 https://lstmvis.vizhub.ai/ => LSTM vis
 https://github.com/TransformerLensOrg/TransformerLens
 
+https://blog.eleuther.ai/autointerp/
+
 Attribute allocation?
 
 > [!question]
@@ -104,7 +123,10 @@ Attribute allocation?
 >
 > - [activation steering](https://github.com/nrimsky/CAA/blob/main/activation_steering_interp.ipynb)
 >
-> features rep? Correctness w/ models internal representation
+> features rep? Correctness w/ models internal representation (trie for models)
+>
+> - manually curate features
+>   features ablation:
 >
 > Accurate mappings based on human and machine features?
 >

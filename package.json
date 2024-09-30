@@ -2,7 +2,9 @@
   "name": "@aarnphm/tinymorph-monorepo",
   "private": true,
   "homepage": "https://tinymorph.aarnphm.xyz",
-  "scripts": {},
+  "scripts": {
+    "docs:serve": "cd docs && npx quartz build --serve -v"
+  },
   "keywords": [
     "sae",
     "bentoml",
