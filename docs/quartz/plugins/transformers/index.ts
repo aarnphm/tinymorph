@@ -1,4 +1,5 @@
 export { Twitter } from "./twitter"
+export { GitHub } from "./github"
 export { FrontMatter } from "./frontmatter"
 export { GitHubFlavoredMarkdown } from "./gfm"
 export { Citations } from "./citations"
