@@ -47,8 +47,7 @@ Auto-regressive models are often considered a more correct terminology when desc
 
 ## transformers
 
-A multi-layer perception (MLP) archiecture built on top of a multi-head
-attention mechanism [@vaswani2023attentionneed, 2] to signal high entropy tokens to be amplified and less important tokens to be diminished.
+A multi-layer perception (MLP) archiecture built on top of a multi-head attention mechanism [@vaswani2023attentionneed] to signal high entropy tokens to be amplified and less important tokens to be diminished.
 
 ## low-rank adapters
 

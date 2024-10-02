@@ -86,6 +86,8 @@ async function createFolder() {
 
 Possible UI component library: [shadcn/ui](https://ui.shadcn.com/)
 
+https://x.com/CherrilynnZ/status/1836881535154409629
+
 ## training [[glossary#sparse autoencoders|SAEs]]
 
 see also: [Goodfire](https://goodfire.ai/blog/research-preview/) preview releases

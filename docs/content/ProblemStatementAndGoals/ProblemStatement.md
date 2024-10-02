@@ -23,7 +23,7 @@ learning, creation, and self-expression, that could adapt to users' increasing s
 As we progress into the $21^{\text{st}}$ century, software has become comoditised, serving as the engine of transformations that transcend every corner of our life.
 Simultaneously, we've seen exponential growth in machine learning (ML) systems' capabilities, mainly through the general push of large language models (LLMs) into the mainstream.
 As these systems exihibit emergent properties of intelligence, how should we craft interfaces that promote
-users' [[glossary#agency]] and encourage a sense of personalisation through interactions, rather than providing a tool for automation?
+[[glossary#agency|agency]] and encourage a sense of personalisation through interactions, rather than providing a tool for automation?
 
 Imagine you are an engineer who pursues creative writing as a hobby. You often curate topics and ideas from discussion on social media,
 then categorise them into themes for your arguments. There are plethora of tools
