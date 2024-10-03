@@ -27,7 +27,8 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 2.1 Client
 
-[Insert your content here.]
+- **Description:** The client for tinymorph includes academic institutions, research sponsors, and potentially commercial entities interested in the application of innovative text-editing solutions driven by AI. These entities provide critical oversight and resources.
+- **Role:** Clients are responsible for defining the project's scope and deliverables, ensuring funding, and facilitating alignments with broader academic or commercial goals. They play a vital role in strategic decision-making and project validation.
 
 ### 2.2 Customer
 
