@@ -148,7 +148,7 @@ a {
   }
 
   @media all and (min-width: calc(#{map-get($breakpoints, desktop)})) {
-    &.internal.alias:not(.popover):not(.popover *) {
+    &.internal.alias:not(.popover):not(.popover *):not([href^="#bib"]) {
       @include links;
     }
   }

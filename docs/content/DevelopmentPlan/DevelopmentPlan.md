@@ -267,7 +267,7 @@ Take a step back, my goal for `tinymorph` is to imagine what machine-assisted in
 
 [^1]: [[ProblemStatementAndGoals/ProblemStatement#Problem|problem statement.]]
 
-There are two narratives emerging from industry practioners and companies with regards to the [intelligence age](https://ia.samaltman.com/): Entities that seek to build systems capable of outperforming
+There are two narratives emerging from industry practitioners and companies with regards to the [intelligence age](https://ia.samaltman.com/): Entities that seek to build systems capable of outperforming
 at tasks that a human can do at a greater degree of accuracy and efficiency. These companies include OpenAI, Anthropic, [SSI](https://ssi.inc/), many AI labs, etc.
 and often disguised these systmems under the term "artificial super intelligence" (ASI). On the other end of spectrum, we have
 companies that build AI systems to amplify our abilities to create and improve efficiency for our work. Companies such
