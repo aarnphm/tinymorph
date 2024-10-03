@@ -37,7 +37,8 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 2.3 Other Stakeholders
 
-[Insert your content here.]
+- **Description:** Includes software vendors, integration partners, and data providers who contribute technology or content essential for tinymorph functionality. This category may also include regulatory bodies if the tool processes sensitive data.
+- **Role:** These stakeholders ensure that tinymorph can operate within an ecosystem of technologies, comply with regulations, and maintain data flows that enhance its capabilities to allow extending its utility and reach.
 
 ### 2.4 Hands-On Users of the Project
 
