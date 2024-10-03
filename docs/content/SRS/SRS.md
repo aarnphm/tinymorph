@@ -32,7 +32,8 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 2.2 Customer
 
-[Insert your content here.]
+- **Description:** Customers are diverse and include individual users such as professional writers, journalists, and students. It also includes organizations like content creation agencies and educational institutions that seek advanced tools for text manipulation and generation.
+- **Role:** Customers drive user adoption and are key to the project’s market success. Their feedback influences continuous improvement efforts, helping to refine features and ensure the tool remains competitive and relevant.
 
 ### 2.3 Other Stakeholders
 
