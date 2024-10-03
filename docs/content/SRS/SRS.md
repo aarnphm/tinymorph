@@ -47,7 +47,8 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 2.5 Personas
 
-[Insert your content here.]
+- **Description:** Involved are detailed, representative user profiles based on extensive user research. Personas such as College Researcher, Freelance Writer, or Technical Editor symbolize the diverse user base tinymorph aims to serve. The personas are constructed from typical characteristics, behaviors, and needs observed among potential users. They serve to bring user stories and requirements to life during the development process.
+- **Role:** Serve as a focal point during design and development to tailor features, functionality, and user interfaces to meet specific needs and behaviors of different user groups. It ensures the product is versatile and inclusive.
 
 ### 2.6 Priorities Assigned to Users
 
