@@ -42,7 +42,8 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 2.4 Hands-On Users of the Project
 
-[Insert your content here.]
+- **Description:** Comprise individuals who interact directly with tinymorph interface such as creative professionals, researchers, and educators. This group is crucial for initial adoption and long-term engagement with the tool.
+- **Role:** They provide real-world usability feedback and are instrumental in iterative testing phases. Their experiences help identify practical challenges and opportunities for enhancing user interaction and satisfaction.
 
 ### 2.5 Personas
 
