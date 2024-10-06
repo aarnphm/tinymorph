@@ -168,7 +168,9 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 10.1 Appearance Requirements
 
-[Insert your content here.]
+LF-A1: The Tinymorph application shall adopt a unified and sophisticated visual design.
+
+Rationale: A uniform and elegant design ensures brand recognition and provides a visually pleasing experience for users, fostering greater engagement and trust in the platform.
 
 ### 10.2 Style Requirements
 
