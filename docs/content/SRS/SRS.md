@@ -385,7 +385,9 @@ Rationale: Managing settings through environment variables keeps sensitive infor
 
 ### 15.2 Integrity Requirements
 
-[Insert your content here.]
+SR-INT1. All communication between the client UI, backend services, and external APIs must be encrypted using HTTPS.
+
+Rationale: HTTPS encryption secures data in transit, preventing interception or tampering. It also ensures the confidentiality and integrity of user data and commands.
 
 ### 15.3 Privacy Requirements
 
