@@ -178,7 +178,9 @@ Rationale: Maintaining consistency in typography ensures readability and prevent
 
 ### 10.2 Style Requirements
 
-[Insert your content here.]
+LF-S1. The design of the application will be minimalist, utilizing clean lines and a limited color palette.
+
+Rationale: A minimalist design emphasizes functionality and content, enhancing usability by directing the user's focus to essential elements. This approach ensures that the interface remains uncluttered and the features more accessible.
 
 ## 11. Usability and Humanity Requirements
 
