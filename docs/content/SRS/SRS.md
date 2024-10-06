@@ -222,7 +222,9 @@ Rationale: Theme customization improves visual comfort and personalization, enab
 
 ### 11.3 Learning Requirements
 
-[Insert your content here.]
+UH-L1. New users should be able to understand basic functionalities and start creating or editing content within 10 minutes of initial use.
+
+Rationale: A straightforward and intuitive onboarding process is critical to ensuring that users can quickly become proficient with the application, leading to higher satisfaction and continued use.
 
 ### 11.4 Understandability and Politeness Requirements
 
