@@ -389,6 +389,10 @@ SR-INT1. All communication between the client UI, backend services, and external
 
 Rationale: HTTPS encryption secures data in transit, preventing interception or tampering. It also ensures the confidentiality and integrity of user data and commands.
 
+SR-INT2. Implement DNS security measures to ensure that DNS queries and responses are protected against tampering and spoofing.
+
+Rationale: Securing DNS interactions prevents attackers from manipulating or rerouting network traffic. This is critical for maintaining the integrity of application data.
+
 ### 15.3 Privacy Requirements
 
 [Insert your content here.]
