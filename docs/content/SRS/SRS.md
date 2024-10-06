@@ -212,7 +212,10 @@ Rationale: The ability to alter or delete content post-submission empowers users
 
 ### 11.2 Personalization and Internationalization Requirements
 
-[Insert your content here.]
+UH-PI1. Tinymorph must include multilingual support to cater to an international audience.
+
+Rationale: Multilingual support enhances the application’s global accessibility and user engagement, ensuring that users can interact with the platform in their preferred language.
+
 
 ### 11.3 Learning Requirements
 
