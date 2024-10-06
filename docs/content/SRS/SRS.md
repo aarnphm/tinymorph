@@ -411,6 +411,9 @@ SR-IM1. Employ up to date security measures to protect against known threats and
 
 Rationale: Keeping software updated ensures that known vulnerabilities are addressed, which will protect the application and its data from emerging threats.
 
+SR-IM2. Configure the application to minimize the surface area for attacks by disabling unused services and endpoints.
+
+Rationale: Minimizing the attack surface reduces the number of potential entry points for attackers, enhancing the overall security of the application. This proactive measure significantly lowers the risk of exploitations and helps maintain system integrity.
 
 ## 16. Cultural Requirements
 
