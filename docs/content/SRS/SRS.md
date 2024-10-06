@@ -190,6 +190,11 @@ LF-S3. Interactive elements such as buttons and links must contrast significantl
 
 Rationale: High contrast between elements and backgrounds enhances the visibility of interactive features, making navigation intuitive and preventing user frustration.
 
+LF-S4. The user interface should facilitate smooth transitions and logical navigation pathways between different sections and features of the application.
+
+Rationale: Efficient navigation systems reduce user effort in learning how to use the application and increase overall satisfaction by minimizing the time spent on searching for functionalities.
+
+
 ## 11. Usability and Humanity Requirements
 
 ### 11.1 Ease of Use Requirements
