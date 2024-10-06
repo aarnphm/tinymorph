@@ -52,7 +52,9 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 2.6 Priorities Assigned to Users
 
-[Insert your content here.]
+Description: Involves categorizing users based on their usage patterns and the criticality of their needs. For example, professional writers might need advanced editing tools more than casual users.
+
+Role: This categorization helps in prioritizing development tasks such as feature enhancements, bug fixes, and custom integrations to align product capabilities with the most valuable user demands.  By focusing resources on the most impactful areas, the development team can more effectively address the core needs of primary users. It ensures that the product develops in a direction that supports its most critical use cases.
 
 ### 2.7 User Participation
 
