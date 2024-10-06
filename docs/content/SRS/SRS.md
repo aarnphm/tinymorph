@@ -194,6 +194,9 @@ LF-S4. The user interface should facilitate smooth transitions and logical navig
 
 Rationale: Efficient navigation systems reduce user effort in learning how to use the application and increase overall satisfaction by minimizing the time spent on searching for functionalities.
 
+LF-S5. The application should include visual cues and feedback for user interactions to reinforce usability.
+
+Rationale: Providing immediate visual feedback for user actions confirms the system’s responsiveness, which will help users understand the application’s behavior and reduce errors.
 
 ## 11. Usability and Humanity Requirements
 
