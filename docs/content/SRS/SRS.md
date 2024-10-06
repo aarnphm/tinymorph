@@ -407,7 +407,10 @@ Rationale: Monitoring and logging access to critical components allows for the d
 
 ### 15.5 Immunity Requirements
 
-[Insert your content here.]
+SR-IM1. Employ up to date security measures to protect against known threats and vulnerabilities, including regular updates and patches to the software components.
+
+Rationale: Keeping software updated ensures that known vulnerabilities are addressed, which will protect the application and its data from emerging threats.
+
 
 ## 16. Cultural Requirements
 
