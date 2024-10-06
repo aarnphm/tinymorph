@@ -395,7 +395,9 @@ Rationale: Securing DNS interactions prevents attackers from manipulating or rer
 
 ### 15.3 Privacy Requirements
 
-[Insert your content here.]
+SR-P1. The application must ensure that it does not collect or store personal information, adhering strictly to privacy by design principles.
+
+Rationale: By not collecting personal information, the application minimizes privacy risks and complies with privacy laws and regulations. Avoiding personal data storage also reduces the need for complex data security measures, allowing the project to focus more on enhancing user experience and functionality.
 
 ### 15.4 Audit Requirements
 
