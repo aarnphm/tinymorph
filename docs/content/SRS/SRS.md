@@ -60,7 +60,9 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 2.8 Maintenance Users and Service Technicians
 
-[Insert your content here.]
+Description: Includes the technical team responsible for the deployment, maintenance, and troubleshooting of tinymorph. It ensures that the application remains operational and secure.
+
+Role: Handle regular updates, patch deployments, system monitoring, and troubleshooting. Their work is critical to maintaining the high availability and reliability of the service and responding to emerging security threats and technical issues.
 
 ## 3. Mandated Constraints
 
