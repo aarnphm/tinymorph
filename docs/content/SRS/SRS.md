@@ -182,6 +182,10 @@ LF-S1. The design of the application will be minimalist, utilizing clean lines a
 
 Rationale: A minimalist design emphasizes functionality and content, enhancing usability by directing the user's focus to essential elements. This approach ensures that the interface remains uncluttered and the features more accessible.
 
+LF-S2. The application must be responsive, adapting seamlessly to various device screens and orientations.
+
+Rationale: As users may access the application from different devices with varying screen sizes, responsiveness is essential to provide a consistent experience across all platforms.
+
 ## 11. Usability and Humanity Requirements
 
 ### 11.1 Ease of Use Requirements
