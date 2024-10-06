@@ -27,34 +27,91 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 2.1 Client
 
-- **Description:** The client for tinymorph includes academic institutions, research sponsors, and potentially commercial entities interested in the application of innovative text-editing solutions driven by AI. These entities provide critical oversight and resources.
-- **Role:** Clients are responsible for defining the project's scope and deliverables, ensuring funding, and facilitating alignments with broader academic or commercial goals. They play a vital role in strategic decision-making and project validation.
+Description: The client base for the tinymorph project includes organizations and institutions that benefit from advanced text-editing solutions such as engineering firms, academic institutions, and publishing companies. These clients provide essential resources and guidance for the project.
+
+Role: Responsible for defining the project's scope and deliverables, ensuring funding, and facilitating alignments with broader academic or commercial goals. They play a vital role in strategic decision-making and project validation.
 
 ### 2.2 Customer
 
-- **Description:** Customers are diverse and include individual users such as professional writers, journalists, and students. It also includes organizations like content creation agencies and educational institutions that seek advanced tools for text manipulation and generation.
-- **Role:** Customers drive user adoption and are key to the project’s market success. Their feedback influences continuous improvement efforts, helping to refine features and ensure the tool remains competitive and relevant.
+Description:  The primary customers are professional writers and engineers who require sophisticated tools for technical writing, documentation, and publishing. This group can include freelancers who often juggle various projects, technical writers in engineering fields  who need to document intricate concepts, and content creators in technical disciplines who require robust features for complex content creation.
+
+Role: They will drive user adoption and are key to the project’s market success. Their feedback influences continuous improvement efforts, helping to refine features and ensure the tool remains competitive and relevant.
 
 ### 2.3 Other Stakeholders
 
-- **Description:** Includes software vendors, integration partners, and data providers who contribute technology or content essential for tinymorph functionality. This category may also include regulatory bodies if the tool processes sensitive data.
-- **Role:** These stakeholders ensure that tinymorph can operate within an ecosystem of technologies, comply with regulations, and maintain data flows that enhance its capabilities to allow extending its utility and reach.
+Description: Includes technical partners and security consultants who play a critical role in supporting the caching mechanisms and ensuring data integrity during user sessions. It also includes professionals in usability and accessibility to ensure that the tool remains user-friendly and accessible to all users, including those with disabilities.
+
+Role: These stakeholders ensure that tinymorph can operate within an ecosystem of technologies, comply with regulations, and maintain data flows that enhance its capabilities to allow extending its utility and reach.
 
 ### 2.4 Hands-On Users of the Project
 
-- **Description:** Comprise individuals who interact directly with tinymorph interface such as creative professionals, researchers, and educators. This group is crucial for initial adoption and long-term engagement with the tool.
-- **Role:** They provide real-world usability feedback and are instrumental in iterative testing phases. Their experiences help identify practical challenges and opportunities for enhancing user interaction and satisfaction.
+Description: This group includes individuals who directly interact with tinymorph’s interface such as creative professionals and researchers. These users are critical for the initial adoption and long-term engagement with the tool.
+
+Role: The users provide essential usability feedback and participate actively in iterative testing phases. Their insights are crucial for identifying challenges and enhancing user interaction and satisfaction. This feedback directly influences feature development and adjustment to meet diverse user needs.
+
+User Categories:
+- Creative Writers: Includes novelists, bloggers, and freelance writers who rely on tinymorph for its intuitive and inspiring writing environment, which enhances their creative flow and productivity.
+- Technical Writers and Engineers: Professionals in technical fields who use the tool for its robust features that facilitate clear and precise documentation of complex technical content.
+- Academic Researchers and Educators: Users engaged in academic writing and content creation who benefit from the tool's ability to streamline the creation of scholarly articles and instructional materials.
+
+Subject Matter Experience: Users range from highly creative individuals who excel in storytelling to technical experts who require accuracy and detail-oriented features.
+
+Technological Experience: Expertise varies widely, from users comfortable with basic functionalities to those proficient in leveraging advanced features for optimizing their writing process.
+
+Other User Characteristics:
+- Physical Location: Users are globally diverse, necessitating a platform that supports seamless access across different time zones and locations.
+- Education Levels: Users often have backgrounds ranging from self-taught skills in creative writing to formal education in technical fields.
+- Attitude Toward Technology: Generally positive, with preferences for user-friendly and minimal learning curve technologies.
 
 ### 2.5 Personas
 
-- **Description:** Involved are detailed, representative user profiles based on extensive user research. Personas such as College Researcher, Freelance Writer, or Technical Editor symbolize the diverse user base tinymorph aims to serve. The personas are constructed from typical characteristics, behaviors, and needs observed among potential users. They serve to bring user stories and requirements to life during the development process.
-- **Role:** Serve as a focal point during design and development to tailor features, functionality, and user interfaces to meet specific needs and behaviors of different user groups. It ensures the product is versatile and inclusive.
+Description: Involved are detailed, representative user profiles based on extensive user research. Personas such as College Researcher, Freelance Writer, or Technical Editor symbolize the diverse user base tinymorph aims to serve. The personas are constructed from typical characteristics, behaviors, and needs observed among potential users. They serve to bring user stories and requirements to life during the development process.
+
+Role: Serve as a focal point during design and development to tailor features, functionality, and user interfaces to meet specific needs and behaviors of different user groups. It ensures the product is versatile and inclusive.
+
+Example Personas:
+
+1. Freelance Fiction Writer
+- Name: Emily Brown
+- Age: 28
+- Occupation: Freelance Fiction Writer
+- Interests: Novel writing, short stories, fantasy and science fiction
+- Goals: To find new ways to build complex characters and intricate plots that captivate her readers.
+- Technology Proficiency: Intermediate, utilizes various digital tools for research and manuscript editing.
+- Persona Narrative: Emily looks to tinymorph to help her overcome writer's block and generate creative content ideas that keep her narratives fresh and engaging.
+
+2. Technical Engineer
+- Name: Michael Liu
+- Age: 35
+- Occupation: Civil Engineer
+- Interests: Technical documentation, project schematics, professional development articles
+- Goals: To integrate creativity into his technical writing to make complex concepts accessible and engaging.
+- Technology Proficiency: Advanced, highly skilled in technical design software and documentation tools.
+- Persona Narrative: Michael uses tinymorph to creatively enhance his technical documents, making them easier for non-experts to understand while maintaining professional integrity.
+
+3. Blogger
+- Name: Sarah Johnson
+- Age: 40
+- Occupation: Academic and Personal Blogger
+- Interests: Academic publishing, lifestyle blogging, engaging a broad audience online
+- Goals: To distill complex academic concepts into engaging blog posts that appeal to a general audience.
+- Technology Proficiency: Advanced, adept with blogging platforms and social media engagement tools.
+- Persona Narrative: Sarah relies on tinymorph to help transform her detailed research into accessible blog posts that effectively communicate her findings to a non-academic audience. This ultimately enhances her blog's appeal and readability.
 
 ### 2.6 Priorities Assigned to Users
 
 Description: Involves categorizing users based on their usage patterns and the criticality of their needs. For example, professional writers might need advanced editing tools more than casual users.
 
 Role: This categorization helps in prioritizing development tasks such as feature enhancements, bug fixes, and custom integrations to align product capabilities with the most valuable user demands.  By focusing resources on the most impactful areas, the development team can more effectively address the core needs of primary users. It ensures that the product develops in a direction that supports its most critical use cases.
+
+Key Users:
+- Professional Writers and Technical Engineers: These users are vital to the product's success as they rely heavily on its features for their professional tasks. Their requirements are given the highest priority, and their feedback directly influences major product decisions.
+
+Secondary Users:
+- Academic Researchers and Educators: While important, these user's needs are secondary to those of key users. Their feedback influences product enhancements but is prioritized after the essential needs of the primary user group.
+
+Unimportant Users:
+- Casual Content Creators: This group includes users who occasionally use the platform for non-professional writing. Their needs are considered, but they have the lowest priority and minimal impact on the core functionality and strategic direction of the product.
 
 ### 2.7 User Participation
 
