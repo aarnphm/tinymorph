@@ -202,7 +202,10 @@ Rationale: Providing immediate visual feedback for user actions confirms the sys
 
 ### 11.1 Ease of Use Requirements
 
-[Insert your content here.]
+UH-EOU1. Tinymorph shall include a session history feature that records and displays the user's most recent editing activities such as document accesses and text modifications.
+
+Rationale: This functionality streamlines user workflow by providing quick access to recent actions, which reduces the time needed for navigation and increases efficiency.
+
 
 ### 11.2 Personalization and Internationalization Requirements
 
