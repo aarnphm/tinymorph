@@ -234,7 +234,10 @@ Rationale: Simple and direct language helps to avoid misunderstandings and ensur
 
 ### 11.5 Accessibility Requirements
 
-[Insert your content here.]
+UH-A1. Tinymorph should support text resizing without loss of content or functionality.
+
+Rationale: Allowing text resizing helps accommodate users with visual impairments who require larger text to read effectively. Ensuring that the application remains functional and has content accessible at different text sizes guarantees a more inclusive user experience.
+
 
 ## 12. Performance Requirements
 
