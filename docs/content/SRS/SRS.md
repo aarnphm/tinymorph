@@ -216,6 +216,9 @@ UH-PI1. Tinymorph must include multilingual support to cater to an international
 
 Rationale: Multilingual support enhances the application’s global accessibility and user engagement, ensuring that users can interact with the platform in their preferred language.
 
+UH-PI2. The application shall provide customizable visual themes, including light and dark modes.
+
+Rationale: Theme customization improves visual comfort and personalization, enabling users to adapt the interface to their visual preferences and working environments.
 
 ### 11.3 Learning Requirements
 
