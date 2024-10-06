@@ -206,6 +206,9 @@ UH-EOU1. Tinymorph shall include a session history feature that records and disp
 
 Rationale: This functionality streamlines user workflow by providing quick access to recent actions, which reduces the time needed for navigation and increases efficiency.
 
+UH-EOU2. The application must allow users to revise or remove their inputs after submission.
+
+Rationale: The ability to alter or delete content post-submission empowers users with greater control over their work, enhancing the accuracy and relevance of their output.
 
 ### 11.2 Personalization and Internationalization Requirements
 
