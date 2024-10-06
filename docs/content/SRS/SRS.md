@@ -393,6 +393,10 @@ SR-INT2. Implement DNS security measures to ensure that DNS queries and response
 
 Rationale: Securing DNS interactions prevents attackers from manipulating or rerouting network traffic. This is critical for maintaining the integrity of application data.
 
+SR-INT3. The application will use content security policies to mitigate the risk of XSS attacks.
+
+Rationale: Content Security Policies (CSP) are an effective security control to prevent XSS attacks by restricting the sources from which scripts can be loaded and executed in the application. CSP will help in safeguarding against data theft and maintain the integrity of the content delivered to users.
+
 ### 15.3 Privacy Requirements
 
 SR-P1. The application must ensure that it does not collect or store personal information, adhering strictly to privacy by design principles.
