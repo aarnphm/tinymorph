@@ -172,6 +172,10 @@ LF-A1: The Tinymorph application shall adopt a unified and sophisticated visual 
 
 Rationale: A uniform and elegant design ensures brand recognition and provides a visually pleasing experience for users, fostering greater engagement and trust in the platform.
 
+LF-A2. The application must utilize a consistent typography system across all user interfaces.
+
+Rationale: Maintaining consistency in typography ensures readability and prevents user distraction or confusion, contributing to a cohesive user experience.
+
 ### 10.2 Style Requirements
 
 [Insert your content here.]
