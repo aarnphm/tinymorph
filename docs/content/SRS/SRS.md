@@ -186,6 +186,10 @@ LF-S2. The application must be responsive, adapting seamlessly to various device
 
 Rationale: As users may access the application from different devices with varying screen sizes, responsiveness is essential to provide a consistent experience across all platforms.
 
+LF-S3. Interactive elements such as buttons and links must contrast significantly with the background to ensure visibility and accessibility.
+
+Rationale: High contrast between elements and backgrounds enhances the visibility of interactive features, making navigation intuitive and preventing user frustration.
+
 ## 11. Usability and Humanity Requirements
 
 ### 11.1 Ease of Use Requirements
