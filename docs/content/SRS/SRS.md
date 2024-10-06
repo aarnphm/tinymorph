@@ -238,6 +238,9 @@ UH-A1. Tinymorph should support text resizing without loss of content or functio
 
 Rationale: Allowing text resizing helps accommodate users with visual impairments who require larger text to read effectively. Ensuring that the application remains functional and has content accessible at different text sizes guarantees a more inclusive user experience.
 
+UH-A2. The application should ensure that all user interface components are accessible via keyboard navigation.
+
+Rationale: Keyboard navigability is essential for users who cannot use a mouse, including those using screen readers or other assistive technologies. Providing comprehensive keyboard access enhances the functionality and inclusivity of the platform, ensuring all users can efficiently use all features.
 
 ## 12. Performance Requirements
 
