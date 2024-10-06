@@ -228,7 +228,9 @@ Rationale: A straightforward and intuitive onboarding process is critical to ens
 
 ### 11.4 Understandability and Politeness Requirements
 
-[Insert your content here.]
+UH-UP1. The application should utilize clear and concise language for all instructions, feedback, and user interface elements.
+
+Rationale: Simple and direct language helps to avoid misunderstandings and ensures that the platform is user-friendly, making it accessible to a wide audience regardless of their background.
 
 ### 11.5 Accessibility Requirements
 
