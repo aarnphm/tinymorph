@@ -379,7 +379,9 @@ Rationale: ARIA attributes help provide essential information about the element'
 
 ### 15.1 Access Requirements
 
-[Insert your content here.]
+SR-AC1. The application will use secure environment variables to manage configuration settings that include sensitive information.
+
+Rationale: Managing settings through environment variables keeps sensitive information out of the codebase, reducing the risk of exposure and enhancing security.
 
 ### 15.2 Integrity Requirements
 
