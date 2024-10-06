@@ -242,6 +242,10 @@ UH-A2. The application should ensure that all user interface components are acce
 
 Rationale: Keyboard navigability is essential for users who cannot use a mouse, including those using screen readers or other assistive technologies. Providing comprehensive keyboard access enhances the functionality and inclusivity of the platform, ensuring all users can efficiently use all features.
 
+UH-A3. Implement ARIA (Accessible Rich Internet Applications) attributes throughout the application.
+
+Rationale: ARIA attributes help provide essential information about the element's role, state, and property, which is crucial for users who interact with the application via assistive technologies. This ensures that all functionalities are conveyed and usable through these technologies.
+
 ## 12. Performance Requirements
 
 ### 12.1 Speed and Latency Requirements
