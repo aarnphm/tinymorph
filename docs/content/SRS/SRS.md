@@ -401,7 +401,9 @@ Rationale: By not collecting personal information, the application minimizes pri
 
 ### 15.4 Audit Requirements
 
-[Insert your content here.]
+SR-AU1. Implement monitoring and logging of access to the inference server and application endpoints.
+
+Rationale: Monitoring and logging access to critical components allows for the detection of unusual patterns that may indicate a security breach, facilitating rapid response to potential threats.
 
 ### 15.5 Immunity Requirements
 
