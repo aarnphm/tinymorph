@@ -6,6 +6,7 @@ author: aarnphm
 comments: false
 date: "2024-09-20"
 description: A glossary of terms used in the documentation.
+modified: "2024-10-08"
 title: Glossary
 titleTransclude: false
 ---
@@ -211,7 +212,7 @@ Representation of information in a formalised manner suitable for communication,
 
 Initially conceptualized to represent neural circuitry through mathematical approach. [@rosenblatt1958perceptron]
 
-Second wave blossomed in late 1980s, followed by Parallel Distributed Processing book
+Second wave blossomed in late 1980s, followed by Parallel Distributed Processing group
 [@10.7551/mitpress/5236.001.0001], where it introduced intermediate processors within the network (often known as
 "hidden layers") alongside with inputs and outputs. Notable figures include John Hopfield, Terence Horgan.
 

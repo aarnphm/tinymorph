@@ -8,20 +8,79 @@ description: "Software Requirements Specification for tinymorph: LLM-steering te
 title: Software Requirements Specification
 ---
 
-See also: [[Checklists/SRS-Checklist|checklist]] and
-[[SRS/SRS#Revision|this document revision]]
+See also: [[Checklists/SRS-Checklist|checklist]],
+[[SRS/SRS#Revision|this document revision]], and [[ProblemStatementAndGoals/ProblemStatement|problem statement]]
 
 _The following Software Requirements Specification for `tinymorph` is using [Volere Requirements Specification template](https://www.volere.org/templates/volere-requirements-specification-template/)_
 
 ## 1. Purpose of the Project
 
+![[ProblemStatementAndGoals/ProblemStatement#Problem|Problem Statement]]
+
 ### 1.1 User Business
 
-[Insert your content here.]
+> [!important] UB-1
+>
+> Offer service for creative writing.
+
+Rationale: `tinymorph` is a text editor, thus, its main goal is to provide interfaces for users to write.
+
+> [!important] UB-2
+>
+> Help stakeholders to create writing artifacts
+
+Rationale: `tinymorph` will provide environment for stakeholders to do creative writing. That means writing artifacts
+are self-contained, owned by users, forever.
 
 ### 1.2 Goals of the Project
 
-[Insert your content here.]
+covers both of functional and non-functional requirements
+
+- usuable for unversed
+
+See also [[ProblemStatementAndGoals/ProblemStatement#Goals|comprehensive lists]]
+
+> [!IMPORTANT] G-1
+>
+> A [_file-over-app_](https://stephango.com/file-over-app) web-based text editor.
+
+Rationale: "The files you create are more important than the tools you use to create them. Apps are ephemeral, but your files have a chance to last." - Steph Ango
+
+> [!IMPORTANT] G-2
+>
+> User feedback-loop for manual steering through planning
+
+Rationale: For interfaces to help users with planning, feedback-loop are important for users to understand the effectiveness of generations.
+
+> [!important] G-3
+>
+> Efficient activation caching for feature steering.
+
+Rationale: Generating similarly composed features vectors everytime might not be efficient. Thus, designing a caching
+mechanism for certain [[glossary#KV cache block]] of generated activations is worth investigating to improve overall generations
+speed.
+
+> [!important] G-4
+>
+> Functional SAEs for guided steering.
+
+Rationale: We must train [[glossary#sparse autoencoders]] that is suitable for creative writing. See also [[SRS/SRS#18. Open Issues|OI-2]]
+
+> [!important] G-5
+>
+> OpenAI-compatible API for LLM server.
+
+Rationale: OpenAI's API definition has been widely adopted in the industry for deploying LLMs. Given `tinymorph` will
+run SAEs in addition with a base models, OpenAI-compatible server is a must for future integrations with upstream
+tooling.
+
+> [!important] G-6
+>
+> External goals
+
+can mention this =>
+
+![[DevelopmentPlan/DevelopmentPlan#External Goals|Goals]]
 
 ## 2. Stakeholders
 
@@ -233,9 +292,7 @@ Rationale: This ensures that any models integrated into tinymorph comply with th
 
 ## 4. Naming Conventions and Terminology
 
-### 4.1 Glossary of All Terms, Including Acronyms, Used by Stakeholders involved in the Project
-
-[Insert your content here.]
+![[glossary]]
 
 ## 5. Relevant Facts And Assumptions
 
@@ -833,7 +890,63 @@ Rationale: `tinymorph` will adhere to Hypertext Transfer Protocol (HTTP/1.1) sta
 
 ## 18. Open Issues
 
-[Insert your content here.]
+> [!question] OI-1
+>
+> How should we compose correct features matrix to ensure correct steering?
+
+Rationale: We can train intepreter networks to extract human-readable activations layers (referred as "features")
+[@cunningham2023interim] [@templeton2024scaling], but features alone won't offer too much value for end users
+(engineers, writers).
+
+`tinymorph` then must be able to compose multiple activations that represents certain tonality,
+in which a auto-interp pipeline [@juang2024autointerp] should be implemented to guide base models to generate in
+certain direction.
+
+> [!question] OI-2
+>
+> What datasets one should use to train [[glossary#sparse autoencoders|SAEs]]?
+
+Rationale: [@goodfire2024research] demonstrated [LMSys-1M chat datasets](https://huggingface.co/datasets/lmsys/lmsys-chat-1m) are great fit to train SAE for chat application
+specifically. For the interface for planning ideas a more general datasets that contains more essays, paragraphs might
+be more beneficial.
+
+> [!question] OI-3
+>
+> For a planning interface, what if we add tool use (such as web-search) to enhance correctness in generations?
+
+Rationale: RAG-infused pipeline [@lewis2021retrievalaugmentedgenerationknowledgeintensivenlp] has been widely adopted
+in industry-related workflows to reduce LLM hallucination. For steering specifically, this might be useful given the
+additional context for online blog posts to influence certain direction writers want to formulate their ideas.
+
+> [!question] OI-3
+>
+> Effectiveness against fine-tuned models?
+
+Rationale: Fine-tuned models are a distilled version of the base models that is trained to perform generations in
+a given format/text. Methods such as [[glossary#low-rank adapters|LoRA]] has been proven to be useful for steering
+generations purely through prompt. The questions remains whether intuitively having SAEs to steer generations at the
+activation level would prove to be more useful than specifically fine-tuned models.
+
+> [!question] OI-4
+>
+> [file-over-app](https://stephango.com/file-over-app) philosophy for building a text editor?
+
+Rationale: The end goal is to build a text editor, which means we are building on top of the notion of "files". We
+rarely have to think about files nowadays in our daily tasks, yet we are still operating with them on a daily basis:
+Photos stored on your iPhone., music catalog saved in Spotify, knowledge pages in Notion etc. The industry seemingly to
+replace this primitive with something stored "on the cloud". I do think there are arguments to be made to give back
+this heuristic back to the users, if we are thinking about building digital artifacts that will last long after we are
+gone. Additionally, it will greatly simplify any internal logics.
+
+> [!question] OI-5
+>
+> Inference performance for server deployment versus on-device?
+
+Rationale: For the past year, the need for efficient inference to run these language models has been top priorities for
+companies to deploy these models in production. Framework such as vLLM [@kwon2023efficient], lmdeploy [@2023lmdeploy]
+offers different trade-off for running efficient inference on server. Given `tinymorph` will offer a web interface, how
+should we evaluate given frameworks to use in conjunction with trained SAEs. Additionally, for on-device inference, we
+must also investigate how one can run the models locally.
 
 ## 19. Off-the-Shelf Solutions
 
@@ -884,33 +997,102 @@ Grammarly’s tone detection system analyzes writing to give feedback on the moo
 
 ### 20.1 Effects on the Current Environment
 
-[Insert your content here.]
+> [!IMPORTANT] EoCE-1
+>
+> Workflow updates for writers
+
+Rationale: `tinymorph` will introduce an alternative way to plan and write essays.
+
+> [!IMPORTANT] EoCE-2
+>
+> Real-time collaboration
+
+Rationale: `tinymorph` can provide real-time feedback on certain planning steps, which could influence how users
+approach one's writing.
 
 ### 20.2 Effects on the Installed Systems
 
-[Insert your content here.]
+> [!IMPORTANT] EoIS-1
+>
+> Performance impacts
+
+Rationale: `tinymorph` will introduce additional computation for steering generations, which could uses additional
+resources from users' local machine. This means it might requires more modern computers to run the application
+efficiently.
+
+> [!IMPORTANT] EoIS-2
+>
+> Storage considerations
+
+Rationale: `tinymorph` follows "file-over-app" philosophy, meaning certain folders structures for users files must be
+adhere to in order for applications to function correctly.
 
 ### 20.3 Potential User Problems
 
-[Insert your content here.]
+> [!IMPORTANT] PUP-1
+>
+> Learning curve
+
+Rationale: For text editors, users might have a higher learning curve to setup their vault and file structure
+accordingly.
+
+> [!IMPORTANT] PUP-2
+>
+> Integration from existing tools
+
+Rationale: Changing ones' behaviour is hard, which means users might find a hard time to integrate `tinymorph` into
+their existing writing workflow.
 
 ### 20.4 Limitations in the Anticipated Implementation Environment That May Inhibit the New Product
 
-[Insert your content here.]
+> [!IMPORTANT] LAIETMINP-1
+>
+> Browser support and accessibility
+
+Rationale: Given we will ship the web-based version of `tinymorph` first, all version of chromium might not have
+support for certain file API. Additionally, different browser engine have different accessibility support, which might
+interfere with usability.
+
+> [!IMPORTANT] LAIETMINP-2
+>
+> On-device inference
+
+Rationale: If users wish to run models on-device, they might not have the sufficient hardware to perform given tasks.
+Additionally, setting up local inference might be proven to be challenging for the unversed.
 
 ### 20.5 Follow-Up Problems
 
-[Insert your content here.]
+> [!IMPORTANT] FUP-1
+>
+> Over-reliance on suggestion
+
+Rationale: Advanced agents workflow for planning might increase a risk of homogenization in writing styles. as [Ted
+Chiang commented on ChatGPT](https://www.newyorker.com/tech/annals-of-technology/chatgpt-is-a-blurry-jpeg-of-the-web):
+
+> The more that text generated by large language models gets published on the Web, the
+> more the Web becomes a blurrier version of itself
+> […]
+> Repeatedly resaving a jpeg creates more compression artifacts, because more information is lost every time.
+
+> [!IMPORTANT] FUP-2
+>
+> Disruption in flow
+
+Rationale: constant suggestion prompt might prove to be annoying to writers' flow and concentration.
+
+> [!IMPORTANT] FUP-3
+>
+> Feature overloading
+
+Rationale: The setup/UX might be too complex, potentially too intimidating for users who might prefer the simplicity of
+CUIs.
 
 ## 21. Tasks
 
-### 21.1 Project Planning
+See also [[DevelopmentPlan/DevelopmentPlan|Development Plan]] for an up-to-date development cycle as well as project
+planning.
 
-[Insert your content here.]
-
-### 21.2 Planning of the Development Phases
-
-[Insert your content here.]
+For a more unstructured brain dump for potential exploration avenue see [[Scratch|ideas]].
 
 ## 22. Migration to the New Product
 

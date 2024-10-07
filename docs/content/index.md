@@ -6,6 +6,7 @@ author: ""
 comments: false
 date: "2024-09-16"
 title: tinymorph documentation.
+titleTransclude: false
 ---
 
 ![[ProblemStatementAndGoals/ProblemStatement#Problem|Problem Statement]]
@@ -31,7 +32,9 @@ See also: [[References.bib|References]] | [[glossary|Glossary]]
 
 ## acknowledgements
 
-This project is based on the work from [EleutherAI](https://www.eleuther.ai/),
-[Linus](https://thesephist.com/) for his general exploration in machine-native interfaces,
-[Neel Nanda](https://www.neelnanda.io/about) spearheading the field of [[glossary#mechanistic interpretability]],
-Anthropic Interpretability Team, Google DeepMind Interpretability Team.
+I want to give my thanks to the following individuals/organisations for their works that inspire this project: 
+- [EleutherAI](https://www.eleuther.ai/)
+- [Linus](https://thesephist.com/) for his general exploration in machine-native interfaces
+- [Neel Nanda](https://www.neelnanda.io/about) spearheading the field of [[glossary#mechanistic interpretability]]
+- Anthropic Interpretability Team's Transformers Circuit threads
+- Google DeepMind Interpretability Team.
