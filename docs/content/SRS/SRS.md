@@ -537,6 +537,10 @@ UDT-T2. Prepare video tutorials covering detailed use cases that highlight how t
 
 Rationale: Video tutorials allow users to visually follow processes at their own pace, which is crucial for understanding complex features that enhance creative writing. It ensures users can fully exploit the text editor’s capabilities.
 
+UDT-T3. Offer a scheduled Q&A session following the release of new features to address user queries and ensure clarity on the latest updates.
+
+Rationale: Scheduled Q&A sessions after updates ensure that users fully understand new functionalities and can discuss any issues or suggestions. This helps in maintaining high user satisfaction and engagement with the platform.
+
 ## 25. Waiting Room
 
 [Insert your content here.]
