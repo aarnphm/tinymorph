@@ -533,6 +533,10 @@ UDT-T1. Conduct interactive online workshops that demonstrate the core functiona
 
 Rationale: Interactive workshops provide hands-on learning experiences that allow users to see practical applications of the editor's features in real-time. This direct interaction enables users to ask questions and enhances their understanding and proficiency.
 
+UDT-T2. Prepare video tutorials covering detailed use cases that highlight how to leverage advanced editing tools for various writing styles and genres.
+
+Rationale: Video tutorials allow users to visually follow processes at their own pace, which is crucial for understanding complex features that enhance creative writing. It ensures users can fully exploit the text editor’s capabilities.
+
 ## 25. Waiting Room
 
 [Insert your content here.]
