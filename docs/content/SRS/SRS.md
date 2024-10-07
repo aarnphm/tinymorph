@@ -529,7 +529,9 @@ Rationale: Serves as a foundational document that guides the entire development 
 
 ### 24.2 Training Requirements
 
-[Insert your content here.]
+UDT-T1. Conduct interactive online workshops that demonstrate the core functionalities and creative writing tools of the web-based text editor.
+
+Rationale: Interactive workshops provide hands-on learning experiences that allow users to see practical applications of the editor's features in real-time. This direct interaction enables users to ask questions and enhances their understanding and proficiency.
 
 ## 25. Waiting Room
 
