@@ -191,4 +191,47 @@ on.
 For example, if we wish to interpret all features related to the author Camus, we might want to train an SAEs based on
 all given text of Camus that is also found in Llama-3.1
 
+## retrieval augmented generation
+
+First introduced by [@lewis2021retrievalaugmentedgenerationknowledgeintensivenlp] which introduces a pipeline that
+includes a retriever models $p_n$ queried from existing knowledge base to improve correctness and reduce hallucinations
+in LLM generations.
+
+How would this work with SAEs specifically?
+
+- Run an embedding models => SAEs to interpret features from relevant documents. => Search related features.
+- Added said documents embedded in input tensors => in theory more sound planning?
+
+## data
+
+Representation of information in a formalised manner suitable for communication, interpretation, or processing by humans or by automatic means.
+
+## connectionism
+
+Initially conceptualized to represent neural circuitry through mathematical approach. [@rosenblatt1958perceptron]
+
+Second wave blossomed in late 1980s, followed by Parallel Distributed Processing book
+[@10.7551/mitpress/5236.001.0001], where it introduced intermediate processors within the network (often known as
+"hidden layers") alongside with inputs and outputs. Notable figures include John Hopfield, Terence Horgan.
+
+Third waves (the current meta we are in) are marked by the rise in deep learning, notable contributions include the
+rise to fame of large language models. This era focuses artifical neural networks, focusing on designing efficient
+architecture to utilize available computes.
+
+## KV cache block
+
+While generating tokens in auto-regressive models, previously generated tokens are fed into the network again while
+generating a new tokens. As input sequence becomes longer, inference [[glossary#FLOPs]] will grow exponentially.
+
+KV cache solves this problem by storing hidden representations or previously computed key-value pairs while generating
+a new tokens.
+
+the KV-cache will then be prefilled during forward propagation.
+
+See also [source](https://kipp.ly/transformer-inference-arithmetic/)
+
+## FLOPs
+
+Also known as floating point operations. Used as a common metric to measure the the computer performance.
+
 [^ref]
