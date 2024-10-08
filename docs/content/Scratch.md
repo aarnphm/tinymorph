@@ -62,6 +62,10 @@ https://x.com/david_perell/status/1841875983676162124
 
 [_website_](https://writingexamples.com/article/orwell-symbols-tell-a-story)
 
+cursor navigation:
+
+https://x.com/JaceThings/status/1843441743187861850
+
 ### cost.
 
 Using EC2 for GPUs and inference cost. (Running on A100 with 32 CPUs)
