@@ -101,37 +101,32 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 5.1 Relevant Facts
 
-> [!IMPORTANT] RF1
+> [!IMPORTANT] RFA-RF1
 >
 > Using Open-AI as base model of the language model
 
 Rational: Open-AI has developed and trained LLM using transformer as NLP, which has been widely tested and used, including the GPT models. Tinymorph will use this model as a base model and combine it with SAE to achieve user personalised feature.
 
-> [!IMPORTANT] RF2
+> [!IMPORTANT] RFA-RF2
 >
 > Using SAEs to extract features from input text
 
 Rational: SAE is a kind of autoencoder that efficient at extracting representations of user input text, and here it includes sparsity to selectively active the neurons in the NN to increase effectiveness. It is build above the Open-AI model to adjust for user preference.
 
-> [!IMPORTANT] RF3
+> [!IMPORTANT] RFA-RF3
 >
 > Tinymorpgh is designed to run on a Web-based interface
 
 Rational: The UI of Tinymorpgh is designed as Web-based, and this will allow it operated on main stream operating system, including Windows, lLinux and macOS. 
 
-> [!IMPORTANT] RF3
->
-> Tinymorpgh is designed to run on a Web-based interface
 
-Rational: The UI of Tinymorpgh is designed as Web-based, and this will allow it operated on main stream operating system, including Windows, Linux and macOS. 
-
-> [!IMPORTANT] RF4
+> [!IMPORTANT] RFA-RF4
 >
 > User agreed to submit the content into tinymorph, as well as preference
 
 Rational: Tinymorph will record users' preferences selections and the uploaded file to perform SAE training, especially when user decided on a hosted inference selection. 
 
-> [!IMPORTANT] RF5
+> [!IMPORTANT] RFA-RF5
 >
 > Hardware environment should allow local inference if required
 
@@ -139,17 +134,26 @@ Rational: If user decides a local inference to run SAE, the local hardware envir
 
 ### 5.2 Business Rules
 
-- **Content Ownership**: Users will retain full ownership of the content they create using Tinymorph. The tool should provide clear notifications to ensure users are aware of this.
-- **Session Management**: Tinymorph should manage user sessions effectively by saving user preferences and in-progress writing for continuity across sessions.
-- **Content Moderation**: Implement filters checks and be careful with training data to prevent the generation of inappropriate or unethical content within the system.
-- **Feature Access**: Certain advanced features, such as hyperparameter tuning or local inference setup, may be gated for more advanced or technical users, while the basic features remain accessible to all.
+> [!IMPORTANT] RFA-BR1
+>
+> Store the preferences on feature and generated data
+
+Rational: The data generated and user preferred feature should be stored, preventing potential data loss caused by crash.
+
+> [!IMPORTANT] RFA-BR2
+>
+> Generated text should filter for detrimental content
+
+Rational: All generated data should filter out prohibited words or detrimental content before deliver back to the user. 
 
 ### 5.3 Assumptions
 
-- **Cross-Platform Compatibility**: Tinymorph assumes users may run the software on various platforms, and it will provide the same functionality across different operating systems and devices.
-- **Technical Familiarity for Hosted Servers**: Users who opt to host their own local inference servers are assumed to have the technical knowledge required to set up and manage the necessary infrastructure, including configuring GPUs or APIs.
-- **Basic Understanding of Writing**: It is assumed that users have a basic understanding of writing practices and seek to enhance their work through the system rather than generate full content autonomously.
-- **User Privacy Awareness**: Users are assumed to understand and accept the system’s privacy policies, particularly regarding data storage and processing, whether hosted locally or externally.
+> [!IMPORTANT] RFA-A1
+>
+> User have knowledge background about writing and language training via SAE 
+
+Rational: Since tinymorph target engineers with writing demands as user, some steering and training require the user to have a expectation on the desired direction of training feature, with basic knowledge of steering the text-generating process.
+
 
 ## 6. The Scope of the Work
 
