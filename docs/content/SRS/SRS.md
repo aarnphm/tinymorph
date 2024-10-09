@@ -61,27 +61,53 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 3.1 Solution Constraints
 
-[Insert your content here.]
+MC-S1. Due to licensing agreements or compatibility requirements, the system must use a specific set of language models (e.g., OpenAI’s GPT-4 or Llama 3.1).
+
+MC-S2. All model inferences must be compatible with OpenAI's API specifications, ensuring interoperability with existing systems.
+
+MC-S3. The solution must be web-based, and accessible from standard web browsers (Chrome, Firefox, Safari) without requiring installation or browser-specific extensions.
+
+MC-S4. The user interface must follow a file-over-app architecture, avoiding a full application installation for minimal system dependencies.
+
+MC-S5. Personalization features, such as user preferences for tone or style, must remain within predefined limits to ensure compatibility with the model's underlying architecture.
+
+MC-S6. There shall be no explicit storage of user-specific content on external servers 
 
 ### 3.2 Implementation Environment of the Current System
 
-[Insert your content here.]
+MC-I1. The implementation environment must support modern HTML, JavaScript, and CSS for front-end development.
+
+MC-I2. Server-side components must be compatible with widely-used web frameworks such as Node.js or Flask, ensuring ease of deployment across different cloud providers.
+
+MC-I3. The current system must support cloud-based inference using APIs (e.g., OpenAI, BentoML) and local inference with GPU acceleration.
+
+MC-I4. The implementation must accommodate scaling via BentoML infrastructure to handle increased load during periods of high traffic.
 
 ### 3.3 Partner or Collaborative Applications
 
-[Insert your content here.]
+MC-P1. The system must integrate with collaboration tools such as Windows Notepad, Apple Notes, and GitHub, enabling users to export, sync, or share their content across these platforms.
 
 ### 3.4 Off-the-Shelf Software
 
-[Insert your content here.]
+MC-O1. Off-the-shelf language models (e.g., GPT-3, Llama 2) must be used for initial POC development.
 
 ### 3.5 Anticipated Workplace Environment
 
-[Insert your content here.]
+MC-A1. The system must be developed with remote collaboration in mind, allowing team members to work asynchronously using tools like GitHub and Slack for version control and communication.
+
+MC-A2. All developers must use industry-standard tools (e.g., Visual Studio Code, PyCharm, Git) to ensure consistency in code quality, collaboration, and version management.
+
+MC-A3. Unit and integration testing must be supported using continuous integration tools like GitHub Actions to ensure stability across environments.
+
 
 ### 3.6 Schedule Constraints
 
-[Insert your content here.]
+MC-S1. The system must be completed by the end of the capstone project’s official timeline, leaving time for user testing, bug fixes, and revisions before the final presentation.
+
+MC-S2. Preliminary research, including design thinking and proof of concept development, must be completed within the first 3 months to ensure that enough time is left for more complex engineering work (e.g., model integration).
+
+MC-S3. If training new models, the total time required for training and validation must not exceed 4 weeks, including any hyperparameter tuning, to ensure the project remains on schedule.
+
 
 ### 3.7 Budget Constraints
 
@@ -89,7 +115,7 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 3.8 Enterprise Constraints
 
-[Insert your content here.]
+MC-E1. All software and tools used in tinymorph must comply with the Apache 2.0 license under which the project is being developed. Any third-party libraries or software must also adhere to compatible open-source licenses.
 
 ## 4. Naming Conventions and Terminology
 
@@ -157,7 +183,54 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 9.1 Functional Requirements
 
-[Insert your content here.]
+FR-1. The system shall generate text suggestions based on user input in real-time, allowing users to continuously write while receiving suggestions for the next words, sentences, or paragraphs.
+
+FR-2. The system shall provide users with manual control over text generation by enabling them to select steering options like tone, style, or creativity level.
+
+FR-3. Users shall be able to interact with generated text through a left-to-right feedback panel that lets them modify model behavior in real-time by providing feedback on individual suggestions.
+
+FR-4. Users shall be able to set preferences for tone, style, voice, and formality, which the system will apply to all future generations of text.
+
+FR-5. Users shall be able to save their preferred configurations as profiles, enabling them to switch between different writing styles or goals (e.g., academic writing, casual blog posts, fiction writing).
+
+FR-6. The system shall allow users to upload custom system prompts (e.g., "Write like Hemingway" or "Adopt a motivational tone") to influence the overall behavior of the model.
+
+FR-7. The system shall allow users to navigate through their text non-linearly by providing a visual map or tree view that displays key points, topics, or sections.
+
+FR-8. The system shall provide explanations and recommendations for adjusting each hyperparameter, allowing users to better understand how changes will affect the model's output.
+
+FR-9. For each generated text suggestion, the system shall present multiple alternatives, which users can choose from, modify, or combine to form the final text.
+
+FR-10. Users shall be able to click on a specific part of the text and select from a dropdown of alternative phrasings or sentence structures generated by the model.
+
+FR-11. The system shall offer version control features, enabling users to revert to previous versions of the document or compare different drafts side-by-side.
+
+FR-12. The system shall support an offline mode where users can continue to write and interact with the editor without internet access, using pre-downloaded or locally hosted language models for text generation.
+
+FR-13. The system shall automatically sync user data and documents when internet access is restored, ensuring that no work is lost during offline writing sessions.
+
+FR-14. Users shall be able to set specific writing goals (e.g., word count, tone consistency, argument development) which the system will track and offer suggestions to help them meet those goals.
+
+FR-15. The system shall provide progress tracking and feedback on goals, such as word count meters, tone analysis, and style consistency checks, helping users to stay aligned with their original intentions.
+
+FR-16. The system shall support text input and generation in multiple languages, enabling users to switch between languages within the same document or work in multilingual environments.
+
+FR-17. The system shall offer translation features, allowing users to translate model-generated text between languages, while maintaining the original meaning and tone as closely as possible.
+
+FR-18. The system shall include standard text editing tools such as bold, italic, underline, strikethrough, and highlighting, enabling users to format their text as they write.
+
+FR-19. The system shall allow users to track changes, providing an option to view a history of edits and revert to previous versions of their text.
+
+FR-20. The system shall offer a grammar and style checker that runs in the background, highlighting potential issues and offering suggestions for improvement without interrupting the writing flow.
+
+FR-21. The system shall allow users to categorize and tag different sections of their text (e.g., introduction, argument, conclusion), enabling better organization and navigation within large documents.
+
+FR-22. Users shall be able to generate an automatic outline of their document based on its structure, providing a high-level overview of the content and enabling quick access to specific sections.
+
+FR-23. The system shall allow users to export their documents in a variety of formats, including .docx, .pdf, .md (Markdown), and plain text, ensuring compatibility with external platforms.
+
+FR-24: The system shall allow users to customize the visual appearance of the editor by choosing from different themes, including dark mode, light mode, and high-contrast options.
+
 
 ## 10. Look and Feel Requirements
 
