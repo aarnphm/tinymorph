@@ -101,12 +101,41 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 5.1 Relevant Facts
 
-- **AI Technology Maturity**: This project is using advanced natural language model, GPT. This is a model that has been proven for good writing assistance applications, and it has been widely adopted. 
-- **Target Audience**: The primary users of this project are targeted as engineers with writing demands. To align with this, this tool should put emphasis on ease of use, adaptability to steering for personal preferences for tonality and writing styles, and the model should also allow for personalising the needed feature. 
-- **Cross-Platform Functionality**: The system is designed to be able to run on any modern operating system (Windows, macOS, Linux).
-- **Privacy and Compliance**: Since this project may store user-generated content and preferences, adherence to privacy regulations is needed.
-- **Support for Sparse Autoencoders (SAEs)**: Tinymorph will use a series of SAEs for feature steering. This enables users to dynamically guide and adjust the model’s output based on their own specific writing preferences.
-- **Feedback Loop and Attention Caching**: This project will use efficient attention caching for feature steering, allowing the system to remember context and provide more accurate and relevant text suggestions.
+> [!IMPORTANT] RF1
+>
+> Using Open-AI as base model of the language model
+
+Rational: Open-AI has developed and trained LLM using transformer as NLP, which has been widely tested and used, including the GPT models. Tinymorph will use this model as a base model and combine it with SAE to achieve user personalised feature.
+
+> [!IMPORTANT] RF2
+>
+> Using SAEs to extract features from input text
+
+Rational: SAE is a kind of autoencoder that efficient at extracting representations of user input text, and here it includes sparsity to selectively active the neurons in the NN to increase effectiveness. It is build above the Open-AI model to adjust for user preference.
+
+> [!IMPORTANT] RF3
+>
+> Tinymorpgh is designed to run on a Web-based interface
+
+Rational: The UI of Tinymorpgh is designed as Web-based, and this will allow it operated on main stream operating system, including Windows, lLinux and macOS. 
+
+> [!IMPORTANT] RF3
+>
+> Tinymorpgh is designed to run on a Web-based interface
+
+Rational: The UI of Tinymorpgh is designed as Web-based, and this will allow it operated on main stream operating system, including Windows, Linux and macOS. 
+
+> [!IMPORTANT] RF4
+>
+> User agreed to submit the content into tinymorph, as well as preference
+
+Rational: Tinymorph will record users' preferences selections and the uploaded file to perform SAE training, especially when user decided on a hosted inference selection. 
+
+> [!IMPORTANT] RF5
+>
+> Hardware environment should allow local inference if required
+
+Rational: If user decides a local inference to run SAE, the local hardware environment should be able to arrange GPU and CPU to support relative training. 
 
 ### 5.2 Business Rules
 
