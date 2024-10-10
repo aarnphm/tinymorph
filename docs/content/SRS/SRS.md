@@ -124,7 +124,7 @@ Rationale: The UI of Tinymorph is designed as Web-based, and this will allow it 
 >
 > User agreed to submit the content into tinymorph, as well as preference
 
-Rationale: Tinymorph will record users' preferences selections and the uploaded file to perform SAE training, especially when user decided on a hosted inference selection. 
+Rationale: Tinymorph will record users' preferences selections and the file extarction to perform opn model, especially when user decided on a hosted inference selection. 
 
 ### 5.2 Business Rules
 
@@ -144,9 +144,9 @@ Rationale: All generated data should filter out prohibited words or detrimental 
 
 > [!IMPORTANT] RFA-A1
 >
-> User have knowledge background about writing and language training via SAE 
+> User have knowledge background about writing and language via SAE 
 
-Rationale: Since tinymorph target engineers with writing demands as user, some steering and training require the user to have a expectation on the desired direction of training feature, with basic knowledge of steering the text-generating process.
+Rationale: Since tinymorph target engineers with writing demands as user, some steering require the user to have a expectation on the desired direction of feature, with basic knowledge of steering the text-generating process.
 
 > [!IMPORTANT] RFA-A2
 >
@@ -243,19 +243,19 @@ Rationale: Since the user need to run the model remotely, a stable network conne
 >
 > When runing local inference, responses should appear after a time interval ranging from 1 second to 5 seconds, depending on the input lengths
 
-Rationale: Tinymorph implements an accelerated GPU arrangement for local training which can provide return within 1 second on small size of input(under 200 tokens), and no more than 5 seconds for larger size of the input text(1000 tokens).
+Rationale: Tinymorph implements an accelerated GPU arrangement for local model which can provide return within 1 second on small size of input(under 200 tokens), and no more than 5 seconds for larger size of the input text(1000 tokens).
 
 > [!IMPORTANT] PR-SLR2
 >
 > When runing host inference, responses should appear after within 1 to 3 seconds
 
-Rationale: When host inference is chosen, under a good network connection environment, tinymorph uses a dependable remote training resources that can return the response within 3 seconds based on user's input.
+Rationale: When host inference is chosen, under a good network connection environment, tinymorph uses a dependable remote model resources that can return the response within 3 seconds based on user's input.
 
 > [!IMPORTANT] PR-SLR3
 >
-> Lag should not be apparent or significant, even when a training running in the background
+> Lag should not be apparent or significant, even when a model running in the background
 
-Rationale: Whether user choose to run a host or local inference, training process should not make big effect on user's interface to cause any significant lagging. 
+Rationale: Whether user choose to run a host or local inference, generating process should not make big effect on user's interface to cause any significant lagging. 
 
 ### 12.2 Safety-Critical Requirements
 
@@ -277,7 +277,7 @@ Rationale: All the preference selections and text input from user should be stor
 >
 > The output text should match user's intentional steering direction, or expectation 
 
-Rationale: The tinymorph should have a good intepretaion on user's input and preferred direction of steering on generating text. Effective control should be provided to user over the training process.
+Rationale: The tinymorph should have a good intepretaion on user's input and preferred direction of steering on generating text. Effective control should be provided to user over the generating process.
 
 ### 12.4 Robustness or Fault-Tolerance Requirements
 
@@ -339,31 +339,70 @@ Rationale: Since tinymorph reserve the option for user to do local inference, th
 
 ### 13.1 Expected Physical Environment
 
-- **Device Performance Requirements**: Tinymorph should be optimised on computers to allow local inference operation, but should also allow to run on some low-end devices with limited resources, using server-hosted environments.
-- **Power Consumption**: Tinymorph should have functionality to manage power consumption efficiently, especially for users deciding running local inference.
+> [!IMPORTANT] OER-EPE1
+>
+> Tinymorph should be able to operate on different hardware environment, with two inference options.
+
+Rationale: Tinymorph should be able to arrange the local computing resources well to optimise generating process. If the local resources does not meet the demand for local inference nto run the model, a notice is given to suggest a switch to host inference.
+
+> [!IMPORTANT] OER-EPE2
+>
+> Tinymorph should not have huge effect on power consumption 
+
+Rationale: Tinymorph should have the functionality to efficiently manage power consumption, especially for the case of local inference. 
 
 
 ### 13.2 Wider Environment Requirements
 
-- **Internet Connectivity**: A stable internet connection is essential for the users who choose to run the hosted inference or using external sources. Tinymorph should be designed to able to handle various internet speeds, and give correct messages to user if connection or information is lost. 
-- **Cross-Platform Usage**: Tinymorph should be able to run on different environment, like various operating systems and adjust to different window size.
+
+> [!IMPORTANT] OER-WER1
+>
+> Tinymorph should be able to handle different internet speed for host inference.
+
+Rationale: If user choose to use a host inference, a stable network connection is needed. Thus tinymorph need to adjust to different internet speed to provide a dependable performance, and give notice if network condition is badly concerned. 
+
+> [!IMPORTANT] OER-WER2
+>
+> Tinymorph should be able to handle different internet speed for host inference.
+
+Rationale: If user choose to use a host inference, a stable network connection is needed. Thus tinymorph need to adjust to different internet speed to provide a dependable performance, and give notice if network condition is badly concerned. 
 
 
 ### 13.3 Requirements for Interfacing with Adjacent Systems
 
-- **API Interfacing**: Tinymorph should integrate with the external APIs, and here is OpenAI's API. Tinymorph should also be able to handle data sources, getting content from databases.
-- **System Interactions**: Tinymorph's editor may need to integrate with word processors and cloud storage systems to export and save their work. 
+> [!IMPORTANT] OER-RIAS1
+>
+> Tinymorph should have a good intergration with different model.
 
+Rationale: Since tinymorph implements SAEs training over the Open-AI existing model, there need to be agood integration between these two parts.
+
+> [!IMPORTANT] OER-RIAS2
+>
+> Tinymorph should cooperate with cloud model running well.
+
+Rationale: For hosted inference, since the model is running remotely, the integration between model running and information return need better organized to make the process soomth.
 
 ### 13.4 Productization Requirements
 
-- **Packaging and Distribution**: Tinymorph should be packaged with installers or package managers in a way that easy to distribute across platforms and easy to to updates. 
-- **Documentation**: Clear user guide and technical document should be accompanied with the Tinymorph software, easy to access.
+> [!IMPORTANT] OER-PR1
+>
+> Tinymorph have a easy implementation on user side
+
+Rationale: Tinymorph should be easy to implement for user end. Updates and distribution on the user end should also cost little effort.
+
+> [!IMPORTANT] OER-PR1
+>
+> Updated relevant documentation should be easy to find for user
+
+Rationale: The manual and technical document should be accessed by user without any barrier. Accompanied with the software, corresponding updates should also implemented on documents.
 
 ### 13.5 Release Requirements
 
-- **Versioning**: Each time the release of tinymorph must be clearly versioned with changelogs outlining new features, bug fixes, and improvements. All modification should also be recorded in relevant documents. 
+> [!IMPORTANT] OER-RR1
+>
+> Version controls and updated information about new release should be recorded
 
+Rationale: There should be a platform or document used to demonstrate the relevant version information and new release updates, like bug fixes and improvements. 
 ## 14. Maintainability and Support Requirements
 
 ### 14.1 Maintenance Requirements
