@@ -105,32 +105,26 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 >
 > Using Open-AI as base model of the language model
 
-Rational: Open-AI has developed and trained LLM using transformer as NLP, which has been widely tested and used, including the GPT models. Tinymorph will use this model as a base model and combine it with SAE to achieve user personalised feature.
+Rationale: Open-AI has developed and trained LLM using transformer as NLP, which has been widely tested and used, including the GPT models. Tinymorph will use this model as a base model and combine it with SAE to achieve user personalised feature.
 
 > [!IMPORTANT] RFA-RF2
 >
 > Using SAEs to extract features from input text
 
-Rational: SAE is a kind of autoencoder that efficient at extracting representations of user input text, and here it includes sparsity to selectively active the neurons in the NN to increase effectiveness. It is build above the Open-AI model to adjust for user preference.
+Rationale: SAE is a kind of autoencoder that efficient at extracting representations of user input text, and here it includes sparsity to selectively active the neurons in the NN to increase effectiveness. It is build above the Open-AI model to adjust for user preference.
 
 > [!IMPORTANT] RFA-RF3
 >
-> Tinymorpgh is designed to run on a Web-based interface
+> Tinymorph is designed to run on a Web-based interface
 
-Rational: The UI of Tinymorpgh is designed as Web-based, and this will allow it operated on main stream operating system, including Windows, lLinux and macOS. 
+Rationale: The UI of Tinymorph is designed as Web-based, and this will allow it operated on main stream operating system, including Windows, lLinux and macOS. 
 
 
 > [!IMPORTANT] RFA-RF4
 >
 > User agreed to submit the content into tinymorph, as well as preference
 
-Rational: Tinymorph will record users' preferences selections and the uploaded file to perform SAE training, especially when user decided on a hosted inference selection. 
-
-> [!IMPORTANT] RFA-RF5
->
-> Hardware environment should allow local inference if required
-
-Rational: If user decides a local inference to run SAE, the local hardware environment should be able to arrange GPU and CPU to support relative training. 
+Rationale: Tinymorph will record users' preferences selections and the uploaded file to perform SAE training, especially when user decided on a hosted inference selection. 
 
 ### 5.2 Business Rules
 
@@ -138,13 +132,13 @@ Rational: If user decides a local inference to run SAE, the local hardware envir
 >
 > Store the preferences on feature and generated data
 
-Rational: The data generated and user preferred feature should be stored, preventing potential data loss caused by crash.
+Rationale: The data generated and user preferred feature should be stored locally, preventing potential data loss caused by crash.
 
 > [!IMPORTANT] RFA-BR2
 >
 > Generated text should filter for detrimental content
 
-Rational: All generated data should filter out prohibited words or detrimental content before deliver back to the user. 
+Rationale: All generated data should filter out prohibited words or detrimental content before deliver back to the user. 
 
 ### 5.3 Assumptions
 
@@ -152,7 +146,13 @@ Rational: All generated data should filter out prohibited words or detrimental c
 >
 > User have knowledge background about writing and language training via SAE 
 
-Rational: Since tinymorph target engineers with writing demands as user, some steering and training require the user to have a expectation on the desired direction of training feature, with basic knowledge of steering the text-generating process.
+Rationale: Since tinymorph target engineers with writing demands as user, some steering and training require the user to have a expectation on the desired direction of training feature, with basic knowledge of steering the text-generating process.
+
+> [!IMPORTANT] RFA-A2
+>
+> Relative net-connection is provided for tinymorph running
+
+Rationale: Since the user need to run the model remotely, a stable network connection is needed for ragular performance.
 
 
 ## 6. The Scope of the Work
@@ -239,45 +239,101 @@ Rational: Since tinymorph target engineers with writing demands as user, some st
 
 ### 12.1 Speed and Latency Requirements
 
-- **Local Inference**: When running on a local inference, this system should use the GPU acceleration to reduce latency, making a time-to-first-token quick. Under ideal situation, responses should be returned in less than 1 second for shorter text completions (under 200 tokens) and under 5 seconds for longer completions (up to 1000 tokens).
-- **Hosted Inference**: If the user choose to use hosted inference servers, the system should be capable to return results within 1-3 seconds under normal internet conditions.
-- **UI Responsiveness**: The user interface should always be responsive, including the special case when processing large inputs or generating complex suggestions. There should not be significant lag when doing actions like scrolling, typing, and doing interaction with panels. 
+> [!IMPORTANT] PR-SLR1
+>
+> When runing local inference, responses should appear after a time interval ranging from 1 second to 5 seconds, depending on the input lengths
 
+Rationale: Tinymorph implements an accelerated GPU arrangement for local training which can provide return within 1 second on small size of input(under 200 tokens), and no more than 5 seconds for larger size of the input text(1000 tokens).
+
+> [!IMPORTANT] PR-SLR2
+>
+> When runing host inference, responses should appear after within 1 to 3 seconds
+
+Rationale: When host inference is chosen, under a good network connection environment, tinymorph uses a dependable remote training resources that can return the response within 3 seconds based on user's input.
+
+> [!IMPORTANT] PR-SLR3
+>
+> Lag should not be apparent or significant, even when a training running in the background
+
+Rationale: Whether user choose to run a host or local inference, training process should not make big effect on user's interface to cause any significant lagging. 
 
 ### 12.2 Safety-Critical Requirements
 
-- **Failure Recovery**: The software should be able to auto save the user's work when there is a crash or system failure. User can bring back the data from last state upon restart, without data loss. 
-- **AI Output Filtering**: Harmful generated texts, like those include inappropriate, harmful, or offensive language, should be filtered out.
-- **Data Integrity**: This software should ensure that the generated content and the settings from users can be saved and retrieved correctly, without possible corruption over the saved data or preferences. 
+> [!IMPORTANT] PR-SCR1
+>
+> There should not be harmful content generated
+
+Rationale: There should be a filter on the returned content to exlude any harmful text like offensive language or inappropriate text. 
+
+> [!IMPORTANT] PR-SCR2
+>
+> Data and preference should be stored locally to prevent loss on crash
+
+Rationale: All the preference selections and text input from user should be stored on user's local machine to prevent the case of network interaption or local software crash. Thus stored data can help to bring back the process in recovery.
 
 ### 12.3 Precision or Accuracy Requirements
 
-**AI output Accuracy**: High relevance and accuracy should be ensured over the generated text from this software.
-- **SAE Steering Precision**: By using the integration of Sparse Auto-encoders (SAEs), users should be able to effectively control or guide the output generation, without losing text precision or context coherence. 
+> [!IMPORTANT] PR-PAR1
+>
+> The output text should match user's intentional steering direction, or expectation 
 
+Rationale: The tinymorph should have a good intepretaion on user's input and preferred direction of steering on generating text. Effective control should be provided to user over the training process.
 
 ### 12.4 Robustness or Fault-Tolerance Requirements
 
-- **Fallback to CPU**: In any cases the GPU resources are not available for local inference user, the system can switch to CPU to do the processing with notifying the users about the switch.
-- **Error Handling**: Whenever a error that caused by user input, or external data sources, a good handle of the error should be provided to the users, including correct messaging and without crashing or freezing. 
+> [!IMPORTANT] PR-RFR1
+>
+> Whenever one type of inference failed to perform, notification will be given and help user to do the switch 
 
+Rationale: Whenever user selected one of the inference type and some failure happened to halt the procedure, a notification will be demonstrated to user to inform about the swich of the inference, and use local cached data to do the switch and recovery.
+
+> [!IMPORTANT] PR-RFR2
+>
+> Helpful error message is provided when a special case happened
+
+Rationale: There might be specail case happened due to unstable internet connection or the input size is over limit. In these cases, an appropriate error message should be provided to user to guide for correction on following steps.
 
 ### 12.5 Capacity Requirements
 
- **Text Input**: The system should be able to handle the documents with various lengths, ranging from short paragraphs (50-100 words) to full essays or reports (up to 10,000 words). There should not be obvious difference on performance.
-- **External Data Integration**: This software should be able to integrate and process data that are from multiple external sources in real-time, by uploading files or inputs into the panel, without noticeable delays. 
+> [!IMPORTANT] PR-CR1
+>
+> There should be only one task in-process for each user, and no more that 5 users running concurrently
+
+Rationale: Due to the capacity of host server, we put a limit on the number of tasks available for user to run. We only allow each user to have a single task in progress and there should not be more that 5 users submitting request to the server at the same time.
+
+> [!IMPORTANT] PR-CR2
+>
+> There should not be obvious delay on integrating the user input in panel and the text imported from file
+
+Rationale: Tinymorph should have capability to integrate both the input from user web interface panel as well as the file input, this integration should not bring in lag to significantly affect performance.  
 
 ### 12.6 Scalability or Extensibility Requirements
 
-- **Model Extensibility**: The system should left chances allowing easy integration of additional models or APIs, which benefits the upgrades or language model change in the future.
-- **Modular Features**: The architecture should be designed to allow selected features being kept for future use from user, and easy to implement new panels for tuning or introducing new steering techniques.
-- **Cross-Platform Scalability**: This software should have consistent performance over different types of devices and screen sizes.  
+> [!IMPORTANT] PR-SER1
+>
+> The web-based interface can fit multiple screen sizes and devices 
+
+Rationale: The web-based interface should be able to adjust to different screen sizes and various devices.
+
+> [!IMPORTANT] PR-SER2
+>
+> Adjust to a range of GPU and CPU hardware environment 
+
+Rationale: If a local inference is chosen by user, and the minimal hardware requirements has been meet, tinymorph should be able to arrange the hardware resources according to the specific situations to have better performance.
 
 ### 12.7 Longevity Requirements
 
-- **Future-Proofing**: This system should be designed in a way that align with adaptability, suitable for future upgrades to newer language models or libraries. 
-- **Cross-Platform Longevity**: Tinymorph should allow operations over different system and devices, making it compatible with future hardware and updated operating system.
-- **Regular Updates**: Without touching the core functionality of the system, feasible support should be provided for ongoing model improvements, bug fixes and adding new features. 
+> [!IMPORTANT] PR-LR1
+>
+> Adaptability is reserved for future other language model implementation
+
+Rationale: For the reason that there might be other language model suitable to use, tinymorph should reserve this adaptability to implement new models or libraries. 
+
+> [!IMPORTANT] PR-LR1
+>
+> Adaptability is reserved for future operating system
+
+Rationale: Since tinymorph reserve the option for user to do local inference, this hardware arrangement need to work well with upcoming operating systems as well. Maintenance might be needed for this longevity.
 
 ## 13. Operational and Environmental Requirements
 
