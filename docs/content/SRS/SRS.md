@@ -351,9 +351,7 @@ Rationale: Tinymorph should be able to arrange the local computing resources wel
 
 Rationale: Tinymorph should have the functionality to efficiently manage power consumption, especially for the case of local inference. 
 
-
 ### 13.2 Wider Environment Requirements
-
 
 > [!IMPORTANT] OER-WER1
 >
@@ -366,7 +364,6 @@ Rationale: If user choose to use a host inference, a stable network connection i
 > Tinymorph should be able to handle different internet speed for host inference.
 
 Rationale: If user choose to use a host inference, a stable network connection is needed. Thus tinymorph need to adjust to different internet speed to provide a dependable performance, and give notice if network condition is badly concerned. 
-
 
 ### 13.3 Requirements for Interfacing with Adjacent Systems
 
@@ -403,22 +400,32 @@ Rationale: The manual and technical document should be accessed by user without 
 > Version controls and updated information about new release should be recorded
 
 Rationale: There should be a platform or document used to demonstrate the relevant version information and new release updates, like bug fixes and improvements. 
+
 ## 14. Maintainability and Support Requirements
 
 ### 14.1 Maintenance Requirements
 
-- **Regular Updates**: Regular updates, including adding features and addressing bugs, should be provided during its life span. 
-- **Backward Compatibility**: User's personalised preferences and setups should be kept and compatible with the new updates and maintenance. 
+> [!IMPORTANT] OER-RR1
+>
+> Updates should be provided during tinymorph's life span
 
+Rationale: Regular updates, including adding features and addressing bugs on user end, and iteration on model should be carried out during the tinymorph's life span as maintenance.
 
 ### 14.2 Supportability Requirements
 
-- **User Support**: A platform should be provided for users to drop feedback or issues for request for help. Possible bugs will be reviewed by developer after being received.
-  
+> [!IMPORTANT] OER-SR1
+>
+> Feedback from user should be able to gathered and pass to developers
+
+Rationale: There should be a platform used to gather and record the feedback or report for bugs from end user as supplement for future development. 
 
 ### 14.3 Adaptability Requirements
 
-- **Cross-Platform Expansion**: Tinymorph should be able to adapt to new platforms and devices, including different screen sizes and different processors.
+> [!IMPORTANT] OER-AR1
+>
+> Tinymorph should adapt to main stream OS and devices as running environment
+
+Rationale: Tinymorph should be able to provide services over the common OS including macOS, Windows and linux, and user end should perform well on average hardware environment. 
 
 ## 15. Security Requirements
 
