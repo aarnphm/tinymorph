@@ -73,7 +73,7 @@ MC-S4. The user interface must follow a file-over-app architecture, avoiding a f
 
 MC-S5. Personalization features, such as user preferences for tone or style, must remain within predefined limits to ensure compatibility with the model's underlying architecture.
 
-MC-S6. There shall be no explicit storage of user-specific content on external servers 
+MC-S6. All contents are owned by users and no users data will be tracked, other than server analytics (inference time, requests count, etc.)
 
 ### 3.2 Implementation Environment of the Current System
 
