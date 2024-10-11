@@ -760,9 +760,9 @@ Rationale: `tinymorph` will adhere to Hypertext Transfer Protocol (HTTP/1.1) sta
 
 > [!IMPORTANT] MNP-RMNP1
 >
-> During upgrading of cloud model, user end should have access to host server as usual
+> Minimal downtime during migration process
 
-Rationale: Whenever there is a iteration on the model running on host server, it should make no effect to end user's generating process. An updating strategy that change the model when no user is in use should be implemented.
+Rationale: When the inference server is updating or maintaining, users should be aware of the downtime, given it shouldn't affect users' workflow.
 
 > [!IMPORTANT] MNP-RMNP1
 >
@@ -774,9 +774,9 @@ Rationale: If there is a new edition of UI is distributed, a notice on current U
 
 > [!IMPORTANT] MNP-DMTNS1
 >
-> Updated user interface should update user local stored preferences in readable data format
+> Migration in future config format should ensure backward compatibility for one-time transition
 
-Rationale: Whenever there is a iteration on the user end interface, tinymorph need to make local stored user preferences readable and in up-to-date format. 
+Rationale: When configuration or certain features require breaking change, `tinymorph` must be able to migrate existing configuration to the new format without breaking change. 
 
 
 ## 23. Costs
