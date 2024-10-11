@@ -61,7 +61,9 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 3.1 Solution Constraints
 
-MC-S1. Due to licensing agreements or compatibility requirements, the system must use a specific set of language models (e.g., OpenAI’s GPT-4 or Llama 3.1).
+MC-S1. Base models for generations should be open weights (Pythia, Phi-3, Llama 3.2, etc.)
+
+rationale: SAEs require access to models' layer activations to extrapolate specific feature activations. Therefore, accessing the model weight is crucial in training SAEs for guiding activations.
 
 MC-S2. All model inferences must be compatible with OpenAI's API specifications, ensuring interoperability with existing systems.
 
