@@ -31,6 +31,43 @@ tr {
   border-bottom: 1px solid var(--darkgray);
 }
 
+.page {
+  & > #quartz-body {
+    @media all and (min-width: calc(#{map-get($breakpoints, desktop)})) {
+      grid-template-columns: #{map-get($tabletGrid, templateColumns)};
+      grid-template-rows: #{map-get($tabletGrid, templateRows)};
+      column-gap: #{map-get($tabletGrid, columnGap)};
+      row-gap: #{map-get($tabletGrid, rowGap)};
+      grid-template-areas: #{map-get($tabletGrid, templateAreas)};
+    }
+
+    & .sidebar.right {
+      display: grid !important;
+      gap: 1.1rem !important;
+      padding: 0 !important;
+      grid-template-rows: min-content;
+      margin-top: 3rem !important;
+
+      & > .graph {
+        grid-area: 1 / 1 / 2 / 2;
+        max-width: 22rem;
+
+        @media all and ($mobile) {
+          grid-area: 1 / 1 / 2 / 2;
+        }
+      }
+
+      & > .backlinks {
+        grid-area: 1 / 3 / 2 / 3;
+
+        @media all and ($mobile) {
+          grid-area: 2 / 1 / 2 / 2;
+        }
+      }
+    }
+  }
+}
+
 .breadcrumb-container {
   gap: 0.25rem;
   border-bottom: 1px solid var(--darkgray);

@@ -58,13 +58,13 @@ cargo build
 For building docs do the following (first time):
 
 ```bash
-cd docs && npm i
+pnpm run docs:build
 ```
 
 All consequent run can be used with:
 
 ```bash
-npx quartz build --serve
+pnpm run docs:serve
 ```
 
 Recommended to use [Obsidian](https://obsidian.md/) for editing docs.
@@ -78,7 +78,7 @@ Recommended to use [Obsidian](https://obsidian.md/) for editing docs.
 
   <summary>example references</summary>
 
-  See https://github.com/linozen/exocortex/blob/v4/content/refs/luhrmann2019.md?plain=1 for examples.
+See https://github.com/linozen/exocortex/blob/v4/content/refs/luhrmann2019.md?plain=1 for examples.
 
 </details>
 
