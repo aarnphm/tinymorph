@@ -27,47 +27,46 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ### 2.1 Client
 
-Description: The client base for the tinymorph project includes organizations and institutions that benefit from advanced text-editing solutions such as engineering firms, academic institutions, and publishing companies. These clients provide essential resources and guidance for the project.
+Description: The client base would primarily comprise design studios and independent creative labs which specialize in developing innovative tools for digital creativity. These clients are at the forefront of technology and design, pushing the boundaries of what digital creative tools can achieve. They provide not only critical funding but also strategic insights that guide the development of advanced text-editing solutions.
 
-Role: Responsible for defining the project's scope and deliverables, ensuring funding, and facilitating alignments with broader academic or commercial goals. They play a vital role in strategic decision-making and project validation.
+Role: They are instrumental in defining the project’s scope and deliverables, ensuring the tool meets the high standards required by creative professionals. They facilitate strategic alignments that enhance the project’s visibility and usability within the creative industry. Their role is crucial in decision-making processes that shape the project’s trajectory and ensure its relevance to the target market.
 
 ### 2.2 Customer
 
-Description:  The primary customers are professional writers and engineers who require sophisticated tools for technical writing, documentation, and publishing. This group can include freelancers who often juggle various projects, technical writers in engineering fields  who need to document intricate concepts, and content creators in technical disciplines who require robust features for complex content creation.
+Description: The primary customers for the Tinymorph project are writers and engineers seeking sophisticated tools to enhance their creative writing processes. This diverse group includes freelancers who work across various genres and formats. They require adaptable tools that cater to a broad range of creative needs. Writers in this segment value features that inspire creativity and streamline the writing process. Engineers on the other hand, seek functionalities that help articulate complex ideas clearly and intuitively.
 
-Role: They will drive user adoption and are key to the project’s market success. Their feedback influences continuous improvement efforts, helping to refine features and ensure the tool remains competitive and relevant.
+Role: These customers are pivotal in driving user adoption and shaping the project’s trajectory. Their comprehensive feedback is crucial for continuous product development. It ensures that tinymorph evolves in response to the dynamic demands of creative writing, maintaining its competitive edge and relevance in the market.
 
 ### 2.3 Other Stakeholders
 
-Description: Includes technical partners and security consultants who play a critical role in supporting the caching mechanisms and ensuring data integrity during user sessions. It also includes professionals in usability and accessibility to ensure that the tool remains user-friendly and accessible to all users, including those with disabilities.
+Description: Includes developers and contributors dedicated to local-first software, enhancing the tool’s offline functionality and independence from network constraints. This group includes a broad open-source community actively engaged in refining user interfaces and interaction paradigms. Other stakeholders also highlights professionals in usability and accessibility, ensuring that the tool remains approachable and usable by everyone regardless of ability.
 
-Role: These stakeholders ensure that tinymorph can operate within an ecosystem of technologies, comply with regulations, and maintain data flows that enhance its capabilities to allow extending its utility and reach.
+Role: These stakeholders are vital for integrating tinymorph within a framework of local-first and open-source technologies. Their collective input ensures adherence to best practices in user centric design and open collaboration. It broadens the tool’s applicability and enhances its community-driven development.
 
 ### 2.4 Hands-On Users of the Project
 
-Description: This group includes individuals who directly interact with tinymorph’s interface such as creative professionals and researchers. These users are critical for the initial adoption and long-term engagement with the tool.
+Description: Comprises individuals who will directly interact with the tinymorph application's interface, primarily creative professionals and engineers engaged in creative writing. These users are essential for the initial adoption and sustained engagement with the tool, particularly benefiting from its suggestion aid features designed to enhance the creative writing process.
 
-Role: The users provide essential usability feedback and participate actively in iterative testing phases. Their insights are crucial for identifying challenges and enhancing user interaction and satisfaction. This feedback directly influences feature development and adjustment to meet diverse user needs.
+Role: The users provide critical usability feedback and actively participate in iterative testing phases. Their insights are invaluable for identifying challenges, refining the suggestion algorithms, and enhancing overall user interaction and satisfaction. This feedback directly influences feature development and adjustments to meet the diverse needs of creative writers.
 
 User Categories:
-- Creative Writers: Includes novelists, bloggers, and freelance writers who rely on tinymorph for its intuitive and inspiring writing environment, which enhances their creative flow and productivity.
-- Technical Writers and Engineers: Professionals in technical fields who use the tool for its robust features that facilitate clear and precise documentation of complex technical content.
-- Academic Researchers and Educators: Users engaged in academic writing and content creation who benefit from the tool's ability to streamline the creation of scholarly articles and instructional materials.
+- Creative Writers: Includes such as novelists, poets, scriptwriters, bloggers, and freelance writers who rely on tinymorph for its intuitive and inspiring writing environment. The suggestion aids help stimulate creativity, overcome writer's block, and enhance their creative flow and productivity.
+- Engineers: Engineers who pursue creative writing, whether professionally or as a personal endeavor. They also seek advanced tools to support their writing projects. Engineers benefit from tinymorph's ability to provide intelligent suggestions that aid in articulating complex ideas creatively.
 
-Subject Matter Experience: Users range from highly creative individuals who excel in storytelling to technical experts who require accuracy and detail-oriented features.
+Subject Matter Experience: Users range from seasoned creative professionals with extensive writing experience to engineers who are exploring creative writing. All users share a common interest in enhancing their writing through intelligent suggestions that inspire creativity and improve the quality of their work.
 
-Technological Experience: Expertise varies widely, from users comfortable with basic functionalities to those proficient in leveraging advanced features for optimizing their writing process.
+Technological Experience: Expertise varies from users who are comfortable with basic word processing tools to those proficient in utilizing advanced software features to optimize their writing process. The application is designed to be accessible to users with varying levels of technical proficiency, ensuring that both novices and tech-savvy individuals can benefit from its features.
 
 Other User Characteristics:
-- Physical Location: Users are globally diverse, necessitating a platform that supports seamless access across different time zones and locations.
-- Education Levels: Users often have backgrounds ranging from self-taught skills in creative writing to formal education in technical fields.
-- Attitude Toward Technology: Generally positive, with preferences for user-friendly and minimal learning curve technologies.
+- Physical Location: Users are globally diverse, necessitating a platform that supports seamless access across different time zones and locations. The application should function reliably regardless of the user's geographical location.
+- Education Levels: Users may have backgrounds ranging from self-taught creative writers to formally educated professionals in engineering or literature. The tool must cater to a wide spectrum of educational experiences.
+- Attitude Toward Technology: Generally positive, with a preference for user-friendly technologies that require minimal learning curves. Users appreciate tools that enhance their creativity without imposing complex technical challenges.
 
 ### 2.5 Personas
 
-Description: Involved are detailed, representative user profiles based on extensive user research. Personas such as College Researcher, Freelance Writer, or Technical Editor symbolize the diverse user base tinymorph aims to serve. The personas are constructed from typical characteristics, behaviors, and needs observed among potential users. They serve to bring user stories and requirements to life during the development process.
+Description: Involved are detailed, representative user profiles based on extensive user research. Personas such as College Researcher, Freelance Writer, or Technical Editor symbolize the diverse user base Tinymorph aims to serve. These personas are constructed from typical characteristics, behaviors, and needs observed among potential users and serve to bring user stories and requirements to life during the development process.
 
-Role: Serve as a focal point during design and development to tailor features, functionality, and user interfaces to meet specific needs and behaviors of different user groups. It ensures the product is versatile and inclusive.
+Role: Serve as a focal point during design and development. It helps to tailor features, functionality, and user interfaces to meet the specific needs and behaviors of different user groups. The applicaiton tinymorph is designed to assist in planning writing projects and overcoming writer's block, rather than simply rewriting or analyzing sentiment. This ensures the product is versatile and truly enhances the creative process for its users.
 
 Example Personas:
 
@@ -78,7 +77,7 @@ Example Personas:
 - Interests: Novel writing, short stories, fantasy and science fiction
 - Goals: To find new ways to build complex characters and intricate plots that captivate her readers.
 - Technology Proficiency: Intermediate, utilizes various digital tools for research and manuscript editing.
-- Persona Narrative: Emily looks to tinymorph to help her overcome writer's block and generate creative content ideas that keep her narratives fresh and engaging.
+- Persona Narrative: Emily looks to tinymorph to help her plan and overcome writer's block and generate creative content ideas that keep her narratives fresh and engaging.
 
 2. Technical Engineer
 - Name: Michael Liu
@@ -87,16 +86,16 @@ Example Personas:
 - Interests: Technical documentation, project schematics, professional development articles
 - Goals: To integrate creativity into his technical writing to make complex concepts accessible and engaging.
 - Technology Proficiency: Advanced, highly skilled in technical design software and documentation tools.
-- Persona Narrative: Michael uses tinymorph to creatively enhance his technical documents, making them easier for non-experts to understand while maintaining professional integrity.
+- Persona Narrative: Michael utilizes Tinymorph to bring a storytelling approach to his engineering presentations and reports. He crafts narratives that explain complex engineering processes and project benefits in an appealing way. This approach helps his audience from clients to the general public, understand and appreciate the value of technical projects.
 
 3. Blogger
 - Name: Sarah Johnson
 - Age: 40
-- Occupation: Academic and Personal Blogger
+- Occupation: Professor and Personal Blogger
 - Interests: Academic publishing, lifestyle blogging, engaging a broad audience online
 - Goals: To distill complex academic concepts into engaging blog posts that appeal to a general audience.
 - Technology Proficiency: Advanced, adept with blogging platforms and social media engagement tools.
-- Persona Narrative: Sarah relies on tinymorph to help transform her detailed research into accessible blog posts that effectively communicate her findings to a non-academic audience. This ultimately enhances her blog's appeal and readability.
+- Persona Narrative: Sarah utilizes tinymorph to creatively translate her academic research into compelling stories for her blog. By simplifying intricate concepts into enjoyable narratives, she makes her posts accessible and intriguing to a wide audience. Her use of the platform boosts the creativity and charm of her content, drawing in and maintaining reader interest effectively.
 
 ### 2.6 Priorities Assigned to Users
 
@@ -105,7 +104,7 @@ Description: Involves categorizing users based on their usage patterns and the c
 Role: This categorization helps in prioritizing development tasks such as feature enhancements, bug fixes, and custom integrations to align product capabilities with the most valuable user demands.  By focusing resources on the most impactful areas, the development team can more effectively address the core needs of primary users. It ensures that the product develops in a direction that supports its most critical use cases.
 
 Key Users:
-- Professional Writers and Technical Engineers: These users are vital to the product's success as they rely heavily on its features for their professional tasks. Their requirements are given the highest priority, and their feedback directly influences major product decisions.
+- Creative Writers and Engineers: These users are vital to the product's success as they rely heavily on its features for their professional tasks. Their requirements are given the highest priority, and their feedback directly influences major product decisions.
 
 Secondary Users:
 - Academic Researchers and Educators: While important, these user's needs are secondary to those of key users. Their feedback influences product enhancements but is prioritized after the essential needs of the primary user group.
@@ -231,19 +230,20 @@ Role: Handle regular updates, patch deployments, system monitoring, and troubles
 
 ### 10.1 Appearance Requirements
 
-LF-A1: The Tinymorph application shall adopt a unified and sophisticated visual design.
+LF-A1: The tinymorph application shall adopt a unified, non-intrusive, and uncluttered visual design.
 
-Rationale: A uniform and elegant design ensures brand recognition and provides a visually pleasing experience for users, fostering greater engagement and trust in the platform.
+Rationale: A consistent and non-intrusive design ensures brand recognition and provides a visually pleasing experience for users, fostering greater engagement and trust in the platform. This minimizes distractions to allow users in focusing more effectively on their creative tasks.
 
-LF-A2. The application must utilize a consistent typography system across all user interfaces.
+LF-A2. The application must implement a consistent design system across all user interfaces, involving standardized typography and color palette.
 
-Rationale: Maintaining consistency in typography ensures readability and prevents user distraction or confusion, contributing to a cohesive user experience.
+Rationale: A consistent design system enhances user experience by ensuring visual coherence in typography and colors. This uniformity aids readability, reduces user distraction, and contributes to a seamless intuitive interface.
+
 
 ### 10.2 Style Requirements
 
-LF-S1. The design of the application will be minimalist, utilizing clean lines and a limited color palette.
+LF-S1. The design of the application will be minimalist, utilizing clean lines and a monotonic color palette.
 
-Rationale: A minimalist design emphasizes functionality and content, enhancing usability by directing the user's focus to essential elements. This approach ensures that the interface remains uncluttered and the features more accessible.
+Rationale: A minimalist design with a monotonic color palette emphasizes functionality and content, enhancing usability by directing the user's focus to essential elements without distraction. This approach ensures that the interface remains uncluttered and the features more accessible, supporting a focused and efficient user experience.
 
 LF-S2. The application must be responsive, adapting seamlessly to various device screens and orientations.
 
@@ -253,9 +253,10 @@ LF-S3. Interactive elements such as buttons and links must contrast significantl
 
 Rationale: High contrast between elements and backgrounds enhances the visibility of interactive features, making navigation intuitive and preventing user frustration.
 
-LF-S4. The user interface should facilitate smooth transitions and logical navigation pathways between different sections and features of the application.
+LF-S4. The user interface should enable smooth transitions and intuitive animations across various sections and features. 
 
-Rationale: Efficient navigation systems reduce user effort in learning how to use the application and increase overall satisfaction by minimizing the time spent on searching for functionalities.
+Smooth transitions and intuitive animations contribute significantly to a seamless user experience. By enhancing user engagement, these visual cues help guide users smoothly through the application’s features. Implementing animations effectively can indicate activity or the completion of tasks, reducing user confusion and improving clarity during navigation.
+
 
 LF-S5. The application should include visual cues and feedback for user interactions to reinforce usability.
 
@@ -269,9 +270,13 @@ UH-EOU1. Tinymorph shall include a session history feature that records and disp
 
 Rationale: This functionality streamlines user workflow by providing quick access to recent actions, which reduces the time needed for navigation and increases efficiency.
 
-UH-EOU2. The application must allow users to revise or remove their inputs after submission.
+UH-EOU2. The application must allow users to interactively review and manually accept or reject changes suggested by the system after their inputs are submitted.
 
-Rationale: The ability to alter or delete content post-submission empowers users with greater control over their work, enhancing the accuracy and relevance of their output.
+Rationale: Providing users with the option to manually accept or reject suggested changes allows them with greater control over their content. This functionality would enhance user engagement by making the editing process more interactive and ensures that the final output aligns precisely with their preferences and intentions.
+
+UH-EOU3. The application shall include a planning interface to assist users in organizing and debugging their creative writing steps.
+
+Rationale: The interface will improve user efficiency by supporting the iterative refinement of writing tasks and planning steps. It enables users to easily adjust and debug their creative outlines, enhancing the overall usability and functionality of the application.
 
 ### 11.2 Personalization and Internationalization Requirements
 
@@ -279,9 +284,9 @@ UH-PI1. Tinymorph must include multilingual support to cater to an international
 
 Rationale: Multilingual support enhances the application’s global accessibility and user engagement, ensuring that users can interact with the platform in their preferred language.
 
-UH-PI2. The application shall provide customizable visual themes, including light and dark modes.
+UH-PI2. The application shall provide options for users to select between light or dark mode based on their system settings or preference.
 
-Rationale: Theme customization improves visual comfort and personalization, enabling users to adapt the interface to their visual preferences and working environments.
+Rationale: These theme customization improves visual comfort and personalization, enabling users to adapt the interface to their visual preferences and working environments.
 
 ### 11.3 Learning Requirements
 
@@ -379,9 +384,9 @@ Rationale: ARIA attributes help provide essential information about the element'
 
 ### 15.1 Access Requirements
 
-SR-AC1. The application will use secure environment variables to manage configuration settings that include sensitive information.
+SR-AC1: The application should implement security measures to protect any server-side configuration or operational settings.
 
-Rationale: Managing settings through environment variables keeps sensitive information out of the codebase, reducing the risk of exposure and enhancing security.
+Rationale: While the application primarily operates locally without storing sensitive user data, ensuring the security of server-side configurations is crucial to prevent unauthorized access and maintain the integrity of the application's operations.
 
 ### 15.2 Integrity Requirements
 
@@ -397,17 +402,23 @@ SR-INT3. The application will use content security policies to mitigate the risk
 
 Rationale: Content Security Policies (CSP) are an effective security control to prevent XSS attacks by restricting the sources from which scripts can be loaded and executed in the application. CSP will help in safeguarding against data theft and maintain the integrity of the content delivered to users.
 
+SR-INT4. Implement JWT and short-lived tokens to secure session communications.
+
+Rationale: Utilizing JWT and short-lived tokens for session management enhances security by ensuring that session data remains protected against unauthorized access. This approach helps prevent bad actors from intercepting or tampering with session data, ensuring that user content and session details remain confidential and intact.
+
+
 ### 15.3 Privacy Requirements
 
 SR-P1. The application must ensure that it does not collect or store personal information, adhering strictly to privacy by design principles.
 
 Rationale: By not collecting personal information, the application minimizes privacy risks and complies with privacy laws and regulations. Avoiding personal data storage also reduces the need for complex data security measures, allowing the project to focus more on enhancing user experience and functionality.
 
+
 ### 15.4 Audit Requirements
 
-SR-AU1. Implement monitoring and logging of access to the inference server and application endpoints.
+SR-AU1: Implement monitoring of interactions with external service providers to ensure their use complies with security policies and performance expectations.
 
-Rationale: Monitoring and logging access to critical components allows for the detection of unusual patterns that may indicate a security breach, facilitating rapid response to potential threats.
+Rationale: Monitoring interactions with external service providers is essential to ensure they are used within the bounds of security protocols and that their performance aligns with the application's requirements. This helps in detecting any deviations that might compromise security or functionality, allowing for quick mitigation actions to maintain the integrity and reliability of the application services.
 
 ### 15.5 Immunity Requirements
 
@@ -511,21 +522,21 @@ UDT-D2. Develop an installation manual with detailed instructions for the softwa
 
 Rationale: The manual ensures that all users regardless of their technical expertise can easily set up the application. This minimizes setup errors and facilitates smoother adoption of the software.
 
-UDT-D3. Produce an emergency procedure manual outlining critical steps for handling urgent software issues and unexpected operational scenarios.
-
-Rationale: Essential for enabling users to quickly respond to and resolve emergencies. This manual reduces downtime and ensures continuous operational efficiency, bolstering user confidence and system reliability.
-
-UDT-D4. Compile a design document describing the software architecture, API specifications, data flow diagrams, and code structure.
+UDT-D3. Compile a design document describing the software architecture, API specifications, data flow diagrams, and code structure.
 
 Rationale: This document is crucial for developers and technical stakeholders to understand the inner workings of the application. It wil support maintenance tasks, future development efforts, and integration with other systems.
 
-UDT-D5. Create a Verification and Validation (V&V) plan and report that documents testing strategies, methodologies, results, and compliance checks.
+UDT-D4. Create a Verification and Validation (V&V) plan and report that documents testing strategies, methodologies, results, and compliance checks.
 
 Rationale: This documentation confirms that the application adheres to all technical specifications and user requirements, enhancing transparency and providing a basis for regulatory compliance and quality control.
 
-UDT-D6. Develop a comprehensive Software Requirements Specification (SRS) that outlines functional and non-functional requirements, interfaces, data models, system behaviors, user interactions, and compliance obligations.
+UDT-D5. Develop a comprehensive Software Requirements Specification (SRS) that outlines functional and non-functional requirements, interfaces, data models, system behaviors, user interactions, and compliance obligations.
 
 Rationale: Serves as a foundational document that guides the entire development process, ensuring that every feature and functionality aligns with user expectations and business objectives. It provides a detailed blueprint for developers and stakeholders, facilitating better planning and consistency in implementation. This approach ensures the development process remains focused on user and business needs, preventing deviations and ensuring the end product is robust, compliant, and aligned to the user's needs.
+
+UDT-D6. Produce an emergency procedure manual outlining critical steps for handling urgent software issues and unexpected operational scenarios.
+
+Rationale: Essential for enabling users to quickly respond to and resolve emergencies. This manual reduces downtime and ensures continuous operational efficiency, bolstering user confidence and system reliability.
 
 ### 24.2 Training Requirements
 
