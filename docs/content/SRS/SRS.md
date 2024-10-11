@@ -324,7 +324,6 @@ LF-S4. The user interface should enable smooth transitions and intuitive animati
 
 Smooth transitions and intuitive animations contribute significantly to a seamless user experience. By enhancing user engagement, these visual cues help guide users smoothly through the application’s features. Implementing animations effectively can indicate activity or the completion of tasks, reducing user confusion and improving clarity during navigation.
 
-
 LF-S5. The application should include visual cues and feedback for user interactions to reinforce usability.
 
 Rationale: Providing immediate visual feedback for user actions confirms the system’s responsiveness, which will help users understand the application’s behavior and reduce errors.
@@ -451,9 +450,7 @@ Rationale: ARIA attributes help provide essential information about the element'
 
 ### 15.1 Access Requirements
 
-SR-AC1: The application should implement security measures to protect any server-side configuration or operational settings.
-
-Rationale: While the application primarily operates locally without storing sensitive user data, ensuring the security of server-side configurations is crucial to prevent unauthorized access and maintain the integrity of the application's operations.
+N/A
 
 ### 15.2 Integrity Requirements
 
