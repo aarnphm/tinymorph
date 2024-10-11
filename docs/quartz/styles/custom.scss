@@ -148,7 +148,7 @@ a {
   }
 
   @media all and (min-width: calc(#{map-get($breakpoints, desktop)})) {
-    &.internal.alias:not(.popover):not(.popover *) {
+    &.internal.alias:not(.popover):not(.popover *):not([href^="#bib"]) {
       @include links;
     }
   }
@@ -161,10 +161,6 @@ a {
 
 .callout[data-callout-fold] {
   overflow-y: hidden;
-}
-
-section[data-footnotes] {
-  background-color: unset !important;
 }
 
 #preview-container {
@@ -312,5 +308,36 @@ blockquote.twitter-tweet {
     font-weight: bold;
     padding: 4px 8px;
     border: 1px solid var(--dark);
+  }
+}
+
+section[data-footnotes] {
+  background-color: var(--light);
+  border: 2px solid var(--tertiary);
+  position: relative;
+
+  & > * {
+    margin: 0 1.25rem;
+  }
+
+  // disable footnotes headers
+  & > #footnote-label.sr-only {
+    margin-top: 1rem;
+  }
+
+  & > ol {
+    margin-bottom: 2rem;
+  }
+
+  &::after {
+    content: "";
+    background-image: url("/static/dotted.svg");
+    background-repeat: repeat;
+    z-index: -10;
+    top: 0.5rem;
+    left: 0.5rem;
+    right: -0.5rem;
+    bottom: -0.5rem;
+    position: absolute;
   }
 }

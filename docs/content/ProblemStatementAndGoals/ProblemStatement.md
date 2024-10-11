@@ -21,28 +21,38 @@ users of all ages to explore and learn. More than just a portable computer, the 
 learning, creation, and self-expression, that could adapt to users' increasing skills and need.
 
 As we progress into the $21^{\text{st}}$ century, software has become comoditised, serving as the engine of transformations that transcend every corner of our life.
-Simultaneously, we've seen exponential growth in machine learning (ML) systems' capabilities, mainly through the general push of large language models (LLMs) into the mainstream.
-As these systems exihibit emergent properties of intelligence, how should we craft interfaces that promote
-[[glossary#agency|agency]] and encourage a sense of personalisation through interactions, rather than providing a tool for automation?
+Simultaneously, we've seen exponential growth in machine learning (ML) systems'[^1] capabilities, largely due to a general push of large language models (LLMs) into the mainstream.
+As these systems exihibit emergent properties of [[DevelopmentPlan/DevelopmentPlan#^intelligence|intelligence]], how should we craft interfaces that amplify
+users' [[glossary#agency|agency]] and encourage a sense of personalisation through interactions, rather than providing a mere tool for automation?
 
 Imagine you are an engineer who pursues creative writing as a hobby. You often curate topics and ideas from discussion on social media,
 then categorise them into themes for your arguments. There are plethora of tools
-out there that you can use to assist you with these tasks. For those inclined towards more adventurous endeavours, such as running customized
+out there that you can use to assist you with planning for your writing.
+For those inclined towards more adventurous endeavours, such as running customized
 models to meet specific requirements, you might find yourself in the land of _auto-regressive models_: GPTs and friends.
 
 [[glossary#auto-regressive model|Auto-regressive models]] excels at surfacing machines' internal representation of the world through a simple interface: given
 a blob of text, the model will generate a contiguous piece of text that it predicts as the most probable tokens.
 For example, if you give it a Wikipedia article, the model should produce text consistent with the remainder of said article.
+These models works well given the following assumption: the inputs prompt must be coherent and well-structured
+surrounding a given problem the users want to achieve.
+A writer might provide paragraphs from their favourite authors - let's say Joan Didion, as context to formulate their
+arguments for a certain writing. The model then "suggests" certain ideas that simulate Didion's style of writing. Here
+is a big catch: [garbage in, garbage out](https://en.wikipedia.org/wiki/Garbage_in,_garbage_out). If your prompt are
+disconnected or incoherent, the model will generate text that is equally incoherent.
 
 This heuristic lays the foundation to the proliferation of conversational user interfaces (CUIs), which is obvious
 given that chat is a thin wrapper around text modality. Yet, CUIs often prove frustrating when dealing with tasks that require
 larger sets of information (think of support portals, orders forms, etc.). Additionally,
-for tasks that require frequent information retrieval (research, travel planning, etc.), CUIs are suboptimal as they
+for tasks that require frequent information retrieval (research, travel planning, writing, etc.), CUIs are suboptimal as they
 compel users to unecessarily maintain information in their working memory (for no reason).
+For writers, the hardest part of writing or getting over writers block usually relies on how to coherently structure
+their thoughts onto papers. This requires a step beyond pure conversation partners, an interface that induces both
+planning and modelling of ideas.
 
-Given these challenges, `tinymorph` seeks to explore alternative interfaces for text generations models to extend our
-cognitive abilities. This means developing spatial and visual interfaces that allow for non-linear exploration of
-information and ideas, through writing.
+Given these challenges, `tinymorph` doesn't seek to be a mere tools for rewriting text. `tinymorph` aims to explore
+alternative interfaces for text generations models to extend our cognitive abilities. This means developing spatial and visual
+interfaces that allow for non-linear exploration of information and ideas, through writing.
 
 ## Inputs and Outputs
 
@@ -63,14 +73,10 @@ Outputs from `tinymorph`:
 
 ## Stakeholders
 
-Possible stakeholders include:
-
-1. End users: Writers, students, researchers, content creators, creative professionals who write.
-2. Developers and practioners: engineers and ML researchers interested in exploring new interaction paradigms for large
-   language models
-3. Educators, Edtech companies: companies developing ML-powered learning tools to help students and educators
-4. Open source community: developers and researchers interested in contributing to open source projects, given that
-   `tinymorph` is open-source and licensed under Apache 2.0.
+`tinymorph` main stakeholders include writers, and engineers whose write. `tinymorph` seeks to help writers to be more
+productive in their writing, getting over their creative block. Additionally, `tinymorph` also aims to encourage
+engineers who write to be more creative and structure with their writing, while stay true to their tone. Writing, at
+the end of the day, are very personal, which means a tool should not dictate how one should write.
 
 ## Environment
 
@@ -92,8 +98,8 @@ The following encapsulates both hardware and software environment for `tinymorph
 ## Goals
 
 - A [_file-over-app_](https://stephango.com/file-over-app) web-based text editor.
-- User feedback-loop for steering built into the editor UX.
-- Efficent attention caching for feature steering.
+- User feedback-loop for steering through planning.
+- Efficient activation caching for feature steering.
 - Functional SAEs for guided steering.
 - OpenAI-compatible API for LLM server.
 
@@ -158,7 +164,21 @@ do (which is mechanistic interpretability).
 
 ### Revision
 
-| Date          | Revision | Change                        |
-| ------------- | -------- | ----------------------------- |
-| Sept. 16 2024 | 0.0      | Initial skafolding            |
-| Sept. 19 2024 | 0.1      | Problem Statement definitions |
+| Date          | Revision | Change                                        |
+| ------------- | -------- | --------------------------------------------- |
+| Sept. 16 2024 | 0.0      | Initial skafolding                            |
+| Sept. 19 2024 | 0.1      | Problem Statement definitions                 |
+| Oct. 5 2024   | 0.2      | Update problem statement, adjust stakeholders |
+
+[^1]:
+    Historically, the seminar work from Alan Turing laid the foundation for exploring the possibilities of a thinking machine [@10.1093/mind/LIX.236.433].
+    Subsequently, the development of AI had taken a symbolic approach, popularized
+    through decision-tree reasonings and expert systems -- world representation through high-level and human-readable
+    symbols to manipulate the results. Haugeland referred to these systems as Good Old-Fashioned AI (GOFAI) [@10.7551/mitpress/4626.001.0001]
+
+    However, GOFAI presented its limitation and led us into a "AI Winter", largely due to the cynicism of the general research community
+    as well as a reduction in funding at most research labs. [@handler2008avoidanotheraiwinter]
+
+    Given the rise to Moore's Law and the expontential amount of computing and [[glossary#data|data]] a new approach
+    centered around statistical methods and [[glossary#connectionism|connectionist]] networks arose, and referred as "New Fangled AI" (NFAI).
+    Machine learning system nowadays are also known as NFAI systems.

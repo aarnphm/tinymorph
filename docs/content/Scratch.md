@@ -25,6 +25,7 @@ design UI: everyone P0 (time to do this)
 
 - training: (research) (quality testing) <- @aarnphm[^3]
 - inference: (infrastructure) (A/B testing, regression testing) @waleed
+
   - OpenAI-compatible API server: [functional](https://github.com/aarnphm/tinymorph/tree/main/python/asteraceae)
   - Edit logits for inference server (vllm, llama-cpp)
   - local inference
@@ -32,12 +33,18 @@ design UI: everyone P0 (time to do this)
   - inference engine: vLLM (GPU), llama-cpp (CPU)
   - vllm plugins [support](https://github.com/vllm-project/vllm/commit/16422ea76f213f5b1035513b441245b19ca5bdce)
 
-UX:
+- multiplayer text editor: (target: stakeholders) + (other player: AI models) (P3)
+
+### ux.
 
 - session history: https://translucentweb.site/
 - writing => graph (embeddings representation for the text)
 
 https://x.com/thesephist/status/1793033871606382748
+
+Inline-definition
+
+https://x.com/JohnPhamous/status/1841527353270476808
 
 Storage (local):
 
@@ -47,7 +54,19 @@ accesibility:
 
 - https://www.w3.org/WAI/standards-guidelines/aria/
 
-## cost.
+[Telescopic text](https://www.telescopictext.org/)
+
+expansion upon telescopic text: [notation](https://thesephist.com/posts/hyperlink/)
+
+https://x.com/david_perell/status/1841875983676162124
+
+[_website_](https://writingexamples.com/article/orwell-symbols-tell-a-story)
+
+cursor navigation:
+
+https://x.com/JaceThings/status/1843441743187861850
+
+### cost.
 
 Using EC2 for GPUs and inference cost. (Running on A100 with 32 CPUs)
 
@@ -87,6 +106,8 @@ async function createFolder() {
 Possible UI component library: [shadcn/ui](https://ui.shadcn.com/)
 
 https://x.com/CherrilynnZ/status/1836881535154409629
+
+editor: https://prosemirror.net/
 
 ## training [[glossary#sparse autoencoders|SAEs]]
 
@@ -140,6 +161,10 @@ Use SAE to steerable generations[^1] <= User feedbacks
 
 > [!IMPORTANT] problem statement.
 > actionable steering for attention-based models
+
+> [!question] RAG-infused pipeline
+>
+> What if we add additional web-search vectors to enhance correctness in steering?
 
 ## inference
 

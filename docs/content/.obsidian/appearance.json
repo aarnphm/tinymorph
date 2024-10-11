@@ -8,7 +8,10 @@
   "translucency": true,
   "showViewHeader": false,
   "enabledCssSnippets": [
-    "snippet"
+    "snippet",
+    "custom",
+    "01-root",
+    "reflection"
   ],
   "baseFontSizeAction": false,
   "theme": "moonstone",
