@@ -128,35 +128,108 @@ Role: Handle regular updates, patch deployments, system monitoring, and troubles
 
 ### 3.1 Solution Constraints
 
-[Insert your content here.]
+MC-S1. Base models for generations should be open weights (Pythia, Phi-3, Llama 3.2, etc.)
+
+Rationale: Having open-weight models allows for custom fine-tuning based on specific user needs (e.g., tonality, writing styles) or experimental features like, steering, and feedback mechanisms
+
+MC-S2. All model inferences must be compatible with OpenAI's API specifications, ensuring interoperability with existing systems.
+
+Rationale: OpenAI-compatible endpoints are widely adopted in the industry. An inference server providing an OpenAI-compatible endpoint would make it easier for API integration with upstream tools.
+
+MC-S3. The Minimum Viable Product must be web-based, and accessible from standard web browsers (Chrome, Firefox, Safari) without requiring installation or browser-specific extensions.
+
+Rationale: Starting with a web-based solution allows faster prototyping and wide accessibility, ensuring that the application can reach a broad audience quickly while allowing room for future iteration.
+
+MC-S4. The user interface must follow a file-over-app architecture, avoiding a full application installation for minimal system dependencies.
+
+Rationale: By following a file-over-app architecture, there is a reduction in the overhead associated with traditional software installation, making the tool more lightweight and easier to access. This approach ensures that users can engage with the tool seamlessly, without worrying about system compatibility or additional dependencies, aligning with the goal of rapid, cross-platform usability.
+
+MC-S5. Personalization features, such as user preferences for tone and style, must remain within predefined limits to ensure compatibility with the model’s underlying architecture.
+
+Rationale: Limiting personalization features to predefined parameters ensures that the system’s core architecture remains stable and compatible with the underlying language models. While users can still select tone and style preferences through features like dropdown menus, these constraints prevent excessive complexity in the model’s behavior, maintaining a balance between user customization and technical feasibility.
+
+MC-S6. There shall be no explicit storage of user-specific content on external servers 
+
+Rationale: Protecting user privacy and ensures that their data remains secure. By not storing user-specific content on external servers, the application reduces the risk of data breaches and aligns with privacy-conscious practices. This reassures users that their content is handled locally or securely on their own devices, maintaining trust in the platform.
 
 ### 3.2 Implementation Environment of the Current System
 
-[Insert your content here.]
+MC-I1. The implementation environment must follow modern web best practices.
+
+Rationale: Following modern web best practices ensures compatibility, and ease of maintenance across various browsers and devices.
+
+MC-I2. Server-side components must support deployment on scalable infrastructure, including compatibility with GPU usage and Kubernetes clusters.
+
+Rationale: This ensures that the server-side architecture can efficiently handle the computational demands of the models (e.g., GPU support) while remaining flexible for deployment in various cloud environments, promoting scalability and ease of management.
+
+MC-I3. The system must support cloud-based inference via APIs and local inference with GPU acceleration, while managing request queues and concurrency limits.
+
+Rationale: This ensures the system can handle high-performance inference tasks both locally and in the cloud, while maintaining efficient resource usage and managing multiple concurrent requests to prevent bottlenecks.
+
+MC-I4. The implementation must accommodate scalable infrastructure that manages increased load during high-traffic periods.
+
+Rationale: This ensures the system can dynamically scale to meet user demand, maintaining performance and stability by efficiently managing multiple requests and preventing overload during periods of peak traffic.
 
 ### 3.3 Partner or Collaborative Applications
 
-[Insert your content here.]
+MC-P1. The system must support integration with tools like Notion, Obsidian, and text editors such as Neovim and VSCode.
+
+Rationale: This allows users to work with their preferred tools, enhancing productivity and collaboration by enabling them to transfer and synchronize content seamlessly between the application and other commonly used applications in the same space.
+
+MC-P2. The system must provide export options in multiple formats (e.g., Markdown, PDF, DOCX).
+
+Rationale: Providing multiple export formats allows users to share and collaborate across a variety of tools and systems, supporting flexible workflows and interoperability with a wide range of applications.
+
 
 ### 3.4 Off-the-Shelf Software
 
-[Insert your content here.]
+MC-O1. The system must initially incorporate off-the-shelf writing assistance tools (e.g., Jasper, Copywrite) for comparison and benchmarking purposes during POC development.
+
+Rationale: Benchmarking against existing tools helps identify areas where the application can offer more personalization and control compared to standard solutions.
 
 ### 3.5 Anticipated Workplace Environment
 
-[Insert your content here.]
+MC-A1. The system must support remote collaboration, using GitHub for version control and Microsoft Teams for communication.
+
+Rationale: This ensures that development can proceed asynchronously, facilitating effective collaboration across distributed teams, with GitHub managing code changes and Teams handling communication.
+
+MC-A2. All developers must set up their environments according to the contribution guidelines for tinymorph.
+
+Rationale: Ensuring consistent environments across all developers minimizes integration issues, enhances collaboration, and maintains uniformity in development practices.
+
+MC-A3. Developers are encouraged to add unit and integration testing to ensure fault tolerance and workflow stability, using tools like GitHub Actions for continuous integration.
+
+Rationale: Adding testing early in the development cycle promotes code stability and helps identify issues across environments, supporting smooth development workflows and reliable user experiences.
 
 ### 3.6 Schedule Constraints
 
-[Insert your content here.]
+MC-S1. The system must meet the Revision 1 deadline March 24, 2025 as per the capstone project timeline, allowing additional buffer time for debugging, user testing, and revisions before the final presentation.
+
+Rationale: Meeting the Revision 1 deadline ensures that there is sufficient time for testing and improvements, which are crucial for addressing issues and ensuring a polished final product by the end of the capstone project.
+
+MC-S2. Preliminary research, including design thinking and proof of concept development, must be stabilized within the first two to three months of the project.
+
+Rationale: Completing early-stage work promptly allows for more time to focus on complex engineering tasks like model integration, ensuring that key functionalities are implemented effectively within the project’s timeline.
+
+MC-S3. The time required for training and validating SAEs must not exceed 5 days of GPU time, including any hyperparameter tuning, to keep the project on schedule.
+
+Rationale: Limiting the training time for SAEs ensures that the system stays within development timelines, preventing bottlenecks and allowing time for other critical tasks.
 
 ### 3.7 Budget Constraints
 
-[Insert your content here.]
+MC-B1. The project has a maximum budget of $1000 in credits on BentoCloud for serving.
+
+Rationale: This constraint ensures that the system operates within the available budget, focusing on efficient resource use and cost-effective solutions for cloud-based serving.
 
 ### 3.8 Enterprise Constraints
 
-[Insert your content here.]
+MC-E1. All software dependencies must follow the Apache 2.0 license or a compatible subset.
+
+Rationale: Ensuring that all dependencies align with the project’s open-source licensing reduces legal risks and maintains consistency with the project's license requirements.
+
+MC-E2. Open-weight models used for inference must adhere to their respective community licenses and be used only for research purposes.
+
+Rationale: This ensures that any models integrated into tinymorph comply with their community usage terms, preventing misuse and maintaining alignment with ethical research standards.
 
 ## 4. Naming Conventions and Terminology
 
@@ -330,7 +403,61 @@ Below are detailed BUC scenarios, specifying how tinymorph handles each event:
 
 ### 9.1 Functional Requirements
 
-[Insert your content here.]
+FR-1. The system shall provide suggestions during the planning phase of creative writing, offering assistance in structuring ideas, topics, or themes based on user input, with a focus on brainstorming and outlining rather than real-time text generation. The system should generate relevant planning suggestions within 10 seconds of receiving a prompt, producing outlines or idea guidance based on user input.
+
+Rationale: Traditional text suggestions may not suit creative writing, which is highly personal and abstract. Instead, guiding users through the planning phase helps them build a solid foundation for their content.
+
+FR-2. The system shall provide users with manual control over text generation, enabling them to select advanced steering options such as tone, style, or creativity level. For beginners, a simplified option shall allow tone suggestions based on well-known authors. Additionally, users shall have the option to input their previous writing samples, allowing the model to adapt to their tone and style within a maximum of 30 seconds.
+
+Rationale: Providing manual control over the model's output allows both beginners and advanced users to customize the text generation to their preferences. Offering tone suggestions and the option to input past writing samples enhances personalization, making the system more adaptable to individual writing styles.
+
+FR-3. Users shall be able to interact with generated text through a left-to-right (LTR) feedback panel, allowing them to provide real-time feedback on model-generated suggestions. The panel should present previews that are easy to modify without causing cognitive overload, particularly for planning-related tasks.
+
+Rationale: The LTR panel offers an intuitive way to refine model behavior, but it must be designed to reduce cognitive overload, enabling users to focus on effective interaction without being overwhelmed.
+
+FR-4. Users shall be able to set preferences for tone, style, voice, and formality, which the system will apply to all future generations of text. 
+
+Rationale: Allowing users to customize the tone, style, voice, and formality ensures the system adapts to individual preferences, making the generated text more personalized and relevant to the user's needs.
+
+FR-5. Users shall be able to save their preferred configurations as profiles, enabling them to switch between different writing styles or goals. For the initial version, the focus shall be on creative writing, with the potential to expand to other writing types (e.g., academic, casual blog posts) as additional datasets are integrated.
+
+Rationale: Allowing users to save profiles for different writing styles supports personalization, and initially focusing on creative writing ensures that the system can refine its functionality before expanding to other types of content that may require specialized datasets.
+
+FR-6. The system shall allow users to navigate through their text non-linearly by providing a visual map or tree view that displays key points, topics, sections, and revision history. This tree-based exploration shall support both text structure and revision tracking, allowing users to explore and edit different versions or sections easily.
+
+Rationale: Providing a tree-based view enhances the user’s ability to navigate their content efficiently, particularly during revision or structural changes. This visual aid allows for more intuitive exploration of key points, sections, and revisions, offering greater control over the writing process.
+
+FR-7. The system shall present possible planning steps that users can choose, modify, or combine to guide the structure and flow of their writing.
+
+Rationale: Focusing on planning steps rather than text alternatives aligns with the creative writing process, helping users organize and structure their ideas more effectively. This approach avoids the limitations of traditional generation methods like beam search, which may not perform well in this context.
+
+FR-8. The system shall offer version control features that allow users to navigate through previous edits, revert to earlier document versions, and compare different drafts visually.
+
+Rationale: Providing a clear representation of revision history helps users track changes, make informed decisions about reverting to previous states, and compare different versions of their work with ease.
+
+FR-9. The system shall support an offline mode where users can continue to write and interact with the editor without internet access, using pre-downloaded resources.
+
+Rationale: While offline mode may not be a priority in the current development phase, providing the ability to work offline in future versions ensures greater accessibility and flexibility for users in varying environments.
+
+FR-10. The system shall allow users to continue writing and saving files locally during offline sessions. However, certain features, such as planning-related suggestions, will only be available when the user is connected to the internet.
+
+Rationale: By allowing users to write and save locally during offline sessions, the system ensures uninterrupted productivity. However, advanced features requiring internet access, like planning assistance, will only function when a connection is restored.
+
+FR-11. Users shall be able to set and track specific writing goals (e.g., word count, tone consistency, argument development) through customizable progress tracking features, such as word count meters, tone analysis, and style consistency checks. The system will offer suggestions to help users meet these goals, ensuring alignment with their intended writing objectives.
+
+Rationale: Combining goal-setting with progress tracking allows users to monitor their progress and receive actionable feedback, making the writing process more structured and goal-oriented. This unified approach supports personalized goal management, helping users stay on track.
+
+FR-12. The system shall allow users to categorize and tag different sections of their text (e.g., introduction, argument, conclusion), and automatically generate an outline based on the document’s structure. 
+
+Rationale: Combining tagging with automatic outline generation streamlines document organization and navigation. This will provide a high-level overview of the content and enable quick access to specific sections for better organization and navigation within large documents. This feature also helps users maintain clarity and easily navigate large documents, providing both a detailed view of the content.
+
+FR-13. The system shall allow users to export their documents in .pdf, .md (Markdown), and plain text formats, ensuring compatibility with external platforms. Support for .docx format will be considered for future development as better libraries become available.
+
+Rationale: Exporting documents in widely compatible formats like Markdown, PDF, and plain text ensures flexibility for users without adding unnecessary complexity. Focusing on these formats simplifies implementation while covering most use cases.
+
+FR-14. The system shall allow users to customize the visual appearance of the editor by choosing from different themes, such as dark mode, light mode, and high-contrast options.
+
+Rationale: Providing customization of the visual appearance enhances user experience and accessibility, allowing users to choose themes that suit their preferences or visual needs.
 
 ## 10. Look and Feel Requirements
 
@@ -712,15 +839,46 @@ Rationale: `tinymorph` will adhere to Hypertext Transfer Protocol (HTTP/1.1) sta
 
 ### 19.1 Ready-Made Products
 
-[Insert your content here.]
+Text Editor Frameworks:
+
+CodeMirror:
+An open-source, browser-based text editor that supports rich editing features. CodeMirror can be integrated as the core text-editing interface for tinymorph, enabling basic editing functionality while allowing custom enhancements to support user steering and model behavior.
+Language Models:
+
+OpenAI GPT:
+OpenAI’s Generative Pre-trained Transformer (GPT) is a highly advanced language model capable of generating coherent, contextually relevant text. Accessible via an API, GPT can be easily integrated into tinymorph, providing powerful text generation for tasks such as essays, dialogues, and story drafts.
+
+Llama 3:
+Llama 3 is an open-source large language model optimized for maintaining coherence in long-form writing. Its ability to handle extended context makes it ideal for writing tools like tinymorph, and its fine-tuning capabilities allow customization for specific use cases, such as creative or technical writing.
+
+Writing Assistants:
+
+Quill:
+Quill is an AI-driven writing assistant that offers real-time feedback and suggestions to improve writing quality. With advanced grammar and style checks and collaborative features, Quill can help users refine their text, making it a useful tool for tinymorph’s vision of an intelligent writing assistant.
+
+Jasper:
+Jasper is an AI-powered writing assistant focused on generating content for diverse formats, including blogs, essays, and marketing materials. With personalization options for tone and style, Jasper aligns with tinymorph’s goal of empowering users to control their writing style and tone.
+
+AI Infrastructure:
+
+Goodfire:
+Goodfire provides optimized infrastructure for AI model inference and deployment, ensuring low-latency, fast interactions. It scales seamlessly, making it a suitable platform for tinymorph to manage increased user demand without sacrificing performance. Goodfire's flexibility across hardware and software environments supports tinymorph’s scalability needs.
 
 ### 19.2 Reusable Components
 
-[Insert your content here.]
+LoRA (Low-Rank Adaptation):
+LoRA is a technique for fine-tuning large pre-trained models, like GPT or Llama, for specific tasks. By reusing LoRA components, tinymorph can efficiently adapt these models for personalized writing assistance without the need to retrain the entire model. This approach allows for user-specific fine-tuning, enhancing tinymorph’s customization capabilities.
 
 ### 19.3 Products That Can Be Copied
 
-[Insert your content here.]
+GitHub Copilot (Interaction Paradigms):
+The way GitHub Copilot integrates directly into development environments to provide in-line code suggestions can be adapted for tinymorph’s text generation. Tinymorph can borrow this interaction style by offering inlay suggestions for text, allowing users to manually steer and adjust the output based on their writing goals.
+
+Google Docs' Suggestion Mode (Inlay Suggestions):
+Google Docs' "Suggestion Mode" allows users to propose edits without making permanent changes. Tinymorph could adopt a similar mechanism, providing users with inlay suggestions from the model, which they can choose to accept or reject, enhancing control over the final output.
+
+Grammarly’s Tone Detector (Tone Adjustment Feature):
+Grammarly’s tone detection system analyzes writing to give feedback on the mood and tone of the content. Tinymorph could replicate this feature by analyzing the user’s writing style and suggesting tone adjustments, allowing users to fine-tune the emotional or stylistic qualities of their text.
 
 ## 20. New Problems
 
