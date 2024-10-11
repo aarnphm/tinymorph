@@ -533,11 +533,26 @@ Rationale: Tinymorph adhere to Hypertext Transfer Protocol (HTTP/1.1 and HTTP/2)
 
 ### 22.1 Requirements for Migration to the New Product
 
-[Insert your content here.]
+> [!IMPORTANT] MNP-RMNP1
+>
+> During upgrading of cloud model, user end should have access to host server as usual
+
+Rationale: Whenever there is a iteration on the model running on host server, it should make no effect to end user's generating process. An updating strategy that change the model when no user is in use should be implemented.
+
+> [!IMPORTANT] MNP-RMNP1
+>
+> A notice is given to user if new edition of UI is available
+
+Rationale: If there is a new edition of UI is distributed, a notice on current UI should be provided for user to access to latest edition. 
 
 ### 22.2 Data That Has to be Modified or Translated for the New System
 
-[Insert your content here.]
+> [!IMPORTANT] MNP-DMTNS1
+>
+> Updated user interface should update user local stored preferences in readable data format
+
+Rationale: Whenever there is a iteration on the user end interface, tinymorph need to make local stored user preferences readable and in up-to-date format. 
+
 
 ## 23. Costs
 
