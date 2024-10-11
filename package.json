@@ -3,7 +3,8 @@
   "private": true,
   "homepage": "https://tinymorph.aarnphm.xyz",
   "scripts": {
-    "docs:serve": "cd docs && npx quartz build --serve -v"
+    "docs:serve": "pnpm --filter ./docs run quartz build --serve -v",
+    "docs:build": "pnpm --filter ./docs run quartz build -v"
   },
   "keywords": [
     "sae",
