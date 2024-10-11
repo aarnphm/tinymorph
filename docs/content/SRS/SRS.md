@@ -892,7 +892,16 @@ Rationale: Scheduled Q&A sessions after updates ensure that users fully understa
 </div>
 
 <div class="blob">
+<p>
+  1. The part of task division went quick, we choose to use communication in group to resolve the confusions. The feedback in teams is quick in response.<br>
+  2. I am still not fully catch up the background knowledge about this project, and for some of the decisions I'm still not on the same page with my peers. Self-demand learning and communications are definately needed for following procedures.<br>
+  3. Most of the requirements are from peers as this is also a texting tool we can use for ourselves. We discussed the requiremnts from the user's perspective of view.<br>
+  4. COMPSCI 4ML3, the course about machine learning gave me some theoretical knowledge background for the project. The SFWRENG 3X03 is also useful as guidance to have some overview of developing a project.<br>
+  5. SAE training is the skill I need for this project. It is a feature extraction phase on user input to get token for larger model to run. Some knowledge on applied machine laerning is also important to bring this project to practice.<br>
+  6. We have gathered related website about the SAE training, with the github project as tutorial to have a look. Some paper from google scholar is also greatly helpful for self-demand learning needed in this project. These two approches are recommanded because they allow self-paced learning asynchronously, matching to individual time slot.
 
+
+</p>
 </div>
 
 </div>
