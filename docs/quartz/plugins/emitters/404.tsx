@@ -16,6 +16,7 @@ export const NotFoundPage: QuartzEmitterPlugin = () => {
     ...sharedPageComponents,
     pageBody: NotFound(),
     beforeBody: [],
+    afterBody: sharedPageComponents.afterBody.slice(1),
     left: [],
     right: [],
   }
