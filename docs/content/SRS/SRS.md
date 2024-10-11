@@ -168,15 +168,54 @@ Role: Handle regular updates, patch deployments, system monitoring, and troubles
 
 ### 5.1 Relevant Facts
 
-[Insert your content here.]
+> [!IMPORTANT] RFA-RF1
+>
+> Using open models such as [Gemma](https://ai.google.dev/gemma) or [Llama](https://www.llama.com/) as base language model
+
+Rationale: Google's Gemma is a language model family supporting long context generation, with GemmaScope as pre-trained SAEs for feature interpolation. `tinymorph` will utilize Gemma for planning and guiding users' writing.
+
+
+> [!IMPORTANT] RFA-RF2
+>
+> offers web-based interface
+
+Rationale: provide an universal access for all platforms and operating systems. 
+
+
+> [!IMPORTANT] RFA-RF3
+>
+> `tinymorph` will utilise online inference for planning suggestion.
+
+Rationale: Running model locally poses challenges for users to setup both base model with specific SAEs for different tasks. While `tinymorph` roadmap is to release a packaged binary that can be run everywhere, a online inference server will be used for web-based interface to ensure the best user experience. 
 
 ### 5.2 Business Rules
 
-[Insert your content here.]
+> [!IMPORTANT] RFA-BR1
+>
+> Data locality 
+
+Rationale: Users' configuration will be stored within a vault-like directory, locally on users' machines. No data will be stored on the cloud.
+
+> [!IMPORTANT] RFA-BR2
+>
+> Suggestions and planning steps must adhere to safety guidelines
+
+Rationale: usage of SAEs to reduce hallucinations, as well as improve general safety of text quality. 
 
 ### 5.3 Assumptions
 
-[Insert your content here.]
+> [!IMPORTANT] RFA-A1
+>
+> User knows how to use the browser
+
+Rationale: `tinymorph` will offer a web-based interface, thus users must know the basic navigation of the existing environment (in this case, the browser of choice).
+
+> [!IMPORTANT] RFA-A2
+>
+> Network connection 
+
+Rationale: `tinymorph` will require network connections to run inference for suggestion and planning UI.
+
 
 ## 6. The Scope of the Work
 
@@ -384,67 +423,184 @@ Rationale: ARIA attributes help provide essential information about the element'
 
 ### 12.1 Speed and Latency Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] PR-SLR1
+>
+> [[glossary#time-to-first-tokens|TTFT]] should be minimum, around 200-500ms
+
+Rationale: Suggestion and planning should feel smooth, and fast. Therefore, time-to-first-token is important.
+
+> [!IMPORTANT] PR-SLR2
+>
+> Throughput should be approximate 300 tokens/sec for a batch size of 4
+
+Rationale: `tinymorph` inference server should be able to handle incoming requests in batches, ideally handling a decent amount of throughput. Note that we will have to sacrifice some throughput for higher TTFT. 
 
 ### 12.2 Safety-Critical Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] PR-SCR1
+>
+> Suggestions must not be **harmful**
+
+Rationale: SAEs must ablate activations that represent offensive language or inappropriate text. 
+
+> [!IMPORTANT] PR-SCR2
+>
+> The interface must not contain harmful images or NSFW content.
+
+Rationale: All contents and icons from web-based interfaces must be safe for work.
 
 ### 12.3 Precision or Accuracy Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] PR-PAR1
+>
+> The generated text should match users' steering direction
+
+Rationale: `tinymorph`'s SAEs should activate specific attentions based on users inputs. Additionally, it must take into account all users' feedback.
 
 ### 12.4 Robustness or Fault-Tolerance Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] PR-RFR1
+>
+> A notification toast must be sent to users in case inflight requests fail to complete.
+
+Rationale: If any current requests fail to finish, a toast must be surfaced to users. This helps notify users to either resubmit specific plans or revert to previous planning steps.
+
+> [!IMPORTANT] PR-RFR2
+>
+> `tinymorph` must implement a recreate deployment strategy
+
+Rationale: In case certain replica and nodes failed to start, given Kubernetes cluster that run said inference server should be able to recreate the deployment.
 
 ### 12.5 Capacity Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] PR-CR1
+>
+> Suggestions would be run asynchronously on request.
+
+Rationale: `tinymorph` will support multiple users running suggestions at once. Users will be able to submit given requests and said inference server should be able to handle multiple requests at once.
+
+> [!IMPORTANT] PR-CR2
+>
+> Input should not show any certain delay
+
+Rationale: `tinymorph` must ensure text manipulation on users' content to be as smooth as possible.  
 
 ### 12.6 Scalability or Extensibility Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] PR-SER1
+>
+> `tinymorph` inference server must include scale-to-zero and concurrency-based autoscaling.
+
+Rationale: During high traffic, the inference servers must be able to scale up based on incoming requests. Additionally, in lower traffic, the server should be able to scale to zero to save on costs and resources.
 
 ### 12.7 Longevity Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] PR-LR1
+>
+> Future integration with other language model architecture
+
+Rationale: `tinymorph` should be able to extend to different [model architectures](https://www.llama.com/) with variety of SAEs. 
+
+> [!IMPORTANT] PR-LR2
+>
+> Support different distribution platforms.
+
+Rationale: `tinymorph` will first ship a web interface. It should then reserve the ability to be packaged into a standalone universal binary that can be run on different operating systems and architectures.
+
 
 ## 13. Operational and Environmental Requirements
 
 ### 13.1 Expected Physical Environment
 
-[Insert your content here.]
+> [!IMPORTANT] OER-EPE1
+>
+> `tinymorph` will be able to run on different hardware environment, given it can run modern browser.
+
+Rationale: `tinymorph` will ship a web interface through browsers. Therefore, it should support any hardware environment that can run a browser. 
+
+> [!IMPORTANT] OER-EPE2
+>
+> `tinymorph` should have minimal increase in power consumption 
+
+Rationale: `tinymorph` should avoid a huge increase in RAM for a browser tab. 
 
 ### 13.2 Wider Environment Requirements
 
-[Insert your content here.]
 
 ### 13.3 Requirements for Interfacing with Adjacent Systems
 
-[Insert your content here.]
+> [!IMPORTANT] OER-RIAS1
+>
+> `tinymorph` inference server should provide an OpenAI-compatible endpoints.
+
+Rationale: The inference server must offer an OpenAI-compatible endpoint to ensure a handshake with the web interface. This server can also be accessed with any other tools that accept OpenAI-compatible endpoints.
+
 
 ### 13.4 Productization Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] OER-PR1
+>
+> Secrets must be configured with certain Role-based access control (RBAC) rules
+
+Rationale: To ensure all production environment variables are safe from bad actors and adversarial parties. 
+
+> [!IMPORTANT] OER-PR2
+>
+> Relevant documentation should be accessible by users.
+
+Rationale: Usage manuals and technical-related details should be easily accessible from `tinymorph`'s interface.
+
+> [!IMPORTANT] OER-PR3
+>
+> Feedback should also be included within the interface
+
+Rationale: Enable user-feedback to improve the product.
 
 ### 13.5 Release Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] OER-RR1
+>
+> Release cycle must utilize current GitHub CD workflow.
+
+Rationale: Version control and release cycle should follow semantic versioning and utilize GitHub's CI for automation.
+
+> [!IMPORTANT] OER-RR2
+>
+> End-to-end tests should pass before deploying to production.
+
+Rationale: end-to-end workflow must be the minimum for all feature development to ensure `tinymorph` is functional within a production environment.
 
 ## 14. Maintainability and Support Requirements
 
 ### 14.1 Maintenance Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] OER-MR1
+>
+> Security updates must be done periodically
+
+Rationale: Regular security updates to adjacent dependencies must be done quickly to avoid certain CVE exploits if they exist.
+
+> [!IMPORTANT] OER-MR2
+>
+> Feature integrations must pass existing tests
+
+Rationale: Given features works must not fail existing testing infrastructure.
 
 ### 14.2 Supportability Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] OER-SR1
+>
+> User feedback loop must be present.
+
+Rationale: For further development and UX improvement, a user-feedback loop is required. 
 
 ### 14.3 Adaptability Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] OER-AR1
+>
+> `tinymorph` must be able to run with existing users' environment
+
+Rationale: For web interface, `tinymorph` should be able to run on all existing modern browser. For packaged binary, it must support major architectures and operating system. 
 
 ## 15. Security Requirements
 
@@ -498,17 +654,55 @@ Rationale: Minimizing the attack surface reduces the number of potential entry p
 
 ### 16.1 Cultural Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] CulR-CR1
+>
+> English supports
+
+Rationale: English will be supported for alpha release of `tinymorph`. This is due to the limited capabilities of models when dealing with multilingual inputs.
+
+> [!IMPORTANT] CulR-CR2
+>
+> Cultural reference must be factual
+
+Rationale: If given cultural references are generated, it must utilize tools to fact-check given suggestions (using web-search).
+
+> [!IMPORTANT] CulR-CR3
+>
+> Support left-to-right (LTR) reading flow
+
+Rationale: Panels will be presented in LTR manner. RTL will be supported once multilingual are added. 
 
 ## 17. Compliance Requirements
 
 ### 17.1 Legal Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] CompR-LR1
+>
+> Suggestion must follow strict US copyright law.
+
+Rationale: Certain suggestions, if any, uses additional contents, references must be made to ensure copyright law compliance.
+
+> [!IMPORTANT] CompR-LR2
+>
+> [SOC2](https://www.vanta.com/products/soc-2) compliance
+
+Rationale: `tinymorph` should follow SOC-2 attestation for its inference server.
+
+> [!IMPORTANT] CompR-LR2
+>
+> Users permission to run inference against their content
+
+Rationale: `tinymorph` will require users' inputs to make corresponding suggestions. In other words, existing user content will be sent during inference requests.
+
 
 ### 17.2 Standards Compliance Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] CompR-SCR1
+>
+> follows standard HTTP protocol for client-server communication
+
+Rationale: `tinymorph` will adhere to Hypertext Transfer Protocol (HTTP/1.1) standards as defined by the Internet Engineering Task Force (IETF) in RFC 2616 (for HTTP/1.1).
+
 
 ## 18. Open Issues
 
@@ -564,11 +758,21 @@ Rationale: Minimizing the attack surface reduces the number of potential entry p
 
 ### 22.1 Requirements for Migration to the New Product
 
-[Insert your content here.]
+> [!IMPORTANT] MNP-RMNP1
+>
+> Minimal downtime during migration process
+
+Rationale: When the inference server is updating or maintaining, users should be aware of the downtime, given it shouldn't affect users' workflow.
+
 
 ### 22.2 Data That Has to be Modified or Translated for the New System
 
-[Insert your content here.]
+> [!IMPORTANT] MNP-DMTNS1
+>
+> Migration in future config format should ensure backward compatibility for one-time transition
+
+Rationale: When configuration or certain features require breaking change, `tinymorph` must be able to migrate existing configuration to the new format without breaking change. 
+
 
 ## 23. Costs
 
