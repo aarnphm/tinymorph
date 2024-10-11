@@ -764,11 +764,6 @@ Rationale: `tinymorph` will adhere to Hypertext Transfer Protocol (HTTP/1.1) sta
 
 Rationale: When the inference server is updating or maintaining, users should be aware of the downtime, given it shouldn't affect users' workflow.
 
-> [!IMPORTANT] MNP-RMNP1
->
-> A notice is given to user if new edition of UI is available
-
-Rationale: If there is a new edition of UI is distributed, a notice on current UI should be provided for user to access to latest edition. 
 
 ### 22.2 Data That Has to be Modified or Translated for the New System
 
