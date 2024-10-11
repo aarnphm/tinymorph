@@ -84,7 +84,7 @@ Example Personas:
 - Age: 35
 - Occupation: Civil Engineer
 - Interests: Technical documentation, project schematics, professional development articles
-- Goals: To integrate creativity into his technical writing to make complex concepts accessible and engaging.
+- Goals: To integrate creativity into his writing to make complex concepts accessible and engaging.
 - Technology Proficiency: Advanced, highly skilled in technical design software and documentation tools.
 - Persona Narrative: Michael utilizes Tinymorph to bring a storytelling approach to his engineering presentations and reports. He crafts narratives that explain complex engineering processes and project benefits in an appealing way. This approach helps his audience from clients to the general public, understand and appreciate the value of technical projects.
 
@@ -182,19 +182,86 @@ Role: Handle regular updates, patch deployments, system monitoring, and troubles
 
 ### 6.1 The Current Situation
 
-[Insert your content here.]
+The tinymorph project seeks to address current challenges in the field of creative writing assistance and content generation. Currently, most text editing tools are either limited in their capacity to foster creativity or are focused on improving technical writing. Creative individuals, including writers and engineers who wish to experiment with narrative writing, often lack tools that offer meaningful assistance beyond basic word processing. These limitations hinder users from exploring creative writing to its fullest extent, leaving them reliant on manual brainstorming and structuring processes.
+
+Traditional conversational AI tools such as ChatGPT, often take a linear approach that doesn’t cater well to the iterative and non-linear nature of the creative writing process. Writers looking for inspiration or seeking to overcome writer's block have limited options when it comes to non-intrusive and contextually aware suggestion systems. Additionally, many current tools demand that writers feed in well-structured prompts but fail to provide flexibility in refining those prompts during the course of writing. This results in an difficult writing experience for many users, especially those unfamiliar with optimizing prompts.
+
+In this current environment, there are manual tools for creative writing—such as physical brainstorming boards and simple planning aids that lack the adaptability needed for the fluid and changing nature of the writing process. Automated systems like Grammarly or even Google Doc's AI-driven text completion tools do exist. However, they typically focus on providing singular and deterministic results rather than empowering users to navigate various creative options and truly own their writing process.
+
+The tinymorph project is being developed in response to these shortcomings. It intends to provide a more dynamic, interactive writing environment that not only offers suggestions but also encourages non-linear idea exploration. This "How Now" view aims to replace the rigidity of current AI text editors by fostering creativity through an intuitive and adaptive interface that blends planning, drafting, and revising stages into one cohesive experience.
 
 ### 6.2 The Context of the Work
 
-[Insert your content here.]
+The work context for tinymorph identifies the environment, systems, and users that the tool interacts with, defining the boundaries of its operation. Understanding this broader context helps ensure that tinymorph integrates seamlessly into users' creative workflows and provides an intuitive experience that aligns with the users' needs. This context includes adjacent systems, users, and interactions that might influence or be influenced by tinymorph.
+
+**Adjacent Systems**
+1. Local Storage Systems: tinymorph interacts with local storage to save user configuration settings, where it would store data in a vault directory. This helps users retain preferences without storing data on a centralized server.
+2. Inference Server: tinymorph hosts its models on a cloud-based inference server. User files are formatted into a string and sent as part of a request to the inference server for generating suggestions. However, no user data is stored on the server, ensuring stateless transactions and preserving user privacy.
+3. User Devices: The application is designed to operate across multiple platforms, supporting a range of devices such as computers, tablets, and potentially e-readers. It ensures maximum accessibility and ease of use for different users.
+
+**Information Flow**
+
+Below is a table representing the key interactions in the context of the project with adjacent systems:
+
+| **Adjacent System**      | **Interaction Type**           | **Input/Output**              | **Purpose**                                                                 |
+|--------------------------|--------------------------------|-------------------------------|-----------------------------------------------------------------------------|
+| Local Storage Systems    | Configuration Management      | Input/Output                  | Stores user preferences locally, ensuring settings are retained without the need for cloud storage. |
+| Inference Server         | Text Processing               | Input                         | Processes user inputs to generate creative suggestions, without storing any data to maintain privacy. |
+| Inference Server         | Suggestions Generation        | Output                        | Generates and returns creative suggestions to users, based on provided inputs. |
+| User Devices             | User Interface                | Output                        | Displays writing suggestions and outputs for a variety of supported devices.                
+
+
+Defining the boundaries of tinymorph's operational context ensures that the product fits seamlessly into its intended environment and effectively supports users' creative endeavors. By clearly delineating the systems and flows involved, the context helps in building a product that aligns well with user expectations and enhances usability.
 
 ### 6.3 Work Partitioning
 
-[Insert your content here.]
+ Key business events represent the actions and scenarios that tinymorph responds to during typical usage. These events encompass user interactions, system activities, and the flow of information across tinymorph's components. It offers a detailed view of the operational flow.
+
+ Understanding the key business events for tinymorph is essential for partitioning the work into manageable sections, ensuring each business use case (BUC) is clearly defined and independently understood. By breaking the work into logical segments it enables the process to help support better design decisions, validate workflows, and manage requirements effectively to ultimately maintain a user-centric focus throughout development.
+
+ The business event list is presented in a tabular format. Each event includes:
+  - **Event Number**: Identifies the specific business event.
+  - **Event Name**: Describes the nature of the action or scenario.
+  - **Input and Output**: Specifies whether the interaction is an input or an output.
+  - **Summary of the Business Event (BUC)**: Provides a  description of the expected result of the business event.
+
+  | Event Number | Event Name                   | Input/Output                    | Summary of BUC                                                                                       |
+|--------------|------------------------------|---------------------------------|------------------------------------------------------------------------------------------------------|
+| 1            | User Uploads Document        | Input                           | User uploads or begins editing a document. The file is processed locally and formatted into a request to the inference server for suggestions, but no data is stored on the server.  |
+| 2            | Generate Writing Suggestions | Input                           | Generates writing suggestions based on the user's text, considering style preferences.               |
+| 3            | Save Configuration Settings  | Input/Output                    | Saves user’s preferences, including tone, writing style, and personal configurations locally to a vault directory. |
+| 4            | Inference Request Sent       | Input                           | User's text content is formatted and sent to the inference server for text generation or suggestions. This is a stateless transaction and no user data is stored.  |
+| 5            | Display Suggestions          | Output                          | Displays generated suggestions inline within the user’s document for easier adoption or rejection.   |
+| 6            | Manual Edits to Document     | Input/Output                    | User manually edits the document, accepting or rejecting suggestions made by tinymorph.              |
+| 7            | Save Document Locally        | Input                           | User chooses to save their document locally, and the content is stored on the user's device.         |
+| 8            | View Writing Analytics       | Output                          | Tinymorph provides analytical insights to the user such as structure, readability, and suggested improvements. |
+| 9            | User Changes Theme           | Input/Output                    | User changes between light or dark mode for enhanced visual comfort. Configuration is saved locally.  |
 
 ### 6.4 Specifying a Business Use Case (BUC)
 
-[Insert your content here.]
+The Business Use Cases (BUC) detail how tinymorph responds to specific business events by providing a comprehensive description of each interaction. These descriptions ensure that the requirements for system actions are fully understood and documented, enhancing clarity during the implementation phase. Each BUC is carefully articulated to capture how tinymorph behaves in response to user actions and how each event impacts the system's workflow.
+
+The purpose of defining detailed Business Use Cases is to understand how tinymorph responds during different user scenarios. This understanding helps identify the necessary requirements and ensures the solution meets the expected functionalities without ambiguity. By examining each BUC, we can ensure that all events are accounted for, creating a robust system that addresses user needs comprehensively. These scenarios build on the events specified in section 6.3, providing a full account of system behavior.
+
+Below are detailed BUC scenarios, specifying how tinymorph handles each event:
+
+1. User Uploads Document: When the user uploads or begins editing a document, tinymorph processes the file locally. The document is formatted into a string, which is sent to the inference server for suggestions. Importantly, no user data is stored on the server to enusre in preserving user privacy. The interaction is designed to maintain a stateless transaction while providing suggestions based on user inputs.
+
+2. Generate Writing Suggestions: When a user inputs their text, tinymorph generates writing suggestions that align with the user's style preferences such as tone and clarity. These suggestions are then provided in a way that facilitates easy integration into the user’s writing process. This use case emphasizes tinymorph’s ability to assist users in enhancing their writing creatively while staying true to their personal style.
+
+3. Save Configuration Settings: Users have the ability to save their preferences including tone, writing style, and custom configurations locally to a vault directory. This ensures that each time a user interacts with tinymorph, the tool aligns with their personalized needs, without relying on cloud-based storage. The local storage approach gives users the control and flexibility they need to maintain their preferred settings.
+
+4. Inference Request Sent: User text content is formatted and sent to the inference server for generating suggestions. The request is processed on the server without saving any data, ensuring a stateless transaction that respects user privacy. This use case ensures that while the model provides sophisticated writing assistance, it does so in a privacy conscious manner.
+
+5. Display Suggestions: Once the inference server processes the request, tinymorph displays the generated writing suggestions directly within the user’s document. This helps the user see the potential improvements in real-time and decide whether to accept or reject each suggestion. This approach is designed to seamlessly integrate AI assistance into the user’s creative process.
+
+6. Manual Edits to Document: Users are encouraged to make manual edits to their document, either accepting or rejecting the suggestions made by tinymorph. The flexibility provided by this ensures users have complete creative control over the text. The manual editing process is integral to enhancing the accuracy of the content and ensuring that the suggestions align with the writer's intent.
+
+7. Save Document Locally: After editing, the user may choose to save their document locally. Tinymorph ensures that the content is securely stored on the user’s device. The emphasis on local storage enhances user control over their documents, fostering a sense of security and convenience.
+
+8. View Writing Analytics: Tinymorph provides the user with analytical insights into their writing. These analytics might include metrics such as structure, readability, and suggested improvements. The analysis helps writers to better understand their strengths and areas for improvement, ultimately enhancing the quality of their content. The insights also encourage users to make thoughtful changes to their work.
+
+9. User Changes Theme: tinymorph offers users the ability to switch between light and dark modes to enhance visual comfort. The change is made on the user’s device and stored locally, ensuring that the theme aligns with user preferences each time they use the application. This feature is meant to make the writing experience visually comfortable, catering to different working environments and times of day.
 
 ## 7. Business Data Model and Data Dictionary
 
