@@ -271,9 +271,9 @@ There are two narratives emerging from industry practitioners and companies with
 at tasks that a human can do at a greater degree of accuracy and efficiency. These companies include OpenAI, Anthropic, [SSI](https://ssi.inc/), many AI labs, etc.
 and often disguised these systmems under the term "artificial super intelligence" (ASI). On the other end of spectrum, we have
 companies that build AI systems to amplify our abilities to create and improve efficiency for our work. Companies such
-as [Runway](https://runwayml.com/), [Cohere](https://cohere.com/), etc belongs to this paradigm.
+as [Runway](https://runwayml.com/), [Cohere](https://cohere.com/), etc belongs to this paradigm. ^intelligence
 
-My interests lie firmly on the second group, where we build tools that increase our agency. `tinymorph` is the
+My interests lie firmly on the second group, where we build tools that amplifies our agency. `tinymorph` is the
 manifestation of these beliefs.
 
 Additionally, during the journey of prototyping `tinymorph`, I hope to use it as a playground to delve into the field

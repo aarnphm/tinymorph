@@ -25,12 +25,15 @@ design UI: everyone P0 (time to do this)
 
 - training: (research) (quality testing) <- @aarnphm[^3]
 - inference: (infrastructure) (A/B testing, regression testing) @waleed
+
   - OpenAI-compatible API server: [functional](https://github.com/aarnphm/tinymorph/tree/main/python/asteraceae)
   - Edit logits for inference server (vllm, llama-cpp)
   - local inference
   - UX: TTFT (time to first tokens)
   - inference engine: vLLM (GPU), llama-cpp (CPU)
   - vllm plugins [support](https://github.com/vllm-project/vllm/commit/16422ea76f213f5b1035513b441245b19ca5bdce)
+
+- multiplayer text editor: (target: stakeholders) + (other player: AI models) (P3)
 
 ### ux.
 
@@ -54,6 +57,14 @@ accesibility:
 [Telescopic text](https://www.telescopictext.org/)
 
 expansion upon telescopic text: [notation](https://thesephist.com/posts/hyperlink/)
+
+https://x.com/david_perell/status/1841875983676162124
+
+[_website_](https://writingexamples.com/article/orwell-symbols-tell-a-story)
+
+cursor navigation:
+
+https://x.com/JaceThings/status/1843441743187861850
 
 ### cost.
 
@@ -95,6 +106,8 @@ async function createFolder() {
 Possible UI component library: [shadcn/ui](https://ui.shadcn.com/)
 
 https://x.com/CherrilynnZ/status/1836881535154409629
+
+editor: https://prosemirror.net/
 
 ## training [[glossary#sparse autoencoders|SAEs]]
 
