@@ -453,17 +453,49 @@ Rationale: Tinymorph should be able to provide services over the common OS inclu
 
 ### 16.1 Cultural Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] CulR-CR1
+>
+> Tinymorph support English input and output
+
+Rationale: In the first edition of tinymorph development, it only support for English input content and can only generate text in English.
+
+> [!IMPORTANT] CulR-CR2
+>
+> Culturally inappropriate content is filtered out from output language
+
+Rationale: If there are any inappropriate content specific to the culture of generated output language, they should be filtered out.
+
+> [!IMPORTANT] CulR-CR3
+>
+> Using left-to-right (LTR) generating habit
+
+Rationale: Currently only LTR habit implemented in the tinymorph to present output. 
 
 ## 17. Compliance Requirements
 
 ### 17.1 Legal Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] CompR-LR1
+>
+> The generated contents is not protectable under US copyright law
+
+Rationale: Since the genereted content invloves Open-AI model output, the generated content is subject to OpenAI's license and terms of use, which is not protectable under US copyright law
+
+> [!IMPORTANT] CompR-LR2
+>
+> User agrees to send necessary data to host server for return from language model
+
+Rationale: To use the language model in host server, user need to send necessary information based on input text to trigger language model. Users are consent for this data collection.
+
 
 ### 17.2 Standards Compliance Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] CompR-SCR1
+>
+> Tinymorph align with standard HTTP protocol
+
+Rationale: Tinymorph adhere to Hypertext Transfer Protocol (HTTP/1.1 and HTTP/2) standards as defined by the Internet Engineering Task Force (IETF) in RFC 2616 (for HTTP/1.1) and RFC 7540 (for HTTP/2).
+
 
 ## 18. Open Issues
 
@@ -533,11 +565,26 @@ Rationale: Tinymorph should be able to provide services over the common OS inclu
 
 ### 24.1 User Documentation Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] UDT-UDR1
+>
+> Release notes and version control of tinymorph will be provided 
+
+Rationale: Changes including bug fixes and feature updating should be recorded correctly in release notes and version control software.
+
+
+> [!IMPORTANT] UDT-UDR1
+>
+> A help system for user should accompany with the software distribution
+
+Rationale: A help system for user to better familiar with the UI manipulation should be distributed with the software together, and update to the corresponding UI version. 
 
 ### 24.2 Training Requirements
 
-[Insert your content here.]
+> [!IMPORTANT] UDT-TR1
+>
+> On-demand training resources
+
+Rationale: Tinymorph can provide user relevant reading matarials about SAEs training and implementing principle. User can find them and do self-learning on their demand.
 
 ## 25. Waiting Room
 
