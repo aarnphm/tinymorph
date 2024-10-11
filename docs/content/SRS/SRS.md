@@ -241,21 +241,15 @@ Rationale: Since the user need to run the model remotely, a stable network conne
 
 > [!IMPORTANT] PR-SLR1
 >
-> When runing local inference, responses should appear after a time interval ranging from 1 second to 5 seconds, depending on the input lengths
-
-Rationale: Tinymorph implements an accelerated GPU arrangement for local model which can provide return within 1 second on small size of input(under 200 tokens), and no more than 5 seconds for larger size of the input text(1000 tokens).
-
-> [!IMPORTANT] PR-SLR2
->
 > When runing host inference, responses should appear after within 1 to 3 seconds
 
 Rationale: When host inference is chosen, under a good network connection environment, tinymorph uses a dependable remote model resources that can return the response within 3 seconds based on user's input.
 
-> [!IMPORTANT] PR-SLR3
+> [!IMPORTANT] PR-SLR2
 >
-> Lag should not be apparent or significant, even when a model running in the background
+> Lag should not be apparent or significant in user end, even when receiving output from model on server 
 
-Rationale: Whether user choose to run a host or local inference, generating process should not make big effect on user's interface to cause any significant lagging. 
+Rationale: When user is using the server's model, generating process and receiving the output should not make big effect on user's interface to cause any significant lagging. 
 
 ### 12.2 Safety-Critical Requirements
 
@@ -283,9 +277,9 @@ Rationale: The tinymorph should have a good intepretaion on user's input and pre
 
 > [!IMPORTANT] PR-RFR1
 >
-> Whenever one type of inference failed to perform, notification will be given and help user to do the switch 
+> Whenever one type of inference failed to perform, notification will be given and help user
 
-Rationale: Whenever user selected one of the inference type and some failure happened to halt the procedure, a notification will be demonstrated to user to inform about the swich of the inference, and use local cached data to do the switch and recovery.
+Rationale: Whenever user run the host inference and some failure happened to halt the procedure, a notification will be demonstrated to user to inform about the failure, and use local cached data to do the switch and recovery.
 
 > [!IMPORTANT] PR-RFR2
 >
@@ -315,12 +309,6 @@ Rationale: Tinymorph should have capability to integrate both the input from use
 
 Rationale: The web-based interface should be able to adjust to different screen sizes and various devices.
 
-> [!IMPORTANT] PR-SER2
->
-> Adjust to a range of GPU and CPU hardware environment 
-
-Rationale: If a local inference is chosen by user, and the minimal hardware requirements has been meet, tinymorph should be able to arrange the hardware resources according to the specific situations to have better performance.
-
 ### 12.7 Longevity Requirements
 
 > [!IMPORTANT] PR-LR1
@@ -341,25 +329,19 @@ Rationale: Since tinymorph reserve the option for user to do local inference, th
 
 > [!IMPORTANT] OER-EPE1
 >
-> Tinymorph should be able to operate on different hardware environment, with two inference options.
+> Tinymorph should be able to operate on different hardware environment.
 
-Rationale: Tinymorph should be able to arrange the local computing resources well to optimise generating process. If the local resources does not meet the demand for local inference nto run the model, a notice is given to suggest a switch to host inference.
+Rationale: Tinymorph should be able to arrange the local computing resources well to optimise generating process in user end. 
 
 > [!IMPORTANT] OER-EPE2
 >
 > Tinymorph should not have huge effect on power consumption 
 
-Rationale: Tinymorph should have the functionality to efficiently manage power consumption, especially for the case of local inference. 
+Rationale: Tinymorph should have the functionality to efficiently manage power consumption, while connecting with the host server. 
 
 ### 13.2 Wider Environment Requirements
 
 > [!IMPORTANT] OER-WER1
->
-> Tinymorph should be able to handle different internet speed for host inference.
-
-Rationale: If user choose to use a host inference, a stable network connection is needed. Thus tinymorph need to adjust to different internet speed to provide a dependable performance, and give notice if network condition is badly concerned. 
-
-> [!IMPORTANT] OER-WER2
 >
 > Tinymorph should be able to handle different internet speed for host inference.
 
