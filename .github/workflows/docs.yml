@@ -33,7 +33,7 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
       - name: Build Quartz
-        run: pnpm run build
+        run: pnpm run docs:build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # ratchet:actions/upload-pages-artifact@v3
         with:
