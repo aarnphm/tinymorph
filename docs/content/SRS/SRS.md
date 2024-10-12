@@ -881,6 +881,34 @@ Rationale: Scheduled Q&A sessions after updates ensure that users fully understa
 
 </div>
 
+  1. 
+  Something that went well in this deliverable was that it allowed me to clear up my past confusion as to what we are actually building. I focused on constraints and functional requirements, as the main sections and thus I really got a chance to understand more about how the product will actually function.
+
+  2. 
+  One of the main pain points I experienced was clarifying the functional scope of the project. Initially, it was challenging to align the technical requirements with the vision of the product, particularly when defining specific features like offline mode and version control. To resolve this, I had several discussions with the team to ensure that we were all on the same page regarding the project's goals and limitations, particularly for the first release.
+
+  3. 
+  Several requirements related to model tuning and steering were heavily influenced by discussions with supervisor and fellow peers. Features like manual control over text generation, tone and style customization, and planning-related suggestions all were brought up in meetings and lead to related requirements. Conversations also highlighted the importance of allowing users to fine-tune model behavior to meet their writing goals, leading to the inclusion of advanced options like steering hyperparameters and inputting past writing samples for better model adaptation.
+
+  4. 
+  Courses like Real-Time Systems and Introduction to Machine Learning will be particularly valuable for this capstone. Real-Time Systems helps with understanding performance constraints and system responsiveness, while the Machine Learning course provides the theoretical foundation necessary to implement language models and customization features within tinymorph.
+
+  5. 
+  As a team, we will need to acquire expertise in model fine-tuning and language model behavior, especially related to LoRA and customizing language models for specific use cases. Additionally, we need to strengthen skills in front-end web development to create an intuitive and user-friendly editor interface, and cloud infrastructure management to efficiently scale and deploy the system.
+
+  6. 
+  Model fine-tuning and language model behavior (Aron and Waleed):
+  Approach 1: Take specialized courses or tutorials on fine-tuning and language model behavior to understand the technicalities of adapting models for specific writing tasks.
+  Approach 2: Experiment with open-source models, working on personal or side projects that involve fine-tuning models for specific applications.
+
+  Front-end web development (Nebras):
+  Approach 1: Follow a structured curriculum in JavaScript, HTML, and CSS on platforms like Udemy.
+  Approach 2: Collaborate on open-source front-end projects to get hands-on experience and immediate feedback from the developer community.
+
+  Cloud infrastructure management (Nebras and Lucas):
+  Approach 1: Use platforms like AWS or Google Cloud to follow tutorials and labs related to setting up scalable cloud infrastructure.
+  Approach 2: Participate in cloud computing hackathons to quickly learn cloud architecture and deployment strategies in a competitive setting.
+
 </div>
 
 <br/>
