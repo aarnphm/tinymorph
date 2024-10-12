@@ -120,6 +120,20 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
                   </span>
                 </li>
               )}
+              {!metadata.showReturnLink && (
+                <li>
+                  <a
+                    class="ref-source"
+                    href={`https://github.com/aarnphm/tinymorph/blob/main/docs/content/${fileData.slug!}.md`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span class="page-modification" title="source de la page">
+                      <em>source</em>
+                    </span>
+                  </a>
+                </li>
+              )}
               {metadata.showReturnLink && home(options.link!)}
             </>
           )}
