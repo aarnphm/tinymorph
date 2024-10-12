@@ -5,6 +5,7 @@ tags:
 author: aarnphm
 date: "2024-09-16"
 title: Problem Statement and Goals
+titleTransclude: false
 ---
 
 See also: [[Checklists/ProbState-Checklist|checklist]] and
@@ -20,7 +21,7 @@ In 1972 Alan Kay [@AlanKay1972, 11] conceptualised the Dynabook, a portable devi
 users of all ages to explore and learn. More than just a portable computer, the Dynabook was envisioned as a dynamic, interactive medium for
 learning, creation, and self-expression, that could adapt to users' increasing skills and need.
 
-As we progress into the $21^{\text{st}}$ century, software has become comoditised, serving as the engine of transformations that transcend every corner of our life.
+Fast forward to the $21^{\text{st}}$ century, software has become comoditised and transcend every aspect in our life.
 Simultaneously, we've seen exponential growth in machine learning (ML) systems'[^1] capabilities, largely due to a general push of large language models (LLMs) into the mainstream.
 As these systems exihibit emergent properties of [[DevelopmentPlan/DevelopmentPlan#^intelligence|intelligence]], how should we craft interfaces that amplify
 users' [[glossary#agency|agency]] and encourage a sense of personalisation through interactions, rather than providing a mere tool for automation?

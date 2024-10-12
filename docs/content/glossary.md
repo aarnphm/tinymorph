@@ -6,6 +6,7 @@ author: aarnphm
 comments: false
 date: "2024-09-20"
 description: A glossary of terms used in the documentation.
+modified: "2024-10-08"
 title: Glossary
 titleTransclude: false
 ---
@@ -119,7 +120,7 @@ that requires non-linear filtering.
 
 ## features
 
-When we talk about features [see section "Empirical Phenomena" of @elhage2022superposition], the theory building around
+When we talk about features [@elhage2022superposition{see "Empirical Phenomena"}], the theory building around
 several observed empirical phenomena:
 
 1. Word Embeddings: have direction which coresponding to semantic properties [@mikolov-etal-2013-linguistic]. For
@@ -131,7 +132,7 @@ several observed empirical phenomena:
    network.
 
 We can define features as properties of inputs which a sufficiently large neural network will reliably dedicate
-a neuron to represent [see section "Features as Direction" of @elhage2022superposition]
+a neuron to represent [@elhage2022superposition{see "Features as Direction"}]
 
 ## hyperparameter tuning
 
@@ -170,6 +171,10 @@ $$
 x_{1} = \mathit{H}{(x_{0})} + x_{0}
 $$
 
+## logits
+
+the logit function is the quantile function associated with the standard logistic distribution
+
 ## inference
 
 Refers to the process of running the model based on real world inputs to generate text completions.
@@ -201,7 +206,9 @@ in LLM generations.
 How would this work with SAEs specifically?
 
 - Run an embedding models => SAEs to interpret features from relevant documents. => Search related features.
-- Added said documents embedded in input tensors => in theory more sound planning?
+- Added said documents embedded in input tensors => better planning for contextual embeddings.
+
+See also [Contextual Document Embeddings](https://arxiv.org/abs/2410.02525)
 
 ## data
 
@@ -211,7 +218,7 @@ Representation of information in a formalised manner suitable for communication,
 
 Initially conceptualized to represent neural circuitry through mathematical approach. [@rosenblatt1958perceptron]
 
-Second wave blossomed in late 1980s, followed by Parallel Distributed Processing book
+Second wave blossomed in late 1980s, followed by Parallel Distributed Processing group
 [@10.7551/mitpress/5236.001.0001], where it introduced intermediate processors within the network (often known as
 "hidden layers") alongside with inputs and outputs. Notable figures include John Hopfield, Terence Horgan.
 
