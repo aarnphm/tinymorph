@@ -8,14 +8,14 @@ description: "Software Requirements Specification for tinymorph: LLM-steering te
 title: Software Requirements Specification
 ---
 
-See also: [[Checklists/SRS-Checklist|checklist]],
-[[SRS/SRS#Revision|this document revision]], and [[ProblemStatementAndGoals/ProblemStatement|problem statement]]
+See also: [[Checklists/SRS-Checklist|checklist]], [[SRS/SRS#Revision|this document revision]], and [[ProblemStatementAndGoals/ProblemStatement|problem statement]]
 
 _The following Software Requirements Specification for `tinymorph` is using [Volere Requirements Specification template](https://www.volere.org/templates/volere-requirements-specification-template/)_
 
 ## 1. Purpose of the Project
 
-![[ProblemStatementAndGoals/ProblemStatement#Problem|Problem Statement]]
+> `tinymorph` aims to explore new interfaces and workflow for [[glossary#auto-regressive model]] to help writers
+> craft better writing artifacts.
 
 ### 1.1 User Business
 
@@ -23,7 +23,7 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 >
 > Offer service for creative writing.
 
-Rationale: `tinymorph` is a text editor, thus, its main goal is to provide interfaces for users to write.
+Rationale: `tinymorph` is a web-based text editor, thus, its main goal is to provide interfaces for users to write.
 
 > [!important] UB-2
 >
@@ -34,142 +34,187 @@ are self-contained, owned by users, forever.
 
 ### 1.2 Goals of the Project
 
-covers both of functional and non-functional requirements
+_[[ProblemStatementAndGoals/ProblemStatement#Goals|comprehensive lists]]_
 
-- usuable for unversed
-
-See also [[ProblemStatementAndGoals/ProblemStatement#Goals|comprehensive lists]]
+<!-- covers both of functional and non-functional requirements -->
 
 > [!IMPORTANT] G-1
 >
-> A [_file-over-app_](https://stephango.com/file-over-app) web-based text editor.
+> A [_file-over-app_](https://stephango.com/file-over-app) what-you-see-is-what-you-get (WYSIWYG) editor.
 
-Rationale: "The files you create are more important than the tools you use to create them. Apps are ephemeral, but your files have a chance to last." - Steph Ango
+Rationale:
+
+<p class="quotes">
+  <i>The files you create are more important than the tools you use to create them. Apps are ephemeral, but your files have a chance to last.</i> -- Steph Ango
+</p>
+
+`tinymorph` aims to amplify users' ability to write through planning and suggestion interfaces, done over files that
+owned by users.
 
 > [!IMPORTANT] G-2
 >
-> User feedback-loop for manual steering through planning
+> Planning interfaces for ideas formulation
 
-Rationale: For interfaces to help users with planning, feedback-loop are important for users to understand the effectiveness of generations.
+Rationale: `tinymorph` will propose certain directions using settings configured by users for idea generations as well
+as suggestions to help users _get over writers block_ or _expand on current ideas_.
 
 > [!important] G-3
 >
-> Efficient activation caching for feature steering.
+> Efficient attention caching for feature steering.
 
-Rationale: Generating similarly composed features vectors everytime might not be efficient. Thus, designing a caching
-mechanism for certain [[glossary#KV cache block]] of generated activations is worth investigating to improve overall generations
-speed.
+Rationale: Generating similarly composed features vectors every forward pass might not be the best use of available
+resources. Thus, designing a caching mechanism for [[glossary#KV block]] generated as a result for feature steering via
+SAEs would help overall throughput and reduce latency.
 
 > [!important] G-4
 >
-> Functional SAEs for guided steering.
+> SAEs suitable for planning and suggestion for creative writing.
 
-Rationale: We must train [[glossary#sparse autoencoders]] that is suitable for creative writing. See also [[SRS/SRS#18. Open Issues|OI-2]]
+Rationale: Recent works show [[glossary#sparse autoencoders]] can be trained to minimise certain bias scope [@rajamanoharan2024improvingdictionarylearninggated].
+This is prevalent in `tinymorph` use-cases as it needs to ablate harmful features and amplify features related to
+creative writing to improve [[glossary#manual steering|steering]] direction. [[SRS/SRS#18. Open Issues|OI-2]] will also
+investigate current open-issues for activation steering.
 
 > [!important] G-5
 >
 > OpenAI-compatible API for LLM server.
 
-Rationale: OpenAI's API definition has been widely adopted in the industry for deploying LLMs. Given `tinymorph` will
-run SAEs in addition with a base models, OpenAI-compatible server is a must for future integrations with upstream
-tooling.
+Rationale: OpenAI's API definition has been widely adopted in the industry for deploying LLMs. OpenAI-compatible endpoint
+is required for future integrations with upstream tools.
 
 > [!important] G-6
 >
-> External goals
+> Amplify users creativity
 
-can mention this =>
+_[[DevelopmentPlan/DevelopmentPlan#External Goals|external motivation]]_
 
-![[DevelopmentPlan/DevelopmentPlan#External Goals|Goals]]
+Rationale: There are currently two incentives emerging within the industry as we approach the intelligence age:
+entities that seek to build systems capable of outperforming humans with tasks at a greater degree of efficiency and
+accuracy (OpenAI, Anthropic, SSI, AI21, etc.), and companies aims to utilise these systems to amplify our cognitive
+self (Runway, Cohere, etc.).
+
+Our interest lies firmly with the second group, as we believe that tools should fundamentally improve our lifes, not
+replacing it. `tinymorph` is the manifestation of this belief system.
 
 ## 2. Stakeholders
 
 ### 2.1 Client
 
-Description: The client base would primarily comprise design studios and independent creative labs which specialize in developing innovative tools for digital creativity. These clients are at the forefront of technology and design, pushing the boundaries of what digital creative tools can achieve. They provide not only critical funding but also strategic insights that guide the development of advanced text-editing solutions.
+Description: The client base would include design studios focusing on producing novel writing artifacts and independent
+creative labs exploring malleable software.
 
-Role: They are instrumental in defining the project’s scope and deliverables, ensuring the tool meets the high standards required by creative professionals. They facilitate strategic alignments that enhance the project’s visibility and usability within the creative industry. Their role is crucial in decision-making processes that shape the project’s trajectory and ensure its relevance to the target market.
+Role: They help defining project's scope and deliverables, ensuring certain qualities and requirements to be met while
+enabling `tinymorph`'s innovations on top of existing interfaces paradigm.
 
 ### 2.2 Customer
 
-Description: The primary customers for the Tinymorph project are writers and engineers seeking sophisticated tools to enhance their creative writing processes. This diverse group includes freelancers who work across various genres and formats. They require adaptable tools that cater to a broad range of creative needs. Writers in this segment value features that inspire creativity and streamline the writing process. Engineers on the other hand, seek functionalities that help articulate complex ideas clearly and intuitively.
+Description: Primary customers for `tinymorph` include writers and engineers who seek tool for thoughts, where they can
+formulate ideas and amplifies their agencies. Writers would value features that guide them through a writers block,
+while engineers seek functionalities that help articulate complex ideas clearly.
 
-Role: These customers are pivotal in driving user adoption and shaping the project’s trajectory. Their comprehensive feedback is crucial for continuous product development. It ensures that tinymorph evolves in response to the dynamic demands of creative writing, maintaining its competitive edge and relevance in the market.
+Role: They help with users' adoption and influence project's roadmap. Their feedbacks are proven to be vital for continous development of `tinymorph`.
 
 ### 2.3 Other Stakeholders
 
-Description: Includes developers and contributors dedicated to local-first software, enhancing the tool’s offline functionality and independence from network constraints. This group includes a broad open-source community actively engaged in refining user interfaces and interaction paradigms. Other stakeholders also highlights professionals in usability and accessibility, ensuring that the tool remains approachable and usable by everyone regardless of ability.
+Description: Open source developers who shares interests in building local-first software; venture capitalists and angel investors who are looking for investment opportunities in this area.
 
-Role: These stakeholders are vital for integrating tinymorph within a framework of local-first and open-source technologies. Their collective input ensures adherence to best practices in user centric design and open collaboration. It broadens the tool’s applicability and enhances its community-driven development.
+Role: Developers in the open-source community will help with maintaining `tinymorph` and its features development. This
+is vital for the project's sustainability and growth. Venture capitalists and angel investors might provide financial
+backing for the team to scale and spend our time on building out the product.
 
 ### 2.4 Hands-On Users of the Project
 
-Description: Comprises individuals who will directly interact with the tinymorph application's interface, primarily creative professionals and engineers engaged in creative writing. These users are essential for the initial adoption and sustained engagement with the tool, particularly benefiting from its suggestion aid features designed to enhance the creative writing process.
+Description: comprises of individuals who will interact with `tinymorph` directly through its interface to use for their creative writing endavour.
 
-Role: The users provide critical usability feedback and actively participate in iterative testing phases. Their insights are invaluable for identifying challenges, refining the suggestion algorithms, and enhancing overall user interaction and satisfaction. This feedback directly influences feature development and adjustments to meet the diverse needs of creative writers.
+Rationale: They are essential for the initial adoption, specifically benefited from planning and suggestion interfaces that `tinymorph` offers for their creative writing.
 
-User Categories:
-- Creative Writers: Includes such as novelists, poets, scriptwriters, bloggers, and freelance writers who rely on tinymorph for its intuitive and inspiring writing environment. The suggestion aids help stimulate creativity, overcome writer's block, and enhance their creative flow and productivity.
-- Engineers: Engineers who pursue creative writing, whether professionally or as a personal endeavor. They also seek advanced tools to support their writing projects. Engineers benefit from tinymorph's ability to provide intelligent suggestions that aid in articulating complex ideas creatively.
+Role: Users will provide critical usability feedback and actively participate in iterative beta rollout phases. Their feedback will give the team a lense into different use-cases and requirements from writers' process and workflow.
 
-Subject Matter Experience: Users range from seasoned creative professionals with extensive writing experience to engineers who are exploring creative writing. All users share a common interest in enhancing their writing through intelligent suggestions that inspire creativity and improve the quality of their work.
+Categorical breakdown:
 
-Technological Experience: Expertise varies from users who are comfortable with basic word processing tools to those proficient in utilizing advanced software features to optimize their writing process. The application is designed to be accessible to users with varying levels of technical proficiency, ensuring that both novices and tech-savvy individuals can benefit from its features.
+| Users     | Description                                                                                                                        | Target Audience                          |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| Writers   | groups that utilize `tinymorph`'s planning features for creating ideas and get over blocks                                         | novelists, writers, bloggers             |
+| Engineers | groups that pursue creative writing as a hobby, but want to experiment with SOTA language models to aid with their writing process | software engineers, computers scientists |
 
-Other User Characteristics:
-- Physical Location: Users are globally diverse, necessitating a platform that supports seamless access across different time zones and locations. The application should function reliably regardless of the user's geographical location.
-- Education Levels: Users may have backgrounds ranging from self-taught creative writers to formally educated professionals in engineering or literature. The tool must cater to a wide spectrum of educational experiences.
-- Attitude Toward Technology: Generally positive, with a preference for user-friendly technologies that require minimal learning curves. Users appreciate tools that enhance their creativity without imposing complex technical challenges.
+Experience:
+
+| Type           | Description                                                         | Range                                                                   | Reasons                                                                                       |
+| -------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Subject Matter | Refers to how sufficient a person is with their writing             | engineers exploring creative writing to seasoned creative professionals | Utilize `tinymorph`'s interface to improve the quality of their work                          |
+| Technological  | Refers to how comfortable one is to use tools for text manupulation | designed with varying levels of technical proficiency                   | ensure both tech-savy individuals and the unversed to benefit with what `tinymorph` can offer |
+
+Notable mentions for other characteristics:
+
+- Physical location: `tinymorph` should be reliable regardless of users' geological location, and should be accessible by users' worldwide with different backgrounds and ethnicity.
+- Education levels: `tinymorph` must cater to a spectrum of different educational background
+- Attitude Toward Technology: generally positive, with a preference for user-friendly technologies that require minimal learning curves. Tools for thoughts should be intuitive without imposing complex technical challenges.
 
 ### 2.5 Personas
 
-Description: Involved are detailed, representative user profiles based on extensive user research. Personas such as College Researcher, Freelance Writer, or Technical Editor symbolize the diverse user base Tinymorph aims to serve. These personas are constructed from typical characteristics, behaviors, and needs observed among potential users and serve to bring user stories and requirements to life during the development process.
+Description: Representative user profiles based on extensive user research. These personas are constructed from typical characteristics,
+behaviors, and needs observed among potential users and serve to bring user stories and requirements to life during the development process.
 
-Role: Serve as a focal point during design and development. It helps to tailor features, functionality, and user interfaces to meet the specific needs and behaviors of different user groups. The applicaiton tinymorph is designed to assist in planning writing projects and overcoming writer's block, rather than simply rewriting or analyzing sentiment. This ensures the product is versatile and truly enhances the creative process for its users.
+Role: Serve as a focal point during design and development.
+It helps to tailor features, functionality, and user interfaces to meet the specific needs and behaviors of different user groups.
+`tinymorph` is designed to assist in planning writing projects and overcoming writer's block, rather than simply rewriting or analyzing sentiment.
 
-Example Personas:
+The following personas are constructed based on `tinymorph`'s stakeholders profile:
 
-1. Freelance Fiction Writer
-- Name: Emily Brown
-- Age: 28
-- Occupation: Freelance Fiction Writer
-- Interests: Novel writing, short stories, fantasy and science fiction
-- Goals: To find new ways to build complex characters and intricate plots that captivate her readers.
-- Technology Proficiency: Intermediate, utilizes various digital tools for research and manuscript editing.
-- Persona Narrative: Emily looks to tinymorph to help her plan and overcome writer's block and generate creative content ideas that keep her narratives fresh and engaging.
+> [!note] Persona 1
+>
+> - Name: Emily Brown
+> - Age: 28
+> - Occupation: Freelance Fiction Writer
+> - Interests: Novel writing, short stories, fantasy and science fiction
+> - Goals: To find new ways to build complex characters and intricate plots that captivate her readers.
+> - Technology Proficiency: Intermediate, utilizes various digital tools for research and manuscript editing.
+>
+> ==Narrative==: Emily looks for a tool to help her plan and overcome writer's block and formulate ideas to finish her novel. She uses `tinymorph` to generate suggestions and outline her story structure, helping her develop her characters and plot more effectively. The planning features of the platform guide her through the creative process, enhancing her writing workflow and productivity.
 
-2. Technical Engineer
-- Name: Michael Liu
-- Age: 35
-- Occupation: Civil Engineer
-- Interests: Technical documentation, project schematics, professional development articles
-- Goals: To integrate creativity into his writing to make complex concepts accessible and engaging.
-- Technology Proficiency: Advanced, highly skilled in technical design software and documentation tools.
-- Persona Narrative: Michael utilizes Tinymorph to bring a storytelling approach to his engineering presentations and reports. He crafts narratives that explain complex engineering processes and project benefits in an appealing way. This approach helps his audience from clients to the general public, understand and appreciate the value of technical projects.
+> [!note] Persona 2
+>
+> - Name: Michael Liu
+> - Age: 35
+> - Occupation: Software Engineer
+> - Interests: Technical documentation, project schematics, professional development articles
+> - Goals: To integrate creativity into his writing to make complex concepts accessible and engaging.
+> - Technology Proficiency: Advanced, highly skilled in technical design software and documentation tools.
+>
+> ==Narrative==: Michael utilizes `tinymorph` to finish his current writing piece on social anxiety. He utilizes suggestion feature to curate and search potential arugments points that have similar tone to Dr. Ana Lembke. He then uses this to improve his current writing, in which it helps him to become a better writer.
 
-3. Blogger
-- Name: Sarah Johnson
-- Age: 40
-- Occupation: Professor and Personal Blogger
-- Interests: Academic publishing, lifestyle blogging, engaging a broad audience online
-- Goals: To distill complex academic concepts into engaging blog posts that appeal to a general audience.
-- Technology Proficiency: Advanced, adept with blogging platforms and social media engagement tools.
-- Persona Narrative: Sarah utilizes tinymorph to creatively translate her academic research into compelling stories for her blog. By simplifying intricate concepts into enjoyable narratives, she makes her posts accessible and intriguing to a wide audience. Her use of the platform boosts the creativity and charm of her content, drawing in and maintaining reader interest effectively.
+> [!note] Persona 3
+>
+> - Name: Sarah Johnson
+> - Age: 40
+> - Occupation: Professor and Personal Blogger
+> - Interests: Academic publishing, lifestyle blogging, engaging a broad audience online
+> - Goals: To distill complex academic concepts into engaging blog posts that appeal to a general audience.
+> - Technology Proficiency: Intermediate, adept with blogging platforms and social media engagement tools.
+>
+> ==Narrative==: Sarah utilizes `tinymorph` to infuse her academic works into technical blog. By using certain tonality offered by `tinymorph` that is tuned to her academic writing style and her favorite author Raymond Carver, she is able to produce engaging blog posts while maintaining a certain degree of technical depth without losing in translation.
 
 ### 2.6 Priorities Assigned to Users
 
 Description: Involves categorizing users based on their usage patterns and the criticality of their needs. For example, professional writers might need advanced editing tools more than casual users.
 
-Role: This categorization helps in prioritizing development tasks such as feature enhancements, bug fixes, and custom integrations to align product capabilities with the most valuable user demands.  By focusing resources on the most impactful areas, the development team can more effectively address the core needs of primary users. It ensures that the product develops in a direction that supports its most critical use cases.
+Role: This categorization helps in prioritizing development tasks such as feature enhancements, bug fixes, and custom integrations to align product capabilities with the most valuable user demands.
+By focusing resources on the most impactful areas, the development team can more effectively address the core needs of primary users while still be virtuosic and open-minded on feature development.
 
 Key Users:
-- Creative Writers and Engineers: These users are vital to the product's success as they rely heavily on its features for their professional tasks. Their requirements are given the highest priority, and their feedback directly influences major product decisions.
+
+- Creative Writers and Engineers: They are vital to the product's success
+  as `tinymorph` is designed to help with this group's issues in mind. Their requirements are given the highest priority, and their feedback directly influences major product decisions.
 
 Secondary Users:
-- Academic Researchers and Educators: While important, these user's needs are secondary to those of key users. Their feedback influences product enhancements but is prioritized after the essential needs of the primary user group.
+
+- Academic Researchers and Educators: While important, these user's needs are secondary to those of key users.
+  Their feedback influences product enhancements but is prioritized after the essential needs of the primary user group.
 
 Unimportant Users:
-- Casual Content Creators: This group includes users who occasionally use the platform for non-professional writing. Their needs are considered, but they have the lowest priority and minimal impact on the core functionality and strategic direction of the product.
+
+- Casual Content Creators: This group includes users who occasionally use the platform for non-professional writing.
+  Their needs are considered, but they have the lowest priority and minimal impact on the core functionality and strategic direction of the product.
 
 ### 2.7 User Participation
 
@@ -187,106 +232,152 @@ Role: Handle regular updates, patch deployments, system monitoring, and troubles
 
 ### 3.1 Solution Constraints
 
-MC-S1. Base models for generations should be open weights (Pythia, Phi-3, Llama 3.2, etc.)
+> [!important] MC-S1
+>
+> Base language models used for generations must be open weights (Gemma 2, Llama 3.2, etc.)
 
-Rationale: Having open-weight models allows for custom fine-tuning based on specific user needs (e.g., tonality, writing styles) or experimental features like, steering, and feedback mechanisms
+Rationale: Having open-weight models allows for training custom SAEs (e.g., tonality, writing styles) and
+ability to build experimental features such as, entropy sampler, features composition, gated steering, etc.
 
-MC-S2. All model inferences must be compatible with OpenAI's API specifications, ensuring interoperability with existing systems.
+> [!important] MC-S2
+>
+> _asteraceae_ inference server must implement OpenAI-compatible endpoints
 
 Rationale: OpenAI-compatible endpoints are widely adopted in the industry. An inference server providing an OpenAI-compatible endpoint would make it easier for API integration with upstream tools.
 
-MC-S3. The Minimum Viable Product must be web-based, and accessible from standard web browsers (Chrome, Firefox, Safari) without requiring installation or browser-specific extensions.
+> [!important] MC-S3
+>
+> The Minimum Viable Product must be web-based, and accessible from standard web browsers (Chrome, Firefox, Safari) without requiring installation or browser-specific extensions.
 
 Rationale: Starting with a web-based solution allows faster prototyping and wide accessibility, ensuring that the application can reach a broad audience quickly while allowing room for future iteration.
 
-MC-S4. The user interface must follow a file-over-app architecture, avoiding a full application installation for minimal system dependencies.
+> [!important] MC-S4
+>
+> `tinymorph` file system should adhere to "file-over-app" philosophy, avoiding server-side databases for minimal system dependencies.
 
-Rationale: By following a file-over-app architecture, there is a reduction in the overhead associated with traditional software installation, making the tool more lightweight and easier to access. This approach ensures that users can engage with the tool seamlessly, without worrying about system compatibility or additional dependencies, aligning with the goal of rapid, cross-platform usability.
+Rationale: By following a file-over-app architecture, there is a reduction in the overhead associated with traditional database transaction, making the tool more lean and give back files' ownership to the users.
 
-MC-S5. Personalization features, such as user preferences for tone and style, must remain within predefined limits to ensure compatibility with the model’s underlying architecture.
+> [!important] MC-S5
+>
+> Personalization features, such as user preferences for tone and style, must remain within predefined limits to ensure compatibility with the model's underlying architecture.
 
-Rationale: Limiting personalization features to predefined parameters ensures that the system’s core architecture remains stable and compatible with the underlying language models. While users can still select tone and style preferences through features like dropdown menus, these constraints prevent excessive complexity in the model’s behavior, maintaining a balance between user customization and technical feasibility.
+Rationale: Limiting personalization features to predefined parameters ensures that the system's core architecture remains stable and compatible with the underlying language models. While users can still select tone and style preferences through features like dropdown menus, these constraints prevent excessive complexity in the model's behavior, maintaining a balance between user customization and technical feasibility.
 
-MC-S6. There shall be no explicit storage of user-specific content on external servers 
+> [!important] MC-S6
+>
+> There shall be no explicit storage of user-specific content on external servers
 
 Rationale: Protecting user privacy and ensures that their data remains secure. By not storing user-specific content on external servers, the application reduces the risk of data breaches and aligns with privacy-conscious practices. This reassures users that their content is handled locally or securely on their own devices, maintaining trust in the platform.
 
 ### 3.2 Implementation Environment of the Current System
 
-MC-I1. The implementation environment must follow modern web best practices.
+> [!important] MC-I1
+>
+> The implementation environment must follow modern web application best practices.
 
 Rationale: Following modern web best practices ensures compatibility, and ease of maintenance across various browsers and devices.
 
-MC-I2. Server-side components must support deployment on scalable infrastructure, including compatibility with GPU usage and Kubernetes clusters.
+> [!important] MC-I2
+>
+> Server-side components must support deployment on scalable infrastructure, including compatibility with GPU usage and Kubernetes clusters.
 
 Rationale: This ensures that the server-side architecture can efficiently handle the computational demands of the models (e.g., GPU support) while remaining flexible for deployment in various cloud environments, promoting scalability and ease of management.
 
-MC-I3. The system must support cloud-based inference via APIs and local inference with GPU acceleration, while managing request queues and concurrency limits.
+> [!important] MC-I3
+>
+> The system must support cloud-based inference via APIs access, while managing request queues and concurrency limits.
 
 Rationale: This ensures the system can handle high-performance inference tasks both locally and in the cloud, while maintaining efficient resource usage and managing multiple concurrent requests to prevent bottlenecks.
 
-MC-I4. The implementation must accommodate scalable infrastructure that manages increased load during high-traffic periods.
+> [!important] MC-I4
+>
+> The implementation must accommodate scalable infrastructure that manages increased load during high-traffic periods.
 
 Rationale: This ensures the system can dynamically scale to meet user demand, maintaining performance and stability by efficiently managing multiple requests and preventing overload during periods of peak traffic.
 
 ### 3.3 Partner or Collaborative Applications
 
-MC-P1. The system must support integration with tools like Notion, Obsidian, and text editors such as Neovim and VSCode.
+> [!important] MC-P1
+>
+> The system must support integration with tools like Notion, Obsidian, and text editors such as Neovim and VSCode.
 
 Rationale: This allows users to work with their preferred tools, enhancing productivity and collaboration by enabling them to transfer and synchronize content seamlessly between the application and other commonly used applications in the same space.
 
-MC-P2. The system must provide export options in multiple formats (e.g., Markdown, PDF, DOCX).
+> [!important] MC-P2
+>
+> The system must provide export options in multiple formats (e.g., Markdown, PDF).
 
 Rationale: Providing multiple export formats allows users to share and collaborate across a variety of tools and systems, supporting flexible workflows and interoperability with a wide range of applications.
 
-
 ### 3.4 Off-the-Shelf Software
 
-MC-O1. The system must initially incorporate off-the-shelf writing assistance tools (e.g., Jasper, Copywrite) for comparison and benchmarking purposes during POC development.
+> [!important] MC-O1
+>
+> off-the-shelf writing assistance tools (e.g., Jasper, Copywrite) can be used for initial comparison and benchmarking purposes during POC development.
 
 Rationale: Benchmarking against existing tools helps identify areas where the application can offer more personalization and control compared to standard solutions.
 
 ### 3.5 Anticipated Workplace Environment
 
-MC-A1. The system must support remote collaboration, using GitHub for version control and Microsoft Teams for communication.
+> [!important] MC-A1
+>
+> The team must support remote collaboration, using GitHub for version control and Microsoft Teams for communication.
 
-Rationale: This ensures that development can proceed asynchronously, facilitating effective collaboration across distributed teams, with GitHub managing code changes and Teams handling communication.
+Rationale: This ensures that development cycle can proceed asynchronously, facilitating effective collaboration across distributed teams, with GitHub managing code changes and Teams handling communication.
 
-MC-A2. All developers must set up their environments according to the contribution guidelines for tinymorph.
+> [!important] MC-A2
+>
+> All developers must set up their environments according to the contribution guidelines for `tinymorph`.
 
 Rationale: Ensuring consistent environments across all developers minimizes integration issues, enhances collaboration, and maintains uniformity in development practices.
 
-MC-A3. Developers are encouraged to add unit and integration testing to ensure fault tolerance and workflow stability, using tools like GitHub Actions for continuous integration.
+> [!important] MC-A3
+>
+> Developers are encouraged to add unit and integration testing to ensure fault tolerance and workflow stability, using tools like GitHub Actions for continuous integration.
 
 Rationale: Adding testing early in the development cycle promotes code stability and helps identify issues across environments, supporting smooth development workflows and reliable user experiences.
 
 ### 3.6 Schedule Constraints
 
-MC-S1. The system must meet the Revision 1 deadline March 24, 2025 as per the capstone project timeline, allowing additional buffer time for debugging, user testing, and revisions before the final presentation.
+> [!important] MC-S1
+>
+> The team must meet the Revision 1 deadline of March 24, 2025 as per the capstone project timeline, allowing additional buffer time for debugging, user testing, and revisions before the final presentation.
 
 Rationale: Meeting the Revision 1 deadline ensures that there is sufficient time for testing and improvements, which are crucial for addressing issues and ensuring a polished final product by the end of the capstone project.
 
-MC-S2. Preliminary research, including design thinking and proof of concept development, must be stabilized within the first two to three months of the project.
+> [!important] MC-S2
+>
+> Preliminary research, including design thinking and proof of concept development, must be stabilized within the first two to three months of the project.
 
-Rationale: Completing early-stage work promptly allows for more time to focus on complex engineering tasks like model integration, ensuring that key functionalities are implemented effectively within the project’s timeline.
+Rationale: Completing early-stage work promptly allows for more time to focus on complex engineering tasks like model integration, ensuring that key functionalities are implemented effectively within the project's timeline.
 
-MC-S3. The time required for training and validating SAEs must not exceed 5 days of GPU time, including any hyperparameter tuning, to keep the project on schedule.
+> [!important] MC-S3
+>
+> The time required for training and validating SAEs must not exceed 5 days of GPU time, including any hyperparameter tuning, to keep the project on schedule.
 
 Rationale: Limiting the training time for SAEs ensures that the system stays within development timelines, preventing bottlenecks and allowing time for other critical tasks.
 
 ### 3.7 Budget Constraints
 
-MC-B1. The project has a maximum budget of $1000 in credits on BentoCloud for serving.
+> [!important] MC-B1
+>
+> The project has a maximum budget of 200 dollars in credits on for online inference, and access to available services
+> such as GitHub.
 
 Rationale: This constraint ensures that the system operates within the available budget, focusing on efficient resource use and cost-effective solutions for cloud-based serving.
 
 ### 3.8 Enterprise Constraints
 
-MC-E1. All software dependencies must follow the Apache 2.0 license or a compatible subset.
+> [!important] MC-E1
+>
+> All software dependencies must follow the Apache 2.0 license or a compatible subset.
 
-Rationale: Ensuring that all dependencies align with the project’s open-source licensing reduces legal risks and maintains consistency with the project's license requirements.
+Rationale: Ensuring that all dependencies align with the project's open-source licensing reduces legal risks and maintains consistency with the project's license requirements.
+If any dependencies use a more strict license, the team must address license and references accordingly.
 
-MC-E2. Open-weight models used for inference must adhere to their respective community licenses and be used only for research purposes.
+> [!important] MC-E2
+>
+> Open-weight models used for inference must adhere to their respective community licenses and be used only for research purposes.
 
 Rationale: This ensures that any models integrated into tinymorph comply with their community usage terms, preventing misuse and maintaining alignment with ethical research standards.
 
@@ -304,25 +395,23 @@ Rationale: This ensures that any models integrated into tinymorph comply with th
 
 Rationale: Google's Gemma is a language model family supporting long context generation, with GemmaScope as pre-trained SAEs for feature interpolation. `tinymorph` will utilize Gemma for planning and guiding users' writing.
 
-
 > [!IMPORTANT] RFA-RF2
 >
 > offers web-based interface
 
-Rationale: provide an universal access for all platforms and operating systems. 
-
+Rationale: provide an universal access for all platforms and operating systems.
 
 > [!IMPORTANT] RFA-RF3
 >
 > `tinymorph` will utilise online inference for planning suggestion.
 
-Rationale: Running model locally poses challenges for users to setup both base model with specific SAEs for different tasks. While `tinymorph` roadmap is to release a packaged binary that can be run everywhere, a online inference server will be used for web-based interface to ensure the best user experience. 
+Rationale: Running model locally poses challenges for users to setup both base model with specific SAEs for different tasks. While `tinymorph` roadmap is to release a packaged binary that can be run everywhere, a online inference server will be used for web-based interface to ensure the best user experience.
 
 ### 5.2 Business Rules
 
 > [!IMPORTANT] RFA-BR1
 >
-> Data locality 
+> Data locality
 
 Rationale: Users' configuration will be stored within a vault-like directory, locally on users' machines. No data will be stored on the cloud.
 
@@ -330,7 +419,7 @@ Rationale: Users' configuration will be stored within a vault-like directory, lo
 >
 > Suggestions and planning steps must adhere to safety guidelines
 
-Rationale: usage of SAEs to reduce hallucinations, as well as improve general safety of text quality. 
+Rationale: usage of SAEs to reduce hallucinations, as well as improve general safety of text quality.
 
 ### 5.3 Assumptions
 
@@ -342,264 +431,453 @@ Rationale: `tinymorph` will offer a web-based interface, thus users must know th
 
 > [!IMPORTANT] RFA-A2
 >
-> Network connection 
+> Network connection
 
 Rationale: `tinymorph` will require network connections to run inference for suggestion and planning UI.
 
+> [!IMPORTANT] RFA-A3
+>
+> Interests in writing
+
+Rationale: The assumption for `tinymorph` relies on users who have interests in writing.
 
 ## 6. The Scope of the Work
 
 ### 6.1 The Current Situation
 
-The tinymorph project seeks to address current challenges in the field of creative writing assistance and content generation. Currently, most text editing tools are either limited in their capacity to foster creativity or are focused on improving technical writing. Creative individuals, including writers and engineers who wish to experiment with narrative writing, often lack tools that offer meaningful assistance beyond basic word processing. These limitations hinder users from exploring creative writing to its fullest extent, leaving them reliant on manual brainstorming and structuring processes.
+The problem with writers block is that its cyclical by nature. Julia Cameron's [The Artist
+Way](https://juliacameronlive.com/the-artists-way/) suggests people to commit writing a certain numbers of words
+everyday, regardless of productivity and word counts. Yet, it is not as simple as "just put words down on paper".
+For some, inspirations are stream of consciousness that flows in and outs, yet for others there would be times that we
+would just sit, and stare at a blank Google docs. Frustration starts to creep in: "_come on, just write something, damn it!_"
 
-Traditional conversational AI tools such as ChatGPT, often take a linear approach that doesn’t cater well to the iterative and non-linear nature of the creative writing process. Writers looking for inspiration or seeking to overcome writer's block have limited options when it comes to non-intrusive and contextually aware suggestion systems. Additionally, many current tools demand that writers feed in well-structured prompts but fail to provide flexibility in refining those prompts during the course of writing. This results in an difficult writing experience for many users, especially those unfamiliar with optimizing prompts.
+We then proceed to overload our prefrontal cortex with surges of dopamine in a quest to find
+inspiration: one might spend a 200 dollars on that Club Monaco tees, others might turn into 400 pages of Nietzsche's
+The Gay Science to look for lines that resonate with their state of mind. In a sense, the hardest problem about writers block
+is so detached from the physical act of putting down words on papers, rather a layer beyond this interface.
 
-In this current environment, there are manual tools for creative writing—such as physical brainstorming boards and simple planning aids that lack the adaptability needed for the fluid and changing nature of the writing process. Automated systems like Grammarly or even Google Doc's AI-driven text completion tools do exist. However, they typically focus on providing singular and deterministic results rather than empowering users to navigate various creative options and truly own their writing process.
+Engineers who are looking to expand their writing toolset might turn to conversational AI tools such as ChatGPT,
+Claude, etc. to synthesize their ideas and expand on their writing. Yet, collectively we have phased out a sort of
+"robotic" and "gpt-esque" tonality from these synthesized essays. Additionally, conversational tools often take
+a linear approach that doesn't cater well to non-linear nature of creative writing process, where retrieval of
+information are often non-deterministic. And users end up "optimizing prompt" to guide the model to generate in
+a certain direction.
 
-The tinymorph project is being developed in response to these shortcomings. It intends to provide a more dynamic, interactive writing environment that not only offers suggestions but also encourages non-linear idea exploration. This "How Now" view aims to replace the rigidity of current AI text editors by fostering creativity through an intuitive and adaptive interface that blends planning, drafting, and revising stages into one cohesive experience.
+In the physical world, tools such as blackboards or planning books provide a canvas for users to physically interact
+with such artifacts. A certain planner workflow would help writers to get over certain mental block.
+With software, most tools aiming to help improve writing are often lack this planning workflow, while emphasizing on
+more cookie-cutter generations templates through prompt engineering.
+
+`tinymorph` aims to address these shortcomings. It intends to provide a more dynamic, interactive writing environment that not only offers suggestions but also
+provide spatial interfaces for non-linear idea exploration.
+This "How Now" view aims to replace the rigidity of current LLM-powered text editors by providing certain planning
+workflow, allowing users to manually steer and direct generations based on their tonality that is closed to their true
+writing style, creating a more enjoyable and cohesive writing experience.
 
 ### 6.2 The Context of the Work
 
-The work context for tinymorph identifies the environment, systems, and users that the tool interacts with, defining the boundaries of its operation. Understanding this broader context helps ensure that tinymorph integrates seamlessly into users' creative workflows and provides an intuitive experience that aligns with the users' needs. This context includes adjacent systems, users, and interactions that might influence or be influenced by tinymorph.
+`tinymorph`'s work context identifies the environment, systems, and users that the tool interacts with, defining the boundaries of its operation.
+Understanding the following milestones would help `tinymorph` better help writers with their creative writing experience.
 
-**Adjacent Systems**
-1. Local Storage Systems: tinymorph interacts with local storage to save user configuration settings, where it would store data in a vault directory. This helps users retain preferences without storing data on a centralized server.
-2. Inference Server: tinymorph hosts its models on a cloud-based inference server. User files are formatted into a string and sent as part of a request to the inference server for generating suggestions. However, no user data is stored on the server, ensuring stateless transactions and preserving user privacy.
-3. User Devices: The application is designed to operate across multiple platforms, supporting a range of devices such as computers, tablets, and potentially e-readers. It ensures maximum accessibility and ease of use for different users.
+#### **Adjacent Systems**
 
-**Information Flow**
+_encapsulate related environment that provides as a base for tinymorph to build upon._
+
+`tinymorph` will be built on top of:
+
+- **Local file storage system**: a vault-like directory will be implemented and used for `tinymorph` to provide a workspace for users to start writing.
+  This vault will act as ground truth for storing both users files as well as their configuration for `tinymorph`. By
+  doing so, `tinymorph` stays true with its _==file-over-app==_ philosophy.
+- **_asteraceae_ inference server**: `tinymorph`' inference server will be responsible for running LLM for generating
+  suggestion and planning step. Note that no users data are stored on this given server, preserving true users' data privacy
+
+  _("asteraceae" is the scientific name for "daisy")_
+
+- **user devices**: `tinymorph` will offer a web-based interface, ensuring it to work on multiple platforms, operating systems that can sufficient run a modern browser.
+
+#### **Information Flow**
 
 Below is a table representing the key interactions in the context of the project with adjacent systems:
 
-| **Adjacent System**      | **Interaction Type**           | **Input/Output**              | **Purpose**                                                                 |
-|--------------------------|--------------------------------|-------------------------------|-----------------------------------------------------------------------------|
-| Local Storage Systems    | Configuration Management      | Input/Output                  | Stores user preferences locally, ensuring settings are retained without the need for cloud storage. |
-| Inference Server         | Text Processing               | Input                         | Processes user inputs to generate creative suggestions, without storing any data to maintain privacy. |
-| Inference Server         | Suggestions Generation        | Output                        | Generates and returns creative suggestions to users, based on provided inputs. |
-| User Devices             | User Interface                | Output                        | Displays writing suggestions and outputs for a variety of supported devices.                
-
-
-Defining the boundaries of tinymorph's operational context ensures that the product fits seamlessly into its intended environment and effectively supports users' creative endeavors. By clearly delineating the systems and flows involved, the context helps in building a product that aligns well with user expectations and enhances usability.
+| **Adjacent System**       | **Interaction Type**     | **Input/Output** | **Purpose**                                                                                           |
+| ------------------------- | ------------------------ | ---------------- | ----------------------------------------------------------------------------------------------------- |
+| Local file storage system | Configuration Management | Input/Output     | Stores user preferences locally, ensuring settings are retained without the need for cloud storage.   |
+| Inference Server          | Planning                 | Input            | Processes user inputs to generate planning steps, without storing any data to maintain privacy.       |
+| Inference Server          | Suggestions Generation   | Output           | Generates and returns suggestions to users based on configuration settings, based on provided inputs. |
+| User Devices              | Planning Interface       | Output           | Displays writing suggestions, planning workflows, based on user input                                 |
 
 ### 6.3 Work Partitioning
 
- Key business events represent the actions and scenarios that tinymorph responds to during typical usage. These events encompass user interactions, system activities, and the flow of information across tinymorph's components. It offers a detailed view of the operational flow.
+Key business events represent the actions and scenarios that tinymorph responds to during typical usage. These events encompass user interactions, system activities, and the flow of information across `tinymorph`'s components. It offers a detailed view of the operational flow.
 
- Understanding the key business events for tinymorph is essential for partitioning the work into manageable sections, ensuring each business use case (BUC) is clearly defined and independently understood. By breaking the work into logical segments it enables the process to help support better design decisions, validate workflows, and manage requirements effectively to ultimately maintain a user-centric focus throughout development.
+Understanding the key business events for `tinymorph` is essential for partitioning the work into manageable sections, ensuring each business use case (BUC) is clearly defined and independently understood. By breaking the work into logical segments it enables the process to help support better design decisions, validate workflows, and manage requirements effectively to ultimately maintain a user-centric focus throughout development.
 
- The business event list is presented in a tabular format. Each event includes:
-  - **Event Number**: Identifies the specific business event.
-  - **Event Name**: Describes the nature of the action or scenario.
-  - **Input and Output**: Specifies whether the interaction is an input or an output.
-  - **Summary of the Business Event (BUC)**: Provides a  description of the expected result of the business event.
+The business event list is presented in a tabular format. Each event includes:
 
-  | Event Number | Event Name                   | Input/Output                    | Summary of BUC                                                                                       |
-|--------------|------------------------------|---------------------------------|------------------------------------------------------------------------------------------------------|
-| 1            | User Uploads Document        | Input                           | User uploads or begins editing a document. The file is processed locally and formatted into a request to the inference server for suggestions, but no data is stored on the server.  |
-| 2            | Generate Writing Suggestions | Input                           | Generates writing suggestions based on the user's text, considering style preferences.               |
-| 3            | Save Configuration Settings  | Input/Output                    | Saves user’s preferences, including tone, writing style, and personal configurations locally to a vault directory. |
-| 4            | Inference Request Sent       | Input                           | User's text content is formatted and sent to the inference server for text generation or suggestions. This is a stateless transaction and no user data is stored.  |
-| 5            | Display Suggestions          | Output                          | Displays generated suggestions inline within the user’s document for easier adoption or rejection.   |
-| 6            | Manual Edits to Document     | Input/Output                    | User manually edits the document, accepting or rejecting suggestions made by tinymorph.              |
-| 7            | Save Document Locally        | Input                           | User chooses to save their document locally, and the content is stored on the user's device.         |
-| 8            | View Writing Analytics       | Output                          | Tinymorph provides analytical insights to the user such as structure, readability, and suggested improvements. |
-| 9            | User Changes Theme           | Input/Output                    | User changes between light or dark mode for enhanced visual comfort. Configuration is saved locally.  |
+- **Event Number**: Identifies the specific business event.
+- **Event Name**: Describes the nature of the action or scenario.
+- **Input and Output**: Specifies whether the interaction is an input or an output.
+- **Summary of the Business Event (BUC)**: Provides a description of the expected result of the business event.
+
+| Event Number | Event Name                   | Input/Output | Summary of BUC                                                                                                                                                                      |
+| ------------ | ---------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1            | User Uploads Document        | Input        | User uploads or begins editing a document. The file is processed locally and formatted into a request to the inference server for suggestions, but no data is stored on the server. |
+| 2            | Generate Writing Suggestions | Input        | Generates writing suggestions based on the user's text, considering style preferences.                                                                                              |
+| 3            | Planning Interfaces          | Output       | Generates planning steps based on users inputs and configuration settings.                                                                                                          |
+| 4            | Save Configuration Settings  | Input/Output | Saves user’s preferences, including tone, writing style, and personal configurations locally to a vault directory.                                                                  |
+| 5            | Inference Request Sent       | Input        | User's text content is formatted and sent to the inference server for text generation or suggestions. This is a stateless transaction and no user data is stored.                   |
+| 6            | Display Suggestions          | Output       | Displays generated suggestions inline within the user’s document for easier adoption or rejection.                                                                                  |
+| 7            | Manual Edits to Document     | Input/Output | User manually edits the document, accepting or rejecting suggestions made by tinymorph.                                                                                             |
+| 8            | Save Document Locally        | Input        | User chooses to save their document locally, and the content is stored on the user's device.                                                                                        |
+| 9            | View Writing Analytics       | Output       | Tinymorph provides analytical insights to the user such as structure, readability, and suggested improvements.                                                                      |
+| 10           | User Changes Theme           | Input/Output | User changes between light or dark mode for enhanced visual comfort. Configuration is saved locally.                                                                                |
 
 ### 6.4 Specifying a Business Use Case (BUC)
 
-The Business Use Cases (BUC) detail how tinymorph responds to specific business events by providing a comprehensive description of each interaction. These descriptions ensure that the requirements for system actions are fully understood and documented, enhancing clarity during the implementation phase. Each BUC is carefully articulated to capture how tinymorph behaves in response to user actions and how each event impacts the system's workflow.
+The Business Use Cases (BUC) detail how `tinymorph` responds to specific business events by providing a comprehensive description of each interaction.
+These descriptions ensure that the requirements for system actions are fully understood and documented, enhancing clarity during the implementation phase.
 
-The purpose of defining detailed Business Use Cases is to understand how tinymorph responds during different user scenarios. This understanding helps identify the necessary requirements and ensures the solution meets the expected functionalities without ambiguity. By examining each BUC, we can ensure that all events are accounted for, creating a robust system that addresses user needs comprehensively. These scenarios build on the events specified in section 6.3, providing a full account of system behavior.
+> Each BUC is carefully articulated to capture how `tinymorph` behaves in response to user actions and how each event impacts the system's workflow.
+>
+> The purpose of defining detailed Business Use Cases is to understand how tinymorph responds during different user scenarios. This understanding helps identify the necessary requirements and ensures the solution meets the expected functionalities without ambiguity. By examining each BUC, we can ensure that all events are accounted for, creating a robust system that addresses user needs comprehensively. These scenarios build on the events specified in section 6.3, providing a full account of system behavior.
 
-Below are detailed BUC scenarios, specifying how tinymorph handles each event:
+Below are detailed BUC scenarios, specifying how `tinymorph` handles each event:
 
-1. User Uploads Document: When the user uploads or begins editing a document, tinymorph processes the file locally. The document is formatted into a string, which is sent to the inference server for suggestions. Importantly, no user data is stored on the server to enusre in preserving user privacy. The interaction is designed to maintain a stateless transaction while providing suggestions based on user inputs.
+#### 1. User Uploads Document
 
-2. Generate Writing Suggestions: When a user inputs their text, tinymorph generates writing suggestions that align with the user's style preferences such as tone and clarity. These suggestions are then provided in a way that facilitates easy integration into the user’s writing process. This use case emphasizes tinymorph’s ability to assist users in enhancing their writing creatively while staying true to their personal style.
+When the user uploads or begins editing a document, `tinymorph` processes the file locally.
+The document is formatted into a string, which is sent to the inference server for suggestions.
+Importantly, no user data is stored on the server to enusre in preserving user privacy.
+The interaction is designed to maintain a stateless transaction while providing suggestions based on user inputs.
 
-3. Save Configuration Settings: Users have the ability to save their preferences including tone, writing style, and custom configurations locally to a vault directory. This ensures that each time a user interacts with tinymorph, the tool aligns with their personalized needs, without relying on cloud-based storage. The local storage approach gives users the control and flexibility they need to maintain their preferred settings.
+#### 2. Generate Writing Suggestions
 
-4. Inference Request Sent: User text content is formatted and sent to the inference server for generating suggestions. The request is processed on the server without saving any data, ensuring a stateless transaction that respects user privacy. This use case ensures that while the model provides sophisticated writing assistance, it does so in a privacy conscious manner.
+When a user inputs their text, tinymorph generates writing suggestions that align with the user's style preferences such as tone and clarity. These suggestions are then provided in a way that facilitates easy integration into the user’s writing process. This use case emphasizes `tinymorph`’s ability to assist users in enhancing their writing
+creatively while staying true to their personal style.
 
-5. Display Suggestions: Once the inference server processes the request, tinymorph displays the generated writing suggestions directly within the user’s document. This helps the user see the potential improvements in real-time and decide whether to accept or reject each suggestion. This approach is designed to seamlessly integrate AI assistance into the user’s creative process.
+#### 3. Planning Interfaces
 
-6. Manual Edits to Document: Users are encouraged to make manual edits to their document, either accepting or rejecting the suggestions made by tinymorph. The flexibility provided by this ensures users have complete creative control over the text. The manual editing process is integral to enhancing the accuracy of the content and ensuring that the suggestions align with the writer's intent.
+When users receive suggestions, they are presented with a planning tab that acts as stages and potential idea flow one
+can use to incorporate into their writing. This use-case demonstrates `tinymorph`'s spatial interfaces to help curate
+new ideas and solve writers block
 
-7. Save Document Locally: After editing, the user may choose to save their document locally. Tinymorph ensures that the content is securely stored on the user’s device. The emphasis on local storage enhances user control over their documents, fostering a sense of security and convenience.
+#### 4. Save Configuration Settings
 
-8. View Writing Analytics: Tinymorph provides the user with analytical insights into their writing. These analytics might include metrics such as structure, readability, and suggested improvements. The analysis helps writers to better understand their strengths and areas for improvement, ultimately enhancing the quality of their content. The insights also encourage users to make thoughtful changes to their work.
+Users have the ability to save their preferences including tone, writing style, and custom configurations locally to a vault directory. This ensures that each time a user interacts with tinymorph, the tool aligns with their personalized needs, without relying on cloud-based storage. The local storage approach gives users the control and flexibility they need to maintain their preferred settings.
 
-9. User Changes Theme: tinymorph offers users the ability to switch between light and dark modes to enhance visual comfort. The change is made on the user’s device and stored locally, ensuring that the theme aligns with user preferences each time they use the application. This feature is meant to make the writing experience visually comfortable, catering to different working environments and times of day.
+#### 5. Inference Request Sent
+
+User text content is formatted and sent to the inference server for generating suggestions. The request is processed on the server without saving any data, ensuring a stateless transaction that respects user privacy. This use case ensures that while the model provides sophisticated writing assistance, it does so in a privacy conscious manner.
+
+#### 6. Display Suggestions
+
+Once the inference server processes the request, tinymorph displays the generated writing suggestions directly within the user’s document. This helps the user see the potential improvements in real-time and decide whether to accept or reject each suggestion. This approach is designed to seamlessly integrate AI assistance into the user’s creative process.
+
+#### 7. Manual Edits to Document
+
+Users are encouraged to make manual edits to their document, either accepting or rejecting the suggestions made by tinymorph. The flexibility provided by this ensures users have complete creative control over the text. The manual editing process is integral to enhancing the accuracy of the content and ensuring that the suggestions align with the writer's intent.
+
+#### 8. Save Document Locally
+
+After editing, the user may choose to save their document locally. Tinymorph ensures that the content is securely stored on the user’s device. The emphasis on local storage enhances user control over their documents, fostering a sense of security and convenience.
+
+#### 9. View Writing Analytics
+
+`tinymorph` provides the user with analytical insights into their writing. These analytics might include metrics such as structure, readability, and suggested improvements. The analysis helps writers to better understand their strengths and areas for improvement, ultimately enhancing the quality of their content. The insights also encourage users to make thoughtful changes to their work.
+
+#### 10. User Changes Theme
+
+tinymorph offers users the ability to switch between light and dark modes to enhance visual comfort. The change is made on the user’s device and stored locally, ensuring that the theme aligns with user preferences each time they use the application. This feature is meant to make the writing experience visually comfortable, catering to different working environments and times of day.
 
 ## 7. Business Data Model and Data Dictionary
 
 ### 7.1 Business Data Model
 
-[Insert your content here.]
+![[SRS/business-data-model.png]]
 
 ### 7.2 Data Dictionary
 
-[Insert your content here.]
+| Name              | Content                                                                                             | Type     |
+| ----------------- | --------------------------------------------------------------------------------------------------- | -------- |
+| `tinymorph`       | `morph` + `ReverseProxy` + `asteraceae`                                                             | package  |
+| `morph`           | Web interface for `tinymorph`                                                                       | package  |
+| `ReverseProxy`    | A middleware for reverse proxy with load balancer                                                   | module   |
+| `asteraceae`      | `Search` + `ActivationCache` + `SAEs` + `logit_processor` + `Exo`                                   | package  |
+| `logit_processor` | A function to convert incoming requests to [[glossary#logits]]                                      | function |
+| `exo`             | Inference engine to run given LLM                                                                   | package  |
+| LLM               | open-weights models to be run for inference                                                         | package  |
+| `BlockManager`    | Help manage KV-cache during inference                                                               | class    |
+| SAEs              | a set of [[glossary#sparse autoencoders]] trained against given LLM to steer activations generation | package  |
+| Search            | Additional search tool to improve correctness                                                       | module   |
+| `ActivationCache` | Store said generations activations for performance purposes                                         | class    |
+| streaming JSON    | Outputs from `asteraceae` will be streamed back to `morph`                                          | text     |
+| tensor            | $n \times m$ matrix represented inputs processed by `logit_processor`                               | text     |
 
 ## 8. The Scope of the Product
 
 ### 8.1 Product Boundary
 
-[Insert your content here.]
+![[SRS/product-boundary.png]]
 
 ### 8.2 Product Use Case Table
 
-[Insert your content here.]
+| PUC # | Name                                    | Actor(s) | Inputs & Outputs                                       |
+| ----- | --------------------------------------- | -------- | ------------------------------------------------------ |
+| 1     | Receive user writings                   | User     | Original writing artefacts (in)                        |
+| 2     | Generate suggestions and planning steps | LLM      | Original writing artefacts (in), suggestions (out)<br> |
+| 3     | Show metrics                            | User     | Writing metrics (out)                                  |
 
 ### 8.3 Individual Product Use Cases (PUC's)
 
-[Insert your content here.]
+#### PUC-1: Receive user writings
+
+Trigger: User press "Plan" button on the interface
+
+Precondition:
+
+- User has a document already loaded into `morph`
+- The inference server is ready from cold-start
+
+Actor: User
+
+Outcome: Original writing artefacts are received by `tinymorph`
+
+Input: Original writing artefacts
+
+Output: Internal representation of the document in tensor format (internal)
+
+#### PUC-2: Generate suggestions and planning steps
+
+Trigger: Inference server received an incoming inflight request
+
+Precondition:
+
+- KV-cache is already warmed up and ready for generations
+
+Actor: LLM
+
+Outcome: Generate suggestions and planning steps from given suggestion
+
+Input: User writing artefacts
+
+Output: Suggestion that will be streamed back to `morph`
+
+#### PUC-3: Show metrics
+
+Trigger: After planning and suggestions has been finished.
+
+Precondition:
+
+- Inflight requests for suggestions has been completed
+
+Outcome: Show writing metrics to users, including tonality, score, similarity
+
+Output: Writing metrics
 
 ## 9. Functional Requirements
 
 ### 9.1 Functional Requirements
 
-FR-1. The system shall provide suggestions during the planning phase of creative writing, offering assistance in structuring ideas, topics, or themes based on user input, with a focus on brainstorming and outlining rather than real-time text generation. The system should generate relevant planning suggestions within 10 seconds of receiving a prompt, producing outlines or idea guidance based on user input.
+> [!important] FR-1
+>
+> `tinymorph` shall provide suggestions during the planning phase of creative writing, offering assistance in structuring ideas, topics, or themes based on user input, with a focus on brainstorming and outlining rather than real-time text generation.
+> The system should generate relevant planning suggestions within 10 seconds of receiving a prompt, producing outlines or idea guidance based on user input.
 
 Rationale: Traditional text suggestions may not suit creative writing, which is highly personal and abstract. Instead, guiding users through the planning phase helps them build a solid foundation for their content.
 
-FR-2. The system shall provide users with manual control over text generation, enabling them to select advanced steering options such as tone, style, or creativity level. For beginners, a simplified option shall allow tone suggestions based on well-known authors. Additionally, users shall have the option to input their previous writing samples, allowing the model to adapt to their tone and style within a maximum of 30 seconds.
+> [!important] FR-2
+>
+> `tinymorph` shall provide users with manual control over text generation, enabling them to select advanced steering options such as tone, style, or creativity level. For beginners, a simplified option shall allow tone suggestions based on well-known authors. Additionally, users shall have the option to input their previous writing samples, allowing the model to adapt to their tone and style within a maximum of 30 seconds.
 
-Rationale: Providing manual control over the model's output allows both beginners and advanced users to customize the text generation to their preferences. Offering tone suggestions and the option to input past writing samples enhances personalization, making the system more adaptable to individual writing styles.
+Rationale: Providing manual control over the model's output allows both beginners and advanced users to customize the text generation to their preferences. Offering tone suggestions and the option to input past writing samples enhances personalization, making `tinymorph` more adaptable to individual writing styles.
 
-FR-3. Users shall be able to interact with generated text through a left-to-right (LTR) feedback panel, allowing them to provide real-time feedback on model-generated suggestions. The panel should present previews that are easy to modify without causing cognitive overload, particularly for planning-related tasks.
+> [!important] FR-3
+>
+> Users shall be able to interact with generated text through a left-to-right (LTR) feedback panel, allowing them to provide real-time feedback on model-generated suggestions. The panel should present previews that are easy to modify without causing cognitive overload, particularly for planning-related tasks.
 
 Rationale: The LTR panel offers an intuitive way to refine model behavior, but it must be designed to reduce cognitive overload, enabling users to focus on effective interaction without being overwhelmed.
 
-FR-4. Users shall be able to set preferences for tone, style, voice, and formality, which the system will apply to all future generations of text. 
+> [!important] FR-4
+>
+> Users shall be able to set preferences for tone, style, voice, and formality, which `tinymorph` will apply to all future generations of text.
 
-Rationale: Allowing users to customize the tone, style, voice, and formality ensures the system adapts to individual preferences, making the generated text more personalized and relevant to the user's needs.
+Rationale: Allowing users to customize the tone, style, voice, and formality ensures `tinymorph` adapts to individual preferences, making the generated text more personalized and relevant to the user's needs.
 
-FR-5. Users shall be able to save their preferred configurations as profiles, enabling them to switch between different writing styles or goals. For the initial version, the focus shall be on creative writing, with the potential to expand to other writing types (e.g., academic, casual blog posts) as additional datasets are integrated.
+> [!important] FR-5
+>
+> Users shall be able to save their preferred configurations as profiles, enabling them to switch between different writing styles or goals. For the initial version, the focus shall be on creative writing, with the potential to expand to other writing types (e.g., academic, casual blog posts) as additional datasets are integrated.
 
-Rationale: Allowing users to save profiles for different writing styles supports personalization, and initially focusing on creative writing ensures that the system can refine its functionality before expanding to other types of content that may require specialized datasets.
+Rationale: Allowing users to save profiles for different writing styles supports personalization, and initially focusing on creative writing ensures that `tinymorph` can refine its functionality before expanding to other types of content that may require specialized datasets.
 
-FR-6. The system shall allow users to navigate through their text non-linearly by providing a visual map or tree view that displays key points, topics, sections, and revision history. This tree-based exploration shall support both text structure and revision tracking, allowing users to explore and edit different versions or sections easily.
+> [!important] FR-6
+>
+> `tinymorph` shall allow users to navigate through their text non-linearly by providing a visual map or tree view that displays key points, topics, sections, and revision history. This tree-based exploration shall support both text structure and revision tracking, allowing users to explore and edit different versions or sections easily.
 
-Rationale: Providing a tree-based view enhances the user’s ability to navigate their content efficiently, particularly during revision or structural changes. This visual aid allows for more intuitive exploration of key points, sections, and revisions, offering greater control over the writing process.
+Rationale: Providing a tree-based view enhances the user's ability to navigate their content efficiently, particularly during revision or structural changes. This visual aid allows for more intuitive exploration of key points, sections, and revisions, offering greater control over the writing process.
 
-FR-7. The system shall present possible planning steps that users can choose, modify, or combine to guide the structure and flow of their writing.
+> [!important] FR-7
+>
+> `tinymorph` shall present possible planning steps that users can choose, modify, or combine to guide the structure and flow of their writing.
 
 Rationale: Focusing on planning steps rather than text alternatives aligns with the creative writing process, helping users organize and structure their ideas more effectively. This approach avoids the limitations of traditional generation methods like beam search, which may not perform well in this context.
 
-FR-8. The system shall offer version control features that allow users to navigate through previous edits, revert to earlier document versions, and compare different drafts visually.
+> [!important] FR-8
+>
+> `tinymorph` shall offer version control features that allow users to navigate through previous edits, revert to earlier document versions, and compare different drafts visually.
 
 Rationale: Providing a clear representation of revision history helps users track changes, make informed decisions about reverting to previous states, and compare different versions of their work with ease.
 
-FR-9. The system shall support an offline mode where users can continue to write and interact with the editor without internet access, using pre-downloaded resources.
+> [!important] FR-9
+>
+> `tinymorph` shall support an offline mode where users can continue to write and interact with the editor without internet access, using pre-downloaded resources.
 
 Rationale: While offline mode may not be a priority in the current development phase, providing the ability to work offline in future versions ensures greater accessibility and flexibility for users in varying environments.
 
-FR-10. The system shall allow users to continue writing and saving files locally during offline sessions. However, certain features, such as planning-related suggestions, will only be available when the user is connected to the internet.
+> [!important] FR-10
+>
+> `tinymorph` shall allow users to continue writing and saving files locally during offline sessions. However, certain features, such as planning-related suggestions, will only be available when the user is connected to the internet.
 
-Rationale: By allowing users to write and save locally during offline sessions, the system ensures uninterrupted productivity. However, advanced features requiring internet access, like planning assistance, will only function when a connection is restored.
+Rationale: By allowing users to write and save locally during offline sessions, `tinymorph` ensures uninterrupted productivity. However, advanced features requiring internet access, like planning assistance, will only function when a connection is restored.
 
-FR-11. Users shall be able to set and track specific writing goals (e.g., word count, tone consistency, argument development) through customizable progress tracking features, such as word count meters, tone analysis, and style consistency checks. The system will offer suggestions to help users meet these goals, ensuring alignment with their intended writing objectives.
+> [!important] FR-11
+>
+> Users shall be able to set and track specific writing goals (e.g., word count, tone consistency, argument development) through customizable progress tracking features, such as word count meters, tone analysis, and style consistency checks. `tinymorph` will offer suggestions to help users meet these goals, ensuring alignment with their intended writing objectives.
+> Rationale: Combining goal-setting with progress tracking allows users to monitor their progress and receive actionable feedback, making the writing process more structured and goal-oriented. This unified approach supports personalized goal management, helping users stay on track.
 
-Rationale: Combining goal-setting with progress tracking allows users to monitor their progress and receive actionable feedback, making the writing process more structured and goal-oriented. This unified approach supports personalized goal management, helping users stay on track.
-
-FR-12. The system shall allow users to categorize and tag different sections of their text (e.g., introduction, argument, conclusion), and automatically generate an outline based on the document’s structure. 
+> [!important] FR-12
+>
+> `tinymorph` shall allow users to categorize and tag different sections of their text (e.g., introduction, argument, conclusion), and automatically generate an outline based on the document's structure.
 
 Rationale: Combining tagging with automatic outline generation streamlines document organization and navigation. This will provide a high-level overview of the content and enable quick access to specific sections for better organization and navigation within large documents. This feature also helps users maintain clarity and easily navigate large documents, providing both a detailed view of the content.
 
-FR-13. The system shall allow users to export their documents in .pdf, .md (Markdown), and plain text formats, ensuring compatibility with external platforms. Support for .docx format will be considered for future development as better libraries become available.
+> [!important] FR-13
+>
+> `tinymorph` shall allow users to export their documents in .pdf, .md (Markdown), and plain text formats, ensuring compatibility with external platforms. Support for .docx format will be considered for future development as better libraries become available.
 
 Rationale: Exporting documents in widely compatible formats like Markdown, PDF, and plain text ensures flexibility for users without adding unnecessary complexity. Focusing on these formats simplifies implementation while covering most use cases.
 
-FR-14. The system shall allow users to customize the visual appearance of the editor by choosing from different themes, such as dark mode, light mode, and high-contrast options.
-
-Rationale: Providing customization of the visual appearance enhances user experience and accessibility, allowing users to choose themes that suit their preferences or visual needs.
+> [!important] FR-14
+>
+> `tinymorph` shall allow users to customize the visual appearance of the editor by choosing from different themes, such as dark mode, light mode, and high-contrast options.
+> Rationale: Providing customization of the visual appearance enhances user experience and accessibility, allowing users to choose themes that suit their preferences or visual needs.
 
 ## 10. Look and Feel Requirements
 
 ### 10.1 Appearance Requirements
 
-LF-A1: The tinymorph application shall adopt a unified, non-intrusive, and uncluttered visual design.
+> [!important] LF-A1
+>
+> `tinymorph`shall adopt a unified, non-intrusive, and uncluttered visual design.
 
 Rationale: A consistent and non-intrusive design ensures brand recognition and provides a visually pleasing experience for users, fostering greater engagement and trust in the platform. This minimizes distractions to allow users in focusing more effectively on their creative tasks.
 
-LF-A2. The application must implement a consistent design system across all user interfaces, involving standardized typography and color palette.
+> [!important] LF-A2
+>
+> `tinymorph` must implement a consistent design system across all user interfaces, involving standardized typography and color palette.
 
 Rationale: A consistent design system enhances user experience by ensuring visual coherence in typography and colors. This uniformity aids readability, reduces user distraction, and contributes to a seamless intuitive interface.
 
-
 ### 10.2 Style Requirements
 
-LF-S1. The design of the application will be minimalist, utilizing clean lines and a monotonic color palette.
+> [!important] LF-S1
+>
+> The design of the application will be minimalist, utilizing clean lines and a monotonic color palette.
 
 Rationale: A minimalist design with a monotonic color palette emphasizes functionality and content, enhancing usability by directing the user's focus to essential elements without distraction. This approach ensures that the interface remains uncluttered and the features more accessible, supporting a focused and efficient user experience.
 
-LF-S2. The application must be responsive, adapting seamlessly to various device screens and orientations.
+> [!important] LF-S2
+>
+> The application must be responsive, adapting seamlessly to various device screens and orientations.
 
 Rationale: As users may access the application from different devices with varying screen sizes, responsiveness is essential to provide a consistent experience across all platforms.
 
-LF-S3. Interactive elements such as buttons and links must contrast significantly with the background to ensure visibility and accessibility.
+> [!important] LF-S3
+>
+> Interactive elements such as buttons and links must contrast significantly with the background to ensure visibility and accessibility.
 
 Rationale: High contrast between elements and backgrounds enhances the visibility of interactive features, making navigation intuitive and preventing user frustration.
 
-LF-S4. The user interface should enable smooth transitions and intuitive animations across various sections and features. 
+> [!important] LF-S4
+>
+> The user interface should enable smooth transitions and intuitive animations across various sections and features.
 
-Smooth transitions and intuitive animations contribute significantly to a seamless user experience. By enhancing user engagement, these visual cues help guide users smoothly through the application’s features. Implementing animations effectively can indicate activity or the completion of tasks, reducing user confusion and improving clarity during navigation.
+Rationale: Smooth transitions and intuitive animations contribute significantly to a seamless user experience. By enhancing user engagement, these visual cues help guide users smoothly through the application's features. Implementing animations effectively can indicate activity or the completion of tasks, reducing user confusion and improving clarity during navigation.
 
-LF-S5. The application should include visual cues and feedback for user interactions to reinforce usability.
+> [!important] LF-S5
+>
+> The application should include visual cues and feedback for user interactions to reinforce usability.
 
-Rationale: Providing immediate visual feedback for user actions confirms the system’s responsiveness, which will help users understand the application’s behavior and reduce errors.
+Rationale: Providing immediate visual feedback for user actions confirms the system's responsiveness, which will help users understand the application's behavior and reduce errors.
 
 ## 11. Usability and Humanity Requirements
 
 ### 11.1 Ease of Use Requirements
 
-UH-EOU1. Tinymorph shall include a session history feature that records and displays the user's most recent editing activities such as document accesses and text modifications.
+> [!important] UH-EOU1
+>
+> `tinymorph` shall include a session history feature that records and displays the user's most recent editing activities such as document accesses and text modifications.
 
 Rationale: This functionality streamlines user workflow by providing quick access to recent actions, which reduces the time needed for navigation and increases efficiency.
 
-UH-EOU2. The application must allow users to interactively review and manually accept or reject changes suggested by the system after their inputs are submitted.
+> [!important] UH-EOU2
+>
+> `tinymorph` must allow users to interactively review and manually accept or reject changes suggested by the system after their inputs are submitted.
 
 Rationale: Providing users with the option to manually accept or reject suggested changes allows them with greater control over their content. This functionality would enhance user engagement by making the editing process more interactive and ensures that the final output aligns precisely with their preferences and intentions.
 
-UH-EOU3. The application shall include a planning interface to assist users in organizing and debugging their creative writing steps.
+> [!important] UH-EOU3
+>
+> The application shall include a planning interface to assist users in organizing and debugging their creative writing steps.
 
 Rationale: The interface will improve user efficiency by supporting the iterative refinement of writing tasks and planning steps. It enables users to easily adjust and debug their creative outlines, enhancing the overall usability and functionality of the application.
 
 ### 11.2 Personalization and Internationalization Requirements
 
-UH-PI1. Tinymorph must include multilingual support to cater to an international audience.
+> [!important] UH-PI1
+>
+> `tinymorph` interface must include multilingual support to cater to an international audience.
 
 Rationale: Multilingual support enhances the application’s global accessibility and user engagement, ensuring that users can interact with the platform in their preferred language.
 
-UH-PI2. The application shall provide options for users to select between light or dark mode based on their system settings or preference.
+> [!important] UH-PI2
+>
+> The application shall provide options for users to select between light or dark mode based on their system settings or preference.
 
 Rationale: These theme customization improves visual comfort and personalization, enabling users to adapt the interface to their visual preferences and working environments.
 
 ### 11.3 Learning Requirements
 
-UH-L1. New users should be able to understand basic functionalities and start creating or editing content within 10 minutes of initial use.
+> [!important] UH-L1
+>
+> New users should be able to understand basic functionalities and start creating or editing content within 10 minutes of initial use.
 
 Rationale: A straightforward and intuitive onboarding process is critical to ensuring that users can quickly become proficient with the application, leading to higher satisfaction and continued use.
 
 ### 11.4 Understandability and Politeness Requirements
 
-UH-UP1. The application should utilize clear and concise language for all instructions, feedback, and user interface elements.
+> [!important] UH-UP1
+>
+> The application should utilize clear and concise language for all instructions, feedback, and user interface elements.
 
 Rationale: Simple and direct language helps to avoid misunderstandings and ensures that the platform is user-friendly, making it accessible to a wide audience regardless of their background.
 
 ### 11.5 Accessibility Requirements
 
-UH-A1. Tinymorph should support text resizing without loss of content or functionality.
+> [!important] UH-A1
+>
+> `tinymorph` should support text resizing without loss of content or functionality.
 
 Rationale: Allowing text resizing helps accommodate users with visual impairments who require larger text to read effectively. Ensuring that the application remains functional and has content accessible at different text sizes guarantees a more inclusive user experience.
 
-UH-A2. The application should ensure that all user interface components are accessible via keyboard navigation.
+> [!important] UH-A2
+>
+> `tinymorph` should ensure that all user interface components are accessible via keyboard navigation.
 
 Rationale: Keyboard navigability is essential for users who cannot use a mouse, including those using screen readers or other assistive technologies. Providing comprehensive keyboard access enhances the functionality and inclusivity of the platform, ensuring all users can efficiently use all features.
 
-UH-A3. Implement ARIA (Accessible Rich Internet Applications) attributes throughout the application.
+> [!important] UH-A3
+>
+> Implement ARIA (Accessible Rich Internet Applications) attributes throughout the application.
 
 Rationale: ARIA attributes help provide essential information about the element's role, state, and property, which is crucial for users who interact with the application via assistive technologies. This ensures that all functionalities are conveyed and usable through these technologies.
 
@@ -617,7 +895,7 @@ Rationale: Suggestion and planning should feel smooth, and fast. Therefore, time
 >
 > Throughput should be approximate 300 tokens/sec for a batch size of 4
 
-Rationale: `tinymorph` inference server should be able to handle incoming requests in batches, ideally handling a decent amount of throughput. Note that we will have to sacrifice some throughput for higher TTFT. 
+Rationale: `tinymorph` inference server should be able to handle incoming requests in batches, ideally handling a decent amount of throughput. Note that we will have to sacrifice some throughput for higher TTFT.
 
 ### 12.2 Safety-Critical Requirements
 
@@ -625,7 +903,7 @@ Rationale: `tinymorph` inference server should be able to handle incoming reques
 >
 > Suggestions must not be **harmful**
 
-Rationale: SAEs must ablate activations that represent offensive language or inappropriate text. 
+Rationale: SAEs must ablate activations that represent offensive language or inappropriate text.
 
 > [!IMPORTANT] PR-SCR2
 >
@@ -667,7 +945,7 @@ Rationale: `tinymorph` will support multiple users running suggestions at once. 
 >
 > Input should not show any certain delay
 
-Rationale: `tinymorph` must ensure text manipulation on users' content to be as smooth as possible.  
+Rationale: `tinymorph` must ensure text manipulation on users' content to be as smooth as possible.
 
 ### 12.6 Scalability or Extensibility Requirements
 
@@ -683,14 +961,13 @@ Rationale: During high traffic, the inference servers must be able to scale up b
 >
 > Future integration with other language model architecture
 
-Rationale: `tinymorph` should be able to extend to different [model architectures](https://www.llama.com/) with variety of SAEs. 
+Rationale: `tinymorph` should be able to extend to different [model architectures](https://www.llama.com/) with variety of SAEs.
 
 > [!IMPORTANT] PR-LR2
 >
 > Support different distribution platforms.
 
 Rationale: `tinymorph` will first ship a web interface. It should then reserve the ability to be packaged into a standalone universal binary that can be run on different operating systems and architectures.
-
 
 ## 13. Operational and Environmental Requirements
 
@@ -700,16 +977,15 @@ Rationale: `tinymorph` will first ship a web interface. It should then reserve t
 >
 > `tinymorph` will be able to run on different hardware environment, given it can run modern browser.
 
-Rationale: `tinymorph` will ship a web interface through browsers. Therefore, it should support any hardware environment that can run a browser. 
+Rationale: `tinymorph` will ship a web interface through browsers. Therefore, it should support any hardware environment that can run a browser.
 
 > [!IMPORTANT] OER-EPE2
 >
-> `tinymorph` should have minimal increase in power consumption 
+> `tinymorph` should have minimal increase in power consumption
 
-Rationale: `tinymorph` should avoid a huge increase in RAM for a browser tab. 
+Rationale: `tinymorph` should avoid a huge increase in RAM for a browser tab.
 
 ### 13.2 Wider Environment Requirements
-
 
 ### 13.3 Requirements for Interfacing with Adjacent Systems
 
@@ -719,14 +995,13 @@ Rationale: `tinymorph` should avoid a huge increase in RAM for a browser tab.
 
 Rationale: The inference server must offer an OpenAI-compatible endpoint to ensure a handshake with the web interface. This server can also be accessed with any other tools that accept OpenAI-compatible endpoints.
 
-
 ### 13.4 Productization Requirements
 
 > [!IMPORTANT] OER-PR1
 >
 > Secrets must be configured with certain Role-based access control (RBAC) rules
 
-Rationale: To ensure all production environment variables are safe from bad actors and adversarial parties. 
+Rationale: To ensure all production environment variables are safe from bad actors and adversarial parties.
 
 > [!IMPORTANT] OER-PR2
 >
@@ -776,7 +1051,7 @@ Rationale: Given features works must not fail existing testing infrastructure.
 >
 > User feedback loop must be present.
 
-Rationale: For further development and UX improvement, a user-feedback loop is required. 
+Rationale: For further development and UX improvement, a user-feedback loop is required.
 
 ### 14.3 Adaptability Requirements
 
@@ -784,53 +1059,67 @@ Rationale: For further development and UX improvement, a user-feedback loop is r
 >
 > `tinymorph` must be able to run with existing users' environment
 
-Rationale: For web interface, `tinymorph` should be able to run on all existing modern browser. For packaged binary, it must support major architectures and operating system. 
+Rationale: For web interface, `tinymorph` should be able to run on all existing modern browser. For packaged binary, it must support major architectures and operating system.
 
 ## 15. Security Requirements
 
 ### 15.1 Access Requirements
 
-N/A
+Not applicable given the application is open source, and inference server are exposed over a HTTPS endpoints.
 
 ### 15.2 Integrity Requirements
 
-SR-INT1. All communication between the client UI, backend services, and external APIs must be encrypted using HTTPS.
+> [!important] SR-INT1
+>
+> All communication between the client UI, backend services, and external APIs must be encrypted using HTTPS.
 
 Rationale: HTTPS encryption secures data in transit, preventing interception or tampering. It also ensures the confidentiality and integrity of user data and commands.
 
-SR-INT2. Implement DNS security measures to ensure that DNS queries and responses are protected against tampering and spoofing.
+> [!important] SR-INT2
+>
+> Implement DNS security measures to ensure that DNS queries and responses are protected against tampering and spoofing.
 
 Rationale: Securing DNS interactions prevents attackers from manipulating or rerouting network traffic. This is critical for maintaining the integrity of application data.
 
-SR-INT3. The application will use content security policies to mitigate the risk of XSS attacks.
+> [!important] SR-INT3
+>
+> The application will use content security policies to mitigate the risk of XSS attacks.
 
 Rationale: Content Security Policies (CSP) are an effective security control to prevent XSS attacks by restricting the sources from which scripts can be loaded and executed in the application. CSP will help in safeguarding against data theft and maintain the integrity of the content delivered to users.
 
-SR-INT4. Implement JWT and short-lived tokens to secure session communications.
+> [!important] SR-INT4
+>
+> Implement JWT and short-lived tokens to secure session communications.
 
 Rationale: Utilizing JWT and short-lived tokens for session management enhances security by ensuring that session data remains protected against unauthorized access. This approach helps prevent bad actors from intercepting or tampering with session data, ensuring that user content and session details remain confidential and intact.
 
-
 ### 15.3 Privacy Requirements
 
-SR-P1. The application must ensure that it does not collect or store personal information, adhering strictly to privacy by design principles.
+> [!important] SR-P1
+>
+> The application must ensure that it does not collect or store personal information, adhering strictly to privacy by design principles.
 
 Rationale: By not collecting personal information, the application minimizes privacy risks and complies with privacy laws and regulations. Avoiding personal data storage also reduces the need for complex data security measures, allowing the project to focus more on enhancing user experience and functionality.
 
-
 ### 15.4 Audit Requirements
 
-SR-AU1: Implement monitoring of interactions with external service providers to ensure their use complies with security policies and performance expectations.
+> [!important] SR-AU1
+>
+> Implement monitoring of interactions with external service providers to ensure their use complies with security policies and performance expectations.
 
 Rationale: Monitoring interactions with external service providers is essential to ensure they are used within the bounds of security protocols and that their performance aligns with the application's requirements. This helps in detecting any deviations that might compromise security or functionality, allowing for quick mitigation actions to maintain the integrity and reliability of the application services.
 
 ### 15.5 Immunity Requirements
 
-SR-IM1. Employ up to date security measures to protect against known threats and vulnerabilities, including regular updates and patches to the software components.
+> [!important] SR-IM1
+>
+> Employ up to date security measures to protect against known threats and vulnerabilities, including regular updates and patches to the software components.
 
 Rationale: Keeping software updated ensures that known vulnerabilities are addressed, which will protect the application and its data from emerging threats.
 
-SR-IM2. Configure the application to minimize the surface area for attacks by disabling unused services and endpoints.
+> [!important] SR-IM2
+>
+> Configure the application to minimize the surface area for attacks by disabling unused services and endpoints.
 
 Rationale: Minimizing the attack surface reduces the number of potential entry points for attackers, enhancing the overall security of the application. This proactive measure significantly lowers the risk of exploitations and helps maintain system integrity.
 
@@ -854,7 +1143,7 @@ Rationale: If given cultural references are generated, it must utilize tools to 
 >
 > Support left-to-right (LTR) reading flow
 
-Rationale: Panels will be presented in LTR manner. RTL will be supported once multilingual are added. 
+Rationale: Panels will be presented in LTR manner. RTL will be supported once multilingual are added.
 
 ## 17. Compliance Requirements
 
@@ -878,7 +1167,6 @@ Rationale: `tinymorph` should follow SOC-2 attestation for its inference server.
 
 Rationale: `tinymorph` will require users' inputs to make corresponding suggestions. In other words, existing user content will be sent during inference requests.
 
-
 ### 17.2 Standards Compliance Requirements
 
 > [!IMPORTANT] CompR-SCR1
@@ -886,7 +1174,6 @@ Rationale: `tinymorph` will require users' inputs to make corresponding suggesti
 > follows standard HTTP protocol for client-server communication
 
 Rationale: `tinymorph` will adhere to Hypertext Transfer Protocol (HTTP/1.1) standards as defined by the Internet Engineering Task Force (IETF) in RFC 2616 (for HTTP/1.1).
-
 
 ## 18. Open Issues
 
@@ -948,50 +1235,84 @@ offers different trade-off for running efficient inference on server. Given `tin
 should we evaluate given frameworks to use in conjunction with trained SAEs. Additionally, for on-device inference, we
 must also investigate how one can run the models locally.
 
+> [!question] OI-6
+>
+> Multilingual support?
+
+Rationale: LLMs we are considering for `tinymorph` doesn't have good multilingual support. This has to do with a lack
+of datasets during pre-training of these foundation models. Therefore, to fully support analysing essays with language
+other than English, we must use base models that support multilingual, with the likes of [aya](https://cohere.com/research/aya), followed with a set of SAEs trained against this model.
+
 ## 19. Off-the-Shelf Solutions
 
 ### 19.1 Ready-Made Products
 
-Text Editor Frameworks:
+The following encapsulate a few existing products that may fits for `tinymorph`:
+
+#### Text editor framework
 
 CodeMirror:
-An open-source, browser-based text editor that supports rich editing features. CodeMirror can be integrated as the core text-editing interface for tinymorph, enabling basic editing functionality while allowing custom enhancements to support user steering and model behavior.
-Language Models:
 
-OpenAI GPT:
-OpenAI’s Generative Pre-trained Transformer (GPT) is a highly advanced language model capable of generating coherent, contextually relevant text. Accessible via an API, GPT can be easily integrated into tinymorph, providing powerful text generation for tasks such as essays, dialogues, and story drafts.
+- an open-source, browser-based text editor that supports rich editing features.
+- can be integrated as the core text-editing interface for `tinymorph`, enabling basic editing functionality while allowing custom enhancements to support user steering and model behavior.
+
+#### Language Models
 
 Llama 3:
-Llama 3 is an open-source large language model optimized for maintaining coherence in long-form writing. Its ability to handle extended context makes it ideal for writing tools like tinymorph, and its fine-tuning capabilities allow customization for specific use cases, such as creative or technical writing.
 
-Writing Assistants:
+- an open-source large language model optimized for maintaining coherence in long-form writing.
+- Has support for long context windows, and variable model-size makes it possible for future iterations of `tinymorph`
+  to run local inference.
+
+Gemma 2:
+
+- [an open-weights](https://ai.google.dev/gemma?authuser=2) language model family optimized for safety with long
+  context windows. Its ability to filter out harmful features would make it ideal to use with `tinymorph`, as it fits
+  `tinymorph`'s cultural and safety requirements.
+- Google also ship pre-trained SAEs trained on Gemma features, make it easier for `tinymorph` to prototype with its
+  MVC.
+
+#### Writing Assistants
 
 Quill:
-Quill is an AI-driven writing assistant that offers real-time feedback and suggestions to improve writing quality. With advanced grammar and style checks and collaborative features, Quill can help users refine their text, making it a useful tool for tinymorph’s vision of an intelligent writing assistant.
+
+- AI-driven writing assistant that offers real-time feedback and suggestions to improve writing quality.
+- advanced grammar and style checks and collaborative features, Quill can help users refine their text.
+- A benchmark for `tinymorph` to compare its suggestions and planning features.
 
 Jasper:
-Jasper is an AI-powered writing assistant focused on generating content for diverse formats, including blogs, essays, and marketing materials. With personalization options for tone and style, Jasper aligns with tinymorph’s goal of empowering users to control their writing style and tone.
 
-AI Infrastructure:
+- AI-powered writing assistant focused on generating content for diverse formats, including blogs, essays, and marketing materials.
+- With personalization options for tone and style
+- Jasper can be used as comparison against `tinymorph` as SaaS versus Open-source offering.
+
+#### End-to-end platform
 
 Goodfire:
-Goodfire provides optimized infrastructure for AI model inference and deployment, ensuring low-latency, fast interactions. It scales seamlessly, making it a suitable platform for tinymorph to manage increased user demand without sacrificing performance. Goodfire's flexibility across hardware and software environments supports tinymorph’s scalability needs.
+
+- recently releases [preview](https://preview.goodfire.ai/) demonstrate the usage of SAEs to steer Llama in conversational settings
+- can be use as reference for `tinymorph` UX design for feature steering
 
 ### 19.2 Reusable Components
 
-LoRA (Low-Rank Adaptation):
-LoRA is a technique for fine-tuning large pre-trained models, like GPT or Llama, for specific tasks. By reusing LoRA components, tinymorph can efficiently adapt these models for personalized writing assistance without the need to retrain the entire model. This approach allows for user-specific fine-tuning, enhancing tinymorph’s customization capabilities.
+![[glossary#sparse autoencoders|Sparse autoencoders]]
 
 ### 19.3 Products That Can Be Copied
 
 GitHub Copilot (Interaction Paradigms):
-The way GitHub Copilot integrates directly into development environments to provide in-line code suggestions can be adapted for tinymorph’s text generation. Tinymorph can borrow this interaction style by offering inlay suggestions for text, allowing users to manually steer and adjust the output based on their writing goals.
+
+- Copilot integrations with different IDEs for inlay hint suggestion can be adapted for tinymorph’s text generation.
+- `tinymorph` can borrow this interaction style by offering inlay suggestions for text, allowing users to manually steer and adjust the output based on their writing goals.
 
 Google Docs' Suggestion Mode (Inlay Suggestions):
-Google Docs' "Suggestion Mode" allows users to propose edits without making permanent changes. Tinymorph could adopt a similar mechanism, providing users with inlay suggestions from the model, which they can choose to accept or reject, enhancing control over the final output.
+
+- "Suggestion Mode" allows users to propose edits without making permanent changes.
+- Tinymorph could adopt a similar mechanism for showing planning steps.
 
 Grammarly’s Tone Detector (Tone Adjustment Feature):
-Grammarly’s tone detection system analyzes writing to give feedback on the mood and tone of the content. Tinymorph could replicate this feature by analyzing the user’s writing style and suggesting tone adjustments, allowing users to fine-tune the emotional or stylistic qualities of their text.
+
+- tone detection system analyzes writing to give feedback on the mood and tone of the content.
+- `tinymorph` could replicate this feature via SAEs to train on the user’s writing style and suggesting tone adjustments, allowing users to fine-tune the emotional or stylistic qualities of their text.
 
 ## 20. New Problems
 
@@ -1104,69 +1425,130 @@ For a more unstructured brain dump for potential exploration avenue see [[Scratc
 
 Rationale: When the inference server is updating or maintaining, users should be aware of the downtime, given it shouldn't affect users' workflow.
 
-
 ### 22.2 Data That Has to be Modified or Translated for the New System
 
 > [!IMPORTANT] MNP-DMTNS1
 >
 > Migration in future config format should ensure backward compatibility for one-time transition
 
-Rationale: When configuration or certain features require breaking change, `tinymorph` must be able to migrate existing configuration to the new format without breaking change. 
-
+Rationale: When configuration or certain features require breaking change, `tinymorph` must be able to migrate existing configuration to the new format without breaking change.
 
 ## 23. Costs
 
-[Insert your content here.]
+> [!IMPORTANT] C1
+>
+> Running inference server on cloud provider (BentoCloud)
+
+Rationale: We will use [BentoCloud](https://bentoml.com/pricing) as our cloud provider to run the inference server.
+
+Assumption: Using Gemma 2 7B requires at least a [L4](https://www.nvidia.com/en-us/data-center/l4/) for efficient KV
+cache management and with acceptable throughput.
+
+Result: This costs around 1.0143 dollar/h
+
+Assumption: The service will receive around 8 hours of traffic everyday, 5 days a week. For all of the other time
+period, we assume there are no traffic, or the inference server scales to zero.
+
+The costs for running the inference server for a month will be around
+
+$$
+1.0143 \times 8 \times 5 \times 4=162.288 \text{ \$/month}
+$$
+
+_note: we exclude the calculation for hosting the sites, given we will be using GitHub pages to serve the web interface_
 
 ## 24. User Documentation and Training
 
 ### 24.1 User Documentation Requirements
 
-UDT-D1. Create a user's guide that details operational procedures, user interfaces, and troubleshooting tips.
+> [!important] UDT-D1
+>
+> Create a user's guide that details operational procedures, user interfaces, and troubleshooting tips.
 
 Rationale: This guide will act as the primary resource for users to fully understand and effectively utilize all features of the application, enabling them to solve common problems independently. Keeping the guide updated will reflect ongoing changes and user feedback, enhancing user satisfaction and self sufficiency.
 
-UDT-D2. Develop an installation manual with detailed instructions for the software installation, configuration, and initial setup processes.
+> [!important] UDT-D2
+>
+> Develop an installation manual with detailed instructions for the software installation, configuration, and initial setup processes.
 
 Rationale: The manual ensures that all users regardless of their technical expertise can easily set up the application. This minimizes setup errors and facilitates smoother adoption of the software.
 
-UDT-D3. Compile a design document describing the software architecture, API specifications, data flow diagrams, and code structure.
+> [!important] UDT-D3
+>
+> Compile a design document describing the software architecture, API specifications, data flow diagrams, and code structure.
 
 Rationale: This document is crucial for developers and technical stakeholders to understand the inner workings of the application. It wil support maintenance tasks, future development efforts, and integration with other systems.
 
-UDT-D4. Create a Verification and Validation (V&V) plan and report that documents testing strategies, methodologies, results, and compliance checks.
+> [!important] UDT-D4
+>
+> Create a Verification and Validation (V&V) plan and report that documents testing strategies, methodologies, results, and compliance checks.
 
 Rationale: This documentation confirms that the application adheres to all technical specifications and user requirements, enhancing transparency and providing a basis for regulatory compliance and quality control.
 
-UDT-D5. Develop a comprehensive Software Requirements Specification (SRS) that outlines functional and non-functional requirements, interfaces, data models, system behaviors, user interactions, and compliance obligations.
+> [!important] UDT-D5
+>
+> Develop a comprehensive Software Requirements Specification (SRS) that outlines functional and non-functional requirements, interfaces, data models, system behaviors, user interactions, and compliance obligations.
 
 Rationale: Serves as a foundational document that guides the entire development process, ensuring that every feature and functionality aligns with user expectations and business objectives. It provides a detailed blueprint for developers and stakeholders, facilitating better planning and consistency in implementation. This approach ensures the development process remains focused on user and business needs, preventing deviations and ensuring the end product is robust, compliant, and aligned to the user's needs.
 
-UDT-D6. Produce an emergency procedure manual outlining critical steps for handling urgent software issues and unexpected operational scenarios.
+> [!important] UDT-D6
+>
+> Produce an emergency procedure manual outlining critical steps for handling urgent software issues and unexpected operational scenarios.
 
 Rationale: Essential for enabling users to quickly respond to and resolve emergencies. This manual reduces downtime and ensures continuous operational efficiency, bolstering user confidence and system reliability.
 
 ### 24.2 Training Requirements
 
-UDT-T1. Conduct interactive online workshops that demonstrate the core functionalities and creative writing tools of the web-based text editor.
+> [!important] UDT-T1
+>
+> Conduct interactive online workshops that demonstrate the core functionalities and creative writing tools of the web-based text editor.
 
 Rationale: Interactive workshops provide hands-on learning experiences that allow users to see practical applications of the editor's features in real-time. This direct interaction enables users to ask questions and enhances their understanding and proficiency.
 
-UDT-T2. Prepare video tutorials covering detailed use cases that highlight how to leverage advanced editing tools for various writing styles and genres.
+> [!important] UDT-T2
+>
+> Prepare video tutorials covering detailed use cases that highlight how to leverage advanced editing tools for various writing styles and genres.
 
-Rationale: Video tutorials allow users to visually follow processes at their own pace, which is crucial for understanding complex features that enhance creative writing. It ensures users can fully exploit the text editor’s capabilities.
+Rationale: Video tutorials allow users to visually follow processes at their own pace, which is crucial for understanding complex features that enhance creative writing. It ensures users can fully exploit the text editor's capabilities.
 
-UDT-T3. Offer a scheduled Q&A session following the release of new features to address user queries and ensure clarity on the latest updates.
+> [!important] UDT-T3
+>
+> Offer a scheduled Q&A session following the release of new features to address user queries and ensure clarity on the latest updates.
 
 Rationale: Scheduled Q&A sessions after updates ensure that users fully understand new functionalities and can discuss any issues or suggestions. This helps in maintaining high user satisfaction and engagement with the platform.
 
 ## 25. Waiting Room
 
-[Insert your content here.]
+### 25.1 Future Functional Requirements
+
+> [!important] FR-15
+>
+> Users shall be able to click on a specific part of the text and select from a dropdown of alternative phrasings or sentence structures generated by the model.
+
+Rationale: Providing users with quick access to alternative phrasings or structures allows for easier refinement of text, enhancing the user's ability to improve clarity, tone, or style without needing to manually rewrite sections. This feature offers flexibility and improves the writing experience by allowing users to explore multiple options efficiently.
+
+> [!important] FR-16
+>
+> The system shall support an offline locally hosted language models for text generation through on-device inference.
+
+Rationale: Offline functionality would rely on on-device inference to ensure users can generate text without internet connectivity. While this requires more local computational resources, it allows for uninterrupted productivity in environments where internet access is limited or unavailable. However, this feature might be deferred to future iterations due to the complexity of integrating efficient on-device inference for large language models.
 
 ## 26. Ideas for Solution
 
-[Insert your content here.]
+_includes a few solutions for `tinymorph`_
+
+> [!important] IS-1
+>
+> Provide Canvas for Planning
+
+Rationale: A canvas interface allows users to visualize and organize their writing ideas, plans, and structures in a flexible and intuitive manner. Users can create, move, and connect elements to represent their writing process visually, enhancing planning and organization.
+
+> [!important] IS-2
+>
+> Suggestion Panels
+
+Rationale: Suggestion panels display alternative phrasings, sentence structures, or word choices generated by the model based on users input steering. Users can select and apply these suggestions to their text, improving writing quality and efficiency. Users can also preselect
+pre-trained SAEs to guide suggestion based on a certain author styles
 
 ---
 
@@ -1243,3 +1625,4 @@ Rationale: Scheduled Q&A sessions after updates ensure that users fully understa
 | ------------- | ------- | ---------------------------- |
 | Sept. 16 2024 | 0.0     | Initial skafolding           |
 | Sept. 25 2024 | 0.1     | Migration to Volere template |
+| Oct 10 2024   | 0.2     | SRS first draft              |
