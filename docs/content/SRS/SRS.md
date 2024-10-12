@@ -1271,8 +1271,7 @@ Gemma 2:
 - [an open-weights](https://ai.google.dev/gemma?authuser=2) language model family optimized for safety with long
   context windows. Its ability to filter out harmful features would make it ideal to use with `tinymorph`, as it fits
   `tinymorph`'s cultural and safety requirements.
-- Google also ship pre-trained SAEs trained on Gemma features, make it easier for `tinymorph` to prototype with its
-  MVC.
+- Google also ship pre-trained SAEs trained on Gemma features, make it easier for `tinymorph` to prototype with its MVP.
 
 #### Writing Assistants
 
