@@ -597,21 +597,23 @@ tinymorph offers users the ability to switch between light and dark modes to enh
 
 ### 7.2 Data Dictionary
 
-| Name              | Content                                                                                             | Type     |
-| ----------------- | --------------------------------------------------------------------------------------------------- | -------- |
-| `tinymorph`       | `morph` + `ReverseProxy` + `asteraceae`                                                             | package  |
-| `morph`           | Web interface for `tinymorph`                                                                       | package  |
-| `ReverseProxy`    | A middleware for reverse proxy with load balancer                                                   | module   |
-| `asteraceae`      | `Search` + `ActivationCache` + `SAEs` + `logit_processor` + `Exo`                                   | package  |
-| `logit_processor` | A function to convert incoming requests to [[glossary#logits]]                                      | function |
-| `exo`             | Inference engine to run given LLM                                                                   | package  |
-| LLM               | open-weights models to be run for inference                                                         | package  |
-| `BlockManager`    | Help manage KV-cache during inference                                                               | class    |
-| SAEs              | a set of [[glossary#sparse autoencoders]] trained against given LLM to steer activations generation | package  |
-| Search            | Additional search tool to improve correctness                                                       | module   |
-| `ActivationCache` | Store said generations activations for performance purposes                                         | class    |
-| streaming JSON    | Outputs from `asteraceae` will be streamed back to `morph`                                          | text     |
-| tensor            | $n \times m$ matrix represented inputs processed by `logit_processor`                               | text     |
+| Name              | Content                                                                                | Type     |
+| ----------------- | -------------------------------------------------------------------------------------- | -------- |
+| `tinymorph`       | `morph` + `ReverseProxy` + `asteraceae`                                                | package  |
+| `morph`           | Web interface for `tinymorph`                                                          | package  |
+| `ReverseProxy`    | A middleware for reverse proxy with load balancer                                      | module   |
+| `asteraceae`      | `Search` + `ActivationCache` + `SAEs` + `logit_processor` + `Exo`                      | package  |
+| `logit_processor` | A function to convert incoming requests to logits                                      | function |
+| `exo`             | Inference engine to run given LLM                                                      | package  |
+| LLM               | open-weights models to be run for inference                                            | package  |
+| `BlockManager`    | Help manage KV-cache during inference                                                  | class    |
+| SAEs              | a set of sparse autoencoders trained against given LLM to steer activations generation | package  |
+| Search            | Additional search tool to improve correctness                                          | module   |
+| `ActivationCache` | Store said generations activations for performance purposes                            | class    |
+| streaming JSON    | Outputs from `asteraceae` will be streamed back to `morph`                             | text     |
+| tensor            | $n \times m$ matrix represented inputs processed by `logit_processor`                  | text     |
+
+_see also [[glossary#logits]] and [[glossary#sparse autoencoders]]_
 
 ## 8. The Scope of the Product
 
@@ -1572,6 +1574,26 @@ pre-trained SAEs to guide suggestion based on a certain author styles
 </div>
 
 <div class="blob">
+
+The requirements helps me to structure the project and write down tasks needed to be done to build `tinymorph`.
+
+I think requirements documentations are two-edged swords. Thinking from a perspectives of a person who write codes,
+requirements documents helps me to write down what needs to be done. However, some sections are some what too vague and
+often share the same terminology with other sections, which leads to some duplications and sometimes premature
+optimization.
+
+Most of the functional features were inspired from the chat I have with one of my friends in NYC, and the ideas stems
+from [@goodfire2024research] work on steerable Llama.
+
+Well, I think Concurrency course 3BB4 would help with building inference server, but most of the knowledge I acquired
+from previous co-op term at BentoML.
+
+Training models, building sparse autoencoders, designing new UX for interacting with text, implementation activation
+caching for frequency used paged KV blocks.
+
+I usually send the author of those papers and email and they usually respond back with answers with a lot of details.
+A lot of experimentation with existing infrastructure (meaning writing models and implementing papers in PyTorch),
+which I have been doing during my free time.
 
 </div>
 
