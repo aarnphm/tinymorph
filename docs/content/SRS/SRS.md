@@ -1608,6 +1608,18 @@ which I have been doing during my free time.
 
 <div class="blob">
 
+One of the positive aspects of working on the SRS deliverable was the level of detail we were able to capture for each of the sections. Taking the time to explore the user needs thoroughly made it easier to articulate requirements that are meaningful and aligned with the project objectives. The iterative discussions for each section especially when working on the “Scope of Work” and “Stakeholders,” helped ensure that all aspects of tinymorph's functionality and purpose were effectively covered, which contributing to a more cohesive document.
+
+A significant pain point was maintaining precision without overcomplicating the requirements or stepping outside the project's scope. This was especially challenging in sections like "Usability and Humanity Requirements" where striking the right balance between thoroughness and clarity required revisiting multiple drafts. I tackled this by actively rewriting areas that felt unclear and incorporating peer feedback to refine my approach. Another challenge was determining the relevance of certain sections like access requirements, which we ultimately decided to remove as they did not apply to our stateless system.
+
+Our requirements were primarily based on our team's understanding of the tinymorph project's objectives and the target audience's needs. Insights from brainstorming sessions within the team and individual expertise shaped critical areas such as the "Look and Feel Requirements" and "Security Requirements". This internal feedback loop helped refine requirements to align with the vision for `tinymorph` as a creative writing tool that emphasizes user privacy and control.
+
+Courses such as "Human-Computer Interfaces" have been invaluable for shaping our approach to creating an intuitive user experience, which is key for `tinymorph`. Additionally, "Software Requirements and Security Considerations" has helped me better understand how to structure the SRS and ensure consistency throughout the document, while the "Application of Machine Learning" course has given insights into how to effectively integrate ML models to enhance creative writing.
+
+To complete this capstone project successfully, we need to expand our domain knowledge in creative writing tools and user psychology to better tailor the experience for writers. We also need backend expertise such as in deploying cloud-based inference servers and securely processing requests. UI/UX design skills are essential for creating an engaging and intuitive interface, and we also need to enhance our team management and communication skills to ensure smooth collaboration throughout the development process.
+
+For domain knowledge, we could either study literature on effective writing tools and user workflows or conduct interviews with potential users to understand their needs better. I plan to engage directly with users for more practical insight. Backend expertise can be developed through online courses or by building hands on cloud based projects. We will try to have our backend focused member pursue hands on projects to gain more practical experience. For UI/UX, a combination of online courses and prototyping in tools like Figma will be pursued by designers like me, providing both theoretical knowledge and practical skills. To improve team management and communication, we will focus on applying best practices during our regular meetings to enhance team coordination.
+
 </div>
 
 </div>
