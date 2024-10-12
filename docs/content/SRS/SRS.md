@@ -445,7 +445,7 @@ Rationale: The assumption for `tinymorph` relies on users who have interests in 
 
 ### 6.1 The Current Situation
 
-The problem with writers block is that its cyclical by nature. Julia Cameron's [The Artist
+The problem with writers block is that it is cyclical by nature. Julia Cameron's [The Artist
 Way](https://juliacameronlive.com/the-artists-way/) suggests people to commit writing a certain numbers of words
 everyday, regardless of productivity and word counts. Yet, it is not as simple as "just put words down on paper".
 For some, inspirations are stream of consciousness that flows in and outs, yet for others there would be times that we
