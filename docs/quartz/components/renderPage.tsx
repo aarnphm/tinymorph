@@ -165,20 +165,15 @@ export function renderPage(
                   ],
                 }
               : ({} as ElementContent),
-            ...(page.htmlAst.children as ElementContent[])
-              .filter((child) => {
-                // filter out csl-lib and footnotes references
-                if (child.type === "element") {
-                  if (
-                    (child.tagName === "div" && child.properties?.id === "refs") ||
-                    (child.tagName === "section" && child.properties?.dataFootnotes !== undefined)
-                  ) {
-                    return false
-                  }
-                }
-                return true
-              })
-              .map((child) => normalizeHastElement(child as Element, slug, transcludeTarget)),
+            ...(page.htmlAst.children as ElementContent[]).map((child) =>
+              normalizeHastElement(child as Element, slug, transcludeTarget),
+            ),
+            {
+              type: "element",
+              tagName: "br",
+              properties: { class: ["spacer"] },
+              children: [],
+            },
             {
               type: "element",
               tagName: "a",

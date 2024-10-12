@@ -75,7 +75,7 @@ a rough draft of each champion's responsibilities:
 - design work: The team will collaborate on general design works for interfaces, lead by [Aaron Pham](https://aarnphm.xyz).
 - web-based editor: [Nebras Khan](https://github.com/nebrask).
 - ML inference server: [Waleed Malik](https://github.com/waleedmalik7)
-- ML attention intervention: Lead by [Aaron Pham](https://aarnphm.xyz), with [Lucas Li](https://github.com/lucas-lizhiwei)
+- SAE intervention: Lead by [Aaron Pham](https://aarnphm.xyz), with [Lucas Li](https://github.com/lucas-lizhiwei)
 
 Reviewers will be assigned automatically based on the project they champion.
 
@@ -263,7 +263,7 @@ borrows from [University of Portland Team Charter](https://engineering.up.edu/in
 
 #### External Goals
 
-Take a step back, my goal for `tinymorph` is to imagine what machine-assisted interfaces would look like for creatives, specifically for writing[^1].
+Take a step back, our goal for `tinymorph` is to imagine what machine-assisted interfaces for creative writing would look like[^1].
 
 [^1]: [[ProblemStatementAndGoals/ProblemStatement#Problem|problem statement.]]
 
@@ -273,11 +273,9 @@ and often disguised these systmems under the term "artificial super intelligence
 companies that build AI systems to amplify our abilities to create and improve efficiency for our work. Companies such
 as [Runway](https://runwayml.com/), [Cohere](https://cohere.com/), etc belongs to this paradigm. ^intelligence
 
-My interests lie firmly on the second group, where we build tools that amplifies our agency. `tinymorph` is the
-manifestation of these beliefs.
+Our interests lie firmly on the second group, where we build tools that amplifies our agency. `tinymorph` is the manifestation of these beliefs.
 
-Additionally, during the journey of prototyping `tinymorph`, I hope to use it as a playground to delve into the field
-of [[glosar#mechanistic interpretability|mech interp]], as a pure research interests.
+Additionally, during the journey of prototyping `tinymorph`, we hope to use it as a playground to delve into the field of [[glosar#mechanistic interpretability]] as a pure research interests.
 
 #### Attendance
 
@@ -301,8 +299,7 @@ all concerned parties.
 
 What process will team members follow if they have an emergency and cannot attend a team meeting or complete their individual work promised for a team deliverable?
 
-Please let everyone know through Teams, email Dr.Smith about this specific incident so that the others members can
-cover the team deliverable.
+Please let everyone know through Teams, email Dr.Smith about this specific incident so that the others members can cover the team deliverable.
 
 #### Accountability and Teamwork
 
@@ -322,8 +319,7 @@ Adhering to [Code of Coduct](https://github.com/aarnphm/tinymorph/blob/main/.git
 
 We encouraged everyone to be open to new ideas and collaborate on features work. We should use constructive critism with regards doing review work.
 
-Should any conflict arise, please discuss your concern and display your reasoning with the whole team, asynchronously
-or synchronously. At the end of the day, we are all humans 😀
+Should any conflict arise, please discuss your concern and display your reasoning with the whole team, asynchronously or synchronously. At the end of the day, we are all humans 😀
 
 ##### Stay on Track
 
