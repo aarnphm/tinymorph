@@ -118,6 +118,12 @@ tr {
   }
 }
 
+.left {
+  @media all and ($mobile) {
+    justify-content: space-between;
+  }
+}
+
 .center {
   margin: $topSpacing auto 0;
   border: 1px solid var(--darkgray);

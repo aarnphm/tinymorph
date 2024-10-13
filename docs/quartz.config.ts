@@ -9,7 +9,7 @@ import * as Plugin from "./quartz/plugins"
 const config: QuartzConfig = {
   configuration: {
     pageTitle: "tinymorph",
-    pageTitleSuffix: "",
+    pageTitleSuffix: " | tinymorph docs",
     enableSPA: true,
     enablePopovers: true,
     analytics: {
