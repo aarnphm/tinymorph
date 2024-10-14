@@ -50,7 +50,7 @@ tr {
       height: unset !important;
 
       & > .graph {
-        grid-area: 1 / 1 / 2 / 2;
+        grid-area: 1 / 1 / 1 / 1;
         max-width: 22rem;
 
         @media all and ($mobile) {
@@ -59,7 +59,7 @@ tr {
       }
 
       & > .backlinks {
-        grid-area: 1 / 3 / 2 / 3;
+        grid-area: 1 / 2 / 2 / 2;
 
         @media all and ($mobile) {
           grid-area: 2 / 1 / 2 / 2;
