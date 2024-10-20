@@ -13,29 +13,29 @@ title: Hazard Analysis
 
 ## Table of Contents
 
-## Introduction
+## 1. Introduction
 
 You can include your definition of what a hazard is here.
 
-## Scope and Purpose of Hazard Analysis
+## 2. Scope and Purpose of Hazard Analysis
 
 You should say what **loss** could be incurred because of the hazards.
 
-## System Boundaries and Components
+## 3. System Boundaries and Components
 
 Dividing the system into components will help you brainstorm the hazards. You shouldn't do a full design of the components, just get a feel for the major ones. For projects that involve hardware, the components will typically include each individual piece of hardware. If your software will have a database, or an important library, these are also potential components.
 
-## Definition of Hazard
+## 4. Definition of Hazard
 
 The definition of a hazard in this document is adapted from Nancy Leveson's work. A hazard is any attribute of `tinymorph` that when combined with specific external conditions, could result in a negative impact on system operations or user experience. In `tinymorph`, hazards are primarily related to security and system integrity, involving any weaknesses or conditions that could lead to compromised system performance, unauthorized access, or unintended system behavior. These hazards are identified to ensure proactive measures are taken to maintain system reliability and protect user interactions.
 
-## Critical Assumptions
+## 5. Critical Assumptions
 
 <!--These assumptions that are made about the software or system. You should minimize the number of assumptions that remove potential hazards. For instance, you could assume a part will never fail, but it is generally better to include this potential failure mode.-->
 
 No critical assumptions are being made for the `tinymorph` project that would limit the scope of mitigating or eliminating potential hazards.
 
-## Failure Mode and Effect Analysis
+## 6. Failure Mode and Effect Analysis
 
 Include your FMEA table here. This is the most important part of this document.
 
@@ -43,17 +43,22 @@ The safety requirements in the table do not have to have the prefix SR. The most
 
 If no safety requirement can be devised, other mitigation strategies can be entered in the table, including strategies involving providing additional documentation, and/or test cases.
 
-## 15 Safety and Security Requirements
+### 6.1 Hazards Out of Scope
+
+### 6.2 Failure Modes & Effects Analysis Table
+
+
+## 7. Safety and Security Requirements
 
 <!--Newly discovered requirements. These should also be added to the SRS. (A rationale design process how and why to fake it.)-->
 
-Requirements intended for inclusion in Revision 1 of the Security Requirements section of the SRS document are highlighted in bold. Bolded items also include notes explaining the absence of specific requirements.
+Requirements intended for inclusion in Revision 0.2 of the Security Requirements section of the SRS document are highlighted in bold. Bolded items also include notes explaining the absence of specific requirements.
 
-### 15.1 Access Requirements
+### 7.1 Access Requirements
 
 **Not applicable given the application is open source, and inference server are exposed over a HTTPS endpoints.**
 
-### 15.2 Integrity Requirements
+### 7.2 Integrity Requirements
 
 > [!important] SR-INT1
 >
@@ -79,7 +84,7 @@ Rationale: Content Security Policies (CSP) are an effective security control to 
 
 Rationale: Utilizing JWT and short-lived tokens for session management enhances security by ensuring that session data remains protected against unauthorized access. This approach helps prevent bad actors from intercepting or tampering with session data, ensuring that user content and session details remain confidential and intact.
 
-### 15.3 Privacy Requirements
+### 7.3 Privacy Requirements
 
 > [!important] SR-P1
 >
@@ -87,7 +92,7 @@ Rationale: Utilizing JWT and short-lived tokens for session management enhances 
 
 Rationale: By not collecting personal information, the application minimizes privacy risks and complies with privacy laws and regulations. Avoiding personal data storage also reduces the need for complex data security measures, allowing the project to focus more on enhancing user experience and functionality.
 
-### 15.4 Audit Requirements
+### 7.4 Audit Requirements
 
 > [!important] SR-AU1
 >
@@ -95,7 +100,7 @@ Rationale: By not collecting personal information, the application minimizes pri
 
 Rationale: Monitoring interactions with external service providers is essential to ensure they are used within the bounds of security protocols and that their performance aligns with the application's requirements. This helps in detecting any deviations that might compromise security or functionality, allowing for quick mitigation actions to maintain the integrity and reliability of the application services.
 
-### 15.5 Immunity Requirements
+### 7.5 Immunity Requirements
 
 > [!important] SR-IM1
 >
@@ -109,7 +114,7 @@ Rationale: Keeping software updated ensures that known vulnerabilities are addre
 
 Rationale: Minimizing the attack surface reduces the number of potential entry points for attackers, enhancing the overall security of the application. This proactive measure significantly lowers the risk of exploitations and helps maintain system integrity.
 
-## Roadmap
+## 8. Roadmap
 
 <!-- Which safety requirements will be implemented as part of the capstone timeline? Which requirements will be implemented in the future? -->
 
