@@ -25,6 +25,10 @@ You should say what **loss** could be incurred because of the hazards.
 
 Dividing the system into components will help you brainstorm the hazards. You shouldn't do a full design of the components, just get a feel for the major ones. For projects that involve hardware, the components will typically include each individual piece of hardware. If your software will have a database, or an important library, these are also potential components.
 
+## Definition of Hazard
+
+The definition of a hazard in this document is adapted from Nancy Leveson's work. A hazard is any attribute of `tinymorph` that when combined with specific external conditions, could result in a negative impact on system operations or user experience. In `tinymorph`, hazards are primarily related to security and system integrity, involving any weaknesses or conditions that could lead to compromised system performance, unauthorized access, or unintended system behavior. These hazards are identified to ensure proactive measures are taken to maintain system reliability and protect user interactions.
+
 ## Critical Assumptions
 
 <!--These assumptions that are made about the software or system. You should minimize the number of assumptions that remove potential hazards. For instance, you could assume a part will never fail, but it is generally better to include this potential failure mode.-->
