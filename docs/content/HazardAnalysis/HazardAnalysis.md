@@ -39,6 +39,8 @@ If no safety requirement can be devised, other mitigation strategies can be ente
 
 ## 15 Safety and Security Requirements
 
+<!--Newly discovered requirements. These should also be added to the SRS. (A rationale design process how and why to fake it.)-->
+
 Requirements intended for inclusion in Revision 1 of the Security Requirements section of the SRS document are highlighted in bold. Bolded items also include notes explaining the absence of specific requirements.
 
 ### 15.1 Access Requirements
@@ -103,7 +105,9 @@ Rationale: Minimizing the attack surface reduces the number of potential entry p
 
 ## Roadmap
 
-Which safety requirements will be implemented as part of the capstone timeline? Which requirements will be implemented in the future?
+<!-- Which safety requirements will be implemented as part of the capstone timeline? Which requirements will be implemented in the future? -->
+
+The hazard analysis for tinymorph has identified several new security requirements, outlined in the section above. These requirements aim to enhance user privacy, data integrity, and overall application security. Due to time and resource constraints, some of these requirements will be integrated into the final application, while others may be postponed for future iterations. As the project progresses, the most critical security measures will be prioritized. Toward the end of the project, the hazard analysis will be revisited to assess which risks have been addressed and which still require attention, ensuring that unresolved issues are documented for future improvement.
 
 ## Appendix --- Reflection
 
