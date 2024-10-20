@@ -27,7 +27,9 @@ Dividing the system into components will help you brainstorm the hazards. You sh
 
 ## Critical Assumptions
 
-These assumptions that are made about the software or system. You should minimize the number of assumptions that remove potential hazards. For instance, you could assume a part will never fail, but it is generally better to include this potential failure mode.
+<!--These assumptions that are made about the software or system. You should minimize the number of assumptions that remove potential hazards. For instance, you could assume a part will never fail, but it is generally better to include this potential failure mode.-->
+
+No critical assumptions are being made for the `tinymorph` project that would limit the scope of mitigating or eliminating potential hazards.
 
 ## Failure Mode and Effect Analysis
 
@@ -107,7 +109,7 @@ Rationale: Minimizing the attack surface reduces the number of potential entry p
 
 <!-- Which safety requirements will be implemented as part of the capstone timeline? Which requirements will be implemented in the future? -->
 
-The hazard analysis for tinymorph has identified several new security requirements, outlined in the section above. These requirements aim to enhance user privacy, data integrity, and overall application security. Due to time and resource constraints, some of these requirements will be integrated into the final application, while others may be postponed for future iterations. As the project progresses, the most critical security measures will be prioritized. Toward the end of the project, the hazard analysis will be revisited to assess which risks have been addressed and which still require attention, ensuring that unresolved issues are documented for future improvement.
+The hazard analysis for `tinymorph` has identified several new security requirements, outlined in the section above. These requirements aim to enhance user privacy, data integrity, and overall application security. Due to time and resource constraints, some of these requirements will be integrated into the final application, while others may be postponed for future iterations. As the project progresses, the most critical security measures will be prioritized. Toward the end of the project, the hazard analysis will be revisited to assess which risks have been addressed and which still require attention, ensuring that unresolved issues are documented for future improvement.
 
 ## Appendix --- Reflection
 
