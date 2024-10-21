@@ -23,7 +23,30 @@ You should say what **loss** could be incurred because of the hazards.
 
 ## System Boundaries and Components
 
-Dividing the system into components will help you brainstorm the hazards. You shouldn't do a full design of the components, just get a feel for the major ones. For projects that involve hardware, the components will typically include each individual piece of hardware. If your software will have a database, or an important library, these are also potential components.
+Tinymorph system is aiming to provide a cross-platform, web-based text editor that embeded LLM steering to help to adjust to user personlized preferences. The system consist of:
+
+**1. System Components Inside the Boundary**
+  1. User Interface (UI)
+    - User can compose, modify and refine text on the web-based text editing interface.
+    - UI of the editor includes components of text editor, steering controller and the real-time display of the model's output
+    **- Potential Hazards:**
+      - The response is not consistent to user's input
+      - Ineffecient redering, freesing or crashes of UI
+  2. LLM Inference Engine
+    - THis is the core component of the model that handles the request from user to LLM to generate text. 
+    **- Potential Hazards:**
+      - Incorrect output due to model biases.
+      - Performace degration due to the delays from remote LLM API
+  3. Model Steering Controls
+    - The steering control makes user's preference acts adjustably on the LLM, via SAE training.
+    **- Potential Hazards:**
+      - User may create confusing or harmful outputs by overly tweaking the controls unintentionally. 
+      - Steering out of normal parameters results incorrect or unpredictable behavior.
+**2. External Interfaces and Interactions**
+  1. Third-Party APIs (LLM Providers)
+  3. Network Infrastructure
+**3. Components Outside the Boundary**
+  1. User Devices and Platforms
 
 ## Critical Assumptions
 
