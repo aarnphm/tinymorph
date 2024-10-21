@@ -29,7 +29,46 @@ By examining these hazards, the analysis seeks to outline preventive measures to
 
 ## 3. System Boundaries and Components
 
-Dividing the system into components will help you brainstorm the hazards. You shouldn't do a full design of the components, just get a feel for the major ones. For projects that involve hardware, the components will typically include each individual piece of hardware. If your software will have a database, or an important library, these are also potential components.
+<!-- Dividing the system into components will help you brainstorm the hazards. You shouldn't do a full design of the components, just get a feel for the major ones. For projects that involve hardware, the components will typically include each individual piece of hardware. If your software will have a database, or an important library, these are also potential components. -->
+
+`tinymorph` is aiming to provide a cross-platform, web-based text editor that embeded LLM steering to help to adjust to user personlized preferences. The system consist of:
+
+**1. System Components Inside the Boundary**
+  1. User Interface (UI)
+    - User can compose, modify and refine text on the web-based text editing interface.
+    - UI of the editor includes components of text editor, steering controller and the real-time display of the model's output
+    **- Potential Hazards:**
+      - The response is not consistent to user's input
+      - Ineffecient redering, freesing or crashes of UI
+  2. LLM Inference Engine
+    - THis is the core component of the model that handles the request from user to LLM to generate text. 
+    **- Potential Hazards:**
+      - Incorrect output due to model biases.
+      - Performace degration due to the delays from remote LLM API
+  3. Model Steering Controls
+    - The steering control makes user's preference acts adjustably on the LLM, via SAE training.
+    **- Potential Hazards:**
+      - User may create confusing or harmful outputs by overly tweaking the controls unintentionally. 
+      - Steering out of normal parameters results incorrect or unpredictable behavior.
+**2. External Interfaces and Interactions**
+  1. Third-Party APIs (LLM Providers)
+    - The system relies on external APIs of LLM providers for performing text generation.
+    **- Potential Hazards:**
+      - API may experience down time or rate limiting. This may cause interrupt or delay of return.
+  2. Network Infrastructure
+    - As a web-based tool, tinymorph relies heavily on the network for connecting users to remote inference servers and external APIs to create content.
+    **- Potential Hazards:**
+      - Network outages will impact responsiveness
+**3. Components Outside the Boundary**
+  1. User Devices and Platforms
+    - Although tinymorph  is aiming to run on multiple platforms, the hardware and operating system of user devices are outside the system’s control.
+    **- Potential Hazards:**
+      - Device-level vulnerabilities (like outdated browsers) could lead to unpredictable system behavior or crashes.
+  2. External Data Storage Services
+    -  User need a local third-party storage services to store the preferences locally. These storage services are out of tinymorph's control.
+    **- Potential Hazards:**
+      - Data loss is possible if local third-party storage services crashes. 
+The system boundary in this case includes UI, LLM Inference Engine, Model Steering Controls. The user devices and platforms, local data storage provider, LLM API and user end network infrastructure are not controlled by tinymorph. LLM API is controlled by LLM provider. 
 
 ## 4. Definition of Hazard
 
