@@ -13,11 +13,11 @@ title: Hazard Analysis
 
 ## Table of Contents
 
-## Introduction
+## 1. Introduction
 
 The tinymorph application is a web-based text editor designed to assist writers in crafting creative content through AI-driven suggestions and planning interfaces. A hazard, in this context, is any potential condition or system failure that can lead to undesirable outcomes for the user or the system. These hazards may arise from system malfunctions, improper user interactions, or issues related to the underlying AI models. Identifying and mitigating these hazards is crucial to ensure that users have a safe and reliable experience.
 
-## Scope and Purpose of Hazard Analysis
+## 2. Scope and Purpose of Hazard Analysis
 
 The scope of this hazard analysis focuses on key components of the tinymorph system, including the user interface, AI model integration, and local data handling. The analysis aims to identify potential hazards that could lead to various losses, such as:
 
@@ -27,15 +27,21 @@ The scope of this hazard analysis focuses on key components of the tinymorph sys
 
 By examining these hazards, the analysis seeks to outline preventive measures to avoid and minimize these losses, ensuring that the system operates reliably and securely while protecting user content and experience.
 
-## System Boundaries and Components
+## 3. System Boundaries and Components
 
 Dividing the system into components will help you brainstorm the hazards. You shouldn't do a full design of the components, just get a feel for the major ones. For projects that involve hardware, the components will typically include each individual piece of hardware. If your software will have a database, or an important library, these are also potential components.
 
-## Critical Assumptions
+## 4. Definition of Hazard
 
-These assumptions that are made about the software or system. You should minimize the number of assumptions that remove potential hazards. For instance, you could assume a part will never fail, but it is generally better to include this potential failure mode.
+The definition of a hazard in this document is adapted from Nancy Leveson's work. A hazard is any attribute of `tinymorph` that when combined with specific external conditions, could result in a negative impact on system operations or user experience. In `tinymorph`, hazards are primarily related to security and system integrity, involving any weaknesses or conditions that could lead to compromised system performance, unauthorized access, or unintended system behavior. These hazards are identified to ensure proactive measures are taken to maintain system reliability and protect user interactions.
 
-## Failure Mode and Effect Analysis
+## 5. Critical Assumptions
+
+<!--These assumptions that are made about the software or system. You should minimize the number of assumptions that remove potential hazards. For instance, you could assume a part will never fail, but it is generally better to include this potential failure mode.-->
+
+No critical assumptions are being made for the `tinymorph` project that would limit the scope of mitigating or eliminating potential hazards.
+
+## 6. Failure Mode and Effect Analysis
 
 Include your FMEA table here. This is the most important part of this document.
 
@@ -43,13 +49,82 @@ The safety requirements in the table do not have to have the prefix SR. The most
 
 If no safety requirement can be devised, other mitigation strategies can be entered in the table, including strategies involving providing additional documentation, and/or test cases.
 
-## Safety and Security Requirements
+### 6.1 Hazards Out of Scope
 
-Newly discovered requirements. These should also be added to the SRS. (A rationale design process how and why to fake it.)
+### 6.2 Failure Modes & Effects Analysis Table
 
-## Roadmap
 
-Which safety requirements will be implemented as part of the capstone timeline? Which requirements will be implemented in the future?
+## 7. Safety and Security Requirements
+
+<!--Newly discovered requirements. These should also be added to the SRS. (A rationale design process how and why to fake it.)-->
+
+Requirements intended for inclusion in Revision 0.2 of the Security Requirements section of the SRS document are highlighted in bold. Bolded items also include notes explaining the absence of specific requirements.
+
+### 7.1 Access Requirements
+
+**Not applicable given the application is open source, and inference server are exposed over a HTTPS endpoints.**
+
+### 7.2 Integrity Requirements
+
+> [!important] SR-INT1
+>
+> **All communication between the client UI, backend services, and external APIs must be encrypted using HTTPS.**
+
+Rationale: HTTPS encryption secures data in transit, preventing interception or tampering. It also ensures the confidentiality and integrity of user data and commands.
+
+> [!important] SR-INT2
+>
+> **Implement DNS security measures to ensure that DNS queries and responses are protected against tampering and spoofing.**
+
+Rationale: Securing DNS interactions prevents attackers from manipulating or rerouting network traffic. This is critical for maintaining the integrity of application data.
+
+> [!important] SR-INT3
+>
+> **The application will use content security policies to mitigate the risk of XSS attacks.**
+
+Rationale: Content Security Policies (CSP) are an effective security control to prevent XSS attacks by restricting the sources from which scripts can be loaded and executed in the application. CSP will help in safeguarding against data theft and maintain the integrity of the content delivered to users.
+
+> [!important] SR-INT4
+>
+> **Implement JWT and short-lived tokens to secure session communications.**
+
+Rationale: Utilizing JWT and short-lived tokens for session management enhances security by ensuring that session data remains protected against unauthorized access. This approach helps prevent bad actors from intercepting or tampering with session data, ensuring that user content and session details remain confidential and intact.
+
+### 7.3 Privacy Requirements
+
+> [!important] SR-P1
+>
+> **The application must ensure that it does not collect or store personal information, adhering strictly to privacy by design principles.**
+
+Rationale: By not collecting personal information, the application minimizes privacy risks and complies with privacy laws and regulations. Avoiding personal data storage also reduces the need for complex data security measures, allowing the project to focus more on enhancing user experience and functionality.
+
+### 7.4 Audit Requirements
+
+> [!important] SR-AU1
+>
+> **Implement monitoring of interactions with external service providers to ensure their use complies with security policies and performance expectations.**
+
+Rationale: Monitoring interactions with external service providers is essential to ensure they are used within the bounds of security protocols and that their performance aligns with the application's requirements. This helps in detecting any deviations that might compromise security or functionality, allowing for quick mitigation actions to maintain the integrity and reliability of the application services.
+
+### 7.5 Immunity Requirements
+
+> [!important] SR-IM1
+>
+> **Employ up to date security measures to protect against known threats and vulnerabilities, including regular updates and patches to the software components.**
+
+Rationale: Keeping software updated ensures that known vulnerabilities are addressed, which will protect the application and its data from emerging threats.
+
+> [!important] SR-IM2
+>
+> **Configure the application to minimize the surface area for attacks by disabling unused services and endpoints.**
+
+Rationale: Minimizing the attack surface reduces the number of potential entry points for attackers, enhancing the overall security of the application. This proactive measure significantly lowers the risk of exploitations and helps maintain system integrity.
+
+## 8. Roadmap
+
+<!-- Which safety requirements will be implemented as part of the capstone timeline? Which requirements will be implemented in the future? -->
+
+The hazard analysis for `tinymorph` has identified several new security requirements, outlined in the section above. These requirements aim to enhance user privacy, data integrity, and overall application security. Due to time and resource constraints, some of these requirements will be integrated into the final application, while others may be postponed for future iterations. As the project progresses, the most critical security measures will be prioritized. Toward the end of the project, the hazard analysis will be revisited to assess which risks have been addressed and which still require attention, ensuring that unresolved issues are documented for future improvement.
 
 ## Appendix --- Reflection
 
