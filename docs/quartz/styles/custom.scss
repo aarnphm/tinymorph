@@ -1,3 +1,4 @@
+@use "sass:map";
 @use "./base.scss";
 @use "./variables.scss" as *;
 @use "./links.scss" as *;
@@ -33,12 +34,12 @@ tr {
 
 .page {
   & > #quartz-body {
-    @media all and (min-width: calc(#{map-get($breakpoints, desktop)})) {
-      grid-template-columns: #{map-get($tabletGrid, templateColumns)};
-      grid-template-rows: #{map-get($tabletGrid, templateRows)};
-      column-gap: #{map-get($tabletGrid, columnGap)};
-      row-gap: #{map-get($tabletGrid, rowGap)};
-      grid-template-areas: #{map-get($tabletGrid, templateAreas)};
+    @media all and (min-width: calc(#{map.get($breakpoints, desktop)})) {
+      grid-template-columns: #{map.get($tabletGrid, templateColumns)};
+      grid-template-rows: #{map.get($tabletGrid, templateRows)};
+      column-gap: #{map.get($tabletGrid, columnGap)};
+      row-gap: #{map.get($tabletGrid, rowGap)};
+      grid-template-areas: #{map.get($tabletGrid, templateAreas)};
     }
 
     & .sidebar.right {
@@ -191,7 +192,7 @@ a {
     }
   }
 
-  @media all and (min-width: calc(#{map-get($breakpoints, desktop)})) {
+  @media all and (min-width: calc(#{map.get($breakpoints, desktop)})) {
     &.internal.alias:not(.popover):not(.popover *):not([href^="#bib"]) {
       @include links;
     }
