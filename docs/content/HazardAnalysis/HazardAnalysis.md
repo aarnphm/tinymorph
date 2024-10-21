@@ -44,10 +44,23 @@ Tinymorph system is aiming to provide a cross-platform, web-based text editor th
       - Steering out of normal parameters results incorrect or unpredictable behavior.
 **2. External Interfaces and Interactions**
   1. Third-Party APIs (LLM Providers)
-  3. Network Infrastructure
+    - The system relies on external APIs of LLM providers for performing text generation.
+    **- Potential Hazards:**
+      - API may experience down time or rate limiting. This may cause interrupt or delay of return.
+  2. Network Infrastructure
+    - As a web-based tool, tinymorph relies heavily on the network for connecting users to remote inference servers and external APIs to create content.
+    **- Potential Hazards:**
+      - Network outages will impact responsiveness
 **3. Components Outside the Boundary**
   1. User Devices and Platforms
-
+    - Although tinymorph  is aiming to run on multiple platforms, the hardware and operating system of user devices are outside the system’s control.
+    **- Potential Hazards:**
+      - Device-level vulnerabilities (like outdated browsers) could lead to unpredictable system behavior or crashes.
+  2. External Data Storage Services
+    -  User need a local third-party storage services to store the preferences locally. These storage services are out of tinymorph's control.
+    **- Potential Hazards:**
+      - Data loss is possible if local third-party storage services crashes. 
+The system boundary in this case includes UI, LLM Inference Engine, Model Steering Controls. The user devices and platforms, local data storage provider, LLM API and user end network infrastructure are not controlled by tinymorph. LLM API is controlled by LLM provider. 
 ## Critical Assumptions
 
 These assumptions that are made about the software or system. You should minimize the number of assumptions that remove potential hazards. For instance, you could assume a part will never fail, but it is generally better to include this potential failure mode.
