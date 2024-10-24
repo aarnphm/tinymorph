@@ -7,6 +7,7 @@ requires-python = ">=3.11"
 dependencies = [
     "nnsight>=0.3.5",
     "sae",
+    "sae-lens>=0.5.0",
     "transformers>=4.44.2",
 ]
 
@@ -18,7 +19,11 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.uv]
-dev-dependencies = ["jupyter>=1.1.1"]
+dev-dependencies = [
+    "jupyter>=1.1.1",
+    "jupyterlab-vim>=4.1.4",
+    "notebook>=7.2.2",
+]
 
 [tool.uv.sources]
 sae = { git = "https://github.com/EleutherAI/sae.git", rev = "main" }
