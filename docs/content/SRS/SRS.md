@@ -8,14 +8,13 @@ description: "Software Requirements Specification for tinymorph: LLM-steering te
 title: Software Requirements Specification
 ---
 
-See also: [[Checklists/SRS-Checklist|checklist]], [[SRS/SRS#Revision|this document revision]], and [[ProblemStatementAndGoals/ProblemStatement|problem statement]]
+See also: [[SRS/SRS#Revision|this document revision]], and [[ProblemStatementAndGoals/ProblemStatement|problem statement]]
 
 _The following Software Requirements Specification for `tinymorph` is using [Volere Requirements Specification template](https://www.volere.org/templates/volere-requirements-specification-template/)_
 
 ## 1. Purpose of the Project
 
-> `tinymorph` aims to explore new interfaces and workflow for [[glossary#auto-regressive model]] to help writers
-> craft better writing artifacts.
+> `tinymorph` aims to explore new interfaces and workflow for [[glossary#auto-regressive model]] to help writers craft better writing artifacts. ^introduction
 
 ### 1.1 User Business
 
@@ -1434,7 +1433,7 @@ Rationale: When the inference server is updating or maintaining, users should be
 >
 > Migration in future config format should ensure backward compatibility for one-time transition
 
-Rationale: When configuration or certain features require breaking change, `tinymorph` must be able to migrate existing configuration to the new format without breaking change.
+Rationale: When configuration or certain features require breaking change, `tinymorph` must be able to migrate existing configuration to the new format without breaking change. ^MNP-DMTNS1
 
 ## 23. Costs
 
