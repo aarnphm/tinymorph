@@ -7,7 +7,7 @@ date: "2024-09-16"
 title: Development Plan
 ---
 
-See also: [[Checklists/POC-Checklist|checklist]] and [[DevelopmentPlan/DevelopmentPlan#Revision|this document revision]]
+See also: [[DevelopmentPlan/DevelopmentPlan#Revision|this document revision]]
 
 The following includes a brief roadmap of the development plan for `tinymorph` from Team 23 (Hinterland).
 

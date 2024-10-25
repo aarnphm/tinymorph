@@ -214,7 +214,7 @@ a {
 
 .katex {
   font:
-    normal 1em KaTeX_Main,
+    normal 1.2em KaTeX_Main,
     var(--bodyFont),
     serif !important;
 }
@@ -238,6 +238,15 @@ body {
 
 [saved-theme="dark"] body {
   background-image: none;
+}
+
+body[data-slug="HazardAnalysis/HazardAnalysis"] {
+  h3[id^="152-integrity-requirements"],
+  h3[id^="154-audit-requirements"],
+  h3[id^="155-immunity-requirements"],
+  h3[id^="153-privacy-requirements"] {
+    display: none;
+  }
 }
 
 .csl-entry {
