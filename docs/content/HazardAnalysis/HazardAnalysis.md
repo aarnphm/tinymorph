@@ -180,3 +180,71 @@ Not required for CAS 741
 2. What pain points did you experience during this deliverable, and how did you resolve them?
 3. Which of your listed risks had your team thought of before this deliverable, and which did you think of while doing this deliverable? For the latter ones (ones you thought of while doing the Hazard Analysis), how did they come about?
 4. Other than the risk of physical harm (some projects may not have any appreciable risks of this form), list at least 2 other types of risk in software products. Why are they important to consider?
+
+
+<div class="reflection-container">
+
+<div class="users">
+  <a class="name" href="https://github.com/aarnphm">Aaron</a>
+</div>
+
+<div class="blob">
+
+</div>
+
+</div>
+
+<br/>
+
+<div class="reflection-container">
+
+<div class="users">
+  <a class="name" href="https://github.com/nebrask">Nebras</a>
+</div>
+
+<div class="blob">
+
+The hazard analysis process went well in terms of identifying potential risks within the `tinymorph` project. The structured approach allowed us to effectively define the system boundaries, assess the components involved, and categorize hazards by focusing on different aspects such as system integrity, security, and user experience. Collaborating as a team to discuss and refine these hazards helped ensure a better understanding of possible system vulnerabilities. Breaking down the analysis into well defined sections allowed for greater organization and helped us consider multiple perspectives on the potential risks to both users and the system.
+
+One of the pain points we experienced was determining the level of detail required for defining hazards and the justifications for the safety and security requirements. It was challenging to decide how specific each hazard needed to be without overcomplicating the document. To resolve this we opted for a balance between general definitions and more detailed justifications, making sure each hazard's implications were understood without overwhelming the document with unnecessary technical details. Another issue was the integration of third-party API related hazards. Understanding the exact scope of our control over these external components was difficult, so we spent time clarifying system boundaries and ensuring that our analysis accurately reflected the control we had over each component.
+
+Before starting this deliverable, we had already identified risks related to data privacy, data integrity, and maintaining a consistent user experience. However, during the hazard analysis process new risks emerged such as incorrect or harmful outputs from the model steering controls and the risks associated with steering the LLM beyond normal parameters. These risks came about when we examined the system from a more user-centered perspective and considered potential unintended outcomes from users tweaking model parameters excessively. Additionally, hazards associated with third party API downtime or rate limiting became more apparent as we started detailing the components outside our system boundary and recognizing our reliance on those external systems.
+
+Two other significant risks in software products include data privacy risks and user experience risks. Data privacy risks involve improper handling of sensitive user information, which can lead to security breaches and legal consequences. It's crucial to minimize privacy risks to protect user trust and comply with data protection laws. User experience risks can arise from confusing or inconsistent interfaces, poor system performance, or model-generated content that misaligns with user expectations. Poor user experience can result in reduced adoption of the product and overall dissatisfaction, directly impacting the success of the project. Both of these risks are important to consider because they affect how users perceive and trust the software, which is critical for the long term viability of the `tinymorph` project.
+
+
+</div>
+
+</div>
+
+<br/>
+
+<div class="reflection-container">
+
+<div class="users">
+  <a class="name" href="https://github.com/waleedmalik7">Waleed</a>
+</div>
+
+<div class="blob">
+
+
+</div>
+
+</div>
+
+<br/>
+
+<div class="reflection-container">
+
+<div class="users">
+  <a class="name" href="https://github.com/lucas-lizhiwei">Lucas</a>
+</div>
+
+<div class="blob">
+<p>
+
+
+</p>
+</div>
+
+</div>
