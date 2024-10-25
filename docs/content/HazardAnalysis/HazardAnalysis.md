@@ -306,6 +306,13 @@ Two other significant risks in software products include data privacy risks and 
 
 <div class="blob">
 
+1. We still have quick devision on the task of this document, and followed the right hierarchy.
+
+2. The core part of this documentation is challenging for me. We agreed to assign better suitable team member for it to resolve the problem.
+
+3. We had some estimation on the api of language model, which might become harzard when they are not stable. After our discussion we settled down on the architecture of interface-server connections and we found some more possible harzards about the connection.
+
+4. Security risk, which might include misuse of the user's data. This may lead to personal information leak and further legal problem. Performance risk, which might include lagging on the user interface and slow in response. This affects the user experience a lot and may cause their drop on trust of the software in the future.
 
 </div>
 
@@ -315,10 +322,11 @@ Two other significant risks in software products include data privacy risks and 
 
 ### Revision
 
-| Date          | Developer(s) | Change                                                |
+| Date          | Revisions    | Change                                                |
 | ------------- | ------------ | ----------------------------------------------------- |
 | Sept. 16 2024 | 0.0          | Initial skafolding                                    |
 | Oct. 21 2024  | 0.1          | Assumption, Safety and Security Requirements, Roadmap |
 | Oct. 21 2024  | 0.2          | Intro, scope                                          |
 | Oct. 21 2024  | 0.3          | System boundaries                                     |
 | Oct. 24 2024  | 0.4          | Table, Revisions                                      |
+| Oct. 24 2024  | 0.5          | Reflection                                            |
