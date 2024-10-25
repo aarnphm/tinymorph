@@ -11,7 +11,7 @@ dependencies = [
   "fastapi>=0.115.0",
   "openai>=1.47.0",
   "sae @ git+https://github.com/EleutherAI/sae.git@main",
-  "vllm>=0.6.3; sys_platform == 'linux'",
+  "vllm>=0.6.3",
 ]
 dynamic = ["version"]
 [project.urls]
