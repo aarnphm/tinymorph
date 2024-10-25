@@ -284,6 +284,13 @@ Two other significant risks in software products include data privacy risks and 
 
 <div class="blob">
 
+1. One of the key successes was that the hazard analysis allowed the team to delve deeper into the system's design and implementation details. By thinking through both extreme cases and everyday uses of the application, the team was able to better define the interface and architectural requirements. For instance, it became clearer that privacy-related requirements needed to ensure that any cached or stored data pertains solely to model outputs (suggestions) rather than actual user input.
+
+2. One major challenge was the difficulty of identifying all potential hazards without the benefit of fully testing the software. Since many risks only emerge during actual software use, it was difficult to predict all hazards upfront. This was resolved by acknowledging that interactive software development is iterative, and hazards will need to be continually reassessed as the system evolves and undergoes user testing.
+
+3. Before starting the hazard analysis, the team had already discussed user privacy risks. Specifically, the need to avoid storing sensitive user input like private writings had been considered. Instead, the system would only store model-generated suggestions specific to the user's context. While conducting the hazard analysis, the team identified additional risks related to software security, particularly around ensuring encryption and safeguarding data during transit and storage. These additional risks came to light after conducting more research into similar applications and their security vulnerabilities.
+
+4. In any software that processes user-generated content, privacy is a critical concern. Failing to protect user data can lead to breaches that not only harm users but also damage the company’s reputation. It is crucial to implement encryption, secure storage practices, and limit data collection to mitigate such risks. A software product can also face risks if it fails to meet usability expectations. Poorly designed interfaces can lead to frustration, reduced productivity, or even users abandoning the product. It's important to ensure that software is intuitive and accessible to its intended users, accommodating various levels of technical expertise.
 
 </div>
 
