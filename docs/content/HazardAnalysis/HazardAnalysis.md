@@ -58,10 +58,6 @@ The following defines system boundaries for `tinymorph`:
 
 - suggestion generated from said inference engine to cultivate ideas and thoughts for writing piece.
 
-> [!danger] Potential Hazard
->
-> - Suggestions are not relevant to currently editing text.
-
 ### 3.2 Interactions
 
 #### 3.2.1 Infrastructure reliability
@@ -70,18 +66,10 @@ The following defines system boundaries for `tinymorph`:
   connection.
 - Uptime and performance of servers must be reliable during high traffic usage.
 
-> [!danger] Potential Hazard
->
-> - SLO and SLA are not met, leading to certain rollbacks and downtime
-
 #### 3.2.2 File system operations
 
 - File system operations are critical for `tinymorph` to function properly, where it allows users to include files as
   context or saving their progress.
-
-> [!danger] Potential Hazard
->
-> - network outages would render `tinymorph` unable to save or load files.
 
 ### 3.3 Components outside the boundary
 
@@ -164,6 +152,7 @@ The following is the FEMA table for `tinymorph`.
 | Authentication       | Privacy breach                                                                  | Exposure of user content, trust                                 | a. Insecure transmission<br>b. Authentication token expire                                                                                                                                              | a. Implement end-to-end encryption<br>b. Secure all inference endpoint                                                            | OER-MR1<br>SR-INT1<br>SR-INT4<br>SR-P1  | H4.1 |
 | General              | Overall system unresponsiveness                                                 | Users unable to use the system                                  | a. Memory leak<br>b. Browser limitation<br>c. Resource starvation                                                                                                                                       | a. Optimize memory usage<br>b. Implement early degradation detection and display warning                                          | LAIETMINP-1                             | H5.1 |
 | User devices support | Unpredictable system behavior or crashes caused by device-level vulnerabilities | Crashes users system                                            | a. out-dated browsers                                                                                                                                                                                   | a. Recommend users to regularly update their browsers and device firmware<br>b. Same as H1.1                                      | SR-IM1                                  | H6.1 |
+| Infrastructure       | Downtime                                                                        | Interruption in users' workflow                                 | a. SLO and third-party service downtimw                                                                                                                                                                 | a. Same as H2.1<br>b. Add rollback and scaling for backup region                                                                  | SR-AU1                                  | H7.1 |
 
 ## 7. Safety and Security Requirements
 
@@ -212,7 +201,7 @@ The following roadmap for safety requirements will be divided into three phases:
 | Phases | Description                                                                                                                                | Importance | Deadline          | Items      |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ----------------- | ---------- |
 | 0      | Immediate risks that should be addressed during implementation phase                                                                       | High (P0)  | Capstone Rev 0    | H1, H2, H4 |
-| 1      | Short-term requirements that is optimal to be addressed as soon as possible. Delay/failure to address these won't affect capstone timeline | Med (P1)   | Capstone Demo Day | H3         |
+| 1      | Short-term requirements that is optimal to be addressed as soon as possible. Delay/failure to address these won't affect capstone timeline | Med (P1)   | Capstone Demo Day | H3, H7     |
 | 2      | Long-term requirements that should be addressed during further iterations                                                                  | Low (P2)   | n/a               | H4, H5     |
 
 _NOTE_: Each of dependent risks/requirements will also be prioritized. For example: H1.1 requires FR-6 and RFA-BR1 to be addressed before said deadline
@@ -269,7 +258,6 @@ Before starting this deliverable, we had already identified risks related to dat
 
 Two other significant risks in software products include data privacy risks and user experience risks. Data privacy risks involve improper handling of sensitive user information, which can lead to security breaches and legal consequences. It's crucial to minimize privacy risks to protect user trust and comply with data protection laws. User experience risks can arise from confusing or inconsistent interfaces, poor system performance, or model-generated content that misaligns with user expectations. Poor user experience can result in reduced adoption of the product and overall dissatisfaction, directly impacting the success of the project. Both of these risks are important to consider because they affect how users perceive and trust the software, which is critical for the long term viability of the `tinymorph` project.
 
-
 </div>
 
 </div>
@@ -297,7 +285,7 @@ Two other significant risks in software products include data privacy risks and 
 </div>
 
 <br/>
-  
+
  <div class="reflection-container">
 
 <div class="users">
@@ -322,11 +310,11 @@ Two other significant risks in software products include data privacy risks and 
 
 ### Revision
 
-| Date          | Revisions    | Change                                                |
-| ------------- | ------------ | ----------------------------------------------------- |
-| Sept. 16 2024 | 0.0          | Initial skafolding                                    |
-| Oct. 21 2024  | 0.1          | Assumption, Safety and Security Requirements, Roadmap |
-| Oct. 21 2024  | 0.2          | Intro, scope                                          |
-| Oct. 21 2024  | 0.3          | System boundaries                                     |
-| Oct. 24 2024  | 0.4          | Table, Revisions                                      |
-| Oct. 24 2024  | 0.5          | Reflection                                            |
+| Date          | Revisions | Change                                                |
+| ------------- | --------- | ----------------------------------------------------- |
+| Sept. 16 2024 | 0.0       | Initial skafolding                                    |
+| Oct. 21 2024  | 0.1       | Assumption, Safety and Security Requirements, Roadmap |
+| Oct. 21 2024  | 0.2       | Intro, scope                                          |
+| Oct. 21 2024  | 0.3       | System boundaries                                     |
+| Oct. 24 2024  | 0.4       | Table, Revisions                                      |
+| Oct. 24 2024  | 0.5       | Reflection                                            |
