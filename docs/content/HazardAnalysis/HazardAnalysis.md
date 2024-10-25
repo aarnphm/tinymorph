@@ -173,3 +173,16 @@ Not required for CAS 741
 2. What pain points did you experience during this deliverable, and how did you resolve them?
 3. Which of your listed risks had your team thought of before this deliverable, and which did you think of while doing this deliverable? For the latter ones (ones you thought of while doing the Hazard Analysis), how did they come about?
 4. Other than the risk of physical harm (some projects may not have any appreciable risks of this form), list at least 2 other types of risk in software products. Why are they important to consider?
+
+<div class="users">
+  <a class="name" href="https://github.com/lucas-lizhiwei">Lucas</a>
+</div>
+
+<div class="blob">
+<p>
+  1. We still have quick devision on the task of this document, and followed the right hierarchy. <br>
+  2. The core part of this documentation is challenging for me. We agreed to assign better suitable team member for it to resolve the problem. <br>
+  3. We had some estimation on the api of language model, which might become harzard when they are not stable. After our discussion we settled down on the architecture of interface-server connections and we found some more possible harzards about the connection. <br>
+  4. Security risk, which might include misuse of the user's data. This may lead to personal information leak and further legal problem. Performance risk, which might include lagging on the user interface and slow in response. This affects the user experience a lot and may cause their drop on trust of the software in the future. <br>
+</p>
+</div>
