@@ -8,8 +8,7 @@ title: Problem Statement and Goals
 titleTransclude: false
 ---
 
-See also: [[Checklists/ProbState-Checklist|checklist]] and
-[[ProblemStatementAndGoals/ProblemStatement#Revision|this document revision]]
+See also: [[ProblemStatementAndGoals/ProblemStatement#Revision|this document revision]]
 
 ## Problem
 

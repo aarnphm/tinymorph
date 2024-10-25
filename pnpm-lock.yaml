@@ -104,7 +104,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       rehype-citation:
-        specifier: ^2.1.2
+        specifier: ^2.2.0
         version: 2.2.0
       rehype-katex:
         specifier: ^7.0.1
@@ -155,7 +155,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       serve-handler:
-        specifier: ^6.1.5
+        specifier: ^6.1.6
         version: 6.1.6
       shiki:
         specifier: ^1.21.0
