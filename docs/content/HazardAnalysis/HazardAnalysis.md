@@ -147,7 +147,7 @@ The following is the FEMA table for `tinymorph`.
 |                      | Configuration corruptions                                                       | lost users' preferences; degraded users' experience             | a. Configuration schema out of date<br>b. File was corrupted<br>c. Invalid data format                                                                                                                  | a. Maintain config backups<br>b. Validate all changes<br>c. Provide default fallbacks                                             | MNP-DMTNS1<br>UDT-D2<br>FR-5<br>SR-INT5 | H1.3 |
 |                      | Ambiguous configuration parameters                                              | confusion; potential for jailbreaking                           | a. Too complex parameters that is not relevant to end-users                                                                                                                                             | a. Display relevant support popup for each parameters                                                                             | MC-S5<br>FR-4                           | H1.4 |
 | Inference Engine     | Suggestions for planning fails                                                  | No assistance provided; workflow disrupted                      | a. Server overload<br>b. Model errors<br>c. Resource exhaustion                                                                                                                                         | a. Implement load balancing<br>b. Provide fallback mechanisms<br>c. Monitor server health<br>d. Implement KV cache optimization   | FR-3<br>                                | H2.1 |
-|                      | Harmful content suggestions                                                     | Legal liability; inappropriate suggestions, potential user harm | a. [[glossary#sparse autoencoders\|feature steering]] failures<br>b. AI's [[glossary#bias bug\|bias bug]]<br>c. Insufficient filtering and guardrails<br>d. [[glossary#hallucinations\|hallucinations]] | a. Warn upfront as a research preview<br>b. Incorporate manual feedback to improve SAEs generations<br>c. Add relevant guardrails | FR-7<br>FR-11                           | H2.2 |
+|                      | Harmful content suggestions                                                     | Legal liability; inappropriate suggestions, potential user harm | a. [[glossary#sparse autoencoders\|feature steering]] failures<br>b. AI's [[glossary#bias bug\|bias bug]]<br>c. Insufficient filtering and guardrails<br>d. [[glossary#hallucinations\|hallucinations]] | a. Warn upfront as a research preview<br>b. Incorporate manual feedback to improve SAEs generations<br>c. Add relevant guardrails | FR-7<br>FR-11<br>SR-INT6                | H2.2 |
 | Network connections  | Network outages                                                                 | interrupt users flow                                            | a. Electrical outage<br>b. Network congestion<br>c. Server outage                                                                                                                                       | a. Display a toast warning about network outage<br>b. Recommendation to save locally<br>c. Same as H1.1                           | FR-9                                    | H3.1 |
 | Authentication       | Privacy breach                                                                  | Exposure of user content, trust                                 | a. Insecure transmission<br>b. Authentication token expire                                                                                                                                              | a. Implement end-to-end encryption<br>b. Secure all inference endpoint                                                            | OER-MR1<br>SR-INT1<br>SR-INT4<br>SR-P1  | H4.1 |
 | General              | Overall system unresponsiveness                                                 | Users unable to use the system                                  | a. Memory leak<br>b. Browser limitation<br>c. Resource starvation                                                                                                                                       | a. Optimize memory usage<br>b. Implement early degradation detection and display warning                                          | LAIETMINP-1                             | H5.1 |
@@ -170,15 +170,15 @@ Requirements intended for inclusion in Revision 0.2 of the Security Requirements
 
 > [!important] SR-INT5
 >
-> Ensure data integrity for local storage
+> Ensure data integrity for local storage.
 
-Rationale: Corrupted file format can lead to loss in data, therefore, it is important to ensure data integrity for local storage.
+Rationale: Corrupted file format can lead to loss in data. This applies to both configurations and users' files. See H2.3
 
 > [!important] SR-INT6
 >
-> fair feature steering SAEs
+> Fair feature steering SAEs
 
-Rationale: SAEs must comply to certain features, stay true to trained tonality (for example Raymond Carver's SAEs should depict his writing style), and the system should reject inappropriate suggestions.
+Rationale: SAEs must comply to certain features, stay true to trained tonality (for example Raymond Carver's SAEs should depict his writing style), and the system should reject inappropriate suggestions. This is to ensure that the system is not biased towards certain features.
 
 ### 7.3 Privacy Requirements
 
