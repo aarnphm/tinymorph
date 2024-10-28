@@ -13,7 +13,6 @@ titleTransclude: false
 
 The following includes a few shortcut for capstone portion of `tinymorph`:
 
-- [[Checklists|Checklists]] for progress tracking.
 - [[Design]] contains specification for the project.
 - [[DevelopmentPlan/DevelopmentPlan.md|Development Plan]] covers the development plan for the next 8 months of `tinymorph`.
 - [[HazardAnalysis/HazardAnalysis|Hazard Analysis]] with regards to existential risks of `tinymorph`.

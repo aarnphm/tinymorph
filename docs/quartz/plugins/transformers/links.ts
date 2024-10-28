@@ -12,7 +12,7 @@ import {
 import path from "path"
 import { visit } from "unist-util-visit"
 import isAbsoluteUrl from "is-absolute-url"
-import { Root } from "hast"
+import { Root, ElementContent } from "hast"
 
 interface Options {
   /** How to resolve Markdown paths */
@@ -133,6 +133,15 @@ export const CrawlLinks: QuartzTransformerPlugin<Partial<Options>> = (userOpts) 
                 ) {
                   node.children[0].value = path.basename(node.children[0].value)
                 }
+
+                // add indicator spanContent after handling all prettyLinks
+                const spanContent: ElementContent = {
+                  properties: { className: "indicator-hook" },
+                  type: "element",
+                  tagName: "span",
+                  children: [],
+                }
+                node.children = [spanContent, ...node.children]
               }
 
               // transform all other resources that may use links

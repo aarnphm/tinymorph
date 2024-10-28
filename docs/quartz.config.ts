@@ -9,7 +9,7 @@ import * as Plugin from "./quartz/plugins"
 const config: QuartzConfig = {
   configuration: {
     pageTitle: "tinymorph",
-    pageTitleSuffix: " | tinymorph docs",
+    pageTitleSuffix: " | tinymorph",
     enableSPA: true,
     enablePopovers: true,
     analytics: {
@@ -67,14 +67,13 @@ const config: QuartzConfig = {
         },
         keepBackground: true,
       }),
-      Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false, enableCheckbox: true }),
-      Plugin.GitHubFlavoredMarkdown(),
       Plugin.Citations({
         bibliographyFile: "./content/References.bib",
         suppressBibliography: false,
         linkCitations: true,
       }),
-      Plugin.GitHub(),
+      Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false, enableCheckbox: true }),
+      Plugin.GitHubFlavoredMarkdown(),
       Plugin.TableOfContents(),
       Plugin.CrawlLinks({
         markdownLinkResolution: "absolute",

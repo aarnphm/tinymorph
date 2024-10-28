@@ -96,8 +96,6 @@ Issues should be created for all bugs, feature requests, and other work items, f
 templates are provided, but only use this if any of the previous templates do not apply.) Issue can be optionally add
 labels, add to milestone and Kaban board for progress checking.
 
-[[Checklists]] can also be used to track changes for documentation-related tasks.
-
 GitHub Actions will be used for CI/CD. The following enlists an overview of CI/CD for `tinymorph`:
 
 - Documentation will be built automatically on every push to main as well as PR changes

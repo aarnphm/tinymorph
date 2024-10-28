@@ -105,17 +105,7 @@ tr {
     position: relative;
     padding: 1.5rem;
 
-    &::after {
-      content: "";
-      background-image: url("/static/dotted.svg");
-      background-repeat: repeat;
-      z-index: -10;
-      top: 0.5rem;
-      left: 0.5rem;
-      right: -0.5rem;
-      bottom: -0.5rem;
-      position: absolute;
-    }
+    @include steps;
   }
 }
 
@@ -179,23 +169,37 @@ blockquote.twitter-tweet > a {
 
 a {
   &.internal {
-    background-color: unset;
+    @include links;
+
+    & {
+      background-color: unset;
+      background-image: linear-gradient(
+        var(--link-underline-gradient-line-color),
+        var(--link-underline-background-image)
+      );
+      background-size: 2px 1px;
+
+      &:not(.alias) {
+        & > .indicator-hook {
+          display: none;
+        }
+      }
+    }
   }
 
   &.internal.tag-link {
     border-radius: unset;
     background-color: unset;
 
+    position: relative;
+    padding-left: 0.3em;
+
     @include links;
-    &::before {
-      content: "";
-    }
+    @include indicatorHook;
   }
 
-  @media all and (min-width: calc(#{map.get($breakpoints, desktop)})) {
-    &.internal.alias:not(.popover):not(.popover *):not([href^="#bib"]) {
-      @include links;
-    }
+  &.internal.alias {
+    @include links;
   }
 }
 
@@ -350,6 +354,8 @@ blockquote.twitter-tweet {
   border: 2px solid var(--tertiary);
   padding-bottom: 1rem;
   position: relative;
+  background-color: var(--light);
+
   &::before {
     content: "x.com";
     position: absolute;
@@ -362,6 +368,8 @@ blockquote.twitter-tweet {
     padding: 4px 8px;
     border: 1px solid var(--dark);
   }
+
+  @include steps;
 }
 
 section[data-footnotes] {
@@ -382,15 +390,5 @@ section[data-footnotes] {
     margin-bottom: 2rem;
   }
 
-  &::after {
-    content: "";
-    background-image: url("/static/dotted.svg");
-    background-repeat: repeat;
-    z-index: -10;
-    top: 0.5rem;
-    left: 0.5rem;
-    right: -0.5rem;
-    bottom: -0.5rem;
-    position: absolute;
-  }
+  @include steps;
 }

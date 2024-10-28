@@ -1185,7 +1185,7 @@ Rationale: `tinymorph` will adhere to Hypertext Transfer Protocol (HTTP/1.1) sta
 > How should we compose correct features matrix to ensure correct steering?
 
 Rationale: We can train intepreter networks to extract human-readable activations layers (referred as "features")
-[@cunningham2023interim] [@templeton2024scaling], but features alone won't offer too much value for end users
+[@cunningham2023interim; @templeton2024scaling], but features alone won't offer too much value for end users
 (engineers, writers).
 
 `tinymorph` then must be able to compose multiple activations that represents certain tonality,
