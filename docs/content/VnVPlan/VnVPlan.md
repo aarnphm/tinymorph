@@ -28,26 +28,37 @@ initially be completed. The sections will be filled in after the design stage
 is complete. the final version of the VnV plan should have all sections filled
 in.}
 
-## Symbols, Abbreviations, and Acronyms
-
-| **Symbol** | **Description** |
-| ---------- | --------------- |
-| T          | Test            |
-
-\wss{symbols, abbreviations, or acronyms --- you can simply reference the SRS
-\citep{SRS} tables, if appropriate}
-
-\wss{Remove this section if it isn't needed}
 
 This document ... \wss{provide an introductory blurb and roadmap of the
 Verification and Validation plan}
 
-## General Information
+## 2 General Information
 
-### Summary
+### 2.1 Symbols, Abbreviations, and Acronyms
 
-\wss{Say what software is being tested. Give its name and a brief overview of
-its general functions.}
+Please refer to the table 2 for the list of symbols, abbreviations and acronyms that need definition which are used in the remainder of the document.
+<center>Table 2: list of Symbols, Abbreviations and Acronyms</center>
+
+| **Symbol**        | **Description**                                                                        |
+| ----------------- | -------------------------------------------------------------------------------------- |
+| T                 | Test                                                                                   |
+| `tinymorph`       | `morph` + `ReverseProxy` + `asteraceae`                                                |
+| `morph`           | Web interface for `tinymorph`                                                          |
+| `ReverseProxy`    | A middleware for reverse proxy with load balancer                                      |
+| `asteraceae`      | `Search` + `ActivationCache` + `SAEs` + `logit_processor` + `Exo`                      |
+| `logit_processor` | A function to convert incoming requests to logits                                      |
+| `exo`             | Inference engine to run given LLM                                                      |
+| LLM               | open-weights models to be run for inference                                            |
+| `BlockManager`    | Help manage KV-cache during inference                                                  |
+| SAEs              | a set of sparse autoencoders trained against given LLM to steer activations generation |
+| Search            | Additional search tool to improve correctness                                          |
+| `ActivationCache` | Store said generations activations for performance purposes                            |
+| streaming JSON    | Outputs from `asteraceae` will be streamed back to `morph`                             |
+| tensor            | $n \times m$ matrix represented inputs processed by `logit_processor`                  |
+
+### Purpose
+
+This document is a description of the testing, validation and verification procedures that are to be implemented with Group 23 of McMaster's SFWR 4G03 Project named "tinymorph". Due to the fact that these test cases are first developed before the majority of the implementation, this document is mainly used as references for future implementation and later testing and maintenance. Further major changes and updates can be found by records in revision table at the beginning of the document. 
 
 ### Objectives
 
