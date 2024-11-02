@@ -812,14 +812,30 @@ mentioned functional tests.}
 
 This is where you can place additional information.
 
+### **Appendix A: Usability Survey Questions**
+
+1. On a scale of 1 to 5, how would you rate the overall visual design of tinymorph?
+2. Did you find the interface to be uncluttered and non-intrusive? Please explain.
+3. How easy was it to navigate through the application?
+4. Were the animations and transitions smooth and helpful in guiding you?
+5. Did you notice any issues with theme customization (light/dark mode)?
+6. How intuitive was the planning interface for organizing your writing?
+7. Were instructions and feedback clear and understandable?
+8. Did you encounter any difficulties when resizing text or using keyboard navigation?
+9. How satisfied are you with the responsiveness of the application?
+10. Do you have any suggestions for improving the usability of tinymorph?
+
+<!--
+### Usability Survey Questions?
+
+\wss{This is a section that would be appropriate for some projects.}
+-->
+
 ### Symbolic Parameters
 
 The definition of the test cases will call for SYMBOLIC_CONSTANTS.
 Their values are defined in this section for easy maintenance.
 
-### Usability Survey Questions?
-
-\wss{This is a section that would be appropriate for some projects.}
 
 ## Appendix --- Reflection
 
