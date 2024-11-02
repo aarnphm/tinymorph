@@ -622,7 +622,7 @@ be involved? Be specific.}
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: Session management is implemented using JWT.
-- **Input/Condition**: Authenticate and use the application; attempt token misuse.
+- **Input/Condition**: Authenticate and use the application. Attempt token misuse.
 - **Output/Result**: Sessions are secure; tokens cannot be misused or intercepted.
 - **How test will be performed**: Automated scripts will inspect tokens to ensure proper signing and encryption. Attempts to reuse expired tokens or tamper with token data will be conducted automatically to test the system's defenses. Session expiration and re-authentication processes will be verified. Secure storage of tokens on the client side will be validated.
 
@@ -635,6 +635,38 @@ be involved? Be specific.}
 - **Input/Condition**: Review data handling processes and storage mechanisms.
 - **Output/Result**: Confirmation that no personal information is collected or stored.
 - **How test will be performed**: Automated code analysis tools will scan the codebase to identify any components that collect, process, or store personal data. Network traffic will be monitored during simulated user interactions to ensure no personal information is transmitted. Storage mechanisms like databases, local storage, and cookies will be inspected to verify they do not retain personal data. All findings will be documented, and any issues will be resolved to ensure compliance with privacy policies.
+
+#### 3.2.5 Maintainability and Support
+
+##### Schedule and Verify Security Updates
+
+**Test ID**: Test-OER-MR1
+
+- **Type**: Structural, Static, Automatic
+- **Initial State**: Maintenance schedules are established.
+- **Input/Condition**: Review update logs and schedules while performing security scans.
+- **Output/Result**: Regular updates are performed; no outstanding vulnerabilities.
+- **How test will be performed**: Automated tools will check adherence to the update schedule by reviewing logs and schedules. Dependency checking tools like npm audit will be run automatically to identify any vulnerabilities. Continuous integration pipelines will ensure that updates do not introduce new issues. Documentation of updates and patches will be maintained automatically.
+
+##### Ensure Feature Integrations Pass Existing Tests
+
+**Test ID**: Test-OER-MR2
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: New features are developed and ready for integration.
+- **Input/Condition**: Integrate new features into the application.
+- **Output/Result**: All existing tests pass; no regression issues are introduced.
+- **How test will be performed**: After integrating new features, the full suite of automated tests will be run to detect any regression issues. Test coverage reports will be generated automatically to ensure new features are adequately tested. Any test failures will be addressed before deployment to maintain application stability.
+
+##### Implement User Feedback Loop
+
+**Test ID**: Test-OER-SR1
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: Feedback mechanisms are implemented in the application.
+- **Input/Condition**: Submit feedback through the application interface.
+- **Output/Result**: Feedback is successfully recorded and retrievable by the development team.
+- **How test will be performed**: Automated tests will simulate feedback submission and verify that the data is stored securely and is accessible for review. Notifications or acknowledgments will be checked automatically. Compliance with privacy requirements will be validated to protect user information.
 
 ### Traceability Between Test Cases and Requirements
 
