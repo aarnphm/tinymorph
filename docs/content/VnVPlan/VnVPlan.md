@@ -623,7 +623,7 @@ be involved? Be specific.}
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: Session management is implemented using JWT.
 - **Input/Condition**: Authenticate and use the application. Attempt token misuse.
-- **Output/Result**: Sessions are secure; tokens cannot be misused or intercepted.
+- **Output/Result**: Sessions are secure. Tokens will not be misused or intercepted.
 - **How test will be performed**: Automated scripts will inspect tokens to ensure proper signing and encryption. Attempts to reuse expired tokens or tamper with token data will be conducted automatically to test the system's defenses. Session expiration and re-authentication processes will be verified. Secure storage of tokens on the client side will be validated.
 
 ##### Verify Privacy Compliance
@@ -645,7 +645,7 @@ be involved? Be specific.}
 - **Type**: Structural, Static, Automatic
 - **Initial State**: Maintenance schedules are established.
 - **Input/Condition**: Review update logs and schedules while performing security scans.
-- **Output/Result**: Regular updates are performed; no outstanding vulnerabilities.
+- **Output/Result**: Regular updates are performed. No outstanding vulnerabilities.
 - **How test will be performed**: Automated tools will check adherence to the update schedule by reviewing logs and schedules. Dependency checking tools like npm audit will be run automatically to identify any vulnerabilities. Continuous integration pipelines will ensure that updates do not introduce new issues. Documentation of updates and patches will be maintained automatically.
 
 ##### Ensure Feature Integrations Pass Existing Tests
@@ -655,7 +655,7 @@ be involved? Be specific.}
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: New features are developed and ready for integration.
 - **Input/Condition**: Integrate new features into the application.
-- **Output/Result**: All existing tests pass; no regression issues are introduced.
+- **Output/Result**: All existing tests pass. No regression issues are introduced.
 - **How test will be performed**: After integrating new features, the full suite of automated tests will be run to detect any regression issues. Test coverage reports will be generated automatically to ensure new features are adequately tested. Any test failures will be addressed before deployment to maintain application stability.
 
 ##### Implement User Feedback Loop
@@ -667,6 +667,38 @@ be involved? Be specific.}
 - **Input/Condition**: Submit feedback through the application interface.
 - **Output/Result**: Feedback is successfully recorded and retrievable by the development team.
 - **How test will be performed**: Automated tests will simulate feedback submission and verify that the data is stored securely and is accessible for review. Notifications or acknowledgments will be checked automatically. Compliance with privacy requirements will be validated to protect user information.
+
+#### 3.2.6 Compliance
+
+##### Verify Compliance with Canadian Copyright Law
+
+**Test ID**: Test-CompR-LR1
+
+- **Type**: Structural, Static, Automatic
+- **Initial State**: Suggestion generation is operational.
+- **Input/Condition**: Generate content and analyze for potential copyright infringements.
+- **Output/Result**: No generated content violates Canadian copyright laws.
+- **How test will be performed**: Automated plagiarism detection tools like Copyscape will be used to compare the generated content against existing works to detect potential infringements under Canadian copyright law. For example, we'll generate content and check if it unintentionally reproduces passages from popular novels like "The Great Gatsby" by F. Scott Fitzgerald. Content generation filters will be implemented to prevent the reproduction of such copyrighted material. All findings will be documented, and the system will be adjusted to ensure that all generated content is original and fully compliant with Canadian copyright laws.
+
+##### Ensure SOC 2 Compliance
+
+**Test ID**: Test-CompR-LR2
+
+- **Type**: Structural, Static, Manual
+- **Initial State**: Security controls and policies are in place.
+- **Input/Condition**: Prepare for SOC 2 audit by an external auditor.
+- **Output/Result**: Successful SOC 2 attestation for the inference server.
+- **How test will be performed**: All security controls will be reviewed against SOC 2 criteria. Evidence of compliance, such as access logs and security policies will be collected. Any gaps identified during internal reviews will be addressed promptly. The formal audit process will be conducted by an external auditor to obtain SOC 2 certification, ensuring that the inference server meets industry security standards.
+
+##### Obtain User Permission for Inference on Content
+
+**Test ID**: Test-CompR-LR3
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: Consent mechanisms are implemented.
+- **Input/Condition**: Use the application for the first time.
+- **Output/Result**: Users provide explicit permission before content is used for inference.
+- **How test will be performed**: Automated tests will verify that a consent prompt appears upon initial use of the application, requiring users to accept the terms before proceeding. The process will be tested to ensure users cannot bypass consent. Consent records will be checked automatically to confirm they are stored securely and in compliance with privacy regulations.
 
 ### Traceability Between Test Cases and Requirements
 
