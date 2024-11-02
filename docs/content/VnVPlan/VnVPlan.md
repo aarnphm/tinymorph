@@ -239,8 +239,9 @@ table in the SRS.}
 
 ...
 
-### Tests for Nonfunctional Requirements
+### 3.1 Tests for Nonfunctional Requirements
 
+<!--
 \wss{The nonfunctional requirements for accuracy will likely just reference the
 appropriate functional tests from above. The test cases should mention
 reporting the relative error for these tests. Not all projects will
@@ -283,8 +284,80 @@ be involved? Be specific.}
    How test will be performed:
 
 #### Area of Testing2
-
 ...
+-->
+
+**3.1.1 Look and Feel**
+
+##### Verify Unified, Non-Intrusive, and Uncluttered Visual Design
+
+**Test ID**: Test-LF-A1
+
+**Type**: Structural, Static, Manual
+
+- **Initial State**: The fully developed tinymorph application is accessible on various devices.
+- **Input/Condition**: Access the application UI on different devices and screen sizes.
+- **Output/Result**: Confirmation that the UI is unified, non-intrusive, and uncluttered across all interfaces.
+- **How test will be performed**: To perform this test we will conduct a design review by assembling a team of UI/UX experts. They will use a predefined checklist based on design guidelines to evaluate the UI, checking for consistency in layout, typography, color schemes, and identifying any elements that are intrusive or cluttered. Additionally, usability testing will be conducted by recruiting 10 target users representing the primary user personas. These users will be provided with common tasks to perform and their interactions will be observed. Feedback will be collected using a survey (see Appendix A), and the results will be analyzed to identify any distractions or issues with the visual design.
+
+**Test ID**: Test-LF-A2
+
+- **Type**: Structural, Static, Manual
+- **Initial State**: The application's UI components are fully implemented.
+- **Input/Condition**: All UI screens and components are available for review.
+- **Output/Result**: Verification that standardized typography and color palettes are consistently applied.
+- **How test will be performed**: We will conduct a UI audit using the design system documentation as a reference. Automated tools like style linting software will be utilized to detect inconsistencies in the codebase. Manually, we will verify font sizes, styles, and color codes across different screens to ensure adherence to the design standards. Any deviations will be documented, and recommendations for corrections will be provided to maintain visual coherence throughout the application.
+
+##### Validate Minimalist Design with Monotonic Color Palette
+
+**Test ID**: Test-LF-S1
+
+- **Type**: Structural, Static, Manual
+- **Initial State**: The application is ready with the intended design implemented.
+- **Input/Condition**: Application is accessed on standard devices.
+- **Output/Result**: Confirmation that the design is minimalist and utilizes a monotonic color palette.
+- **How test will be performed**: We will evaluate the design by comparing the UI against minimalist design principles, checking for the use of clean lines and the absence of unnecessary elements. The color palette will be verified to ensure it is monotonic, consisting of variations of a single hue. User feedback will be gathered by including questions about the perception of the design in the usability survey (see Appendix A). Responses will be analyzed to determine if users find the design minimalist and focused, contributing to an efficient user experience.
+
+##### Test Responsiveness Across Devices and Orientations
+
+**Test ID**: Test-LF-S2
+
+- **Type**: Structural, Dynamic, Manual
+- **Initial State**: The application is deployed and accessible.
+- **Input/Condition**: Access the application on devices with various screen sizes and orientations (mobile, tablet, desktop).
+- **Output/Result**: The application adapts seamlessly, maintaining functionality and visual integrity.
+- **How test will be performed**: We will use physical devices and emulators to test the application across different screen sizes and orientations. Each UI element will be verified to adjust appropriately without distortion or loss of functionality. Accessibility of navigation menus, buttons, and interactive elements will be checked. Any issues related to layout or usability specific to certain devices will be documented for correction.
+
+##### Verify Contrast of Interactive Elements
+
+**Test ID**: Test-LF-S3
+
+- **Type**: Structural, Static, Manual
+- **Initial State**: The UI is fully developed.
+- **Input/Condition**: Inspect interactive elements (buttons, links) against background colors.
+- **Output/Result**: All interactive elements have sufficient contrast to ensure visibility.
+- **How test will be performed**: We will use color contrast analyzer tools such as the WCAG Contrast Checker to ensure that the contrast ratios of interactive elements meet at least the WCAG AA standards. Manually, we will inspect these elements under different lighting conditions to confirm their visibility. Any elements failing to meet the standards will be recorded, and appropriate fixes will be suggested to enhance accessibility.
+
+##### Assess Smooth Transitions and Animations
+
+**Test ID**: Test-LF-S4
+
+- **Type**: Structural, Dynamic, Manual
+- **Initial State**: Application features transitions and animations.
+- **Input/Condition**: Navigate through various sections and features of the application.
+- **Output/Result**: Transitions are smooth, and animations are intuitive without causing confusion.
+- **How test will be performed**: We will navigate through the application, observing the behavior of transitions and animations. The performance impact of these animations on different devices will be evaluated to ensure they do not hinder the user experience. During usability testing sessions, user reactions to animations will be observed and specific questions regarding their experience will be included in the survey (see Appendix A). Feedback will be analyzed to determine if animations enhance or detract from usability.
+
+##### Verify Visual Feedback for User Interactions
+
+**Test ID**: Test-LF-S5
+
+- **Type**: Structural, Dynamic, Manual
+- **Initial State**: Interactive elements are implemented.
+- **Input/Condition**: Interact with buttons, links, text fields, and other UI elements.
+- **Output/Result**: Immediate visual feedback is provided for all user interactions.
+- **How test will be performed**: We will test each interactive element to ensure it provides appropriate visual feedback, such as hover effects and click animations. Form submissions and other actions will be checked for confirmation messages or indicators. During usability tests, users will be asked if the feedback met their expectations. Any elements lacking appropriate feedback will be recorded for further enhancement.
+
 
 ### Traceability Between Test Cases and Requirements
 
