@@ -359,6 +359,108 @@ be involved? Be specific.}
 - **How test will be performed**: We will test each interactive element to ensure it provides appropriate visual feedback, such as hover effects and click animations. Form submissions and other actions will be checked for confirmation messages or indicators. During usability tests, users will be asked if the feedback met their expectations. Any elements lacking appropriate feedback will be recorded for further enhancement.
 
 
+#### 3.2.2 Usability and Humanity*
+
+##### Evaluate Session History Feature
+
+**Test ID**: Test-UH-EOU1
+
+- **Type**: Structural, Dynamic, Manual
+- **Initial State**: Session history functionality is implemented.
+- **Input/Condition**: Perform a series of editing activities, including opening documents and making text modifications.
+- **Output/Result**: The session history accurately records and displays recent activities.
+- **How test will be performed**: We will execute predefined editing tasks and then access the session history to verify that the recorded entries correspond accurately to the actions taken. For usability evaluation, test users will be asked to utilize the session history to navigate to previous activities. Feedback on the ease of use and usefulness of the feature will be collected through observations and specific survey questions (see Appendix A), helping to identify any areas for improvement.
+
+##### Test Interactive Review and Manual Acceptance of Suggestions
+
+**Test ID**: Test-UH-EOU2
+
+- **Type**: Structural, Dynamic, Manual
+- **Initial State**: Suggestion system is operational.
+- **Input/Condition**: Submit text inputs to receive suggestions from the system.
+- **Output/Result**: Users can interactively review and accept or reject suggestions.
+- **How test will be performed**: We will generate suggestions by editing a document and verify that they appear appropriately. The functionality to accept or reject each suggestion will be tested thoroughly. Users will be observed during the testing to assess whether they can easily manage and interact with the suggestions. Surveys will be administered to gather user experiences and feedback regarding the suggestion interface (see Appendix A).
+
+##### Assess the Planning Interface
+
+**Test ID**: Test-UH-EOU3
+
+- **Type**: Structural, Dynamic, Manual
+- **Initial State**: Planning interface is accessible.
+- **Input/Condition**: Use the planning interface to organize and adjust creative writing steps.
+- **Output/Result**: Users can effectively organize and debug their writing using the interface.
+- **How test will be performed**: Users will be provided with a writing task that requires planning and organization. They will be instructed to use the planning interface to outline and refine their ideas. Observations will be made on how intuitively they navigate and utilize the features. Feedback on the interface's effectiveness and usability will be collected through surveys and interviews (see Appendix A), aiding in identifying any enhancements needed.
+
+##### Verify Multilingual Support
+
+**Test ID**: Test-UH-PI1
+
+- **Type**: Structural, Dynamic, Manual
+- **Initial State**: Multilingual features are implemented.
+- **Input/Condition**: Change the application language settings to supported languages.
+- **Output/Result**: The interface displays correctly in all supported languages.
+- **How test will be performed**: We will switch the application language to each supported language such as English, Spanish, and French. All UI elements, messages, and prompts will be checked for accurate translation. Text alignment and formatting will be verified for proper display. Native speakers will be involved to assess linguistic accuracy and cultural appropriateness, ensuring the interface is user-friendly across different languages.
+
+##### Test Theme Customization Options
+
+**Test ID**: Test-UH-PI2
+
+- **Type**: Structural, Dynamic, Manual
+- **Initial State**: Theme options (light and dark mode) are available.
+- **Input/Condition**: Toggle between light and dark modes manually and via system settings.
+- **Output/Result**: The application correctly applies the selected theme without visual issues.
+- **How test will be performed**: We will manually change themes within the application settings and observe the resulting UI changes. System settings on devices will also be adjusted to light or dark mode to check if the application adapts accordingly. All UI elements will be verified for visibility and legibility in both modes. User preferences and satisfaction with the theme options will be gathered through surveys to assess the effectiveness of the customization.
+
+##### Measure Onboarding Time for New Users
+
+**Test ID**: Test-UH-L1
+
+- **Type**: Structural, Dynamic, Manual
+- **Initial State**: The application is ready for first-time use.
+- **Input/Condition**: Provide new users with access to the application without prior instruction.
+- **Output/Result**: Users begin creating or editing content within 10 minutes.
+- **How test will be performed**: Participants who have not previously used `tinymorph` will be recruited for this test. Each user will be timed from the moment they start until they successfully create or edit content, aiming to achieve this within 10 minutes. Any obstacles or points of confusion encountered will be noted. Feedback on the onboarding experience will be collected to identify areas where the process can be improved.
+
+##### Evaluate Clarity of Language in UI
+
+**Test ID**: Test-UH-UP1
+
+- **Type**: Structural, Static, Manual
+- **Initial State**: All UI text and instructions are finalized.
+- **Input/Condition**: Review and use the application focusing on language used in instructions and feedback.
+- **Output/Result**: Confirmation that language is clear, concise, and easily understood.
+- **How test will be performed**:  Readability assessment tools such as the Flesch-Kincaid Grade Level will be used to evaluate the language complexity. During usability tests, users will be asked if they found any instructions or messages unclear. Survey questions about the understandability of UI language will be included to gather comprehensive feedback.
+
+##### Test Text Resizing Functionality
+
+**Test ID**: Test-UH-A1
+
+- **Type**: Structural, Dynamic, Manual
+- **Initial State**: The application supports text resizing.
+- **Input/Condition**: Adjust text size settings in the application and browser.
+- **Output/Result**: Text resizes appropriately without loss of content or functionality.
+- **How test will be performed**: We will adjust text sizes using both browser zoom functions and application settings to increase and decrease text size. The application will be tested at various magnification levels to ensure that all content remains visible and functional. We will check for issues like text overflow, truncation, or overlapping elements. Compatibility with screen magnifiers and other assistive tools will be tested to ensure accessibility for users with visual impairments.
+
+##### Verify Keyboard Navigation Accessibility
+
+**Test ID**: Test-UH-A2
+
+- **Type**: Structural, Dynamic, Manual
+- **Initial State**: Application is fully developed.
+- **Input/Condition**: Navigate the application using only the keyboard.
+- **Output/Result**: All UI components are accessible via keyboard.
+- **How test will be performed**: We will navigate through the application using only the keyboard, primarily the 'Tab' key, to move through interactive elements. Focus indicators will be checked for visibility and logical progression. Functionality of buttons, links, and form fields will be tested using keyboard inputs like 'Enter' and 'Space'. Common tasks such as creating a document or changing settings will be performed without the use of a mouse to ensure full keyboard accessibility.
+
+##### Implement and Test ARIA Attributes
+
+**Test ID**: Test-UH-A3
+
+- **Type**: Structural, Static, Manual
+- **Initial State**: ARIA attributes are implemented in the code.
+- **Input/Condition**: Use assistive technologies (e.g., screen readers) to interact with the application.
+- **Output/Result**: All functionalities are conveyed and usable through assistive technologies.
+- **How test will be performed**: A code review will be conducted to ensure correct implementation of ARIA roles, states, and properties. Screen readers like NVDA and JAWS will be used to navigate the application, verifying that all interactive elements are announced properly and that users can access all functionalities. Feedback from users who rely on assistive technologies will be collected to identify any accessibility issues and make necessary improvements.
+
 ### Traceability Between Test Cases and Requirements
 
 \wss{Provide a table that shows which test cases are supporting which
