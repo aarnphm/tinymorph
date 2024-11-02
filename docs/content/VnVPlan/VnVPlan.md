@@ -583,6 +583,59 @@ be involved? Be specific.}
 - **Output/Result**: Application installs and runs without errors on all supported platforms.
 - **How test will be performed**: Automated build and deployment tools will prepare installation packages for each operating system. Installation and execution tests will be run automatically on virtual machines or containers representing Windows, macOS, and Linux environments. Any OS-specific issues will be logged and resolved to ensure cross-platform compatibility.
 
+
+#### 3.2.4 Security
+
+##### Ensure HTTPS Encryption for All Communications
+
+**Test ID**: Test-SR-INT1
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: Application and servers are set up with SSL certificates.
+- **Input/Condition**: Monitor network traffic during application use.
+- **Output/Result**: All data transmissions are encrypted using HTTPS.
+- **How test will be performed**: Automated security testing tools will monitor network traffic to verify that all communications use HTTPS. Attempts to access the application via unsecured HTTP will be scripted to ensure automatic redirection to HTTPS. The validity and configuration of SSL certificates will be checked automatically. Any mixed content warnings detected by browsers will be addressed promptly.
+
+##### Implement DNS Security Measures
+
+**Test ID**: Test-SR-INT2
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: DNS security configurations are in place.
+- **Input/Condition**: Perform DNS queries and observe responses.
+- **Output/Result**: DNS queries and responses are secure from tampering and spoofing.
+- **How test will be performed**: Automated DNSSEC testing tools will verify the implementation of DNS security measures. Simulated DNS spoofing attacks will be conducted automatically to test system resilience. Any vulnerabilities detected will be logged and remediated to protect against DNS-based attacks.
+
+##### Validate Content Security Policies (CSP)
+
+**Test ID**: Test-SR-INT3
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: CSP headers are configured on the server.
+- **Input/Condition**: Use the application while attempting to execute unauthorized scripts.
+- **Output/Result**: CSP effectively prevents XSS attacks.
+- **How test will be performed**: Automated security testing tools will attempt to inject malicious scripts into the application. The effectiveness of CSP in blocking these scripts will be verified automatically. CSP headers will be analyzed to ensure they are correctly configured. Any violations or weaknesses will be addressed to enhance security.
+
+##### Test Session Security with JWT and Short-Lived Tokens
+
+**Test ID**: Test-SR-INT4
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: Session management is implemented using JWT.
+- **Input/Condition**: Authenticate and use the application; attempt token misuse.
+- **Output/Result**: Sessions are secure; tokens cannot be misused or intercepted.
+- **How test will be performed**: Automated scripts will inspect tokens to ensure proper signing and encryption. Attempts to reuse expired tokens or tamper with token data will be conducted automatically to test the system's defenses. Session expiration and re-authentication processes will be verified. Secure storage of tokens on the client side will be validated.
+
+##### Verify Privacy Compliance
+
+**Test ID**: Test-SR-P1
+
+- **Type**: Structural, Static, Automatic
+- **Initial State**: Application codebase is complete.
+- **Input/Condition**: Review data handling processes and storage mechanisms.
+- **Output/Result**: Confirmation that no personal information is collected or stored.
+- **How test will be performed**: Automated code analysis tools will scan the codebase to identify any components that collect, process, or store personal data. Network traffic will be monitored during simulated user interactions to ensure no personal information is transmitted. Storage mechanisms like databases, local storage, and cookies will be inspected to verify they do not retain personal data. All findings will be documented, and any issues will be resolved to ensure compliance with privacy policies.
+
 ### Traceability Between Test Cases and Requirements
 
 \wss{Provide a table that shows which test cases are supporting which
