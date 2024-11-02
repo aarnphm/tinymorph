@@ -461,6 +461,128 @@ be involved? Be specific.}
 - **Output/Result**: All functionalities are conveyed and usable through assistive technologies.
 - **How test will be performed**: A code review will be conducted to ensure correct implementation of ARIA roles, states, and properties. Screen readers like NVDA and JAWS will be used to navigate the application, verifying that all interactive elements are announced properly and that users can access all functionalities. Feedback from users who rely on assistive technologies will be collected to identify any accessibility issues and make necessary improvements.
 
+#### 3.2.3 Performance
+
+##### Measure Time-to-First-Token (TTFT)
+
+**Test ID**: Test-PR-SLR1
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: The inference server and application are operational.
+- **Input/Condition**: Submit requests for suggestions and planning.
+- **Output/Result**: TTFT is between 200-500ms.
+- **How test will be performed**: Performance testing tools will be used to automatically simulate user requests for suggestions and planning features. The time from request submission to the receipt of the first token will be recorded. Tests will be conducted under various network conditions including different latencies, to assess performance across typical user scenarios. The results will be compiled into a report detailing average TTFT and any deviations, ensuring the application's responsiveness meets the specified requirements.
+
+##### Evaluate Throughput of Inference Server
+
+**Test ID**: Test-PR-SLR2
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: Inference server is set up with batch processing capabilities.
+- **Input/Condition**: Send batched requests with a batch size of 4.
+- **Output/Result**: Achieve approximately 300 tokens/sec throughput.
+- **How test will be performed**: Load testing tools will automatically send concurrent batched requests to the inference server. The number of tokens processed per second will be measured over multiple test runs. Server resource utilization including CPU, GPU, and memory will be analyzed to identify any bottlenecks. If the throughput is below the desired level, optimizations will be recommended to enhance performance.
+
+##### **Test Title**: Validate Non-Harmful Suggestions
+
+**Test ID**: Test-PR-SCR1
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: Suggestion generation feature is active with SAEs in place.
+- **Input/Condition**: Input texts that could potentially trigger offensive or inappropriate content.
+- **Output/Result**: Suggestions are appropriate and free of harmful language.
+- **How test will be performed**: An automated test suite containing inputs that may trigger offensive or inappropriate content will be created. Suggestions generated from these inputs will be automatically scanned using content moderation tools to detect harmful language. Any instances of inappropriate content will be flagged, and adjustments to the SAEs and content filtering mechanisms will be made to prevent future occurrences.
+
+##### Ensure Interface Contains Only Safe Content
+
+**Test ID**: Test-PR-SCR2
+
+- **Type**: Structural, Static, Automatic
+- **Initial State**: All UI elements and assets are integrated.
+- **Input/Condition**: Review all images, icons, and media used in the application.
+- **Output/Result**: Confirmation that there is no NSFW or harmful content.
+- **How test will be performed**: Automated image analysis tools will be used to scan all graphical assets for inappropriate content. Licenses and sources of third-party assets will be verified automatically where possible. Any content detected as unsuitable will be reviewed manually for confirmation and then replaced or removed to maintain a safe user environment.
+
+##### Test Accuracy of Generated Text Matching User Steering
+
+**Test ID**: Test-PR-PAR1
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: SAEs and steering functionalities are implemented.
+- **Input/Condition**: Provide steering inputs (e.g., tone, style) and generate text.
+- **Output/Result**: Generated text aligns with user inputs and feedback.
+- **How test will be performed**: Specific steering parameters will be defined, and automated scripts will generate text outputs based on these inputs. Analytical metrics like cosine similarity and stylistic analysis tools will be used to quantitatively assess the alignment between the generated text and the steering inputs. Results will be compiled to evaluate the system's responsiveness and adjustments will be made to improve accuracy where necessary.
+
+#####  Verify Notification on Inflight Request Failures
+
+**Test ID**: Test-PR-RFR1
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: Application is connected to the inference server.
+- **Input/Condition**: Simulate inflight request failures (e.g., network disruptions).
+- **Output/Result**: Users receive a notification toast informing them of the failure.
+- **How test will be performed**: Automated testing tools will simulate network disruptions and monitor the application's response. The appearance of the notification toast will be verified automatically, and the content of the message will be checked for clarity and actionability. The ability of users to resubmit requests or revert steps will be tested to ensure proper error handling.
+
+##### Test Deployment Strategy for Fault Tolerance
+
+**Test ID**: Test-PR-RFR2
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: Application is deployed on a Kubernetes cluster.
+- **Input/Condition**: Simulate node or replica failures.
+- **Output/Result**: Deployment is recreated automatically, maintaining availability.
+- **How test will be performed**: Automated scripts will intentionally fail pods or nodes within the Kubernetes cluster. Monitoring tools will automatically track the system's response and recovery time, verifying that deployments are recreated as with the fault tolerance strategy. Application availability will be checked continuously to ensure minimal impact on users.
+
+##### Assess Asynchronous Processing of Suggestions
+
+**Test ID**: Test-PR-CR1
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: System supports asynchronous suggestion processing.
+- **Input/Condition**: Multiple users submit suggestion requests simultaneously.
+- **Output/Result**: Requests are processed without significant delay or errors.
+- **How test will be performed**: Automated performance testing tools will simulate multiple users submitting requests concurrently. The system's queue management and processing times will be monitored automatically to assess its ability to handle asynchronous processing. Any request drops or errors will be logged for analysis and remediation.
+
+##### Verify Input Responsiveness
+
+**Test ID**: Test-PR-CR2
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: Text manipulation features are implemented.
+- **Input/Condition**: Perform rapid text entry and editing operations.
+- **Output/Result**: No noticeable delays or lag in input response.
+- **How test will be performed**: Automated scripts will perform rapid text entry and editing operations while performance profiling tools measure input latency. Tests will be run on various hardware configurations and browsers automatically. If latency exceeds acceptable thresholds, code optimizations will be implemented to enhance responsiveness.
+
+##### Test Inference Server Autoscaling
+
+**Test ID**: Test-PR-SER1
+
+- **Type**: Structural, Dynamic, Automatic
+- **Initial State**: Autoscaling policies are configured.
+- **Input/Condition**: Vary the load on the inference server to simulate high and low traffic.
+- **Output/Result**: Server scales up during high traffic and scales down to zero during low traffic.
+- **How test will be performed**:  Automated load testing tools will apply varying levels of requests to the inference server. Monitoring systems will automatically track server instances and resource utilization to observe scaling actions. Verification will be made to ensure that scaling occurs according to the configured thresholds without impacting performance.
+
+##### Evaluate Integration with Different Model Architectures
+
+**Test ID**: Test-PR-LR1
+
+- **Type**: Structural, Automatic
+- **Initial State**: Application is prepared to support multiple model architectures.
+- **Input/Condition**: Swap the LLM with alternative architectures and SAEs.
+- **Output/Result**: Application functions correctly with different models.
+- **How test will be performed**: Automated integration scripts will replace the existing language model with alternative models like Llama 3 and Gemma 2. The full suite of regression tests will be run automatically to ensure that all features operate as expected. Compatibility issues will be identified and addressed, with documentation updated accordingly.
+
+##### Test Packaging for Different Operating Systems
+
+**Test ID**: Test-PR-LR2
+
+- **Type**: Structural, Automatic
+- **Initial State**: Standalone binary versions are packaged.
+- **Input/Condition**: Install and run the application on various OS (Windows, macOS, Linux).
+- **Output/Result**: Application installs and runs without errors on all supported platforms.
+- **How test will be performed**: Automated build and deployment tools will prepare installation packages for each operating system. Installation and execution tests will be run automatically on virtual machines or containers representing Windows, macOS, and Linux environments. Any OS-specific issues will be logged and resolved to ensure cross-platform compatibility.
+
 ### Traceability Between Test Cases and Requirements
 
 \wss{Provide a table that shows which test cases are supporting which
