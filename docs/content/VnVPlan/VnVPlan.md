@@ -62,22 +62,6 @@ This document is a description of the testing, validation and verification proce
 
 ### Objectives
 
-\wss{State what is intended to be accomplished. The objective will be around
-the qualities that are most important for your project. You might have
-something like: `build confidence in the software correctness,''
-  `demonstrate adequate usability.'' etc. You won't list all of the qualities,
-just those that are most important.}
-
-\wss{You should also list the objectives that are out of scope. You don't have
-the resources to do everything, so what will you be leaving out. For instance,
-if you are not going to verify the quality of usability, state this. It is also
-worthwhile to justify why the objectives are left out.}
-
-\wss{The objectives are important because they highlight that you are aware of
-limitations in your resources for verification and validation. You can't do everything,
-so what are you going to prioritize? As an example, if your system depends on an
-external library, you can explicitly state that you will assume that external library
-has already been verified by its implementation team.}
 
 ### Challenge Level and Extras
 
