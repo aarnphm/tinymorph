@@ -359,7 +359,7 @@ be involved? Be specific.}
 - **How test will be performed**: We will test each interactive element to ensure it provides appropriate visual feedback, such as hover effects and click animations. Form submissions and other actions will be checked for confirmation messages or indicators. During usability tests, users will be asked if the feedback met their expectations. Any elements lacking appropriate feedback will be recorded for further enhancement.
 
 
-#### 3.2.2 Usability and Humanity*
+#### 3.2.2 Usability and Humanity
 
 ##### Evaluate Session History Feature
 
