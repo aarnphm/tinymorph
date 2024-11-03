@@ -295,7 +295,7 @@ be involved? Be specific.}
 
 **Type**: Structural, Static, Manual
 
-- **Initial State**: The fully developed tinymorph application is accessible on various devices.
+- **Initial State**: The fully developed `tinymorph` application is accessible on various devices.
 - **Input/Condition**: Access the application UI on different devices and screen sizes.
 - **Output/Result**: Confirmation that the UI is unified, non-intrusive, and uncluttered across all interfaces.
 - **How test will be performed**: To perform this test we will conduct a design review by assembling a team of UI/UX experts. They will use a predefined checklist based on design guidelines to evaluate the UI, checking for consistency in layout, typography, color schemes, and identifying any elements that are intrusive or cluttered. Additionally, usability testing will be conducted by recruiting 10 target users representing the primary user personas. These users will be provided with common tasks to perform and their interactions will be observed. Feedback will be collected using a survey (see Appendix A), and the results will be analyzed to identify any distractions or issues with the visual design.
@@ -316,7 +316,7 @@ be involved? Be specific.}
 - **Initial State**: The application is ready with the intended design implemented.
 - **Input/Condition**: Application is accessed on standard devices.
 - **Output/Result**: Confirmation that the design is minimalist and utilizes a monotonic color palette.
-- **How test will be performed**: We will evaluate the design by comparing the UI against minimalist design principles, checking for the use of clean lines and the absence of unnecessary elements. The color palette will be verified to ensure it is monotonic, consisting of variations of a single hue. User feedback will be gathered by including questions about the perception of the design in the usability survey (see Appendix A). Responses will be analyzed to determine if users find the design minimalist and focused, contributing to an efficient user experience.
+- **How test will be performed**: We will evaluate the design by comparing the UI against minimalist design principles, checking for the use of clean lines and the absence of unnecessary elements. The color palette will be verified to ensure it is monotonic, consisting of variations of a single hue. User feedback will be gathered by 10 random users, including questions about the perception of the design in the usability survey (see Appendix A). Responses will be analyzed to determine if users find the design minimalist and focused, contributing to an efficient user experience.
 
 ##### Test Responsiveness Across Devices and Orientations
 
@@ -702,8 +702,70 @@ be involved? Be specific.}
 
 ### Traceability Between Test Cases and Requirements
 
+<!--
 \wss{Provide a table that shows which test cases are supporting which
 requirements.}
+-->
+
+| **Requirement ID** | **Requirement Description**                                                                                                                                     | **Test Case ID(s)**                       |
+|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------|
+| **LF-A1**          | tinymorph shall adopt a unified, non-intrusive, and uncluttered visual design.                                                                                  | Test-LF-A1                                |
+| **LF-A2**          | tinymorph must implement a consistent design system across all user interfaces, involving standardized typography and color palette.                             | Test-LF-A2                                |
+| **LF-S1**          | The design of the application will be minimalist, utilizing clean lines and a monotonic color palette.                                                          | Test-LF-S1                                |
+| **LF-S2**          | The application must be responsive, adapting seamlessly to various device screens and orientations.                                                             | Test-LF-S2                                |
+| **LF-S3**          | Interactive elements such as buttons and links must contrast significantly with the background to ensure visibility and accessibility.                           | Test-LF-S3                                |
+| **LF-S4**          | The user interface should enable smooth transitions and intuitive animations across various sections and features.                                               | Test-LF-S4                                |
+| **LF-S5**          | The application should include visual cues and feedback for user interactions to reinforce usability.                                                           | Test-LF-S5                                |
+| **UH-EOU1**        | tinymorph shall include a session history feature that records and displays the user’s most recent editing activities such as document accesses and text modifications. | Test-UH-EOU1                          |
+| **UH-EOU2**        | tinymorph must allow users to interactively review and manually accept or reject changes suggested by the system after their inputs are submitted.               | Test-UH-EOU2                              |
+| **UH-EOU3**        | The application shall include a planning interface to assist users in organizing and debugging their creative writing steps.                                     | Test-UH-EOU3                              |
+| **UH-PI1**         | tinymorph interface must include multilingual support to cater to an international audience.                                                                    | Test-UH-PI1, Test-CulR-CR1, Test-CulR-CR3 |
+| **UH-PI2**         | The application shall provide options for users to select between light or dark mode based on their system settings or preference.                               | Test-UH-PI2                               |
+| **UH-L1**          | New users should be able to understand basic functionalities and start creating or editing content within 10 minutes of initial use.                             | Test-UH-L1                                |
+| **UH-UP1**         | The application should utilize clear and concise language for all instructions, feedback, and user interface elements.                                           | Test-UH-UP1, Test-OER-PR2                 |
+| **UH-A1**          | tinymorph should support text resizing without loss of content or functionality.                                                                                | Test-UH-A1                                |
+| **UH-A2**          | tinymorph should ensure that all user interface components are accessible via keyboard navigation.                                                              | Test-UH-A2                                |
+| **UH-A3**          | Implement ARIA (Accessible Rich Internet Applications) attributes throughout the application.                                                                   | Test-UH-A3                                |
+| **PR-SLR1**        | TTFT should be minimum, around 200-500ms                                                                                                                        | Test-PR-SLR1                              |
+| **PR-SLR2**        | Throughput should be approximate 300 tokens/sec for a batch size of 4                                                                                           | Test-PR-SLR2                              |
+| **PR-SCR1**        | Suggestions must not be harmful                                                                                                                                | Test-PR-SCR1                              |
+| **PR-SCR2**        | The interface must not contain harmful images or NSFW content.                                                                                                  | Test-PR-SCR2                              |
+| **PR-PAR1**        | The generated text should match users’ steering direction                                                                                                       | Test-PR-PAR1, Test-CulR-CR2               |
+| **PR-RFR1**        | A notification toast must be sent to users in case inflight requests fail to complete.                                                                          | Test-PR-RFR1                              |
+| **PR-RFR2**        | tinymorph must implement a recreate deployment strategy                                                                                                         | Test-PR-RFR2                              |
+| **PR-CR1**         | Suggestions would be run asynchronously on request.                                                                                                            | Test-PR-CR1                               |
+| **PR-CR2**         | Input should not show any certain delay                                                                                                                         | Test-PR-CR2, Test-OER-EPE2                |
+| **PR-SER1**        | tinymorph inference server must include scale-to-zero and concurrency-based autoscaling.                                                                        | Test-PR-SER1, Test-OER-EPE2               |
+| **PR-LR1**         | Future integration with other language model architecture                                                                                                       | Test-PR-LR1, Test-OER-RIAS1               |
+| **PR-LR2**         | Support different distribution platforms.                                                                                                                      | Test-PR-LR2, Test-OER-AR1                 |
+| **OER-EPE1**       | tinymorph will be able to run on different hardware environment, given it can run modern browser.                                                              | Test-OER-AR1                             |
+| **OER-EPE2**       | tinymorph should have minimal increase in power consumption                                                                                                     | Test-PR-SER1, Test-PR-CR2                 |
+| **OER-RIAS1**      | tinymorph inference server should provide an OpenAI-compatible endpoints.                                                                                      | Test-PR-LR1                               |
+| **OER-PR1**        | Secrets must be configured with certain Role-based access control (RBAC) rules                                                                                  | Test-SR-INT4                              |
+| **OER-PR2**        | Relevant documentation should be accessible by users.                                                                                                          | Test-UH-UP1, Test-UH-L1                   |
+| **OER-PR3**        | Feedback should also be included within the interface                                                                                                           | Test-OER-SR1                              |
+| **OER-RR1**        | Release cycle must utilize current GitHub CD workflow.                                                                                                          | Test-OER-MR2                              |
+| **OER-RR2**        | End-to-end tests should pass before deploying to production.                                                                                                    | Test-OER-MR2                              |
+| **OER-MR1**        | Security updates must be done periodically                                                                                                                     | Test-OER-MR1, Test-SR-IM1                 |
+| **OER-MR2**        | Feature integrations must pass existing tests                                                                                                                  | Test-OER-MR2                              |
+| **OER-SR1**        | User feedback loop must be present.                                                                                                                            | Test-OER-SR1                              |
+| **OER-AR1**        | tinymorph must be able to run with existing users’ environment                                                                                                 | Test-PR-LR2                              |
+| **SR-INT1**        | All communication between the client UI, backend services, and external APIs must be encrypted using HTTPS.                                                    | Test-SR-INT1                              |
+| **SR-INT2**        | Implement DNS security measures to ensure that DNS queries and responses are protected against tampering and spoofing.                                          | Test-SR-INT2                              |
+| **SR-INT3**        | The application will use content security policies to mitigate the risk of XSS attacks.                                                                        | Test-SR-INT3                              |
+| **SR-INT4**        | Implement JWT and short-lived tokens to secure session communications.                                                                                        | Test-SR-INT4, Test-OER-PR1                |
+| **SR-P1**          | The application must ensure that it does not collect or store personal information, adhering strictly to privacy by design principles.                         | Test-SR-P1                                |
+| **SR-AU1**         | Implement monitoring of interactions with external service providers to ensure their use complies with security policies and performance expectations.          | Test-OER-MR1                              |
+| **SR-IM1**         | Employ up to date security measures to protect against known threats and vulnerabilities, including regular updates and patches to the software components.    | Test-OER-MR1                              |
+| **SR-IM2**         | Configure the application to minimize the surface area for attacks by disabling unused services and endpoints.                                                 | Test-SR-INT4                              |
+| **CulR-CR1**       | English supports                                                                                                                                               | Test-UH-PI1                               |
+| **CulR-CR2**       | Cultural reference must be factual                                                                                                                             | Test-PR-PAR1                              |
+| **CulR-CR3**       | Support left-to-right (LTR) reading flow                                                                                                                       | Test-UH-PI1                               |
+| **CompR-LR1**      | Suggestion must follow strict US copyright law.                                                                                                                | Test-CompR-LR1                            |
+| **CompR-LR2**      | SOC2 compliance                                                                                                                                               | Test-CompR-LR2                            |
+| **CompR-LR3**      | Users permission to run inference against their content                                                                                                        | Test-CompR-LR3                            |
+| **CompR-SCR1**     | Follows standard HTTP protocol for client-server communication                                                                                                 | Test-CompR-SCR1                           |
+
 
 ## Unit Test Description
 
@@ -814,7 +876,7 @@ This is where you can place additional information.
 
 ### **Appendix A: Usability Survey Questions**
 
-1. On a scale of 1 to 5, how would you rate the overall visual design of tinymorph?
+1. On a scale of 1 to 5, how would you rate the overall visual design of `tinymorph`?
 2. Did you find the interface to be uncluttered and non-intrusive? Please explain.
 3. How easy was it to navigate through the application?
 4. Were the animations and transitions smooth and helpful in guiding you?
@@ -823,7 +885,7 @@ This is where you can place additional information.
 7. Were instructions and feedback clear and understandable?
 8. Did you encounter any difficulties when resizing text or using keyboard navigation?
 9. How satisfied are you with the responsiveness of the application?
-10. Do you have any suggestions for improving the usability of tinymorph?
+10. Do you have any suggestions for improving the usability of `tinymorph`?
 
 <!--
 ### Usability Survey Questions?
