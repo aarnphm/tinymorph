@@ -1292,3 +1292,43 @@ graduate attribute of Lifelong Learning.
    question, what are at least two approaches to acquiring the knowledge or
    mastering the skill? Of the identified approaches, which will each team
    member pursue, and why did they make this choice?
+
+
+<div class="reflection-container">
+
+<div class="users">
+  <a class="name" href="https://github.com/waleedmalik7">Waleed</a>
+</div>
+
+<div class="blob">
+
+1. Writing this deliverable a better understanding of the project’s core features and functionality. It was particularly helpful in clarifying how specific requirements, like model steering, and version control, fit within our overall vision for tinymorph. Focusing on functional requirements also allowed me to refine my grasp of the system's design goals and limitations, helping ensure that our planned features align with user needs and our technical scope. I also appreciated that the process provided room for collaboration with the team and supervisor, leading to more well-defined requirements.
+
+2. One of the main pain points I encountered was defining the functional scope accurately. There were initial uncertainties about how deeply certain features would be integrated, particularly technical aspects like the extent of model customization and maintaining performance in offline mode. It was challenging to balance the technical ambitions with practical constraints for the project’s first release. To overcome this, I initiated discussions with the team and supervisor to align our understanding and verify our priorities. These conversations clarified the project goals and identified where we could use existing frameworks versus areas that needed custom development.
+
+3. Our team will need a variety of skills to carry out verification and validation:
+
+- Dynamic Testing Knowledge (All Team Members): Understanding how to perform functional and performance testing, especially on features like model responsiveness (TTFT) and interface elements like the LTR panel.
+- Static Testing Knowledge (Aron and Waleed): Knowledge of code analysis tools to detect vulnerabilities or inefficiencies, which will be critical for ensuring robust and secure code.
+- Front-End Testing and Accessibility (Nebras): Skills in front-end testing, including accessibility evaluations, to validate that the interface is intuitive and accessible for diverse users.
+
+4. 
+Dynamic Testing Knowledge:
+- Approach 1: Enroll in online courses focused on software testing principles and tools.
+- Approach 2: Run dynamic tests on smaller sub-projects or components of tinymorph to gain hands-on experience.
+All team members will apply Approach 2 by testing specific features in isolation as we build them.
+
+Static Testing Knowledge:
+- Approach 1: Take specialized tutorials on static code analysis tools.
+- Approach 2: Practice static testing techniques on open-source projects or our previous codebases to identify common issues.
+Aron and Waleed will adopt Approach 1, focusing on tutorials for code analysis. This approach will help build foundational knowledge that can later be applied during tinymorph’s development for continuous quality assurance.
+
+Front-End Testing and Accessibility:
+- Approach 1: Complete courses or certifications focused on web accessibility and front-end testing.
+- Approach 2: Participate in accessibility hackathons to practice identifying and solving accessibility issues in real-world projects.
+Nebras will pursue Approach 1 by taking a structured course in front-end accessibility. Given the importance of accessibility in our project, formal training will help Nebras systematically learn best practices and testing tools.
+
+
+</div>
+
+</div>
