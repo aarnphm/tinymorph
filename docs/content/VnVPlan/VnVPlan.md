@@ -291,7 +291,7 @@ be involved? Be specific.}
 
 ##### Verify Unified, Non-Intrusive, and Uncluttered Visual Design
 
-**Test ID**: Test-LF-A1
+**Test-LF-A1**
 
 **Type**: Structural, Static, Manual
 
@@ -300,7 +300,7 @@ be involved? Be specific.}
 - **Output/Result**: Confirmation that the UI is unified, non-intrusive, and uncluttered across all interfaces.
 - **How test will be performed**: To perform this test we will conduct a design review by assembling a team of UI/UX experts. They will use a predefined checklist based on design guidelines to evaluate the UI, checking for consistency in layout, typography, color schemes, and identifying any elements that are intrusive or cluttered. Additionally, usability testing will be conducted by recruiting 10 target users representing the primary user personas. These users will be provided with common tasks to perform and their interactions will be observed. Feedback will be collected using a survey (see Appendix A), and the results will be analyzed to identify any distractions or issues with the visual design.
 
-**Test ID**: Test-LF-A2
+**Test-LF-A2**
 
 - **Type**: Structural, Static, Manual
 - **Initial State**: The application's UI components are fully implemented.
@@ -310,7 +310,7 @@ be involved? Be specific.}
 
 ##### Validate Minimalist Design with Monotonic Color Palette
 
-**Test ID**: Test-LF-S1
+**Test-LF-S1**
 
 - **Type**: Structural, Static, Manual
 - **Initial State**: The application is ready with the intended design implemented.
@@ -320,7 +320,7 @@ be involved? Be specific.}
 
 ##### Test Responsiveness Across Devices and Orientations
 
-**Test ID**: Test-LF-S2
+**Test-LF-S2**
 
 - **Type**: Structural, Dynamic, Manual
 - **Initial State**: The application is deployed and accessible.
@@ -330,7 +330,7 @@ be involved? Be specific.}
 
 ##### Verify Contrast of Interactive Elements
 
-**Test ID**: Test-LF-S3
+**Test-LF-S3**
 
 - **Type**: Structural, Static, Manual
 - **Initial State**: The UI is fully developed.
@@ -340,7 +340,7 @@ be involved? Be specific.}
 
 ##### Assess Smooth Transitions and Animations
 
-**Test ID**: Test-LF-S4
+**Test-LF-S4**
 
 - **Type**: Structural, Dynamic, Manual
 - **Initial State**: Application features transitions and animations.
@@ -350,7 +350,7 @@ be involved? Be specific.}
 
 ##### Verify Visual Feedback for User Interactions
 
-**Test ID**: Test-LF-S5
+**Test-LF-S5**
 
 - **Type**: Structural, Dynamic, Manual
 - **Initial State**: Interactive elements are implemented.
@@ -363,7 +363,7 @@ be involved? Be specific.}
 
 ##### Evaluate Session History Feature
 
-**Test ID**: Test-UH-EOU1
+**Test-UH-EOU1**
 
 - **Type**: Structural, Dynamic, Manual
 - **Initial State**: Session history functionality is implemented.
@@ -373,7 +373,7 @@ be involved? Be specific.}
 
 ##### Test Interactive Review and Manual Acceptance of Suggestions
 
-**Test ID**: Test-UH-EOU2
+**Test-UH-EOU2**
 
 - **Type**: Structural, Dynamic, Manual
 - **Initial State**: Suggestion system is operational.
@@ -383,7 +383,7 @@ be involved? Be specific.}
 
 ##### Assess the Planning Interface
 
-**Test ID**: Test-UH-EOU3
+**Test-UH-EOU3**
 
 - **Type**: Structural, Dynamic, Manual
 - **Initial State**: Planning interface is accessible.
@@ -393,7 +393,7 @@ be involved? Be specific.}
 
 ##### Verify Multilingual Support
 
-**Test ID**: Test-UH-PI1
+**Test-UH-PI1**
 
 - **Type**: Structural, Dynamic, Manual
 - **Initial State**: Multilingual features are implemented.
@@ -403,7 +403,7 @@ be involved? Be specific.}
 
 ##### Test Theme Customization Options
 
-**Test ID**: Test-UH-PI2
+**Test-UH-PI2**
 
 - **Type**: Structural, Dynamic, Manual
 - **Initial State**: Theme options (light and dark mode) are available.
@@ -413,7 +413,7 @@ be involved? Be specific.}
 
 ##### Measure Onboarding Time for New Users
 
-**Test ID**: Test-UH-L1
+**Test-UH-L1**
 
 - **Type**: Structural, Dynamic, Manual
 - **Initial State**: The application is ready for first-time use.
@@ -423,7 +423,7 @@ be involved? Be specific.}
 
 ##### Evaluate Clarity of Language in UI
 
-**Test ID**: Test-UH-UP1
+**Test-UH-UP1**
 
 - **Type**: Structural, Static, Manual
 - **Initial State**: All UI text and instructions are finalized.
@@ -433,7 +433,7 @@ be involved? Be specific.}
 
 ##### Test Text Resizing Functionality
 
-**Test ID**: Test-UH-A1
+**Test-UH-A1**
 
 - **Type**: Structural, Dynamic, Manual
 - **Initial State**: The application supports text resizing.
@@ -443,7 +443,7 @@ be involved? Be specific.}
 
 ##### Verify Keyboard Navigation Accessibility
 
-**Test ID**: Test-UH-A2
+**Test-UH-A2**
 
 - **Type**: Structural, Dynamic, Manual
 - **Initial State**: Application is fully developed.
@@ -453,7 +453,7 @@ be involved? Be specific.}
 
 ##### Implement and Test ARIA Attributes
 
-**Test ID**: Test-UH-A3
+**Test-UH-A3**
 
 - **Type**: Structural, Static, Manual
 - **Initial State**: ARIA attributes are implemented in the code.
@@ -465,7 +465,7 @@ be involved? Be specific.}
 
 ##### Measure Time-to-First-Token (TTFT)
 
-**Test ID**: Test-PR-SLR1
+**Test-PR-SLR1**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: The inference server and application are operational.
@@ -475,7 +475,7 @@ be involved? Be specific.}
 
 ##### Evaluate Throughput of Inference Server
 
-**Test ID**: Test-PR-SLR2
+**Test-PR-SLR2**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: Inference server is set up with batch processing capabilities.
@@ -483,9 +483,9 @@ be involved? Be specific.}
 - **Output/Result**: Achieve approximately 300 tokens/sec throughput.
 - **How test will be performed**: Load testing tools will automatically send concurrent batched requests to the inference server. The number of tokens processed per second will be measured over multiple test runs. Server resource utilization including CPU, GPU, and memory will be analyzed to identify any bottlenecks. If the throughput is below the desired level, optimizations will be recommended to enhance performance.
 
-##### **Test Title**: Validate Non-Harmful Suggestions
+##### Validate Non-Harmful Suggestions
 
-**Test ID**: Test-PR-SCR1
+**Test-PR-SCR1**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: Suggestion generation feature is active with SAEs in place.
@@ -495,7 +495,7 @@ be involved? Be specific.}
 
 ##### Ensure Interface Contains Only Safe Content
 
-**Test ID**: Test-PR-SCR2
+**Test-PR-SCR2**
 
 - **Type**: Structural, Static, Automatic
 - **Initial State**: All UI elements and assets are integrated.
@@ -505,7 +505,7 @@ be involved? Be specific.}
 
 ##### Test Accuracy of Generated Text Matching User Steering
 
-**Test ID**: Test-PR-PAR1
+**Test-PR-PAR1**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: SAEs and steering functionalities are implemented.
@@ -515,7 +515,7 @@ be involved? Be specific.}
 
 #####  Verify Notification on Inflight Request Failures
 
-**Test ID**: Test-PR-RFR1
+**Test-PR-RFR1**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: Application is connected to the inference server.
@@ -525,7 +525,7 @@ be involved? Be specific.}
 
 ##### Test Deployment Strategy for Fault Tolerance
 
-**Test ID**: Test-PR-RFR2
+**Test-PR-RFR2**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: Application is deployed on a Kubernetes cluster.
@@ -535,7 +535,7 @@ be involved? Be specific.}
 
 ##### Assess Asynchronous Processing of Suggestions
 
-**Test ID**: Test-PR-CR1
+**Test-PR-CR1**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: System supports asynchronous suggestion processing.
@@ -545,7 +545,7 @@ be involved? Be specific.}
 
 ##### Verify Input Responsiveness
 
-**Test ID**: Test-PR-CR2
+**Test-PR-CR2**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: Text manipulation features are implemented.
@@ -555,7 +555,7 @@ be involved? Be specific.}
 
 ##### Test Inference Server Autoscaling
 
-**Test ID**: Test-PR-SER1
+**Test-PR-SER1**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: Autoscaling policies are configured.
@@ -565,7 +565,7 @@ be involved? Be specific.}
 
 ##### Evaluate Integration with Different Model Architectures
 
-**Test ID**: Test-PR-LR1
+**Test-PR-LR1**
 
 - **Type**: Structural, Automatic
 - **Initial State**: Application is prepared to support multiple model architectures.
@@ -575,7 +575,7 @@ be involved? Be specific.}
 
 ##### Test Packaging for Different Operating Systems
 
-**Test ID**: Test-PR-LR2
+**Test-PR-LR2**
 
 - **Type**: Structural, Automatic
 - **Initial State**: Standalone binary versions are packaged.
@@ -588,7 +588,7 @@ be involved? Be specific.}
 
 ##### Ensure HTTPS Encryption for All Communications
 
-**Test ID**: Test-SR-INT1
+**Test-SR-INT1**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: Application and servers are set up with SSL certificates.
@@ -598,7 +598,7 @@ be involved? Be specific.}
 
 ##### Implement DNS Security Measures
 
-**Test ID**: Test-SR-INT2
+**Test-SR-INT2**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: DNS security configurations are in place.
@@ -608,7 +608,7 @@ be involved? Be specific.}
 
 ##### Validate Content Security Policies (CSP)
 
-**Test ID**: Test-SR-INT3
+**Test-SR-INT3**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: CSP headers are configured on the server.
@@ -618,7 +618,7 @@ be involved? Be specific.}
 
 ##### Test Session Security with JWT and Short-Lived Tokens
 
-**Test ID**: Test-SR-INT4
+**Test-SR-INT4**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: Session management is implemented using JWT.
@@ -628,7 +628,7 @@ be involved? Be specific.}
 
 ##### Verify Privacy Compliance
 
-**Test ID**: Test-SR-P1
+**Test-SR-P1**
 
 - **Type**: Structural, Static, Automatic
 - **Initial State**: Application codebase is complete.
@@ -640,7 +640,7 @@ be involved? Be specific.}
 
 ##### Schedule and Verify Security Updates
 
-**Test ID**: Test-OER-MR1
+**Test-OER-MR1**
 
 - **Type**: Structural, Static, Automatic
 - **Initial State**: Maintenance schedules are established.
@@ -650,7 +650,7 @@ be involved? Be specific.}
 
 ##### Ensure Feature Integrations Pass Existing Tests
 
-**Test ID**: Test-OER-MR2
+**Test-OER-MR2**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: New features are developed and ready for integration.
@@ -660,7 +660,7 @@ be involved? Be specific.}
 
 ##### Implement User Feedback Loop
 
-**Test ID**: Test-OER-SR1
+**Test-OER-SR1**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: Feedback mechanisms are implemented in the application.
@@ -672,7 +672,7 @@ be involved? Be specific.}
 
 ##### Verify Compliance with Canadian Copyright Law
 
-**Test ID**: Test-CompR-LR1
+**Test-CompR-LR1**
 
 - **Type**: Structural, Static, Automatic
 - **Initial State**: Suggestion generation is operational.
@@ -682,7 +682,7 @@ be involved? Be specific.}
 
 ##### Ensure SOC 2 Compliance
 
-**Test ID**: Test-CompR-LR2
+**Test-CompR-LR2**
 
 - **Type**: Structural, Static, Manual
 - **Initial State**: Security controls and policies are in place.
@@ -692,7 +692,7 @@ be involved? Be specific.}
 
 ##### Obtain User Permission for Inference on Content
 
-**Test ID**: Test-CompR-LR3
+**Test-CompR-LR3**
 
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: Consent mechanisms are implemented.
@@ -835,7 +835,7 @@ tests were selected.}
 ...
 
 ### Tests for Nonfunctional Requirements
-
+<!--
 \wss{If there is a module that needs to be independently assessed for
 performance, those test cases can go here. In some projects, planning for
 nonfunctional tests of units will not be that relevant.}
@@ -865,6 +865,139 @@ mentioned functional tests.}
 #### Module ?
 
 ...
+-->
+
+#### Inference Engine
+
+**Test-IE1**
+
+- **Type**: Functional, Dynamic, Automatic
+- **Initial State**: The Inference Engine module is fully implemented and operational.
+- **Input/Condition**: Submit a predefined request to the inference engine.
+- **Output/Result**: The Time-to-First-Token (TTFT) is within 200-500 milliseconds.
+- **How test will be performed**: A unit test will be created to send a request to the inference engine with a specific input. The test will measure the time elapsed from the moment the request is sent to the receipt of the first token from the inference engine. The test will assert that the TTFT falls within the specified range of 200-500 milliseconds.
+
+**Test-IE2**
+
+- **Type**: Functional, Dynamic, Automatic
+- **Initial State**: The Inference Engine module supports batch processing.
+- **Input/Condition**: Send batched requests with a batch size of 4.
+- **Output/Result**: Achieve a throughput of approximately 300 tokens per second.
+- **How test will be performed**: The unit test will send multiple batched requests to the inference engine, each batch containing 4 requests. It will measure the total number of tokens processed per second during the test. The test will verify that the throughput meets the specified target by asserting that the tokens processed per second are approximately 300.
+
+**Test-IE3**
+
+- **Type**: Functional, Dynamic, Automatic
+- **Initial State**: The Harmful Content Filter within the Inference Engine is implemented.
+- **Input/Condition**: Provide inputs that are likely to generate harmful or inappropriate content.
+- **Output/Result**: The inference engine outputs are free of harmful or inappropriate content.
+- **How test will be performed**: The unit test will feed the inference engine with inputs known to potentially trigger harmful content. It will analyze the outputs to ensure that no harmful or inappropriate content is present, confirming that the engine's safety mechanisms effectively filter out undesirable content.
+
+#### User Interface
+
+**Test-UI1**
+
+- **Type**: Functional, Dynamic, Automatic
+- **Initial State**: The UI module is fully implemented and operational.
+- **Input/Condition**: Simulate rapid text input and editing actions by the user.
+- **Output/Result**: The UI responds without noticeable delays, ensuring a smooth user experience.
+- **How test will be performed**: The unit test will automate rapid typing and editing actions within the text editor component of the UI. It will measure the response time of the UI to these actions, asserting that the response time is within acceptable thresholds of less than 50 milliseconds per action, ensuring high responsiveness during intensive user interactions.
+
+**Test-UI2**
+
+- **Type**: Functional, Dynamic, Automatic
+- **Initial State**: The notification system within the UI is implemented.
+- **Input/Condition**: Simulate an inflight request failure in the application.
+- **Output/Result**: A notification toast is displayed to the user informing about the request failure.
+- **How test will be performed**: The unit test will mock a failure in an inflight request by triggering an error condition in the request handling module. It will then verify that the UI displays a notification toast with the appropriate message, confirming that users are promptly informed of request failures.
+
+#### Deployment Management
+
+**Test-DM1**
+
+- **Type**: Functional, Dynamic, Automatic
+- **Initial State**: The deployment strategy is configured with recreate capabilities.
+- **Input/Condition**: Simulate a failure of a node or replica in the deployment environment.
+- **Output/Result**: The deployment is automatically recreated, maintaining application availability.
+- **How test will be performed**: The unit test will simulate the failure of a node or pod within the Kubernetes cluster by programmatically deleting or stopping it. It will verify that the deployment controller automatically recreates the failed components and that the application remains available during the process, ensuring robustness and fault tolerance in the deployment strategy.
+
+#### Suggestion Processing
+
+**Test-SP1**
+
+- **Type**: Functional, Dynamic, Automatic
+- **Initial State**: The suggestion processing module supports asynchronous operations.
+- **Input/Condition**: Submit multiple suggestion requests simultaneously.
+- **Output/Result**: All suggestions are processed correctly without errors or significant delays.
+- **How test will be performed**: The unit test will concurrently submit multiple suggestion requests to the processing module using asynchronous calls. It will monitor the processing of each request to ensure they are handled independently and efficiently. The test will assert that all suggestions are returned correctly and within acceptable time frames, confirming the system's capacity to handle concurrent requests.
+
+#### Autoscaling Mechanism
+
+**Test-AM1**
+
+- **Type**: Functional, Dynamic, Automatic
+- **Initial State**: The autoscaling configuration is implemented in the deployment environment.
+- **Input/Condition**: Vary the load on the inference server to simulate high and low traffic conditions.
+- **Output/Result**: The inference server scales up during high traffic and scales down to zero during low traffic.
+- **How test will be performed**: The unit test will programmatically generate varying loads on the inference server by simulating user requests at different rates. It will monitor the number of active server instances to verify that the autoscaling mechanism responds appropriately scaling up when the load increases and scaling down when the load decreases. This will confirm that the autoscaling works as intended to optimize resource usage.
+
+#### Model Integration
+
+**Test-MI1**
+
+- **Type**: Functional, Static, Automatic
+- **Initial State**: The application is prepared to support multiple language model architectures.
+- **Input/Condition**: Integrate an alternative language model architecture into the system.
+- **Output/Result**: The application functions correctly with the new language model without errors.
+- **How test will be performed**: The unit test will replace the current language model with an alternative one, such as integrating a new SAE  model. It will run the existing unit tests and check for compatibility issues or errors, ensuring that the application remains stable and functional with the new model.
+
+#### Platform Compatibility
+
+**Test-PC1**
+
+- **Type**: Functional, Static, Automatic
+- **Initial State**: The application build is configured for different operating systems.
+- **Input/Condition**: Build and run the application on Windows, macOS, and Linux environments.
+- **Output/Result**: The application installs and runs successfully on all supported platforms.
+- **How test will be performed**: The unit test will automate the build process for the application on different operating systems using cross-platform build tools. It will then execute automated tests to ensure that the application functions correctly on each platform, ensuring adaptability and support for different distribution platforms.
+
+#### Security Components
+
+**Test-SC1**
+
+- **Type**: Functional, Static, Automatic
+- **Initial State**: Security components and dependencies are up-to-date.
+- **Input/Condition**: Check for known vulnerabilities in the current dependencies.
+- **Output/Result**: No critical vulnerabilities are found; security updates are scheduled and performed.
+- **How test will be performed**: The unit test will use tools like npm audit or Snyk to scan the project's dependencies for known security vulnerabilities. It will generate a report of any issues found and verify that updates are applied promptly, maintaining the security integrity of the application.
+
+**Test-SC2**
+
+- **Type**: Functional, Static, Automatic
+- **Initial State**: RBAC policies are defined and implemented.
+- **Input/Condition**: Attempt to access secrets and resources with different user roles.
+- **Output/Result**: Access is appropriately granted or denied based on the RBAC policies.
+- **How test will be performed**: The unit test will simulate users with various roles attempting to access sensitive resources like secrets or configuration files. It will verify that only authorized roles have access, and unauthorized attempts are blocked, ensuring that secrets are protected with proper access controls.
+
+#### Documentation Accessibility
+
+**Test-DA1**
+
+- **Type**: Functional, Static, Manual
+- **Initial State**: Documentation is written and linked within the application.
+- **Input/Condition**: Navigate through the application to locate and access the documentation.
+- **Output/Result**: Users can easily find and access relevant documentation from the interface.
+- **How test will be performed**: A manual test will be conducted where the tester navigates the application's UI to locate links to usage manuals and technical documentation. The tester will verify that the links are prominently placed, clearly labeled, and lead to the correct documentation pages. This will facilitate user understanding through accessible documentation.
+
+#### Release and Deployment
+
+**Test-RD1**
+
+- **Type**: Functional, Dynamic, Automatic
+- **Initial State**: The GitHub CD workflow is set up for the project.
+- **Input/Condition**: Commit new code changes and push to the repository.
+- **Output/Result**: The continuous deployment pipeline is triggered, and the application is built and deployed automatically.
+- **How test will be performed**: The unit test will simulate code changes by committing to a test branch. It will verify that the GitHub CD workflow is triggered, running automated tests and deploying the application if all tests pass. This will ensure that the release cycle utilizes the current CI/CD workflow effectively.
 
 ### Traceability Between Test Cases and Modules
 
