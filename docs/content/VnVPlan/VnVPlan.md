@@ -449,7 +449,7 @@ be involved? Be specific.}
 - **Initial State**: Application is fully developed.
 - **Input/Condition**: Navigate the application using only the keyboard.
 - **Output/Result**: All UI components are accessible via keyboard.
-- **How test will be performed**: We will navigate through the application using only the keyboard, primarily the 'Tab' key, to move through interactive elements. Focus indicators will be checked for visibility and logical progression. Functionality of buttons, links, and form fields will be tested using keyboard inputs like 'Enter' and 'Space'. Common tasks such as creating a document or changing settings will be performed without the use of a mouse to ensure full keyboard accessibility.
+- **How test will be performed**: We will navigate through the application using only the keyboard, primarily the "Tab" key, to move through interactive elements. Focus indicators will be checked for visibility and logical progression. Functionality of buttons, links, and form fields will be tested using keyboard inputs like 'Enter' and 'Space'. Common tasks such as creating a document or changing settings will be performed without the use of a mouse to ensure full keyboard accessibility.
 
 ##### Implement and Test ARIA Attributes
 
