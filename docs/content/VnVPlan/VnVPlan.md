@@ -1180,6 +1180,23 @@ mentioned functional tests.}
 
 | **Test Case ID**  | **Description**                                                                                                   | **Module**                |
 |-------------------|-------------------------------------------------------------------------------------------------------------------|--------------------------------|
+| Test-FR-P1        | Verify planning suggestions appear within 10 seconds with valid prompt input.                                     | Planning Suggestions           |
+| Test-FR-P2        | Test error message response to unintelligible prompt input in planning mode.                                      | Planning Suggestions           |
+| Test-FR-P3        | Validate system’s handling of large prompt inputs, providing condensed suggestions or length prompt warning.      | Planning Suggestions           |
+| Test-FR-S1        | Verify text suggestions in the style of a specific author when tone steering is applied.                          | Steering Text Generation       |
+| Test-FR-S2        | Test model adaptation to user-uploaded writing sample for customized suggestions within 30 seconds.               | Steering Text Generation       |
+| Test-FR-F1        | Validate real-time feedback update in LTR panel based on user’s tone and phrasing adjustments.                    | LTR Feedback Panel             |
+| Test-FR-TG1       | Ensure future text generations reflect user-set preferences for tone, style, voice, and formality.                | User Preferences for Text Generation |
+| Test-FR-UP1       | Verify the saving of a user profile with specific writing style configurations, such as creative writing.         | User Profile Configuration     |
+| Test-FR-UP2       | Test the creation and retention of multiple user profiles without overwriting.                                    | User Profile Configuration     |
+| Test-FR-RM1       | Verify non-linear navigation in the tree view, showing key points and sections in the document.                   | Revision Management            |
+| Test-FR-VC1       | Validate navigation to a previous version in version control with viewing or restoring options.                   | Version Control                |
+| Test-FR-VC2       | Test reversion to a previous version in version control, making it the current document state.                    | Version Control                |
+| Test-FR-PT1       | Test real-time word count tracking with a user-set writing goal.                                                  | Writing Goals and Progress Tracking |
+| Test-FR-PT2       | Validate tone consistency monitoring, with suggestions when tone deviates from user’s set goal.                   | Writing Goals and Progress Tracking |
+| Test-FR-E1        | Verify successful export of a completed document in .pdf format, preserving formatting.                           | Document Export Functionality  |
+| Test-FR-E2        | Test plain text (.txt) export functionality, ensuring only raw content is saved.                                  | Document Export Functionality  |
+| Test-FR-VT1       | Validate theme customization, specifically switching from default light mode to dark mode.                        | Visual Theme Customization     |
 | Test-LF-A1        | Verify unified, non-intrusive, and uncluttered visual design.                                                     | User Interface                 |
 | Test-LF-A2        | Verify standardized typography and color palettes are consistently applied.                                       | User Interface                 |
 | Test-LF-S1        | Validate minimalist design with a monotonic color palette.                                                        | User Interface                 |
