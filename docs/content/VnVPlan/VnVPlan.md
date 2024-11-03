@@ -700,7 +700,18 @@ be involved? Be specific.}
 - **Output/Result**: Users provide explicit permission before content is used for inference.
 - **How test will be performed**: Automated tests will verify that a consent prompt appears upon initial use of the application, requiring users to accept the terms before proceeding. The process will be tested to ensure users cannot bypass consent. Consent records will be checked automatically to confirm they are stored securely and in compliance with privacy regulations.
 
-### Traceability Between Test Cases and Requirements
+##### Verify Adherence to HTTP/1.1 Protocol Standards
+
+**Test-CompR-SCR1**
+
+- **Type**: Structural, Static, Manual
+- **Initial State**: The application and server are fully implemented and operational.
+- **Input/Condition**: Analyze the client-server communication protocols used by the application during typical operation.
+- **Output/Result**: Confirmation that all client-server communications strictly adhere to HTTP/1.1 standards as defined in RFC 2616, including correct usage of HTTP methods, status codes, headers, message formats, and persistent connections.
+- **How test will be performed**: Using network protocol analyzers like Wireshark, HTTP requests and responses between the client and server will be captured and inspected during typical application usage. The application will be verified to correctly implement HTTP methods (GET, POST, etc.). It will also be checked to ensure that appropriate status codes are returned (e.g., 200 OK, 404 Not Found) and that headers such as Host, Content-Type, and Connection are properly formatted. The HTTP/1.1 protocol version must be used in all communications, and persistent connections should be supported with the connection "keep-alive" header. Any deviations from the HTTP/1.1 standards will be documented, followed by necessary corrections. After remediation, re-testing will be conducted to confirm full compliance with the protocol standards to ensure reliable and standard compliant client-server interactions.
+
+
+### 3.3 Traceability Between Test Cases and Requirements
 
 <!--
 \wss{Provide a table that shows which test cases are supporting which
@@ -834,7 +845,7 @@ tests were selected.}
 
 ...
 
-### Tests for Nonfunctional Requirements
+### 4.3 Tests for Nonfunctional Requirements
 <!--
 \wss{If there is a module that needs to be independently assessed for
 performance, those test cases can go here. In some projects, planning for
@@ -867,7 +878,7 @@ mentioned functional tests.}
 ...
 -->
 
-#### Inference Engine
+#### 4.3.1 Inference Engine
 
 **Test-IE1**
 
@@ -893,7 +904,7 @@ mentioned functional tests.}
 - **Output/Result**: The inference engine outputs are free of harmful or inappropriate content.
 - **How test will be performed**: The unit test will feed the inference engine with inputs known to potentially trigger harmful content. It will analyze the outputs to ensure that no harmful or inappropriate content is present, confirming that the engine's safety mechanisms effectively filter out undesirable content.
 
-#### User Interface
+#### 4.3.2 User Interface
 
 **Test-UI1**
 
@@ -911,7 +922,7 @@ mentioned functional tests.}
 - **Output/Result**: A notification toast is displayed to the user informing about the request failure.
 - **How test will be performed**: The unit test will mock a failure in an inflight request by triggering an error condition in the request handling module. It will then verify that the UI displays a notification toast with the appropriate message, confirming that users are promptly informed of request failures.
 
-#### Deployment Management
+#### 4.3.3 Deployment Management
 
 **Test-DM1**
 
@@ -921,7 +932,7 @@ mentioned functional tests.}
 - **Output/Result**: The deployment is automatically recreated, maintaining application availability.
 - **How test will be performed**: The unit test will simulate the failure of a node or pod within the Kubernetes cluster by programmatically deleting or stopping it. It will verify that the deployment controller automatically recreates the failed components and that the application remains available during the process, ensuring robustness and fault tolerance in the deployment strategy.
 
-#### Suggestion Processing
+#### 4.3.4 Suggestion Processing
 
 **Test-SP1**
 
@@ -931,7 +942,7 @@ mentioned functional tests.}
 - **Output/Result**: All suggestions are processed correctly without errors or significant delays.
 - **How test will be performed**: The unit test will concurrently submit multiple suggestion requests to the processing module using asynchronous calls. It will monitor the processing of each request to ensure they are handled independently and efficiently. The test will assert that all suggestions are returned correctly and within acceptable time frames, confirming the system's capacity to handle concurrent requests.
 
-#### Autoscaling Mechanism
+#### 4.3.5 Autoscaling Mechanism
 
 **Test-AM1**
 
@@ -941,7 +952,7 @@ mentioned functional tests.}
 - **Output/Result**: The inference server scales up during high traffic and scales down to zero during low traffic.
 - **How test will be performed**: The unit test will programmatically generate varying loads on the inference server by simulating user requests at different rates. It will monitor the number of active server instances to verify that the autoscaling mechanism responds appropriately scaling up when the load increases and scaling down when the load decreases. This will confirm that the autoscaling works as intended to optimize resource usage.
 
-#### Model Integration
+#### 4.3.6 Model Integration
 
 **Test-MI1**
 
@@ -951,7 +962,7 @@ mentioned functional tests.}
 - **Output/Result**: The application functions correctly with the new language model without errors.
 - **How test will be performed**: The unit test will replace the current language model with an alternative one, such as integrating a new SAE  model. It will run the existing unit tests and check for compatibility issues or errors, ensuring that the application remains stable and functional with the new model.
 
-#### Platform Compatibility
+#### 4.3.7 Platform Compatibility
 
 **Test-PC1**
 
@@ -961,7 +972,7 @@ mentioned functional tests.}
 - **Output/Result**: The application installs and runs successfully on all supported platforms.
 - **How test will be performed**: The unit test will automate the build process for the application on different operating systems using cross-platform build tools. It will then execute automated tests to ensure that the application functions correctly on each platform, ensuring adaptability and support for different distribution platforms.
 
-#### Security Components
+#### 4.3.8 Security Components
 
 **Test-SC1**
 
@@ -979,7 +990,7 @@ mentioned functional tests.}
 - **Output/Result**: Access is appropriately granted or denied based on the RBAC policies.
 - **How test will be performed**: The unit test will simulate users with various roles attempting to access sensitive resources like secrets or configuration files. It will verify that only authorized roles have access, and unauthorized attempts are blocked, ensuring that secrets are protected with proper access controls.
 
-#### Documentation Accessibility
+#### 4.3.9 Documentation Accessibility
 
 **Test-DA1**
 
@@ -989,7 +1000,7 @@ mentioned functional tests.}
 - **Output/Result**: Users can easily find and access relevant documentation from the interface.
 - **How test will be performed**: A manual test will be conducted where the tester navigates the application's UI to locate links to usage manuals and technical documentation. The tester will verify that the links are prominently placed, clearly labeled, and lead to the correct documentation pages. This will facilitate user understanding through accessible documentation.
 
-#### Release and Deployment
+#### 4.3.10 Release and Deployment
 
 **Test-RD1**
 
@@ -1001,7 +1012,53 @@ mentioned functional tests.}
 
 ### Traceability Between Test Cases and Modules
 
+<!--
 \wss{Provide evidence that all of the modules have been considered.}
+-->
+
+| **Test Case ID**  | **Description**                                                                                                   | **Module**                |
+|-------------------|-------------------------------------------------------------------------------------------------------------------|--------------------------------|
+| Test-LF-A1        | Verify unified, non-intrusive, and uncluttered visual design.                                                     | User Interface                 |
+| Test-LF-A2        | Verify standardized typography and color palettes are consistently applied.                                       | User Interface                 |
+| Test-LF-S1        | Validate minimalist design with a monotonic color palette.                                                        | User Interface                 |
+| Test-LF-S2        | Test responsiveness across devices and orientations.                                                              | User Interface                 |
+| Test-LF-S3        | Verify contrast of interactive elements to ensure visibility.                                                     | User Interface                 |
+| Test-LF-S4        | Assess smooth transitions and animations for intuitive experience.                                                | User Interface                 |
+| Test-LF-S5        | Verify visual feedback for user interactions.                                                                     | User Interface                 |
+| Test-UH-EOU1      | Evaluate session history feature accuracy in recording activities.                                                | User Interface                 |
+| Test-UH-EOU2      | Test interactive review and manual acceptance of suggestions.                                                     | Suggestion Processing          |
+| Test-UH-EOU3      | Assess the planning interface for effective user interaction.                                                     | User Interface                 |
+| Test-UH-PI1       | Verify multilingual support functionality.                                                                        | User Interface                 |
+| Test-UH-PI2       | Test theme customization options for light and dark modes.                                                        | User Interface                 |
+| Test-UH-L1        | Measure onboarding time for new users to begin creating or editing content.                                       | User Interface                 |
+| Test-UH-UP1       | Evaluate the clarity of language used in the UI.                                                                  | User Interface                 |
+| Test-UH-A1        | Test text resizing functionality for accessibility.                                                               | User Interface                 |
+| Test-UH-A2        | Verify keyboard navigation accessibility for interactive components.                                              | User Interface                 |
+| Test-UH-A3        | Implement and test ARIA attributes for screen reader compatibility.                                               | User Interface                 |
+| Test-PR-SLR1      | Measure TTFT (Time-to-First-Token) between 200-500ms during requests.                                             | Inference Engine               |
+| Test-PR-SLR2      | Evaluate throughput of the inference server with batch processing capabilities.                                   | Inference Engine               |
+| Test-PR-SCR1      | Validate that suggestions are non-harmful and appropriate.                                                        | Inference Engine               |
+| Test-PR-SCR2      | Ensure interface content contains no harmful or NSFW elements.                                                    | User Interface                 |
+| Test-PR-PAR1      | Test the accuracy of generated text matching user steering parameters.                                            | Suggestion Processing          |
+| Test-PR-RFR1      | Verify notification toast for inflight request failures.                                                          | User Interface                 |
+| Test-PR-RFR2      | Test deployment strategy to ensure fault tolerance and application availability.                                  | Deployment Management          |
+| Test-PR-CR1       | Assess asynchronous processing of multiple user requests without significant delay.                               | Suggestion Processing          |
+| Test-PR-CR2       | Verify input responsiveness during rapid text entry and editing.                                                  | User Interface                 |
+| Test-PR-SER1      | Test autoscaling mechanism of inference server during varying traffic loads.                                      | Autoscaling Mechanism          |
+| Test-PR-LR1       | Evaluate integration with different model architectures.                                                          | Model Integration              |
+| Test-PR-LR2       | Test packaging and execution across different operating systems.                                                  | Platform Compatibility         |
+| Test-SR-INT1      | Ensure all communications are encrypted using HTTPS.                                                              | Security Components            |
+| Test-SR-INT2      | Implement DNS security measures to secure queries and responses.                                                  | Security Components            |
+| Test-SR-INT3      | Validate Content Security Policies (CSP) to prevent XSS attacks.                                                  | Security Components            |
+| Test-SR-INT4      | Test session security with JWT and short-lived tokens.                                                            | Security Components            |
+| Test-SR-P1        | Verify that privacy compliance is maintained with no collection of personal data.                                 | Security Components            |
+| Test-OER-MR1      | Schedule and verify that security updates are performed regularly.                                                | Security Components            |
+| Test-OER-MR2      | Ensure new feature integrations pass existing tests without regression.                                           | Release and Deployment         |
+| Test-OER-SR1      | Implement a user feedback loop to ensure user feedback is recorded and accessible.                                | User Interface                 |
+| Test-CompR-LR1    | Verify compliance with Canadian copyright laws for generated content.                                             | Documentation Accessibility    |
+| Test-CompR-LR2    | Ensure SOC 2 compliance for security standards of the inference server.                                           | Security Components            |
+| Test-CompR-LR3    | Obtain user consent before using content for inference purposes.                                                  | Security Components            |
+| Test-CompR-SCR1   | Verify that client-server communications adhere to HTTP/1.1 standards.                                            | Release and Deployment         |
 
 ## Appendix
 
