@@ -124,8 +124,6 @@ Reasoning:
 2. Research: The field of mechanistic interpretability is considered relatively new, in which there are exciting
    research happening. We will explore this to understand how we can utilise manual editing activations rather than driving the model through a system prompt.
 
----
-
 ## Appendix
 
 [^ref]

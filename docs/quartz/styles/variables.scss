@@ -55,3 +55,25 @@ $desktopGrid: (
       "grid-sidebar-left grid-center grid-sidebar-right"\
       "grid-sidebar-left grid-footer grid-sidebar-right"',
 );
+
+:root {
+  // See https://github.com/gwern/gwern.net/blob/9250d886d5470ca434be94f7189af76446ec5ccc/css/initial.css#L1771
+  --link-underline-background-color: var(--light);
+  --link-underline-gradient-line-color: currentColor;
+  --link-underline-background-image: url(data:image/gif;base64,R0lGODdhBAACAJEAAAAAAP///wAAAAAAACH5BAkAAAIALAAAAAAEAAIAAAIEBCSGBQA7);
+  --hr-highlighted-border-color: var(--gray);
+
+  // rose-pine-dawn
+  --base: #faf4ed;
+  --surface: var(--light);
+  --overlay: var(--lightgray);
+  --muted: var(--gray);
+  --subtle: var(--darkgray);
+  --text: var(--dark);
+  --rose: var(--secondary);
+  --love: var(--tertiary);
+  --gold: #ea9d34;
+  --pine: #286983;
+  --foam: #56949f;
+  --iris: #907aa9;
+}
