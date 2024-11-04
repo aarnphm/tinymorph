@@ -198,6 +198,7 @@ A variant of activation patching
 See also: [SelfE](https://arxiv.org/abs/2403.10949) or [Patchscope](https://arxiv.org/abs/2401.06102)
 
 > [!important]
+>
 > align with auto-interp[^2] as the current standard for SAE feature interpretation.
 
 ### self-similarity
@@ -231,3 +232,7 @@ $$
 ## mathematical framework for transformers circuits
 
 _excerpt from [this transformers threads](https://transformer-circuits.pub/2021/framework/index.html#residual-comms)_
+
+## automatic interpretability
+
+see also: [Transluce's Monitor](https://transluce.org/) [source](https://github.com/TransluceAI/observatory)

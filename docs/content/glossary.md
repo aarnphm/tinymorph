@@ -35,7 +35,7 @@ Auto-regressive models are often considered a more correct terminology when desc
 
 ## transformers
 
-A multi-layer perception (MLP) archiecture built on top of a multi-head attention mechanism [@vaswani2023attentionneed] to signal high entropy tokens to be amplified and less important tokens to be diminished.
+A multi-layer perception (MLP) architecture built on top of a multi-head attention mechanism [@vaswani2023attentionneed] to signal high entropy tokens to be amplified and less important tokens to be diminished.
 
 ## low-rank adapters
 
@@ -52,7 +52,7 @@ the models' outputs.
 each LoRA layer can then be merged with the main models, in which create specialised models on given tasks. The main
 benefit of LoRA is to reduce costs for fine-tuning tasks.
 
-In a sense, LoRA is a different comparing sparse autoencoders.
+In a sense, LoRA is a different comparing [[glossary#sparse autoencoders]]
 
 - For LoRA, we are controlling the outputs of a models by training additional "parameters" to add into the models
 - With SAEs, we are directly editing features activations within the neural net, which means we don't have to worry
@@ -175,9 +175,11 @@ minimise TTFT will help with UX for users.
 
 ## sparse autoencoders
 
-abbreviation: SAE
+abbrev: SAE
 
 Often contains one layers of MLP with few linear ReLU that is trained on a subset of datasets the main LLMs is trained on.
+
+_see also: [landspace](https://docs.google.com/document/d/1lHvRXJsbi41bNGZ_znGN7DmlLXITXyWyISan7Qx2y6s/edit?tab=t.0#heading=h.j9b3g3x1o1z4), [more technical details](https://aarnphm.xyz/thoughts/mechanistic-interpretability#sparse-autoencoders)_
 
 > empirical example: if we wish to interpret all features related to the author Camus, we might want to train an SAEs based on all given text of Camus
 > to interpret "similar" features from Llama-3.1

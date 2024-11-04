@@ -1,18 +1,20 @@
 [tool.uv]
+package = false
 dev-dependencies = [
-    "jupyter-client>=8.6.3",
-    "jupytext>=1.16.4",
-    "mypy>=1.13.0",
-    "plotly>=5.24.1",
-    "pnglatex>=1.1",
-    "pylatexenc>=2.10",
-    "pynvim>=0.5.0",
-    "pyperclip>=1.9.0",
-    "ruff>=0.6.6",
+  "jupyter-client>=8.6.3",
+  "jupytext>=1.16.4",
+  "mypy>=1.13.0",
+  "plotly>=5.24.1",
+  "pnglatex>=1.1",
+  "pylatexenc>=2.10",
+  "pynvim>=0.5.0",
+  "pyperclip>=1.9.0",
+  "ruff>=0.6.6",
 ]
 
 [tool.uv.sources]
 exo.workspace = true
+astaracea.workspace = true
 
 [tool.uv.workspace]
 members = ["python/*"]
