@@ -1105,7 +1105,7 @@ graduate attribute of Lifelong Learning.
   1. From the past examples and rubric, the expectation is easy to understand <br>
   2. Some of my parts work as a summary of other partners' content, so I need to rearrange the relevant information after other parts completion<br>
   3. The coding language demands us to do unit testing of the components with matching testing tools, like Jest for javascript and pytest for python. This matches the knowledge about static testing knowledge I learned before. <br>
-  4. Reading the website for relevent testing frame work usage introduction, and walking through the coding examples of the testing these two ways are recommanded approaches to acquiring the knowledege. The second approach is persued by group members since they can used as template to construct our test and have detailed information about how to constructing a unit test. <br>
+  4. Reading the website for relevent testing frame work usage introduction, and walking through the coding examples of the testing these two ways are recommanded approaches to acquiring the knowledege. The second approach is persued by group members since they can used as template to construct our test and have detailed information about how to construct a unit test. <br>
 
 </p>
 </div>
