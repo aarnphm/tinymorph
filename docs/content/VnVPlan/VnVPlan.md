@@ -7,30 +7,13 @@ date: "2024-09-16"
 title: System Verification and Validation Plan
 ---
 
-## Revision History
+## 1 Revision History
 
 | Date   | Version | Notes |
 | ------ | ------- | ----- |
 | Date 1 | 1.0     | Notes |
 | Date 2 | 1.1     | Notes |
 
-\wss{The intention of the VnV plan is to increase confidence in the software.
-However, this does not mean listing every verification and validation technique
-that has ever been devised. The VnV plan should also be a **feasible**
-plan. Execution of the plan should be possible with the time and team available.
-If the full plan cannot be completed during the time available, it can either be
-modified to ``fake it'', or a better solution is to add a section describing
-what work has been completed and what work is still planned for the future.}
-
-\wss{The VnV plan is typically started after the requirements stage, but before
-the design stage. This means that the sections related to unit testing cannot
-initially be completed. The sections will be filled in after the design stage
-is complete. the final version of the VnV plan should have all sections filled
-in.}
-
-
-This document ... \wss{provide an introductory blurb and roadmap of the
-Verification and Validation plan}
 
 ## 2 General Information
 
@@ -93,21 +76,21 @@ Following table contains dates relevant to important milestones
 
 | **Testing**                      | **Expected Date of Completion**         |
 | -------------------------------- | --------------------------------------- |
-|  Look and Feel Testing           |                                         |
-|  Usability and Humanity Testing   |                                         |
-|  Performance Testing   |                                         |
-|  Security Testing   |                                         |
-|  Maintainability and Support Testing    |                       |
-|  Compliance Testing            |                             |
-|  Unit Testing |                   |
-|||
-| Tests for Nonfunctional Requirements | |
+|  Look and Feel Testing           |       2025-01-10                        |
+|  Usability and Humanity Testing  |       2025-01-15                        |
+|  Performance Testing             |       2025-01-20                        |
+|  Security Testing                |       2025-01-20                        |
+|  Maintainability and Support Testing    |      2025-02-05     |
+|  Compliance Testing               |      2025-01-20            |
+|  Unit Testing                     |      2025-02-05   |
+|  System Tests                     |      2025-02-05       |
+| Tests for Nonfunctional Requirements |   2025-02-05       |
 
 
 
 ### 3.3 SRS Verification Plan
 
-Since the SRS revision 0 has been developed, the verification plan of SRS will be carried out via holding supervisor review, which takes 15 minutes discussion during the weekly meet-up, and correcting the content based on the asynchronized comments by the supervisor. The estimated time span to conduct this verification is 1 month. 
+Since the SRS revision 0 has been developed, the verification plan of SRS will be carried out via holding supervisor review, which takes 15 minutes discussion during the weekly meet-up, and correcting the content based on the asynchronous comments by the supervisor. The estimated time span to conduct this verification is 1 month. 
 
 Corrections based on feedback from teaching assistants and peers will also be included into the 1 month span. 
 
@@ -117,13 +100,7 @@ After the reviewing period of SRS, design reviews will be conducted with supervi
 
 ### 3.5 Implementation Verification Plan
 
-\wss{You should at least point to the tests listed in this document and the unit
-testing plan.}
-
-\wss{In this section you would also give any details of any plans for static
-verification of the implementation. Potential techniques include code
-walkthroughs, code inspection, static analyzers, etc.}
-
+In-group code walkthrough inspection is chosen as the main method to complete implementation verification of the project. The coding contents will be reviewed by other team members in exchange asynchronously. Basic grammar error in coding will be caught by linter of each different components. Detailed test cases can be found in system testing.
 Final presentation is also expected to be a part of verification of usability, and its feedback will be collected and reflected on the final release.  
 
 ### 3.6 Automated Testing and Verification Tools
@@ -163,59 +140,17 @@ Model: Gemma 2 for SAE exploration, Llama 3.1 for final models (for POC specific
 
 Tool: uv for monorepo management
 
-Detailed code coverage matrics will be generated to secure testing effectiveness. 
+Detailed code coverage matrics will be generated to secure testing effectiveness. Unit testing details can be found in the next section.
 
 ### 3.7 Software Validation Plan
 
 A demonstration is arranged after Rev 0 to supervisor to gather feedback for software validation over the requirements. Some peers outside the developing group will also be invited to conduct usage test and finish a survey about their experience. The survey outcome will be used to analyse the matching between the project and the requirements in the document. 
 
-## System Tests
+## 4 System Tests
 
-\wss{There should be text between all headings, even if it is just a roadmap of
-the contents of the subsections.}
+### 4.1 Tests for Functional Requirements
 
-### Tests for Functional Requirements
-
-\wss{Subsets of the tests may be in related, so this section is divided into
-different areas. If there are no identifiable subsets for the tests, this
-level of document structure can be removed.}
-
-\wss{Include a blurb here to explain why the subsections below
-cover the requirements. References to the SRS would be good here.}
-
-#### Area of Testing1
-
-\wss{It would be nice to have a blurb here to explain why the subsections below
-cover the requirements. References to the SRS would be good here. If a section
-covers tests for input constraints, you should reference the data constraints
-table in the SRS.}
-
-##### Title for Test
-
-1. **test-id1**
-
-   Control: Manual versus Automatic
-   Initial State:
-   Input:
-   Output: \wss{The expected result for the given inputs. Output is not how you
-   are going to return the results of the test. The output is the expected
-   result.}
-
-   Test Case Derivation: \wss{Justify the expected value given in the Output field}
-   How test will be performed:
-
-2. **test-id2**
-
-   Control: Manual versus Automatic
-   Initial State:
-   Input:
-   Output: \wss{The expected result for the given inputs}
-
-   Test Case Derivation: \wss{Justify the expected value given in the Output field}
-
-   How test will be performed:
-
-### Verify and Validate Planning Suggestions
+#### 4.1.1 Verify and Validate Planning Suggestions
 
 **Test-FR-P1**
 
@@ -241,7 +176,7 @@ table in the SRS.}
 - **Output**: System processes the large input and generates condensed planning suggestions, or displays a message indicating the prompt is too lengthy for effective planning suggestions, either output must be displayed within 10 seconds of input.  
 - **How test will be performed**: Copy and paste a large text block into the prompt input field, then initiate the planning process. Observe whether the system provides condensed planning suggestions or displays a message prompting the user to enter a more concise topic or phrase.
 
-### Validate Steering Text Generation Feature
+### 4.1.2 Validate Steering Text Generation Feature
 
 **Test-FR-S1**
 
@@ -259,7 +194,7 @@ table in the SRS.}
 - **Output**: Model adapts to the user’s tone and style based on the sample, with customized suggestions available within 30 seconds  
 - **How test will be performed**: Enable the steering feature, and upload a sample of previous writing (e.g., a 300-word passage). Measure the time taken. Verify that the adapted suggestions are available within 30 seconds and that they reflect the tone and style of the uploaded sample.
 
-### Test LTR Feedback Panel
+### 4.1.3 Test LTR Feedback Panel
 
 **Test-FR-F1**
 
@@ -269,7 +204,7 @@ table in the SRS.}
 - **Output**: Model updates the suggestion based on user feedback in real-time, and the LTR panel presents an updated preview without causing cognitive overload  
 - **How test will be performed**: Generate text suggestions with the LTR panel active. Provide feedback on a suggestion (e.g., select a more formal tone or an alternative phrase) and observe if the model updates the suggestion in real time. Verify that the panel displays the updated text clearly and maintains an uncluttered, user-friendly layout to avoid cognitive overload.
 
-### Verify User Preferences for Text Generation
+### 4.1.4 Verify User Preferences for Text Generation
 
 **Test-FR-TG1**
 
@@ -279,7 +214,7 @@ table in the SRS.}
 - **Output**: All future text generations reflect the specified tone, style, voice, and formality settings  
 - **How test will be performed**: Access the settings panel and set preferences for tone, style, voice, and formality. Generate multiple text outputs and verify that each reflects the specified preferences, maintaining consistency across suggestions to ensure personalization.
 
-### Verify User Profile Configuration 
+### 4.1.5 Verify User Profile Configuration 
 
 **Test-FR-UP1**
 
@@ -297,7 +232,7 @@ table in the SRS.}
 - **Output**: System saves the new "Academic Writing" profile without overwriting the existing "Creative Writing" profile  
 - **How test will be performed**: Set preferences for academic writing and save as "Academic Writing" profile. Verify that both "Creative Writing" and "Academic Writing" profiles appear in the profile list and retain their respective settings when reopened.
 
-### Verify Revision Management Functionality
+### 4.1.6 Verify Revision Management Functionality
 
 **Test-FR-RM1**
 
@@ -307,7 +242,7 @@ table in the SRS.}
 - **Output**: Tree view displays a visual map of the document’s sections, showing key points like introduction, body, and conclusion  
 - **How test will be performed**: Open a structured document in the editor and enable the tree view. Verify that the tree accurately displays the main sections of the document.
 
-### Verify Version Control Functionality
+### 4.1.7 Verify Version Control Functionality
 
 **Test-FR-VC1**
 
@@ -325,7 +260,7 @@ table in the SRS.}
 - **Output**: The selected version becomes the current document state, with the ability to continue editing or save as a new version  
 - **How test will be performed**: Choose an earlier version and select the revert option. Verify that the editor updates to the chosen version and allows further editing or saving as a new version.
 
-### Verify Writing Goals and Progress Tracking Feature
+### 4.1.8 Verify Writing Goals and Progress Tracking Feature
 
 **Test-FR-PT1**
 
@@ -343,7 +278,7 @@ table in the SRS.}
 - **Output**: System monitors tone consistency, providing suggestions if the user deviates from the set tone  
 - **How test will be performed**: Set a goal for maintaining a formal tone. Write in varying tones, including informal segments, and verify that the system identifies inconsistencies and suggests adjustments to align with the formal tone.
 
-### Test Document Export Functionality
+### 4.1.9 Test Document Export Functionality
 
 **Test-FR-E1**
 
@@ -361,7 +296,7 @@ table in the SRS.}
 - **Output**: Document is exported as a plain text (.txt) file, with no special formatting  
 - **How test will be performed**: Complete a document in the editor, select the export option, and choose plain text format. Verify that the file is saved in .txt format and contains only the document’s raw text content.
 
-### Verify Visual Theme Customization
+### 4.1.10 Verify Visual Theme Customization
 
 **Test-FR-VT1**
 
@@ -371,55 +306,9 @@ table in the SRS.}
 - **Output**: Editor switches to dark mode, with a dark background and light text  
 - **How test will be performed**: Open the theme settings panel, select dark mode, and verify that the interface updates to dark mode, with consistent dark backgrounds and readable light text throughout the editor.
 
-### 3.1 Tests for Nonfunctional Requirements
+### 4.2 Tests for Nonfunctional Requirements
 
-<!--
-\wss{The nonfunctional requirements for accuracy will likely just reference the
-appropriate functional tests from above. The test cases should mention
-reporting the relative error for these tests. Not all projects will
-necessarily have nonfunctional requirements related to accuracy.}
-
-\wss{For some nonfunctional tests, you won't be setting a target threshold for
-passing the test, but rather describing the experiment you will do to measure
-the quality for different inputs. For instance, you could measure speed versus
-the problem size. The output of the test isn't pass/fail, but rather a summary
-table or graph.}
-
-\wss{Tests related to usability could include conducting a usability test and
-survey. The survey will be in the Appendix.}
-
-\wss{Static tests, review, inspections, and walkthroughs, will not follow the
-format for the tests given below.}
-
-\wss{If you introduce static tests in your plan, you need to provide details.
-How will they be done? In cases like code (or document) walkthroughs, who will
-be involved? Be specific.}
-
-#### Area of Testing1
-
-##### Title for Test
-
-1. **test-id1**
-
-   Type: Functional, Dynamic, Manual, Static etc.
-   Initial State:
-   Input/Condition:
-   Output/Result:
-   How test will be performed:
-
-2. **test-id2**
-
-   Type: Functional, Dynamic, Manual, Static etc.
-   Initial State:
-   Input:
-   Output:
-   How test will be performed:
-
-#### Area of Testing2
-...
--->
-
-**3.1.1 Look and Feel**
+**4.2.1 Look and Feel**
 
 ##### Verify Unified, Non-Intrusive, and Uncluttered Visual Design
 
@@ -491,7 +380,7 @@ be involved? Be specific.}
 - **How test will be performed**: We will test each interactive element to ensure it provides appropriate visual feedback, such as hover effects and click animations. Form submissions and other actions will be checked for confirmation messages or indicators. During usability tests, users will be asked if the feedback met their expectations. Any elements lacking appropriate feedback will be recorded for further enhancement.
 
 
-#### 3.2.2 Usability and Humanity
+#### 4.2.2 Usability and Humanity
 
 ##### Evaluate Session History Feature
 
@@ -593,7 +482,7 @@ be involved? Be specific.}
 - **Output/Result**: All functionalities are conveyed and usable through assistive technologies.
 - **How test will be performed**: A code review will be conducted to ensure correct implementation of ARIA roles, states, and properties. Screen readers like NVDA and JAWS will be used to navigate the application, verifying that all interactive elements are announced properly and that users can access all functionalities. Feedback from users who rely on assistive technologies will be collected to identify any accessibility issues and make necessary improvements.
 
-#### 3.2.3 Performance
+#### 4.2.3 Performance
 
 ##### Measure Time-to-First-Token (TTFT)
 
@@ -716,7 +605,7 @@ be involved? Be specific.}
 - **How test will be performed**: Automated build and deployment tools will prepare installation packages for each operating system. Installation and execution tests will be run automatically on virtual machines or containers representing Windows, macOS, and Linux environments. Any OS-specific issues will be logged and resolved to ensure cross-platform compatibility.
 
 
-#### 3.2.4 Security
+#### 4.2.4 Security
 
 ##### Ensure HTTPS Encryption for All Communications
 
@@ -768,7 +657,7 @@ be involved? Be specific.}
 - **Output/Result**: Confirmation that no personal information is collected or stored.
 - **How test will be performed**: Automated code analysis tools will scan the codebase to identify any components that collect, process, or store personal data. Network traffic will be monitored during simulated user interactions to ensure no personal information is transmitted. Storage mechanisms like databases, local storage, and cookies will be inspected to verify they do not retain personal data. All findings will be documented, and any issues will be resolved to ensure compliance with privacy policies.
 
-#### 3.2.5 Maintainability and Support
+#### 4.2.5 Maintainability and Support
 
 ##### Schedule and Verify Security Updates
 
@@ -800,7 +689,7 @@ be involved? Be specific.}
 - **Output/Result**: Feedback is successfully recorded and retrievable by the development team.
 - **How test will be performed**: Automated tests will simulate feedback submission and verify that the data is stored securely and is accessible for review. Notifications or acknowledgments will be checked automatically. Compliance with privacy requirements will be validated to protect user information.
 
-#### 3.2.6 Compliance
+#### 4.2.6 Compliance
 
 ##### Verify Compliance with Canadian Copyright Law
 
@@ -843,12 +732,7 @@ be involved? Be specific.}
 - **How test will be performed**: Using network protocol analyzers like Wireshark, HTTP requests and responses between the client and server will be captured and inspected during typical application usage. The application will be verified to correctly implement HTTP methods (GET, POST, etc.). It will also be checked to ensure that appropriate status codes are returned (e.g., 200 OK, 404 Not Found) and that headers such as Host, Content-Type, and Connection are properly formatted. The HTTP/1.1 protocol version must be used in all communications, and persistent connections should be supported with the connection "keep-alive" header. Any deviations from the HTTP/1.1 standards will be documented, followed by necessary corrections. After remediation, re-testing will be conducted to confirm full compliance with the protocol standards to ensure reliable and standard compliant client-server interactions.
 
 
-### 3.3 Traceability Between Test Cases and Requirements
-
-<!--
-\wss{Provide a table that shows which test cases are supporting which
-requirements.}
--->
+### 4.3 Traceability Between Test Cases and Requirements
 
 | **Requirement ID** | **Requirement Description**                                                                                                                                     | **Test Case ID(s)**                       |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------|
@@ -920,7 +804,7 @@ requirements.}
 | **CompR-SCR1**     | Follows standard HTTP protocol for client-server communication                                                                                                 | Test-CompR-SCR1                           |
 
 
-## Unit Test Description
+## 5 Unit Test Description
 
 \wss{This section should not be filled in until after the MIS (detailed design
 document) has been completed.}
