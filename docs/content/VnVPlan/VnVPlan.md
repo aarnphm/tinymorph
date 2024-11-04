@@ -28,118 +28,94 @@ initially be completed. The sections will be filled in after the design stage
 is complete. the final version of the VnV plan should have all sections filled
 in.}
 
-## Symbols, Abbreviations, and Acronyms
-
-| **Symbol** | **Description** |
-| ---------- | --------------- |
-| T          | Test            |
-
-\wss{symbols, abbreviations, or acronyms --- you can simply reference the SRS
-\citep{SRS} tables, if appropriate}
-
-\wss{Remove this section if it isn't needed}
 
 This document ... \wss{provide an introductory blurb and roadmap of the
 Verification and Validation plan}
 
-## General Information
+## 2 General Information
 
-### Summary
+### 2.1 Symbols, Abbreviations, and Acronyms
 
-\wss{Say what software is being tested. Give its name and a brief overview of
-its general functions.}
+Please refer to the table 2 for the list of symbols, abbreviations and acronyms that need definition which are used in the remainder of the document.
+<center>Table 2: list of Symbols, Abbreviations and Acronyms</center>
 
-### Objectives
+| **Symbol**        | **Description**                                                                        |
+| ----------------- | -------------------------------------------------------------------------------------- |
+| T                 | Test                                                                                   |
+| `tinymorph`       | `morph` + `ReverseProxy` + `asteraceae`                                                |
+| `morph`           | Web interface for `tinymorph`                                                          |
+| `ReverseProxy`    | A middleware for reverse proxy with load balancer                                      |
+| `asteraceae`      | `Search` + `ActivationCache` + `SAEs` + `logit_processor` + `Exo`                      |
+| `logit_processor` | A function to convert incoming requests to logits                                      |
+| `exo`             | Inference engine to run given LLM                                                      |
+| LLM               | open-weights models to be run for inference                                            |
+| UI                | user interface                                                |
+| POC | Proof of Concept |
+| SRS | Software Requirement Specification |
+| `BlockManager`    | Help manage KV-cache during inference                                                  |
+| SAEs              | a set of sparse autoencoders trained against given LLM to steer activations generation |
+| Search            | Additional search tool to improve correctness                                          |
+| `ActivationCache` | Store said generations activations for performance purposes                            |
+| streaming JSON    | Outputs from `asteraceae` will be streamed back to `morph`                             |
+| tensor            | $n \times m$ matrix represented inputs processed by `logit_processor`                  |
 
-\wss{State what is intended to be accomplished. The objective will be around
-the qualities that are most important for your project. You might have
-something like: `build confidence in the software correctness,''
-  `demonstrate adequate usability.'' etc. You won't list all of the qualities,
-just those that are most important.}
+### 2.2 Purpose
 
-\wss{You should also list the objectives that are out of scope. You don't have
-the resources to do everything, so what will you be leaving out. For instance,
-if you are not going to verify the quality of usability, state this. It is also
-worthwhile to justify why the objectives are left out.}
+This document is a description of the testing, validation and verification procedures that are to be implemented with Group 23 of McMaster's SFWR 4G03 Project named "tinymorph". Due to the fact that these test cases are first developed before the majority of the implementation, this document is mainly used as references for future implementation and later testing and maintenance. Further major changes and updates can be found by records in revision table at the beginning of the document. 
 
-\wss{The objectives are important because they highlight that you are aware of
-limitations in your resources for verification and validation. You can't do everything,
-so what are you going to prioritize? As an example, if your system depends on an
-external library, you can explicitly state that you will assume that external library
-has already been verified by its implementation team.}
+### 2.3 Scope
 
-### Challenge Level and Extras
+This document involved detailed tests to ensure the funtionality of the project `tinymorph` works as expectation, which includes tests covering both functional and non-functional requirements for the UI component, server and language LLM. The traceability table matching tests and origional requirements can be found by the end of the document. All tests should be thorougly completed and passed before the project is released. 
 
-\wss{State the challenge level (advanced, general, basic) for your project.
-Your challenge level should exactly match what is included in your problem
-statement. This should be the challenge level agreed on between you and the
-course instructor. You can use a pull request to update your challenge level
-(in TeamComposition.csv or Repos.csv) if your plan changes as a result of the
-VnV planning exercise.}
+### 2.4 Referenced Documents
 
-\wss{Summarize the extras (if any) that were tackled by this project. Extras
-can include usability testing, code walkthroughs, user documentation, formal
-proof, GenderMag personas, Design Thinking, etc. Extras should have already
-been approved by the course instructor as included in your problem statement.
-You can use a pull request to update your extras (in TeamComposition.csv or
-Repos.csv) if your plan changes as a result of the VnV planning exercise.}
+SRS document can be found here [SRS documentaion](https://github.com/aarnphm/tinymorph/blob/main/docs/content/SRS/SRS.md)
+and Hazard Analysis can be found here [Hazard Analysis documentaion](https://github.com/aarnphm/tinymorph/blob/main/docs/content/HazardAnalysis/HazardAnalysis.md)
 
-### Relevant Documentation
+## 3 Plan
 
-\wss{Reference relevant documentation. This will definitely include your SRS
-and your other project documents (design documents, like MG, MIS, etc). You
-can include these even before they are written, since by the time the project
-is done, they will be written. You can create BibTeX entries for your
-documents and within those entries include a hyperlink to the documents.}
+This section provides general information about the plan of testing, including testing team members, milestones and detailed sections of verifications. 
 
-\citet{SRS}
+### 3.1 Verification and Validation Team
 
-\wss{Don't just list the other documents. You should explain why they are relevant and
-how they relate to your VnV efforts.}
+The following project members are resposible for all procedures of the validation process, including writing and executing tests:
 
-## Plan
+- Aaron Pham (SRS Verification, implementation Verification)
+- Nebras Khan (Design Verification)
+- Waleed Malik (Automated Testing)
+- Zhiwei Li (Software Validation)
 
-\wss{Introduce this section. You can provide a roadmap of the sections to
-come.}
+The tasks over the SRS verification, design verification, implementation verification, automated test and software validation is aiming to be equally splitted between the team members. Each member in-turn has a specific part assigned as main learder as outcome check out, their responsible part has been shown with their name. 
 
-### Verification and Validation Team
+### 3.2 Milestones
+Following table contains dates relevant to important milestones
+<center>Table 3: Milestones </center>
 
-\wss{Your teammates. Maybe your supervisor.
-You should do more than list names. You should say what each person's role is
-for the project's verification. A table is a good way to summarize this information.}
+| **Testing**                      | **Expected Date of Completion**         |
+| -------------------------------- | --------------------------------------- |
+|  Look and Feel Testing           |                                         |
+|  Usability and Humanity Testing   |                                         |
+|  Performance Testing   |                                         |
+|  Security Testing   |                                         |
+|  Maintainability and Support Testing    |                       |
+|  Compliance Testing            |                             |
+|  Unit Testing |                   |
+|||
+| Tests for Nonfunctional Requirements | |
 
-### SRS Verification Plan
 
-\wss{List any approaches you intend to use for SRS verification. This may
-include ad hoc feedback from reviewers, like your classmates (like your
-primary reviewer), or you may plan for something more rigorous/systematic.}
 
-\wss{If you have a supervisor for the project, you shouldn't just say they will
-read over the SRS. You should explain your structured approach to the review.
-Will you have a meeting? What will you present? What questions will you ask?
-Will you give them instructions for a task-based inspection? Will you use your
-issue tracker?}
+### 3.3 SRS Verification Plan
 
-\wss{Maybe create an SRS checklist?}
+Since the SRS revision 0 has been developed, the verification plan of SRS will be carried out via holding supervisor review, which takes 15 minutes discussion during the weekly meet-up, and correcting the content based on the asynchronized comments by the supervisor. The estimated time span to conduct this verification is 1 month. 
 
-### Design Verification Plan
+Corrections based on feedback from teaching assistants and peers will also be included into the 1 month span. 
 
-\wss{Plans for design verification}
+### 3.4 Design Verification Plan
 
-\wss{The review will include reviews by your classmates}
+After the reviewing period of SRS, design reviews will be conducted with supervisor during the weekly meet-up, performing iterative reviews to cover different parts of the design. Each review session will focus on verifiying that design choices meet the functionality of performance needs specified in the SRS. The POC demo session with its feedback will also be used for design verification. This process will take a month in estimation. 
 
-\wss{Create a checklists?}
-
-### Verification and Validation Plan Verification Plan
-
-\wss{The verification and validation plan is an artifact that should also be
-verified. Techniques for this include review and mutation testing.}
-
-\wss{The review will include reviews by your classmates}
-
-\wss{Create a checklists?}
-
-### Implementation Verification Plan
+### 3.5 Implementation Verification Plan
 
 \wss{You should at least point to the tests listed in this document and the unit
 testing plan.}
@@ -148,46 +124,50 @@ testing plan.}
 verification of the implementation. Potential techniques include code
 walkthroughs, code inspection, static analyzers, etc.}
 
-\wss{The final class presentation in CAS 741 could be used as a code
-walkthrough. There is also a possibility of using the final presentation (in
-CAS741) for a partial usability survey.}
+Final presentation is also expected to be a part of verification of usability, and its feedback will be collected and reflected on the final release.  
 
-### Automated Testing and Verification Tools
+### 3.6 Automated Testing and Verification Tools
+There will be basically two main parts involving automated testing
 
-\wss{What tools are you using for automated testing. Likely a unit testing
-framework and maybe a profiling tool, like ValGrind. Other possible tools
-include a static analyzer, make, continuous integration tools, test coverage
-tools, etc. Explain your plans for summarizing code coverage metrics.
-Linters are another important class of tools. For the programming language
-you select, you should look at the available linters. There may also be tools
-that verify that coding standards have been respected, like flake9 for
-Python.}
+**web-based editor (morph)**
+Language: JS/TS
 
-\wss{If you have already done this in the development plan, you can point to
-that document.}
+Stack:
 
-\wss{The details of this section will likely evolve as you get closer to the
-implementation.}
+rendering: Any React-based framework, e.g. Next, w/ Node backend.
+styling: SASS, framer-motion, @shadcn/ui
+testing: Jest
+Formatter: prettier
 
-### Software Validation Plan
+Linter: eslint
 
-\wss{If there is any external data that can be used for validation, you should
-point to it here. If there are no plans for validation, you should state that
-here.}
+Bundler/Transpiler: vite/esbuild
 
-\wss{You might want to use review sessions with the stakeholder to check that
-the requirements document captures the right requirements. Maybe task based
-inspection?}
+CI: include styling and linter, possibly a small set of A/B tests.
 
-\wss{For those capstone teams with an external supervisor, the Rev 0 demo should
-be used as an opportunity to validate the requirements. You should plan on
-demonstrating your project to your supervisor shortly after the scheduled Rev 0 demo.
-The feedback from your supervisor will be very useful for improving your project.}
+tool: pnpm for monorepo workspace management
 
-\wss{For teams without an external supervisor, user testing can serve the same purpose
-as a Rev 0 demo for the supervisor.}
+**ml inference server (asteraceae)**
+Language: Python
 
-\wss{This section might reference back to the SRS verification section.}
+Stack:
+
+online inference: BentoML, vLLM, pydantic
+offline inference: llama.cpp
+testing: pytest
+Linter: ruff
+
+CI: include styling and linter, regression testing, e2e testing.
+
+Model: Gemma 2 for SAE exploration, Llama 3.1 for final models (for POC specifically, will also train a few LoRAs for writers tonality)
+
+Tool: uv for monorepo management
+
+Detailed code coverage matrics will be generated to secure testing effectiveness. 
+
+### 3.7 Software Validation Plan
+
+A demonstration is arranged after Rev 0 to supervisor to gather feedback for software validation over the requirements. Some peers outside the developing group will also be invited to conduct usage test and finish a survey about their experience. The survey outcome will be used to analyse the matching between the project and the requirements in the document. 
 
 ## System Tests
 
@@ -235,9 +215,161 @@ table in the SRS.}
 
    How test will be performed:
 
-#### Area of Testing2
+### Verify and Validate Planning Suggestions
 
-...
+**Test-FR-P1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened, planning mode active  
+- **Input**: Valid prompt (e.g., "environmental sustainability")  
+- **Output**: Planning suggestions within 10 seconds  
+- **How test will be performed**: Enter prompt and start planning. Verify at least one suggestion appears within 10 seconds.
+
+**Test-FR-P2**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened, planning mode active  
+- **Input**: Unintelligible prompt (e.g., "asdh123!@#")  
+- **Output**: Error message stating that the input could not be processed, or no suggestions generated with a prompt asking the user to refine their input  
+- **How test will be performed**: Enter a nonsensical string of random characters as the input for planning, then initiate the planning process and verify whether an appropriate error message or notification appears.
+
+**Test-FR-P3**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened, planning mode active  
+- **Input**: Large block of text copied and pasted as a prompt (e.g., 500+ words on a topic like climate change)  
+- **Output**: System processes the large input and generates condensed planning suggestions, or displays a message indicating the prompt is too lengthy for effective planning suggestions, either output must be displayed within 10 seconds of input.  
+- **How test will be performed**: Copy and paste a large text block into the prompt input field, then initiate the planning process. Observe whether the system provides condensed planning suggestions or displays a message prompting the user to enter a more concise topic or phrase.
+
+### Validate Steering Text Generation Feature
+
+**Test-FR-S1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened, steering feature enabled  
+- **Input**: Selection of "Didion" tone and a valid prompt (e.g., "reflection on modern life")  
+- **Output**: Text suggestions generated in the style of Joan Didion  
+- **How test will be performed**: Enable steering, select the "Didion" tone, enter a valid prompt, and initiate text generation. Verify that the suggestions produced reflect Didion's characteristic tone and style.
+
+**Test-FR-S2**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened, steering feature enabled  
+- **Input**: User uploads a previous writing sample to adapt the model to their tone and style  
+- **Output**: Model adapts to the user’s tone and style based on the sample, with customized suggestions available within 30 seconds  
+- **How test will be performed**: Enable the steering feature, and upload a sample of previous writing (e.g., a 300-word passage). Measure the time taken. Verify that the adapted suggestions are available within 30 seconds and that they reflect the tone and style of the uploaded sample.
+
+### Test LTR Feedback Panel
+
+**Test-FR-F1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened with LTR feedback panel active, initial text suggestions generated  
+- **Input**: User provides feedback on a specific suggestion (e.g., adjusts tone or selects alternative phrasing)  
+- **Output**: Model updates the suggestion based on user feedback in real-time, and the LTR panel presents an updated preview without causing cognitive overload  
+- **How test will be performed**: Generate text suggestions with the LTR panel active. Provide feedback on a suggestion (e.g., select a more formal tone or an alternative phrase) and observe if the model updates the suggestion in real time. Verify that the panel displays the updated text clearly and maintains an uncluttered, user-friendly layout to avoid cognitive overload.
+
+### Verify User Preferences for Text Generation
+
+**Test-FR-TG1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened with settings panel accessible  
+- **Input**: User sets preferences for tone (e.g., formal), style (e.g., narrative), voice (e.g., passive), and formality (e.g., high formality)  
+- **Output**: All future text generations reflect the specified tone, style, voice, and formality settings  
+- **How test will be performed**: Access the settings panel and set preferences for tone, style, voice, and formality. Generate multiple text outputs and verify that each reflects the specified preferences, maintaining consistency across suggestions to ensure personalization.
+
+### Verify User Profile Configuration 
+
+**Test-FR-UP1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened with access to profile settings panel  
+- **Input**: User sets a configuration for creative writing (e.g., informal tone, narrative style)  
+- **Output**: Profile with creative writing settings is successfully saved  
+- **How test will be performed**: Open the profile settings panel, set preferences for creative writing (e.g., informal tone, narrative style), and save as "Creative Writing" profile. Verify that the profile saves without errors and that settings are retained when reopening the profile.
+
+**Test-FR-UP2**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Profile settings panel accessible with at least one saved profile  
+- **Input**: User creates a second profile with settings for academic writing (e.g., formal tone, analytical style)  
+- **Output**: System saves the new "Academic Writing" profile without overwriting the existing "Creative Writing" profile  
+- **How test will be performed**: Set preferences for academic writing and save as "Academic Writing" profile. Verify that both "Creative Writing" and "Academic Writing" profiles appear in the profile list and retain their respective settings when reopened.
+
+### Verify Revision Management Functionality
+
+**Test-FR-RM1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor with a document containing multiple sections (e.g., introduction, body, conclusion)  
+- **Input**: User enables the tree view for non-linear navigation  
+- **Output**: Tree view displays a visual map of the document’s sections, showing key points like introduction, body, and conclusion  
+- **How test will be performed**: Open a structured document in the editor and enable the tree view. Verify that the tree accurately displays the main sections of the document.
+
+### Verify Version Control Functionality
+
+**Test-FR-VC1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor with version control feature enabled and multiple saved versions of the document  
+- **Input**: User navigates to a previous version of the document  
+- **Output**: Editor displays the selected version for review, with an option to restore or view differences from the current version  
+- **How test will be performed**: Access the version control menu, select an earlier version of the document, and verify that the editor displays the correct version with options to restore or view changes.
+
+**Test-FR-VC2**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor with version control enabled and multiple versions available  
+- **Input**: User reverts to a previous version of the document  
+- **Output**: The selected version becomes the current document state, with the ability to continue editing or save as a new version  
+- **How test will be performed**: Choose an earlier version and select the revert option. Verify that the editor updates to the chosen version and allows further editing or saving as a new version.
+
+### Verify Writing Goals and Progress Tracking Feature
+
+**Test-FR-PT1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor with progress tracking feature enabled  
+- **Input**: User sets a specific writing goal for word count (e.g., 1500 words)  
+- **Output**: A word count meter appears, tracking the user’s progress toward the goal in real-time  
+- **How test will be performed**: Open the goal-setting panel, set a word count goal, and start writing. Verify that the word count meter updates in real-time, accurately reflecting progress toward the goal.
+
+**Test-FR-PT2**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor with tone consistency analysis feature enabled  
+- **Input**: User sets a tone consistency goal (e.g., maintaining a formal tone throughout the document)  
+- **Output**: System monitors tone consistency, providing suggestions if the user deviates from the set tone  
+- **How test will be performed**: Set a goal for maintaining a formal tone. Write in varying tones, including informal segments, and verify that the system identifies inconsistencies and suggests adjustments to align with the formal tone.
+
+### Test Document Export Functionality
+
+**Test-FR-E1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor with a completed document ready for export  
+- **Input**: User selects export option and chooses .pdf format  
+- **Output**: Document is successfully exported as a .pdf file, preserving formatting and content  
+- **How test will be performed**: Complete a document in the editor, select the export option, and choose .pdf format. Verify that the file is saved correctly and that the formatting and content match the document in the editor.
+
+**Test-FR-E2**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor with a completed document ready for export  
+- **Input**: User selects export option and chooses plain text format  
+- **Output**: Document is exported as a plain text (.txt) file, with no special formatting  
+- **How test will be performed**: Complete a document in the editor, select the export option, and choose plain text format. Verify that the file is saved in .txt format and contains only the document’s raw text content.
+
+### Verify Visual Theme Customization
+
+**Test-FR-VT1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened with default theme (e.g., light mode)  
+- **Input**: User selects dark mode from the theme options  
+- **Output**: Editor switches to dark mode, with a dark background and light text  
+- **How test will be performed**: Open the theme settings panel, select dark mode, and verify that the interface updates to dark mode, with consistent dark backgrounds and readable light text throughout the editor.
 
 ### 3.1 Tests for Nonfunctional Requirements
 
@@ -720,6 +852,16 @@ requirements.}
 
 | **Requirement ID** | **Requirement Description**                                                                                                                                     | **Test Case ID(s)**                       |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------|
+| **FR1**            | tinymorph shall provide suggestions during the planning phase of creative writing, offering assistance in structuring ideas, topics, or themes based on user input.       | Test-FR-P1, Test-FR-P2, Test-FR-P3       |
+| **FR2**            | tinymorph shall provide users with manual control over text generation, enabling them to select advanced steering options such as tone, style, or creativity level.       | Test-FR-S1, Test-FR-S2                    |
+| **FR3**            | Users shall be able to interact with generated text through a left-to-right (LTR) feedback panel, allowing them to provide real-time feedback on model-generated suggestions. | Test-FR-F1                                |
+| **FR4**            | Users shall be able to set preferences for tone, style, voice, and formality, which tinymorph will apply to all future generations of text.                             | Test-FR-TG1                               |
+| **FR5**            | Users shall be able to save their preferred configurations as profiles, enabling them to switch between different writing styles or goals.                               | Test-FR-UP1, Test-FR-UP2                  |
+| **FR6**            | tinymorph shall allow users to navigate through their text non-linearly by providing a visual map or tree view that displays key points, topics, sections, and revision history. | Test-FR-RM1                               |
+| **FR8**            | tinymorph shall offer version control features that allow users to navigate through previous edits, revert to earlier document versions, and compare different drafts visually. | Test-FR-VC1, Test-FR-VC2                 |
+| **FR11**           | Users shall be able to set and track specific writing goals (e.g., word count, tone consistency, argument development) through customizable progress tracking features.     | Test-FR-PT1, Test-FR-PT2                 |
+| **FR13**           | tinymorph shall allow users to export their documents in .pdf, .md (Markdown), and plain text formats, ensuring compatibility with external platforms.                    | Test-FR-E1, Test-FR-E2                    |
+| **FR14**           | tinymorph shall allow users to customize the visual appearance of the editor by choosing from different themes, such as dark mode, light mode, and high-contrast options. | Test-FR-VT1 |
 | **LF-A1**          | tinymorph shall adopt a unified, non-intrusive, and uncluttered visual design.                                                                                  | Test-LF-A1                                |
 | **LF-A2**          | tinymorph must implement a consistent design system across all user interfaces, involving standardized typography and color palette.                             | Test-LF-A2                                |
 | **LF-S1**          | The design of the application will be minimalist, utilizing clean lines and a monotonic color palette.                                                          | Test-LF-S1                                |
@@ -1018,6 +1160,23 @@ mentioned functional tests.}
 
 | **Test Case ID**  | **Description**                                                                                                   | **Module**                |
 |-------------------|-------------------------------------------------------------------------------------------------------------------|--------------------------------|
+| Test-FR-P1        | Verify planning suggestions appear within 10 seconds with valid prompt input.                                     | Planning Suggestions           |
+| Test-FR-P2        | Test error message response to unintelligible prompt input in planning mode.                                      | Planning Suggestions           |
+| Test-FR-P3        | Validate system’s handling of large prompt inputs, providing condensed suggestions or length prompt warning.      | Planning Suggestions           |
+| Test-FR-S1        | Verify text suggestions in the style of a specific author when tone steering is applied.                          | Steering Text Generation       |
+| Test-FR-S2        | Test model adaptation to user-uploaded writing sample for customized suggestions within 30 seconds.               | Steering Text Generation       |
+| Test-FR-F1        | Validate real-time feedback update in LTR panel based on user’s tone and phrasing adjustments.                    | LTR Feedback Panel             |
+| Test-FR-TG1       | Ensure future text generations reflect user-set preferences for tone, style, voice, and formality.                | User Preferences for Text Generation |
+| Test-FR-UP1       | Verify the saving of a user profile with specific writing style configurations, such as creative writing.         | User Profile Configuration     |
+| Test-FR-UP2       | Test the creation and retention of multiple user profiles without overwriting.                                    | User Profile Configuration     |
+| Test-FR-RM1       | Verify non-linear navigation in the tree view, showing key points and sections in the document.                   | Revision Management            |
+| Test-FR-VC1       | Validate navigation to a previous version in version control with viewing or restoring options.                   | Version Control                |
+| Test-FR-VC2       | Test reversion to a previous version in version control, making it the current document state.                    | Version Control                |
+| Test-FR-PT1       | Test real-time word count tracking with a user-set writing goal.                                                  | Writing Goals and Progress Tracking |
+| Test-FR-PT2       | Validate tone consistency monitoring, with suggestions when tone deviates from user’s set goal.                   | Writing Goals and Progress Tracking |
+| Test-FR-E1        | Verify successful export of a completed document in .pdf format, preserving formatting.                           | Document Export Functionality  |
+| Test-FR-E2        | Test plain text (.txt) export functionality, ensuring only raw content is saved.                                  | Document Export Functionality  |
+| Test-FR-VT1       | Validate theme customization, specifically switching from default light mode to dark mode.                        | Visual Theme Customization     |
 | Test-LF-A1        | Verify unified, non-intrusive, and uncluttered visual design.                                                     | User Interface                 |
 | Test-LF-A2        | Verify standardized typography and color palettes are consistently applied.                                       | User Interface                 |
 | Test-LF-S1        | Validate minimalist design with a monotonic color palette.                                                        | User Interface                 |
@@ -1180,7 +1339,8 @@ graduate attribute of Lifelong Learning.
 
 <br/>
 
- <div class="reflection-container">
+
+<div class="reflection-container">
 
 <div class="users">
   <a class="name" href="https://github.com/lucas-lizhiwei">Lucas</a>
@@ -1188,6 +1348,12 @@ graduate attribute of Lifelong Learning.
 
 <div class="blob">
 
+<p>
+  1. From the past examples and rubric, the expectation is easy to understand <br>
+  2. Some of my parts work as a summary of other partners' content, so I need to rearrange the relevant information after other parts completion<br>
+  3. The coding language demands us to do unit testing of the components with matching testing tools, like Jest for javascript and pytest for python. This matches the knowledge about static testing knowledge I learned before. <br>
+  4. Reading the website for relevent testing frame work usage introduction, and walking through the coding examples of the testing these two ways are recommanded approaches to acquiring the knowledege. The second approach is persued by group members since they can used as template to construct our test and have detailed information about how to construct a unit test. <br>
+</p>
 
 </div>
 
