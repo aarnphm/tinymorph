@@ -215,9 +215,161 @@ table in the SRS.}
 
    How test will be performed:
 
-#### Area of Testing2
+### Verify and Validate Planning Suggestions
 
-...
+**Test-FR-P1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened, planning mode active  
+- **Input**: Valid prompt (e.g., "environmental sustainability")  
+- **Output**: Planning suggestions within 10 seconds  
+- **How test will be performed**: Enter prompt and start planning. Verify at least one suggestion appears within 10 seconds.
+
+**Test-FR-P2**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened, planning mode active  
+- **Input**: Unintelligible prompt (e.g., "asdh123!@#")  
+- **Output**: Error message stating that the input could not be processed, or no suggestions generated with a prompt asking the user to refine their input  
+- **How test will be performed**: Enter a nonsensical string of random characters as the input for planning, then initiate the planning process and verify whether an appropriate error message or notification appears.
+
+**Test-FR-P3**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened, planning mode active  
+- **Input**: Large block of text copied and pasted as a prompt (e.g., 500+ words on a topic like climate change)  
+- **Output**: System processes the large input and generates condensed planning suggestions, or displays a message indicating the prompt is too lengthy for effective planning suggestions, either output must be displayed within 10 seconds of input.  
+- **How test will be performed**: Copy and paste a large text block into the prompt input field, then initiate the planning process. Observe whether the system provides condensed planning suggestions or displays a message prompting the user to enter a more concise topic or phrase.
+
+### Validate Steering Text Generation Feature
+
+**Test-FR-S1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened, steering feature enabled  
+- **Input**: Selection of "Didion" tone and a valid prompt (e.g., "reflection on modern life")  
+- **Output**: Text suggestions generated in the style of Joan Didion  
+- **How test will be performed**: Enable steering, select the "Didion" tone, enter a valid prompt, and initiate text generation. Verify that the suggestions produced reflect Didion's characteristic tone and style.
+
+**Test-FR-S2**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened, steering feature enabled  
+- **Input**: User uploads a previous writing sample to adapt the model to their tone and style  
+- **Output**: Model adapts to the user’s tone and style based on the sample, with customized suggestions available within 30 seconds  
+- **How test will be performed**: Enable the steering feature, and upload a sample of previous writing (e.g., a 300-word passage). Measure the time taken. Verify that the adapted suggestions are available within 30 seconds and that they reflect the tone and style of the uploaded sample.
+
+### Test LTR Feedback Panel
+
+**Test-FR-F1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened with LTR feedback panel active, initial text suggestions generated  
+- **Input**: User provides feedback on a specific suggestion (e.g., adjusts tone or selects alternative phrasing)  
+- **Output**: Model updates the suggestion based on user feedback in real-time, and the LTR panel presents an updated preview without causing cognitive overload  
+- **How test will be performed**: Generate text suggestions with the LTR panel active. Provide feedback on a suggestion (e.g., select a more formal tone or an alternative phrase) and observe if the model updates the suggestion in real time. Verify that the panel displays the updated text clearly and maintains an uncluttered, user-friendly layout to avoid cognitive overload.
+
+### Verify User Preferences for Text Generation
+
+**Test-FR-TG1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened with settings panel accessible  
+- **Input**: User sets preferences for tone (e.g., formal), style (e.g., narrative), voice (e.g., passive), and formality (e.g., high formality)  
+- **Output**: All future text generations reflect the specified tone, style, voice, and formality settings  
+- **How test will be performed**: Access the settings panel and set preferences for tone, style, voice, and formality. Generate multiple text outputs and verify that each reflects the specified preferences, maintaining consistency across suggestions to ensure personalization.
+
+### Verify User Profile Configuration 
+
+**Test-FR-UP1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened with access to profile settings panel  
+- **Input**: User sets a configuration for creative writing (e.g., informal tone, narrative style)  
+- **Output**: Profile with creative writing settings is successfully saved  
+- **How test will be performed**: Open the profile settings panel, set preferences for creative writing (e.g., informal tone, narrative style), and save as "Creative Writing" profile. Verify that the profile saves without errors and that settings are retained when reopening the profile.
+
+**Test-FR-UP2**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Profile settings panel accessible with at least one saved profile  
+- **Input**: User creates a second profile with settings for academic writing (e.g., formal tone, analytical style)  
+- **Output**: System saves the new "Academic Writing" profile without overwriting the existing "Creative Writing" profile  
+- **How test will be performed**: Set preferences for academic writing and save as "Academic Writing" profile. Verify that both "Creative Writing" and "Academic Writing" profiles appear in the profile list and retain their respective settings when reopened.
+
+### Verify Revision Management Functionality
+
+**Test-FR-RM1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor with a document containing multiple sections (e.g., introduction, body, conclusion)  
+- **Input**: User enables the tree view for non-linear navigation  
+- **Output**: Tree view displays a visual map of the document’s sections, showing key points like introduction, body, and conclusion  
+- **How test will be performed**: Open a structured document in the editor and enable the tree view. Verify that the tree accurately displays the main sections of the document.
+
+### Verify Version Control Functionality
+
+**Test-FR-VC1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor with version control feature enabled and multiple saved versions of the document  
+- **Input**: User navigates to a previous version of the document  
+- **Output**: Editor displays the selected version for review, with an option to restore or view differences from the current version  
+- **How test will be performed**: Access the version control menu, select an earlier version of the document, and verify that the editor displays the correct version with options to restore or view changes.
+
+**Test-FR-VC2**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor with version control enabled and multiple versions available  
+- **Input**: User reverts to a previous version of the document  
+- **Output**: The selected version becomes the current document state, with the ability to continue editing or save as a new version  
+- **How test will be performed**: Choose an earlier version and select the revert option. Verify that the editor updates to the chosen version and allows further editing or saving as a new version.
+
+### Verify Writing Goals and Progress Tracking Feature
+
+**Test-FR-PT1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor with progress tracking feature enabled  
+- **Input**: User sets a specific writing goal for word count (e.g., 1500 words)  
+- **Output**: A word count meter appears, tracking the user’s progress toward the goal in real-time  
+- **How test will be performed**: Open the goal-setting panel, set a word count goal, and start writing. Verify that the word count meter updates in real-time, accurately reflecting progress toward the goal.
+
+**Test-FR-PT2**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor with tone consistency analysis feature enabled  
+- **Input**: User sets a tone consistency goal (e.g., maintaining a formal tone throughout the document)  
+- **Output**: System monitors tone consistency, providing suggestions if the user deviates from the set tone  
+- **How test will be performed**: Set a goal for maintaining a formal tone. Write in varying tones, including informal segments, and verify that the system identifies inconsistencies and suggests adjustments to align with the formal tone.
+
+### Test Document Export Functionality
+
+**Test-FR-E1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor with a completed document ready for export  
+- **Input**: User selects export option and chooses .pdf format  
+- **Output**: Document is successfully exported as a .pdf file, preserving formatting and content  
+- **How test will be performed**: Complete a document in the editor, select the export option, and choose .pdf format. Verify that the file is saved correctly and that the formatting and content match the document in the editor.
+
+**Test-FR-E2**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor with a completed document ready for export  
+- **Input**: User selects export option and chooses plain text format  
+- **Output**: Document is exported as a plain text (.txt) file, with no special formatting  
+- **How test will be performed**: Complete a document in the editor, select the export option, and choose plain text format. Verify that the file is saved in .txt format and contains only the document’s raw text content.
+
+### Verify Visual Theme Customization
+
+**Test-FR-VT1**
+
+- **Type**: Functional, Dynamic, Manual  
+- **Initial State**: Editor opened with default theme (e.g., light mode)  
+- **Input**: User selects dark mode from the theme options  
+- **Output**: Editor switches to dark mode, with a dark background and light text  
+- **How test will be performed**: Open the theme settings panel, select dark mode, and verify that the interface updates to dark mode, with consistent dark backgrounds and readable light text throughout the editor.
 
 ### 3.1 Tests for Nonfunctional Requirements
 
@@ -700,6 +852,16 @@ requirements.}
 
 | **Requirement ID** | **Requirement Description**                                                                                                                                     | **Test Case ID(s)**                       |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------|
+| **FR1**            | tinymorph shall provide suggestions during the planning phase of creative writing, offering assistance in structuring ideas, topics, or themes based on user input.       | Test-FR-P1, Test-FR-P2, Test-FR-P3       |
+| **FR2**            | tinymorph shall provide users with manual control over text generation, enabling them to select advanced steering options such as tone, style, or creativity level.       | Test-FR-S1, Test-FR-S2                    |
+| **FR3**            | Users shall be able to interact with generated text through a left-to-right (LTR) feedback panel, allowing them to provide real-time feedback on model-generated suggestions. | Test-FR-F1                                |
+| **FR4**            | Users shall be able to set preferences for tone, style, voice, and formality, which tinymorph will apply to all future generations of text.                             | Test-FR-TG1                               |
+| **FR5**            | Users shall be able to save their preferred configurations as profiles, enabling them to switch between different writing styles or goals.                               | Test-FR-UP1, Test-FR-UP2                  |
+| **FR6**            | tinymorph shall allow users to navigate through their text non-linearly by providing a visual map or tree view that displays key points, topics, sections, and revision history. | Test-FR-RM1                               |
+| **FR8**            | tinymorph shall offer version control features that allow users to navigate through previous edits, revert to earlier document versions, and compare different drafts visually. | Test-FR-VC1, Test-FR-VC2                 |
+| **FR11**           | Users shall be able to set and track specific writing goals (e.g., word count, tone consistency, argument development) through customizable progress tracking features.     | Test-FR-PT1, Test-FR-PT2                 |
+| **FR13**           | tinymorph shall allow users to export their documents in .pdf, .md (Markdown), and plain text formats, ensuring compatibility with external platforms.                    | Test-FR-E1, Test-FR-E2                    |
+| **FR14**           | tinymorph shall allow users to customize the visual appearance of the editor by choosing from different themes, such as dark mode, light mode, and high-contrast options. | Test-FR-VT1 |
 | **LF-A1**          | tinymorph shall adopt a unified, non-intrusive, and uncluttered visual design.                                                                                  | Test-LF-A1                                |
 | **LF-A2**          | tinymorph must implement a consistent design system across all user interfaces, involving standardized typography and color palette.                             | Test-LF-A2                                |
 | **LF-S1**          | The design of the application will be minimalist, utilizing clean lines and a monotonic color palette.                                                          | Test-LF-S1                                |
@@ -998,6 +1160,23 @@ mentioned functional tests.}
 
 | **Test Case ID**  | **Description**                                                                                                   | **Module**                |
 |-------------------|-------------------------------------------------------------------------------------------------------------------|--------------------------------|
+| Test-FR-P1        | Verify planning suggestions appear within 10 seconds with valid prompt input.                                     | Planning Suggestions           |
+| Test-FR-P2        | Test error message response to unintelligible prompt input in planning mode.                                      | Planning Suggestions           |
+| Test-FR-P3        | Validate system’s handling of large prompt inputs, providing condensed suggestions or length prompt warning.      | Planning Suggestions           |
+| Test-FR-S1        | Verify text suggestions in the style of a specific author when tone steering is applied.                          | Steering Text Generation       |
+| Test-FR-S2        | Test model adaptation to user-uploaded writing sample for customized suggestions within 30 seconds.               | Steering Text Generation       |
+| Test-FR-F1        | Validate real-time feedback update in LTR panel based on user’s tone and phrasing adjustments.                    | LTR Feedback Panel             |
+| Test-FR-TG1       | Ensure future text generations reflect user-set preferences for tone, style, voice, and formality.                | User Preferences for Text Generation |
+| Test-FR-UP1       | Verify the saving of a user profile with specific writing style configurations, such as creative writing.         | User Profile Configuration     |
+| Test-FR-UP2       | Test the creation and retention of multiple user profiles without overwriting.                                    | User Profile Configuration     |
+| Test-FR-RM1       | Verify non-linear navigation in the tree view, showing key points and sections in the document.                   | Revision Management            |
+| Test-FR-VC1       | Validate navigation to a previous version in version control with viewing or restoring options.                   | Version Control                |
+| Test-FR-VC2       | Test reversion to a previous version in version control, making it the current document state.                    | Version Control                |
+| Test-FR-PT1       | Test real-time word count tracking with a user-set writing goal.                                                  | Writing Goals and Progress Tracking |
+| Test-FR-PT2       | Validate tone consistency monitoring, with suggestions when tone deviates from user’s set goal.                   | Writing Goals and Progress Tracking |
+| Test-FR-E1        | Verify successful export of a completed document in .pdf format, preserving formatting.                           | Document Export Functionality  |
+| Test-FR-E2        | Test plain text (.txt) export functionality, ensuring only raw content is saved.                                  | Document Export Functionality  |
+| Test-FR-VT1       | Validate theme customization, specifically switching from default light mode to dark mode.                        | Visual Theme Customization     |
 | Test-LF-A1        | Verify unified, non-intrusive, and uncluttered visual design.                                                     | User Interface                 |
 | Test-LF-A2        | Verify standardized typography and color palettes are consistently applied.                                       | User Interface                 |
 | Test-LF-S1        | Validate minimalist design with a monotonic color palette.                                                        | User Interface                 |
