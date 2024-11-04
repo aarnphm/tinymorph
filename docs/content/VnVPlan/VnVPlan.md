@@ -28,118 +28,94 @@ initially be completed. The sections will be filled in after the design stage
 is complete. the final version of the VnV plan should have all sections filled
 in.}
 
-## Symbols, Abbreviations, and Acronyms
-
-| **Symbol** | **Description** |
-| ---------- | --------------- |
-| T          | Test            |
-
-\wss{symbols, abbreviations, or acronyms --- you can simply reference the SRS
-\citep{SRS} tables, if appropriate}
-
-\wss{Remove this section if it isn't needed}
 
 This document ... \wss{provide an introductory blurb and roadmap of the
 Verification and Validation plan}
 
-## General Information
+## 2 General Information
 
-### Summary
+### 2.1 Symbols, Abbreviations, and Acronyms
 
-\wss{Say what software is being tested. Give its name and a brief overview of
-its general functions.}
+Please refer to the table 2 for the list of symbols, abbreviations and acronyms that need definition which are used in the remainder of the document.
+<center>Table 2: list of Symbols, Abbreviations and Acronyms</center>
 
-### Objectives
+| **Symbol**        | **Description**                                                                        |
+| ----------------- | -------------------------------------------------------------------------------------- |
+| T                 | Test                                                                                   |
+| `tinymorph`       | `morph` + `ReverseProxy` + `asteraceae`                                                |
+| `morph`           | Web interface for `tinymorph`                                                          |
+| `ReverseProxy`    | A middleware for reverse proxy with load balancer                                      |
+| `asteraceae`      | `Search` + `ActivationCache` + `SAEs` + `logit_processor` + `Exo`                      |
+| `logit_processor` | A function to convert incoming requests to logits                                      |
+| `exo`             | Inference engine to run given LLM                                                      |
+| LLM               | open-weights models to be run for inference                                            |
+| UI                | user interface                                                |
+| POC | Proof of Concept |
+| SRS | Software Requirement Specification |
+| `BlockManager`    | Help manage KV-cache during inference                                                  |
+| SAEs              | a set of sparse autoencoders trained against given LLM to steer activations generation |
+| Search            | Additional search tool to improve correctness                                          |
+| `ActivationCache` | Store said generations activations for performance purposes                            |
+| streaming JSON    | Outputs from `asteraceae` will be streamed back to `morph`                             |
+| tensor            | $n \times m$ matrix represented inputs processed by `logit_processor`                  |
 
-\wss{State what is intended to be accomplished. The objective will be around
-the qualities that are most important for your project. You might have
-something like: `build confidence in the software correctness,''
-  `demonstrate adequate usability.'' etc. You won't list all of the qualities,
-just those that are most important.}
+### 2.2 Purpose
 
-\wss{You should also list the objectives that are out of scope. You don't have
-the resources to do everything, so what will you be leaving out. For instance,
-if you are not going to verify the quality of usability, state this. It is also
-worthwhile to justify why the objectives are left out.}
+This document is a description of the testing, validation and verification procedures that are to be implemented with Group 23 of McMaster's SFWR 4G03 Project named "tinymorph". Due to the fact that these test cases are first developed before the majority of the implementation, this document is mainly used as references for future implementation and later testing and maintenance. Further major changes and updates can be found by records in revision table at the beginning of the document. 
 
-\wss{The objectives are important because they highlight that you are aware of
-limitations in your resources for verification and validation. You can't do everything,
-so what are you going to prioritize? As an example, if your system depends on an
-external library, you can explicitly state that you will assume that external library
-has already been verified by its implementation team.}
+### 2.3 Scope
 
-### Challenge Level and Extras
+This document involved detailed tests to ensure the funtionality of the project `tinymorph` works as expectation, which includes tests covering both functional and non-functional requirements for the UI component, server and language LLM. The traceability table matching tests and origional requirements can be found by the end of the document. All tests should be thorougly completed and passed before the project is released. 
 
-\wss{State the challenge level (advanced, general, basic) for your project.
-Your challenge level should exactly match what is included in your problem
-statement. This should be the challenge level agreed on between you and the
-course instructor. You can use a pull request to update your challenge level
-(in TeamComposition.csv or Repos.csv) if your plan changes as a result of the
-VnV planning exercise.}
+### 2.4 Referenced Documents
 
-\wss{Summarize the extras (if any) that were tackled by this project. Extras
-can include usability testing, code walkthroughs, user documentation, formal
-proof, GenderMag personas, Design Thinking, etc. Extras should have already
-been approved by the course instructor as included in your problem statement.
-You can use a pull request to update your extras (in TeamComposition.csv or
-Repos.csv) if your plan changes as a result of the VnV planning exercise.}
+SRS document can be found here [SRS documentaion](https://github.com/aarnphm/tinymorph/blob/main/docs/content/SRS/SRS.md)
+and Hazard Analysis can be found here [Hazard Analysis documentaion](https://github.com/aarnphm/tinymorph/blob/main/docs/content/HazardAnalysis/HazardAnalysis.md)
 
-### Relevant Documentation
+## 3 Plan
 
-\wss{Reference relevant documentation. This will definitely include your SRS
-and your other project documents (design documents, like MG, MIS, etc). You
-can include these even before they are written, since by the time the project
-is done, they will be written. You can create BibTeX entries for your
-documents and within those entries include a hyperlink to the documents.}
+This section provides general information about the plan of testing, including testing team members, milestones and detailed sections of verifications. 
 
-\citet{SRS}
+### 3.1 Verification and Validation Team
 
-\wss{Don't just list the other documents. You should explain why they are relevant and
-how they relate to your VnV efforts.}
+The following project members are resposible for all procedures of the validation process, including writing and executing tests:
 
-## Plan
+- Aaron Pham (SRS Verification, implementation Verification)
+- Nebras Khan (Design Verification)
+- Waleed Malik (Automated Testing)
+- Zhiwei Li (Software Validation)
 
-\wss{Introduce this section. You can provide a roadmap of the sections to
-come.}
+The tasks over the SRS verification, design verification, implementation verification, automated test and software validation is aiming to be equally splitted between the team members. Each member in-turn has a specific part assigned as main learder as outcome check out, their responsible part has been shown with their name. 
 
-### Verification and Validation Team
+### 3.2 Milestones
+Following table contains dates relevant to important milestones
+<center>Table 3: Milestones </center>
 
-\wss{Your teammates. Maybe your supervisor.
-You should do more than list names. You should say what each person's role is
-for the project's verification. A table is a good way to summarize this information.}
+| **Testing**                      | **Expected Date of Completion**         |
+| -------------------------------- | --------------------------------------- |
+|  Look and Feel Testing           |                                         |
+|  Usability and Humanity Testing   |                                         |
+|  Performance Testing   |                                         |
+|  Security Testing   |                                         |
+|  Maintainability and Support Testing    |                       |
+|  Compliance Testing            |                             |
+|  Unit Testing |                   |
+|||
+| Tests for Nonfunctional Requirements | |
 
-### SRS Verification Plan
 
-\wss{List any approaches you intend to use for SRS verification. This may
-include ad hoc feedback from reviewers, like your classmates (like your
-primary reviewer), or you may plan for something more rigorous/systematic.}
 
-\wss{If you have a supervisor for the project, you shouldn't just say they will
-read over the SRS. You should explain your structured approach to the review.
-Will you have a meeting? What will you present? What questions will you ask?
-Will you give them instructions for a task-based inspection? Will you use your
-issue tracker?}
+### 3.3 SRS Verification Plan
 
-\wss{Maybe create an SRS checklist?}
+Since the SRS revision 0 has been developed, the verification plan of SRS will be carried out via holding supervisor review, which takes 15 minutes discussion during the weekly meet-up, and correcting the content based on the asynchronized comments by the supervisor. The estimated time span to conduct this verification is 1 month. 
 
-### Design Verification Plan
+Corrections based on feedback from teaching assistants and peers will also be included into the 1 month span. 
 
-\wss{Plans for design verification}
+### 3.4 Design Verification Plan
 
-\wss{The review will include reviews by your classmates}
+After the reviewing period of SRS, design reviews will be conducted with supervisor during the weekly meet-up, performing iterative reviews to cover different parts of the design. Each review session will focus on verifiying that design choices meet the functionality of performance needs specified in the SRS. The POC demo session with its feedback will also be used for design verification. This process will take a month in estimation. 
 
-\wss{Create a checklists?}
-
-### Verification and Validation Plan Verification Plan
-
-\wss{The verification and validation plan is an artifact that should also be
-verified. Techniques for this include review and mutation testing.}
-
-\wss{The review will include reviews by your classmates}
-
-\wss{Create a checklists?}
-
-### Implementation Verification Plan
+### 3.5 Implementation Verification Plan
 
 \wss{You should at least point to the tests listed in this document and the unit
 testing plan.}
@@ -148,46 +124,50 @@ testing plan.}
 verification of the implementation. Potential techniques include code
 walkthroughs, code inspection, static analyzers, etc.}
 
-\wss{The final class presentation in CAS 741 could be used as a code
-walkthrough. There is also a possibility of using the final presentation (in
-CAS741) for a partial usability survey.}
+Final presentation is also expected to be a part of verification of usability, and its feedback will be collected and reflected on the final release.  
 
-### Automated Testing and Verification Tools
+### 3.6 Automated Testing and Verification Tools
+There will be basically two main parts involving automated testing
 
-\wss{What tools are you using for automated testing. Likely a unit testing
-framework and maybe a profiling tool, like ValGrind. Other possible tools
-include a static analyzer, make, continuous integration tools, test coverage
-tools, etc. Explain your plans for summarizing code coverage metrics.
-Linters are another important class of tools. For the programming language
-you select, you should look at the available linters. There may also be tools
-that verify that coding standards have been respected, like flake9 for
-Python.}
+**web-based editor (morph)**
+Language: JS/TS
 
-\wss{If you have already done this in the development plan, you can point to
-that document.}
+Stack:
 
-\wss{The details of this section will likely evolve as you get closer to the
-implementation.}
+rendering: Any React-based framework, e.g. Next, w/ Node backend.
+styling: SASS, framer-motion, @shadcn/ui
+testing: Jest
+Formatter: prettier
 
-### Software Validation Plan
+Linter: eslint
 
-\wss{If there is any external data that can be used for validation, you should
-point to it here. If there are no plans for validation, you should state that
-here.}
+Bundler/Transpiler: vite/esbuild
 
-\wss{You might want to use review sessions with the stakeholder to check that
-the requirements document captures the right requirements. Maybe task based
-inspection?}
+CI: include styling and linter, possibly a small set of A/B tests.
 
-\wss{For those capstone teams with an external supervisor, the Rev 0 demo should
-be used as an opportunity to validate the requirements. You should plan on
-demonstrating your project to your supervisor shortly after the scheduled Rev 0 demo.
-The feedback from your supervisor will be very useful for improving your project.}
+tool: pnpm for monorepo workspace management
 
-\wss{For teams without an external supervisor, user testing can serve the same purpose
-as a Rev 0 demo for the supervisor.}
+**ml inference server (asteraceae)**
+Language: Python
 
-\wss{This section might reference back to the SRS verification section.}
+Stack:
+
+online inference: BentoML, vLLM, pydantic
+offline inference: llama.cpp
+testing: pytest
+Linter: ruff
+
+CI: include styling and linter, regression testing, e2e testing.
+
+Model: Gemma 2 for SAE exploration, Llama 3.1 for final models (for POC specifically, will also train a few LoRAs for writers tonality)
+
+Tool: uv for monorepo management
+
+Detailed code coverage matrics will be generated to secure testing effectiveness. 
+
+### 3.7 Software Validation Plan
+
+A demonstration is arranged after Rev 0 to supervisor to gather feedback for software validation over the requirements. Some peers outside the developing group will also be invited to conduct usage test and finish a survey about their experience. The survey outcome will be used to analyse the matching between the project and the requirements in the document. 
 
 ## System Tests
 
@@ -1269,7 +1249,7 @@ Their values are defined in this section for easy maintenance.
 
 
 ## Appendix --- Reflection
-
+<!--
 \wss{This section is not required for CAS 741}
 
 The information in this section will be used to evaluate the team members on the
@@ -1293,6 +1273,56 @@ graduate attribute of Lifelong Learning.
    mastering the skill? Of the identified approaches, which will each team
    member pursue, and why did they make this choice?
 
+-->
+
+<div class="reflection-container">
+
+<div class="users">
+  <a class="name" href="https://github.com/aarnphm">Aaron</a>
+</div>
+
+<div class="blob">
+
+
+</div>
+
+</div>
+
+<br/>
+
+<div class="reflection-container">
+
+<div class="users">
+  <a class="name" href="https://github.com/nebrask">Nebras</a>
+</div>
+
+<div class="blob">
+
+1. While working on the V&V plan, the process of writing the non-functional requirements section went particularly well. My familiarity with usability, performance, and accessibility testing facilitated a smooth drafting process. Additionally, collaborative efforts from Aaron, Waleed, and Lucas enriched the document by incorporating their insights and ensuring that our approach was comprehensive and aligned with project goals.
+
+2. A significant challenge during the development of the V&V plan was aligning the diverse verification and validation approaches across different sections, which occasionally led to overlapping content or inconsistencies in test case formats. Managing these coordination issues was essential to maintain a coherent document. To resolve this, we held structured review sessions and used version control practices to ensure consistency and uniformity across sections. Regular team meetings and clearly documented responsibilities facilitated alignment, enabling the team to stay on the same page and maintain a clear direction throughout the process.
+
+3. To successfully complete the verification and validation of our project, the team will need to acquire a variety of knowledge and skills. For Aaron, expertise in dynamic testing knowledge is essential to ensure that the interfaces and design components meet quality standards through thorough functional and performance testing. Waleed will need static testing knowledge, focusing on tools for code analysis to detect inefficiencies or vulnerabilities in the ML inference server, ensuring robust backend support. Lucas requires an understanding of specialized tool usage such as for model validation and performance monitoring to effectively contribute to SAE interventions. I would need to acquire front-end testing and accessibility knowledge to build and validate the web-based editor’s functionality, ensuring it is intuitive and inclusive for users.
+
+4. To develop these essential knowledge areas, we have outlined multiple approaches for each skill and explained why each member has chosen their approach. For Aaron’s dynamic testing knowledge, he could either enroll in comprehensive courses focused on functional and performance testing or practice by applying dynamic tests to specific interface components. Aaron prefers the second approach as it provides immediate, practical application to his leadership in design work, which helping him refine testing skills relevant to our project's needs.  
+
+   <br/>
+
+   Waleed’s static testing knowledge can be strengthened through tutorials on static code analysis tools or by conducting hands-on analysis using past codebases and open-source projects. Waleed has chosen the tutorial approach for a structured learning path that will directly aid in securing the ML inference server's integrity as he believes it will enable him to build foundational expertise efficiently.  
+   
+   <br/>
+
+   Lucas can gain proficiency in tool usage through workshops focusing on model validation and performance monitoring or by experimenting with these tools on controlled, smaller-scale projects. Lucas plans to attend workshops as they provide an opportunity to learn from experts and peers, making the process more collaborative and efficient. This is crucial for his role in SAE interventions. 
+   
+   <br/>
+   
+   For my part, to develop front-end testing and accessibility knowledge, I could either enroll in courses that cover web accessibility best practices or work on self-directed projects where I conduct accessibility audits. I will pursue the course option because it offers a systematic approach to learning, ensuring I understand the principles thoroughly and can apply them effectively when developing and validating the web-based editor.
+
+</div>
+
+</div>
+
+<br/>
 
 <div class="reflection-container">
 
@@ -1328,6 +1358,27 @@ Front-End Testing and Accessibility:
 - Approach 2: Participate in accessibility hackathons to practice identifying and solving accessibility issues in real-world projects.
 Nebras will pursue Approach 1 by taking a structured course in front-end accessibility. Given the importance of accessibility in our project, formal training will help Nebras systematically learn best practices and testing tools.
 
+</div>
+
+</div>
+
+<br/>
+
+
+<div class="reflection-container">
+
+<div class="users">
+  <a class="name" href="https://github.com/lucas-lizhiwei">Lucas</a>
+</div>
+
+<div class="blob">
+
+<p>
+  1. From the past examples and rubric, the expectation is easy to understand <br>
+  2. Some of my parts work as a summary of other partners' content, so I need to rearrange the relevant information after other parts completion<br>
+  3. The coding language demands us to do unit testing of the components with matching testing tools, like Jest for javascript and pytest for python. This matches the knowledge about static testing knowledge I learned before. <br>
+  4. Reading the website for relevent testing frame work usage introduction, and walking through the coding examples of the testing these two ways are recommanded approaches to acquiring the knowledege. The second approach is persued by group members since they can used as template to construct our test and have detailed information about how to construct a unit test. <br>
+</p>
 
 </div>
 
