@@ -122,18 +122,37 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
                 </li>
               )}
               {!metadata.showReturnLink && (
-                <li>
-                  <a
-                    class="ref-source"
-                    href={`https://github.com/aarnphm/tinymorph/blob/main/docs/content/${fileData.slug!}.md`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span class="page-modification" title="source de la page">
-                      <em>source</em>
-                    </span>
-                  </a>
-                </li>
+                <>
+                  <li>
+                    <a
+                      class="ref-source"
+                      href={`https://github.com/aarnphm/tinymorph/blob/main/docs/content/${fileData.slug!}.md`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span class="page-modification" title="source de la page">
+                        <em>source</em>
+                      </span>
+                      <div class="popover">
+                        <div class="popover-inner" data-content-type="text/html">
+                          <pre data-language="markdown">{fileData.markdown}</pre>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="ref-source"
+                      href={`https://github.com/aarnphm/tinymorph/blame/main/docs/content/${fileData.slug!}.md`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span class="page-modification" title="source de la page">
+                        <em>blame</em>
+                      </span>
+                    </a>
+                  </li>
+                </>
               )}
               {metadata.showReturnLink && home(options.link!)}
             </>
