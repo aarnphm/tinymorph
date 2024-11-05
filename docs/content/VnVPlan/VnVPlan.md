@@ -129,14 +129,14 @@ Following table contains dates relevant to important milestones
 
 | **Testing**                          | **Expected Date of Completion** |
 | ------------------------------------ | ------------------------------- |
-| Look and Feel Testing                |                                 |
-| Usability and Humanity Testing       |                                 |
-| Performance Testing                  |                                 |
-| Security Testing                     |                                 |
-| Maintainability and Support Testing  |                                 |
-| Compliance Testing                   |                                 |
-| Unit Testing                         |                                 |
-| Tests for Nonfunctional Requirements |                                 |
+| Look and Feel Testing                |       2025-01-10                |
+| Usability and Humanity Testing       |       2025-01-15                |
+| Performance Testing                  |       2025-01-20                |
+| Security Testing                     |       2025-02-20                |
+| Maintainability and Support Testing  |       2025-02-05                |
+| Compliance Testing                   |       2025-01-20                |
+| Unit Testing                         |       2025-02-05                |
+| Tests for Nonfunctional Requirements |       2025-02-05                |
 
 _Table 3: Milestones_
 
@@ -347,12 +347,7 @@ This design verification plan will be executed in parallel with the development 
 
 ### 3.5 Implementation Verification Plan
 
-\wss{You should at least point to the tests listed in this document and the unit
-testing plan.}
-
-\wss{In this section you would also give any details of any plans for static
-verification of the implementation. Potential techniques include code
-walkthroughs, code inspection, static analyzers, etc.}
+In-group code walkthrough inspection is chosen as the main method to complete implementation verification of the project. The coding contents will be reviewed by other team members in exchange asynchronously. Basic grammar error in coding will be caught by linter of each different components. Detailed test cases can be found in system testing.
 
 Final presentation is also expected to be a part of verification of usability, and its feedback will be collected and reflected on the final release.
 
