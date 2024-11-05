@@ -17,6 +17,7 @@ import { toHtml } from "hast-util-to-html"
 import { PhrasingContent } from "mdast-util-find-and-replace/lib"
 import { capitalize } from "../../util/lang"
 import { PluggableList } from "unified"
+import { DEFAULT_MONO, getColor } from "../../util/theme"
 
 export interface Options {
   comments: boolean
@@ -659,7 +660,7 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
 
       return plugins
     },
-    externalResources() {
+    externalResources(ctx) {
       const js: JSResource[] = []
 
       if (opts.enableCheckbox) {
@@ -679,6 +680,7 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
       }
 
       if (opts.mermaid) {
+        const theme = ctx.cfg.configuration.theme
         js.push({
           script: `
           let mermaidImport = undefined
@@ -690,12 +692,19 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
               mermaid.initialize({
                 startOnLoad: false,
                 securityLevel: 'loose',
-                theme: darkMode ? 'dark' : 'default'
+                theme: darkMode ? 'dark' : 'base',
+                themeVariables: {
+                  fontFamily: '${theme.typography.code}, ${DEFAULT_MONO}',
+                  primaryColor: '${getColor(theme, "light")}',
+                  primaryTextColor: '${getColor(theme, "darkgray")}',
+                  primaryBorderColor: '${getColor(theme, "tertiary")}',
+                  lineColor: '${getColor(theme, "gray")}',
+                  secondaryColor: '${getColor(theme, "secondary")}',
+                  tertiaryColor: '${getColor(theme, "tertiary")}',
+                }
               })
 
-              await mermaid.run({
-                querySelector: '.mermaid'
-              })
+              await mermaid.run({ querySelector: '.mermaid' })
             }
           });
           `,
