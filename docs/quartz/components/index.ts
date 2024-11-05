@@ -1,5 +1,6 @@
 import Author from "./Author"
 import MinimalFooter from "./MinimalFooter"
+import ImagePopup from "./Image"
 import Content from "./pages/Content"
 import TagContent from "./pages/TagContent"
 import FolderContent from "./pages/FolderContent"
@@ -24,6 +25,7 @@ import Breadcrumbs from "./Breadcrumbs"
 import Comments from "./Comments"
 
 export {
+  ImagePopup,
   Author,
   MinimalFooter,
   ArticleTitle,

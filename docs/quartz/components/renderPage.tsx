@@ -8,6 +8,9 @@ import { visit } from "unist-util-visit"
 import { Root, Element, ElementContent } from "hast"
 import { GlobalConfiguration } from "../cfg"
 import { i18n } from "../i18n"
+// @ts-ignore
+import collapseHeaderScript from "./scripts/collapse-header.inline.ts"
+import collapseHeaderStyle from "./styles/collapseHeader.inline.scss"
 
 interface RenderComponents {
   head: QuartzComponent
@@ -21,6 +24,263 @@ interface RenderComponents {
 }
 
 const headerRegex = new RegExp(/h[1-6]/)
+
+function headerElement(node: Element, content: Element[], idx: number): Element {
+  const buttonId = `collapsible-header-${node.properties?.id ?? idx}`
+
+  // indicate whether the header is collapsed or not
+  const lastIdx = node.children.length > 0 ? node.children.length - 1 : 0
+  node.children.splice(lastIdx, 0, {
+    type: "element",
+    tagName: "svg",
+    properties: {
+      "aria-hidden": "true",
+      xmlns: "http://www.w3.org/2000/svg",
+      width: 18,
+      height: 18,
+      viewBox: "0 0 24 24",
+      fill: "currentColor",
+      stroke: "currentColor",
+      "stroke-width": "0",
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round",
+      style: "padding-left: 0.2rem;",
+      className: ["collapsed-dots"],
+    },
+    children: [
+      {
+        type: "element",
+        tagName: "circle",
+        properties: {
+          cx: "6",
+          cy: "12",
+          r: "2",
+        },
+        children: [],
+      },
+      {
+        type: "element",
+        tagName: "circle",
+        properties: {
+          cx: "12",
+          cy: "12",
+          r: "2",
+        },
+        children: [],
+      },
+      {
+        type: "element",
+        tagName: "circle",
+        properties: {
+          cx: "18",
+          cy: "12",
+          r: "2",
+        },
+        children: [],
+      },
+    ],
+  })
+
+  return {
+    type: "element",
+    tagName: "div",
+    properties: {
+      className: ["collapsible-header"],
+      "data-level": node.tagName[1],
+      id: node.properties?.id ?? idx,
+    },
+    children: [
+      {
+        type: "element",
+        tagName: "div",
+        properties: {
+          className: ["header-controls"],
+        },
+        children: [
+          // Toggle button
+          {
+            type: "element",
+            tagName: "button",
+            properties: {
+              id: `${buttonId}-toggle`,
+              ariaLabel: "Toggle content visibility",
+              ariaExpanded: true,
+              className: ["toggle-button"],
+            },
+            children: [
+              {
+                type: "element",
+                tagName: "div",
+                properties: {
+                  className: ["toggle-icons"],
+                },
+                children: [
+                  // default circle icon
+                  {
+                    type: "element",
+                    tagName: "svg",
+                    properties: {
+                      xmlns: "http://www.w3.org/2000/svg",
+                      width: 18,
+                      height: 18,
+                      viewBox: "0 0 24 24",
+                      fill: "var(--dark)",
+                      stroke: "var(--dark)",
+                      "stroke-width": "2",
+                      "stroke-linecap": "round",
+                      "stroke-linejoin": "round",
+                      className: ["circle-icon"],
+                    },
+                    children: [
+                      {
+                        type: "element",
+                        tagName: "circle",
+                        properties: {
+                          cx: "12",
+                          cy: "12",
+                          r: "3",
+                        },
+                        children: [],
+                      },
+                    ],
+                  },
+                  // expand icon
+                  {
+                    type: "element",
+                    tagName: "svg",
+                    properties: {
+                      xmlns: "http://www.w3.org/2000/svg",
+                      width: 18,
+                      height: 18,
+                      viewBox: "0 0 24 24",
+                      fill: "var(--tertiary)",
+                      stroke: "var(--tertiary)",
+                      "stroke-width": "2",
+                      "stroke-linecap": "round",
+                      "stroke-linejoin": "round",
+                      className: ["expand-icon"],
+                    },
+                    children: [
+                      {
+                        type: "element",
+                        tagName: "line",
+                        properties: {
+                          x1: "12",
+                          y1: "5",
+                          x2: "12",
+                          y2: "19",
+                        },
+                        children: [],
+                      },
+                      {
+                        type: "element",
+                        tagName: "line",
+                        properties: {
+                          x1: "5",
+                          y1: "12",
+                          x2: "19",
+                          y2: "12",
+                        },
+                        children: [],
+                      },
+                    ],
+                  },
+                  // collapse icon
+                  {
+                    type: "element",
+                    tagName: "svg",
+                    properties: {
+                      xmlns: "http://www.w3.org/2000/svg",
+                      width: 18,
+                      height: 18,
+                      viewBox: "0 0 24 24",
+                      fill: "none",
+                      stroke: "currentColor",
+                      "stroke-width": "2",
+                      "stroke-linecap": "round",
+                      "stroke-linejoin": "round",
+                      className: ["collapse-icon"],
+                    },
+                    children: [
+                      {
+                        type: "element",
+                        tagName: "line",
+                        properties: {
+                          x1: "5",
+                          y1: "12",
+                          x2: "19",
+                          y2: "12",
+                        },
+                        children: [],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          node,
+        ],
+      },
+      {
+        type: "element",
+        tagName: "div",
+        properties: {
+          className: ["collapsible-header-content-outer"],
+        },
+        children: [
+          {
+            type: "element",
+            tagName: "div",
+            properties: {
+              className: ["collapsible-header-content"],
+              ["data-references"]: `${buttonId}-toggle`,
+            },
+            children: content,
+          },
+        ],
+      },
+    ],
+  }
+}
+
+function processHeaders(node: Element, idx: number | undefined, parent: Element) {
+  idx = idx ?? parent.children.indexOf(node)
+  const currentLevel = parseInt(node.tagName[1])
+  const contentNodes: Element[] = []
+  let i = idx + 1
+
+  // Collect all content until next header of same or higher level
+  while (i < parent.children.length) {
+    const nextNode = parent.children[i] as Element
+    if (
+      (["div"].includes(nextNode.tagName) && nextNode.properties.id == "refs") ||
+      (nextNode?.type === "element" && nextNode.properties.dataFootnotes == "") ||
+      (nextNode?.type === "element" && ["hr"].includes(nextNode.tagName))
+    ) {
+      break
+    }
+
+    if (nextNode?.type === "element" && nextNode.tagName?.match(headerRegex)) {
+      const nextLevel = parseInt(nextNode.tagName[1])
+      if (nextLevel <= currentLevel) {
+        break
+      }
+      // Process nested header recursively
+      processHeaders(nextNode, i, parent)
+
+      // After processing, the next node at index i will be the wrapper
+      contentNodes.push(parent.children[i] as Element)
+      parent.children.splice(i, 1)
+    } else {
+      contentNodes.push(nextNode)
+      parent.children.splice(i, 1)
+    }
+  }
+
+  parent.children.splice(idx, 1, headerElement(node, contentNodes, idx))
+}
+
 export function pageResources(
   baseDir: FullSlug | RelativeURL,
   staticResources: StaticResources,
@@ -29,7 +289,14 @@ export function pageResources(
   const contentIndexScript = `const fetchData = fetch("${contentIndexPath}").then(data => data.json())`
 
   return {
-    css: [joinSegments(baseDir, "index.css"), ...staticResources.css],
+    css: [
+      { content: joinSegments(baseDir, "index.css") },
+      {
+        content: collapseHeaderStyle,
+        inline: true,
+      },
+      ...staticResources.css,
+    ],
     js: [
       {
         src: joinSegments(baseDir, "prescript.js"),
@@ -41,6 +308,11 @@ export function pageResources(
         contentType: "inline",
         spaPreserve: true,
         script: contentIndexScript,
+      },
+      {
+        script: collapseHeaderScript,
+        loadTime: "beforeDOMReady",
+        contentType: "inline",
       },
       ...staticResources.js,
       {
@@ -185,6 +457,18 @@ export function renderPage(
           ]
         }
       }
+    }
+  })
+
+  visit(root, "element", (node: Element, idx, parent) => {
+    if (
+      slug !== "index" &&
+      node.tagName.match(headerRegex) &&
+      node.properties.id !== "footnote-label" &&
+      (componentData.fileData.frontmatter?.collapsible ?? true)
+    ) {
+      // then do the process headers and its children here
+      processHeaders(node, idx, parent as Element)
     }
   })
 

@@ -69,7 +69,6 @@ const config: QuartzConfig = {
       }),
       Plugin.Citations({
         bibliographyFile: "./content/References.bib",
-        suppressBibliography: false,
         linkCitations: true,
       }),
       Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false, enableCheckbox: true }),

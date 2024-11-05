@@ -7,7 +7,7 @@ async function mouseEnterHandler(
   { clientX, clientY }: { clientX: number; clientY: number },
 ) {
   const link = this
-  if (link.dataset.noPopover === "true") {
+  if (link.dataset.noPopover !== undefined) {
     return
   }
 

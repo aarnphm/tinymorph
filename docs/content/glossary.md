@@ -177,11 +177,111 @@ minimise TTFT will help with UX for users.
 
 abbreviation: SAE
 
-Often contains one layers of MLP with few linear ReLU that is trained on a subset of datasets the main LLMs is trained
-on.
+Often contains one layers of MLP with few linear ReLU that is trained on a subset of datasets the main LLMs is trained on.
 
-For example, if we wish to interpret all features related to the author Camus, we might want to train an SAEs based on
-all given text of Camus that is also found in Llama-3.1
+> empirical example: if we wish to interpret all features related to the author Camus, we might want to train an SAEs based on all given text of Camus
+> to interpret "similar" features from Llama-3.1
+
+> [!abstract] definition
+>
+> We wish to decompose a models' activitation $x \in \mathbb{R}^n$ into sparse, linear combination of feature directions:
+>
+> $$
+> x \sim x_{0} + \sum_{i=1}^{M} f_i(x) d_i
+> \\
+> \\
+> \\
+> \because \begin{aligned}
+>  d_i M \gg n&:\text{ latent unit-norm feature direction} \\
+> f_i(x) \ge 0&: \text{ coresponding feature activation for }x
+> \end{aligned}
+> $$
+
+Thus, the baseline architecture of SAEs is a linear autoencoder with L1 penalty on the activations:
+
+$$
+\begin{aligned}
+f(x) &\coloneqq \text{ReLU}(W_\text{enc}(x - b_\text{dec}) + b_\text{enc}) \\
+\hat{x}(f) &\coloneqq W_\text{dec} f(x) + b_\text{dec}
+\end{aligned}
+$$
+
+> training it to reconstruct a large dataset of model activations $x \sim \mathcal{D}$, constraining hidden representation $f$ to be sparse
+
+[[thoughts/university/twenty-four-twenty-five/sfwr-4ml3/tut/tut1#^l1norm|L1 norm]] with coefficient $\lambda$ to construct loss during training:
+
+$$
+\mathcal{L}(x) \coloneqq \| x-\hat{x}(f(x)) \|_2^2 + \lambda \| f(x) \|_1
+\\
+\because \|x-\hat{x}(f(x)) \|_2^2 : \text{ reconstruction loss}
+$$
+
+> [!important] intuition
+>
+> We need to reconstruction fidelity at a given sparsity level, as measured by L0 via a mixture of reconstruction fidelity and L1 regularization.
+
+We can reduce sparsity loss term without affecting reconstruction by scaling up norm of decoder weights, or constraining norms of columns $W_\text{dec}$ durin training
+
+Ideas: output of decoder $f(x)$ has two roles
+
+- detects what features acre active <= L1 is crucial to ensure sparsity in decomposition
+- _estimates_ magnitudes of active features <= L1 is unwanted bias
+
+### Gated SAE
+
+see also: [paper](https://arxiv.org/abs/2404.16014)
+
+_uses Pareto improvement over training to reduce L1 penalty_ [@rajamanoharan2024improvingdictionarylearninggated]
+
+Clear consequence of the bias during training is _shrinkage_ [@sharkey2024feature] [^shrinkage]
+
+[^shrinkage]:
+    If we hold $\hat{x}(\bullet)$ fixed, thus L1 pushes $f(x) \to 0$, while reconstruction loss pushes $f(x)$ high enough to produce accurate reconstruction.<br>
+    An optimal value is somewhere between. However, rescaling the shrink feature activations is not necessarily enough to overcome bias induced by L1: a SAE might learnt sub-optimal encoder and decoder directions that is not improved by the fixed.
+
+Idea is to use Gated ReLU encoder [@shazeer2020gluvariantsimprovetransformer; @dauphin2017languagemodelinggatedconvolutional]:
+
+$$
+\tilde{f}(\mathbf{x}) \coloneqq \underbrace{\mathbb{1}[\underbrace{(\mathbf{W}_{\text{gate}}(\mathbf{x} - \mathbf{b}_{\text{dec}}) + \mathbf{b}_{\text{gate}}) > 0}_{\pi_{\text{gate}}(\mathbf{x})}]}_{f_{\text{gate}}(\mathbf{x})} \odot \underbrace{\text{ReLU}(\mathbf{W}_{\text{mag}}(\mathbf{x} - \mathbf{b}_{\text{dec}}) + \mathbf{b}_{\text{mag}})}_{f_{\text{mag}}(\mathbf{x})}
+$$
+
+where $\mathbb{1}[\bullet > 0]$ is the (pointwise) Heaviside step function and $\odot$ denotes elementwise multiplication.
+
+| term                 | annotations                                                                     |
+| -------------------- | ------------------------------------------------------------------------------- |
+| $f_\text{gate}$      | which features are deemed to be active                                          |
+| $f_\text{mag}$       | feature activation magnitudes (for features that have been deemed to be active) |
+| $\pi_\text{gate}(x)$ | $f_\text{gate}$ sub-layer's pre-activations                                     |
+
+to negate the increases in parameters, use ==weight sharing==:
+
+Scale $W_\text{mag}$ in terms of $W_\text{gate}$ with a vector-valued rescaling parameter $r_\text{mag} \in \mathbb{R}^M$:
+
+$$
+(W_\text{mag})_{ij} \coloneqq (\exp (r_\text{mag}))_i \cdot (W_\text{gate})_{ij}
+$$
+
+![[images/gated-sae-architecture.png]]
+
+_figure 3: Gated SAE with weight sharing between gating and magnitude paths_
+
+![[images/jump_relu.png]]
+
+_figure 4: A gated encoder become a single layer linear encoder with Jump ReLU_ [@erichson2019jumpreluretrofitdefensestrategy] _activation function_ $\sigma_\theta$
+
+### feature suppression
+
+See also [link](https://www.alignmentforum.org/posts/3JuSjTZyMzaSeTxKk/addressing-feature-suppression-in-saes)
+
+Loss function of SAEs combines a MSE reconstruction loss with sparsity term:
+
+$$
+L(x, f(x), y) = \|y-x\|^2/d + c\mid f(x) \mid
+\\
+\because d: \text{ dimensionality of }x
+$$
+
+> the reconstruction is not perfect, given that only one is reconstruction. **For smaller value of $f(x)$, features will be suppressed**
 
 ## retrieval augmented generation
 
