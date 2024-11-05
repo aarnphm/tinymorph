@@ -32,7 +32,6 @@ If needed, an explanation for the counts can be provided here.
 
 | Student | Meetings |
 | ------- | -------- |
-| Total   | Num      |
 | Anh Pham   | 3      |
 | Nebras Khan   | 4      |
 | Waleed Malik   | 3      |
@@ -63,14 +62,15 @@ If needed, an explanation for the lecture attendance can be provided here.
 
 | Student | Lectures |
 | ------- | -------- |
-| Total   | Num      |
 | Anh Pham   | 1      |
 | Nebras Khan   | 3      |
 | Waleed Malik   | 1      |
-| Zhiwei Li   | 1      |
+| Zhiwei Li   | 3      |
 
 
-If needed, an explanation for the attendance can be provided here.
+<!--If needed, an explanation for the attendance can be provided here.-->
+
+The team has put in an effort to participate in the informal document discussion meetings with the TA, understanding their value for project improvement. Attendance levels varied, but those who were present contributed useful insights and shared notes with members who could not attend. Members who were unable to attend certain meetings had prior significant commitments and informed the team in advance. This proactive approach allowed the team to coordinate effectively, ensuring that feedback and insights from the TA discussions were shared and integrated into the project workflow.
 
 ## Commits
 
