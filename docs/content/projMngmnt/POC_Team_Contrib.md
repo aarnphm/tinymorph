@@ -2,7 +2,7 @@
 id: POC_Team_Contrib
 tags:
   - management
-author: aarnphm
+author: aarnphm,waleedmalik7,nebrask,lucas-lizhiwei
 date: "2024-09-16"
 title: "Team Contributions: POC"
 ---
@@ -28,18 +28,18 @@ If needed, an explanation for the counts can be provided here.
 
 ## Supervisor/Stakeholder Meeting Attendance
 
-For each team member how many supervisor/stakeholder team meetings have they attended over the time period of interest. This number should be determined from the supervisor meeting issues in the team's repo. The first entry in the table should be the total number of supervisor and team meetings held by the team. If there is no supervisor, there will usually be meetings with stakeholders (potential users) that can serve a similar purpose.
+<!--For each team member how many supervisor/stakeholder team meetings have they attended over the time period of interest. This number should be determined from the supervisor meeting issues in the team's repo. The first entry in the table should be the total number of supervisor and team meetings held by the team. If there is no supervisor, there will usually be meetings with stakeholders (potential users) that can serve a similar purpose.-->
 
-| Student | Meetings |
-| ------- | -------- |
-| Total   | Num      |
-| Name 1  | Num      |
-| Name 2  | Num      |
-| Name 3  | Num      |
-| Name 4  | Num      |
-| Name 5  | Num      |
+| Student      | Meetings |
+| ------------ | -------- |
+| Anh Pham     | 3        |
+| Nebras Khan  | 4        |
+| Waleed Malik | 3        |
+| Zhiwei Li    | 4        |
 
-If needed, an explanation for the counts can be provided here.
+<!--If needed, an explanation for the counts can be provided here.-->
+
+The team has demonstrated a strong commitment to attending supervisor meetings with Dr. Swati Mishra and preparing for potential stakeholder interactions. Each member prioritized these meetings, and absences occurred only when significant obligations or emergencies arose. In such cases, members provided appropriate notice in advance, ensuring transparency and allowing the team to adjust as needed. This level of communication has helped maintain accountability and demonstrated each member’s dedication to the project and to Dr. Mishra’s guidance.
 
 ## Lecture Attendance
 
@@ -58,18 +58,18 @@ If needed, an explanation for the lecture attendance can be provided here.
 
 ## TA Document Discussion Attendance
 
-For each team member how many of the informal document discussion meetings with the TA were attended over the time period of interest.
+<!--For each team member how many of the informal document discussion meetings with the TA were attended over the time period of interest.-->
 
-| Student | Lectures |
-| ------- | -------- |
-| Total   | Num      |
-| Name 1  | Num      |
-| Name 2  | Num      |
-| Name 3  | Num      |
-| Name 4  | Num      |
-| Name 5  | Num      |
+| Student      | Lectures |
+| ------------ | -------- |
+| Anh Pham     | 1        |
+| Nebras Khan  | 3        |
+| Waleed Malik | 1        |
+| Zhiwei Li    | 3        |
 
-If needed, an explanation for the attendance can be provided here.
+<!--If needed, an explanation for the attendance can be provided here.-->
+
+The team has put in an effort to participate in the informal document discussion meetings with the TA, understanding their value for project improvement. Attendance levels varied, but those who were present contributed useful insights and shared notes with members who could not attend. Members who were unable to attend certain meetings had prior significant commitments and informed the team in advance. This proactive approach allowed the team to coordinate effectively, ensuring that feedback and insights from the TA discussions were shared and integrated into the project workflow.
 
 ## Commits
 
