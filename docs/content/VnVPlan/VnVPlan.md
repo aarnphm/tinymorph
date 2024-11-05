@@ -783,7 +783,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Initial State**: The fully developed `tinymorph` application is accessible on various devices.
 - **Input/Condition**: Access the application UI on different devices and screen sizes.
 - **Output/Result**: Confirmation that the UI is unified, non-intrusive, and uncluttered across all interfaces.
-- **How test will be performed**: Conduct a design review by assembling a team of UI/UX experts who will use a predefined checklist based on design guidelines. Usability testing will be conducted with 10 target users representing primary user personas, followed by survey feedback analysis (Appendix A).
+- **How test will be performed**: Conduct a design review by assembling a team of UI/UX experts who will use a predefined checklist based on design guidelines. Usability testing will be conducted with 10 target users representing primary user personas, followed by survey feedback analysis ([[VnVPlan/VnVPlan#Usability Survey Questions]]).
 
 **Test-LF-A2**
 
