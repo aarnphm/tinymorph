@@ -796,7 +796,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Initial State**: The application is ready with the intended design implemented.
 - **Input/Condition**: Application is accessed on standard devices.
 - **Output/Result**: Confirmation that the design is minimalist and utilizes a monotonic color palette.
-- **How test will be performed**: Evaluate the design using minimalist design principles. Verify color palette consistency. Gather user feedback through surveys (Appendix A).
+- **How test will be performed**: Evaluate the design using minimalist design principles. Verify color palette consistency. Gather user feedback through surveys ([[VnVPlan/VnVPlan#Usability Survey Questions]]).
 
 #### 4.2.1.3 Test Responsiveness Across Devices and Orientations
 
@@ -848,7 +848,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Initial State**: Session history functionality is implemented.
 - **Input/Condition**: Perform a series of editing activities, including opening documents and making text modifications.
 - **Output/Result**: The session history accurately records and displays recent activities.
-- **How test will be performed**: Execute predefined editing tasks and access the session history to verify recorded entries. Collect user feedback on the ease of use and usefulness of the feature through observations and surveys (Appendix A).
+- **How test will be performed**: Execute predefined editing tasks and access the session history to verify recorded entries. Collect user feedback on the ease of use and usefulness of the feature through observations and surveys ([[VnVPlan/VnVPlan#Usability Survey Questions]]).
 
 #### 4.2.2.2 Test Interactive Review and Manual Acceptance of Suggestions
 
@@ -858,7 +858,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Initial State**: Suggestion system is operational.
 - **Input/Condition**: Submit text inputs to receive suggestions from the system.
 - **Output/Result**: Users can interactively review and accept or reject suggestions.
-- **How test will be performed**: Generate suggestions by editing a document and verify their appearance. Test the functionality to accept or reject suggestions. Collect user feedback on managing and interacting with suggestions (Appendix A).
+- **How test will be performed**: Generate suggestions by editing a document and verify their appearance. Test the functionality to accept or reject suggestions. Collect user feedback on managing and interacting with suggestions ([[VnVPlan/VnVPlan#Usability Survey Questions]]).
 
 #### 4.2.2.3 Assess the Planning Interface
 
@@ -868,7 +868,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Initial State**: Planning interface is accessible.
 - **Input/Condition**: Use the planning interface to organize and adjust creative writing steps.
 - **Output/Result**: Users can effectively organize and debug their writing using the interface.
-- **How test will be performed**: Provide users with a writing task that requires planning. Observe their navigation and utilization of features. Collect feedback on effectiveness and usability through surveys and interviews (Appendix A).
+- **How test will be performed**: Provide users with a writing task that requires planning. Observe their navigation and utilization of features. Collect feedback on effectiveness and usability through surveys and interviews ([[VnVPlan/VnVPlan#Usability Survey Questions]]).
 
 #### 4.2.2.4 Verify Multilingual Support
 
