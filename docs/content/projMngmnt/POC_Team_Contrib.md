@@ -75,13 +75,13 @@ For each team member how many commits to the main branch have been made over the
 
 | Student      | Commits | Percent |
 | ------------ | ------- | ------- |
-| Total        | Num     | 100%    |
-| Anh Pham     | Num     | %       |
-| Nebras Khan  | Num     | %       |
-| Waleed Malik | Num     | %       |
-| Zhiwei Li    | Num     | %       |
+| Total        | 78      | 100%    |
+| Anh Pham     | 58      | 74%     |
+| Nebras Khan  | 8       | 10%     |
+| Waleed Malik | 5       | 7%      |
+| Zhiwei Li    | 7       | 9%      |
 
-If needed, an explanation for the counts can be provided here. For instance, if a team member has more commits to unmerged branches, these numbers can be provided here. If multiple people contribute to a commit, git allows for multi-author commits.
+The table records the commits initiated by each seperate team member. Anh as team leader participate in every group member's commits to make improvements and help to merge, along with other commits for independent contributions of document and coding changes. For other group members, there is basically one or two commits for every document deliverable, containing more sub-patches of modification within a single commit with peer-review and modification. 
 
 ## Issue Tracker
 
