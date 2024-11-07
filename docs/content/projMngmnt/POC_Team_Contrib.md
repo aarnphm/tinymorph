@@ -15,16 +15,14 @@ and the POC demo.
 
 For each team member how many team meetings have they attended over the time period of interest. This number should be determined from the meeting issues in the team's repo. The first entry in the table should be the total number of team meetings held by the team.
 
-| Student | Meetings |
-| ------- | -------- |
-| Total   | Num      |
-| Name 1  | Num      |
-| Name 2  | Num      |
-| Name 3  | Num      |
-| Name 4  | Num      |
-| Name 5  | Num      |
+| Student      | Meetings |
+| ------------ | -------- |
+| Anh Pham     | 8        |
+| Nebras Khan  | 9        |
+| Waleed Malik | 6        |
+| Zhiwei Li    | 9        |
 
-If needed, an explanation for the counts can be provided here.
+The weekly stand-up meeting is agreed by team members as a time slot to sync up the development progress and any important information from  TA meeting or lecture, along with the task divisions of the deliverables writing. It also sometimes works as a knowledge sharing session among group members to conduct Q&A about the backgroup theory of the project, when there is a mentioned research direction raised by the supervisor. 
 
 ## Supervisor/Stakeholder Meeting Attendance
 
@@ -75,16 +73,15 @@ The team has put in an effort to participate in the informal document discussion
 
 For each team member how many commits to the main branch have been made over the time period of interest. The total is the total number of commits for the entire team since the beginning of the term. The percentage is the percentage of the total commits made by each team member.
 
-| Student | Commits | Percent |
-| ------- | ------- | ------- |
-| Total   | Num     | 100%    |
-| Name 1  | Num     | %       |
-| Name 2  | Num     | %       |
-| Name 3  | Num     | %       |
-| Name 4  | Num     | %       |
-| Name 5  | Num     | %       |
+| Student      | Commits | Percent |
+| ------------ | ------- | ------- |
+| Total        | 78      | 100%    |
+| Anh Pham     | 58      | 74%     |
+| Nebras Khan  | 8       | 10%     |
+| Waleed Malik | 5       | 7%      |
+| Zhiwei Li    | 7       | 9%      |
 
-If needed, an explanation for the counts can be provided here. For instance, if a team member has more commits to unmerged branches, these numbers can be provided here. If multiple people contribute to a commit, git allows for multi-author commits.
+The table records the commits initiated by each seperate team member. Anh as team leader participate in every group member's commits to make improvements and help to merge, along with other commits for independent contributions of document and coding changes. For other group members, there is basically one or two commits for every document deliverable, containing more sub-patches of modification within a single commit with peer-review and modification. 
 
 ## Issue Tracker
 
