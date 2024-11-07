@@ -15,25 +15,25 @@ and the POC demo.
 
 For each team member how many team meetings have they attended over the time period of interest. This number should be determined from the meeting issues in the team's repo. The first entry in the table should be the total number of team meetings held by the team.
 
-| Student      | Meetings |
-| ------------ | -------- |
-| Anh Pham     | 8        |
-| Nebras Khan  | 9        |
-| Waleed Malik | 6        |
-| Zhiwei Li    | 9        |
+| Student          | Meetings |
+| ---------------- | -------- |
+| Aaron (Anh) Pham | 8        |
+| Nebras Khan      | 9        |
+| Waleed Malik     | 6        |
+| Zhiwei Li        | 9        |
 
-The weekly stand-up meeting is agreed by team members as a time slot to sync up the development progress and any important information from  TA meeting or lecture, along with the task divisions of the deliverables writing. It also sometimes works as a knowledge sharing session among group members to conduct Q&A about the backgroup theory of the project, when there is a mentioned research direction raised by the supervisor. 
+The weekly stand-up meeting is agreed by team members as a time slot to sync up the development progress and any important information from TA meeting or lecture, along with the task divisions of the deliverables writing. It also sometimes works as a knowledge sharing session among group members to conduct Q&A about the backgroup theory of the project, when there is a mentioned research direction raised by the supervisor.
 
 ## Supervisor/Stakeholder Meeting Attendance
 
 <!--For each team member how many supervisor/stakeholder team meetings have they attended over the time period of interest. This number should be determined from the supervisor meeting issues in the team's repo. The first entry in the table should be the total number of supervisor and team meetings held by the team. If there is no supervisor, there will usually be meetings with stakeholders (potential users) that can serve a similar purpose.-->
 
-| Student      | Meetings |
-| ------------ | -------- |
-| Anh Pham     | 3        |
-| Nebras Khan  | 4        |
-| Waleed Malik | 3        |
-| Zhiwei Li    | 4        |
+| Student          | Meetings |
+| ---------------- | -------- |
+| Aaron (Anh) Pham | 3        |
+| Nebras Khan      | 4        |
+| Waleed Malik     | 3        |
+| Zhiwei Li        | 4        |
 
 <!--If needed, an explanation for the counts can be provided here.-->
 
@@ -43,14 +43,12 @@ The team has demonstrated a strong commitment to attending supervisor meetings w
 
 For each team member how many lectures have they attended over the time period of interest. This number should be determined from the lecture issues in the team's repo. The first entry in the table should be the total number of lectures since the beginning of the term.
 
-| Student | Lectures |
-| ------- | -------- |
-| Total   | Num      |
-| Name 1  | Num      |
-| Name 2  | Num      |
-| Name 3  | Num      |
-| Name 4  | Num      |
-| Name 5  | Num      |
+| Student          | Lectures |
+| ---------------- | -------- |
+| Aaron (Anh) Pham | 2        |
+| Nebras Khan      | 3        |
+| Waleed Malik     | 3        |
+| Zhiwei Li        | 3        |
 
 If needed, an explanation for the lecture attendance can be provided here.
 
@@ -58,12 +56,12 @@ If needed, an explanation for the lecture attendance can be provided here.
 
 <!--For each team member how many of the informal document discussion meetings with the TA were attended over the time period of interest.-->
 
-| Student      | Lectures |
-| ------------ | -------- |
-| Anh Pham     | 1        |
-| Nebras Khan  | 3        |
-| Waleed Malik | 1        |
-| Zhiwei Li    | 3        |
+| Student          | Lectures |
+| ---------------- | -------- |
+| Aaron (Anh) Pham | 1        |
+| Nebras Khan      | 3        |
+| Waleed Malik     | 1        |
+| Zhiwei Li        | 3        |
 
 <!--If needed, an explanation for the attendance can be provided here.-->
 
@@ -73,27 +71,26 @@ The team has put in an effort to participate in the informal document discussion
 
 For each team member how many commits to the main branch have been made over the time period of interest. The total is the total number of commits for the entire team since the beginning of the term. The percentage is the percentage of the total commits made by each team member.
 
-| Student      | Commits | Percent |
-| ------------ | ------- | ------- |
-| Total        | 78      | 100%    |
-| Anh Pham     | 58      | 74%     |
-| Nebras Khan  | 8       | 10%     |
-| Waleed Malik | 5       | 7%      |
-| Zhiwei Li    | 7       | 9%      |
+| Student          | Commits | Percent |
+| ---------------- | ------- | ------- |
+| Total            | 78      | 100%    |
+| Aaron (Anh) Pham | 58      | 74%     |
+| Nebras Khan      | 8       | 10%     |
+| Waleed Malik     | 5       | 7%      |
+| Zhiwei Li        | 7       | 9%      |
 
-The table records the commits initiated by each seperate team member. Anh as team leader participate in every group member's commits to make improvements and help to merge, along with other commits for independent contributions of document and coding changes. For other group members, there is basically one or two commits for every document deliverable, containing more sub-patches of modification within a single commit with peer-review and modification. 
+The table records the commits initiated by each seperate team member. Aaron as team leader participate in every group member's commits to make improvements and help to merge, along with other commits for independent contributions of document and coding changes. For other group members, there is basically one or two commits for every document deliverable, containing more sub-patches of modification within a single commit with peer-review and modification.
 
 ## Issue Tracker
 
 For each team member how many issues have they authored (including open and closed issues (O+C)) and how many have they been assigned (only counting closed issues (C only)) over the time period of interest.
 
-| Student | Authored (O+C) | Assigned (C only) |
-| ------- | -------------- | ----------------- |
-| Name 1  | Num            | Num               |
-| Name 2  | Num            | Num               |
-| Name 3  | Num            | Num               |
-| Name 4  | Num            | Num               |
-| Name 5  | Num            | Num               |
+| Student          | Authored (O+C) | Assigned (C only) |
+| ---------------- | -------------- | ----------------- |
+| Aaron (Anh) Pham | 29             | 7                 |
+| Nebras Khan      | 3              | 2                 |
+| Waleed Malik     | 2              | 2                 |
+| Zhiwei Li        | 2              | 2                 |
 
 If needed, an explanation for the counts can be provided here.
 
