@@ -1,24 +1,60 @@
 [project]
 name = "exo"
-version = "0.1.0"
 description = "a series of investigation into SAEs prevention for latent activation"
 readme = "README.md"
 requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Aaron Pham", email = "contact@aarnphm.xyz" }]
 dependencies = [
-    "nnsight>=0.3.5",
-    "sae",
-    "transformers>=4.44.2",
+  "nnsight>=0.3.5",
+  "sae",
+  "sae-lens>=0.5.0",
+  "transformers>=4.44.2",
 ]
+dynamic = ["version"]
+[project.urls]
+Documentation = "https://tinymorph.aarnphm.xyz"
+GitHub = "https://github.com/aarnphm/tinymorph"
+Twitter = "https://twitter.com/aarnphm_"
+Tracker = "https://github.com/aarnphm/tinymorph/issues"
 
 [project.scripts]
 self-explanation = "exo.self_explanation:main"
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0"
+[tool.hatch.build.hooks.vcs]
+version-file = "src/exo/_version.py"
+[tool.hatch.version.raw-options]
+git_describe_command = [
+  "git",
+  "describe",
+  "--dirty",
+  "--tags",
+  "--long",
+  "--first-parent",
+]
+version_scheme = "post-release"
+fallback_version = "0.0.0"
+[tool.hatch.metadata]
+allow-direct-references = true
+[tool.hatch.build.targets.sdist]
+only-include = ["src/exo"]
+[tool.hatch.build.targets.wheel]
+packages = ["src/exo"]
+
+
 [tool.uv]
-dev-dependencies = ["jupyter>=1.1.1"]
+dev-dependencies = [
+  "jupyter>=1.1.1",
+  "jupyterlab-vim>=4.1.4",
+  "notebook>=7.2.2",
+]
 
 [tool.uv.sources]
 sae = { git = "https://github.com/EleutherAI/sae.git", rev = "main" }

@@ -66,6 +66,16 @@ cursor navigation:
 
 https://x.com/JaceThings/status/1843441743187861850
 
+graph-based:
+
+=> Conceptual: Mind map
+
+- empirical
+
+non-linear actions -> linear actions
+
+drag-and-drop posted notes => generate posted-notes
+
 ### cost.
 
 Using EC2 for GPUs and inference cost. (Running on A100 with 32 CPUs)
@@ -108,6 +118,10 @@ Possible UI component library: [shadcn/ui](https://ui.shadcn.com/)
 https://x.com/CherrilynnZ/status/1836881535154409629
 
 editor: https://prosemirror.net/
+
+> [!question]- What is the data model for planning?
+>
+> CoT drawbacks
 
 ## training [[glossary#sparse autoencoders|SAEs]]
 
@@ -184,6 +198,7 @@ A variant of activation patching
 See also: [SelfE](https://arxiv.org/abs/2403.10949) or [Patchscope](https://arxiv.org/abs/2401.06102)
 
 > [!important]
+>
 > align with auto-interp[^2] as the current standard for SAE feature interpretation.
 
 ### self-similarity
@@ -213,3 +228,11 @@ $$
 [^2]: [Language models can explain neurons in language models](https://openaipublic.blob.core.windows.net/neuron-explainer/paper/index.html)
 
 [^3]: [mwatkins's earlier exploration](https://www.lesswrong.com/posts/c6uTNm5erRrmyJvvD/mapping-the-semantic-void-strange-goings-on-in-gpt-embedding)
+
+## mathematical framework for transformers circuits
+
+_excerpt from [this transformers threads](https://transformer-circuits.pub/2021/framework/index.html#residual-comms)_
+
+## automatic interpretability
+
+see also: [Transluce's Monitor](https://transluce.org/) [source](https://github.com/TransluceAI/observatory)
