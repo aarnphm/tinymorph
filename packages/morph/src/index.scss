@@ -1,0 +1,85 @@
+$line-height: 1.3;
+$blockquote-border-color: #cccccc;
+$blockquote-text-color: #555555;
+
+.cm-editor {
+  .cm-scroller {
+    .cm-content {
+      .cm-line {
+        line-height: $line-height;
+        margin: 0;
+        padding: 0;
+
+        white-space: pre-wrap;
+      }
+    }
+  }
+}
+
+.cm-markdown-inline {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: $line-height;
+  margin: 0;
+  padding: 0;
+
+  h1, h2, h3, h4, h5, h6 {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: $line-height;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1 { font-size: 1.4rem; }
+  h2 { font-size: 1.3rem; }
+  h3 { font-size: 1.2rem; }
+  h4 { font-size: 1.15rem; }
+  h5 { font-size: 1.1rem; }
+  h6 { font-size: 1.05rem; }
+
+  blockquote {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+    padding-left: 1rem;
+    line-height: $line-height;
+    border-left: 3px solid $blockquote-border-color;
+    color: $blockquote-text-color;
+
+    white-space: normal;
+
+    p {
+      margin: 0;
+      padding: 0;
+      line-height: $line-height;
+      display: inline;
+    }
+  }
+
+  ul, ol {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+    padding-left: 1rem;
+    line-height: $line-height;
+    list-style-position: inside;
+
+    white-space: normal;
+
+    li {
+      display: list-item;
+      vertical-align: middle;
+      margin: 0;
+      padding: 0;
+      line-height: $line-height;
+    }
+  }
+
+  p {
+    margin: 0;
+    padding: 0;
+    line-height: $line-height;
+    display: inline;
+  }
+}
