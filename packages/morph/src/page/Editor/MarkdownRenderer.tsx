@@ -4,21 +4,50 @@ import {
   ViewPlugin,
   ViewUpdate,
   WidgetType,
-  EditorView
+  EditorView,
 } from "@codemirror/view";
 import { RangeSetBuilder } from "@codemirror/state";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
-import remarkHtml from "remark-html";
+import remarkRehype from "remark-rehype";
+import rehypeStringify from "rehype-stringify";
+import remarkGfm from "remark-gfm";
+import rehypeSlug from "rehype-slug";
 
-const mdProcessor = unified().use(remarkParse).use(remarkHtml);
+let mdProcessor: ReturnType<typeof createProcessor> | null = null;
 
-function renderMarkdownToHtml(markdown: string): string {
+const processedCache = new Map<string, string>();
+
+function createProcessor() {
+  return unified()
+    .use(remarkParse)
+    // Example md plugins
+    .use(remarkGfm)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    // Example HTML plugins
+    .use(rehypeSlug)
+    .use(rehypeStringify, { allowDangerousHtml: true });
+}
+
+function getProcessor() {
+  if (!mdProcessor) {
+    mdProcessor = createProcessor();
+  }
+  return mdProcessor;
+}
+
+function processMarkdown(markdown: string): string {
+  const cached = processedCache.get(markdown);
+  if (cached) return cached;
+
   try {
-    const renderedMarkdown = mdProcessor.processSync(markdown);
-    return String(renderedMarkdown);
+    const processor = getProcessor();
+    const renderedMarkdown = processor.processSync(markdown);
+    const result = String(renderedMarkdown.value);
+    processedCache.set(markdown, result);
+    return result;
   } catch (error) {
-    console.error("Error with rendering Markdown:", error);
+    console.error("Error rendering Markdown:", error);
     return markdown;
   }
 }
@@ -49,11 +78,10 @@ export const inlineMarkdownExtension = ViewPlugin.fromClass(
 
         const line = state.doc.line(lineNum);
         const lineText = line.text;
-
-        const renderedHTML = renderMarkdownToHtml(lineText);
+        const renderedHTML = processMarkdown(lineText);
 
         const deco = Decoration.replace({
-          widget: new MarkdownLineWidget(renderedHTML)
+          widget: new MarkdownLineWidget(renderedHTML),
         });
         builder.add(line.from, line.to, deco);
       }
@@ -64,7 +92,7 @@ export const inlineMarkdownExtension = ViewPlugin.fromClass(
     destroy() {}
   },
   {
-    decorations: (v) => v.decorations
+    decorations: (v) => v.decorations,
   }
 );
 
