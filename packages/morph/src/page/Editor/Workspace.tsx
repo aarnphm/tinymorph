@@ -1,10 +1,13 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { EditorState } from "@codemirror/state";
 import { EditorView, basicSetup } from "codemirror";
 import { markdown } from "@codemirror/lang-markdown";
 import { inlineMarkdownExtension } from "./MarkdownRenderer";
+import { NotesPanel } from "./NotesPanel";
+
 
 export function EditorWithToolbar() {
+  const [showNotes, setShowNotes] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,11 +38,16 @@ This is **bold** text.
   }, []);
 
   return (
-    <div className="border p-2">
-      <div className="mb-2">
-        <button className="btn">Tooltip</button>
+    <div className="editor-container">
+      <div className="toolbar">
+        <button className="btn mr-2" onClick={() => setShowNotes(!showNotes)}>
+          {showNotes ? 'Hide Notes' : 'Show Notes'}
+        </button>
       </div>
-      <div ref={editorRef} />
+      <div className={`editor-content ${showNotes ? 'with-notes' : ''}`}>
+        <div className="editor" ref={editorRef} />
+        {showNotes && <NotesPanel />}
+      </div>
     </div>
   );
 }

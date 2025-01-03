@@ -83,3 +83,32 @@ $blockquote-text-color: #555555;
     display: inline;
   }
 }
+
+.editor-container {
+  .toolbar {
+    margin-bottom: 0.5rem;
+  }
+
+  .editor-content {
+    display: flex;
+    gap: 1rem;
+
+    .editor {
+      flex: 1;
+    }
+
+    &.with-notes {
+      .editor {
+        width: 75%;
+      }
+    }
+  }
+
+  .notes-panel {
+    width: 25%;
+    padding: 1rem;
+    border-left: 1px solid #cccccc;
+    overflow-y: auto;
+    max-height: calc(100vh - 4rem);
+  }
+}
