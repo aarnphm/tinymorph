@@ -1,4 +1,4 @@
-import { EditorWithToolbar  } from './page/Editor/EditorWithToolbar'
+import { EditorWithToolbar  } from './page/Editor/Workspace'
 
 export default function App() {
   return (
