@@ -4,11 +4,13 @@ import { EditorView, basicSetup } from "codemirror";
 import { markdown } from "@codemirror/lang-markdown";
 import { inlineMarkdownExtension } from "./MarkdownRenderer";
 import { NotesPanel } from "./NotesPanel";
+import { MarkdownFileUpload } from "./MarkdownFileUpload";
+import { Button } from "@/components/ui/button";
 
-
-export function EditorWithToolbar() {
+export function Workspace() {
   const [showNotes, setShowNotes] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
+  const [editorView, setEditorView] = useState<EditorView | null>(null);
 
   useEffect(() => {
     if (!editorRef.current) return;
@@ -32,6 +34,8 @@ This is **bold** text.
       parent: editorRef.current
     });
 
+    setEditorView(view);
+
     return () => {
       view.destroy();
     };
@@ -39,10 +43,14 @@ This is **bold** text.
 
   return (
     <div className="editor-container">
-      <div className="toolbar">
-        <button className="btn mr-2" onClick={() => setShowNotes(!showNotes)}>
-          {showNotes ? 'Hide Notes' : 'Show Notes'}
-        </button>
+      <div className="flex justify-end items-center gap-2 mb-2 mr-3">
+        <Button
+          variant="outline"
+          onClick={() => setShowNotes(!showNotes)}
+        >
+          Notes
+        </Button>
+        <MarkdownFileUpload editorView={editorView} />
       </div>
       <div className={`editor-content ${showNotes ? 'with-notes' : ''}`}>
         <div className="editor" ref={editorRef} />
