@@ -43,7 +43,7 @@ This is **bold** text.
 
   return (
     <div className="editor-container">
-      <div className="flex justify-end items-center gap-2 mb-2 mr-3">
+      <div className="flex justify-end items-center gap-2 mb-2 mr-4">
         <Button
           variant="outline"
           onClick={() => setShowNotes(!showNotes)}
