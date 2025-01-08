@@ -154,6 +154,24 @@ $blockquote-text-color: #555555;
       overflow-y: auto;
       flex: 1;
       padding-right: 0.5rem;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+  
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+      }
+  
+      &::-webkit-scrollbar-thumb {
+        background: #cccccc;
+        border-radius: 3px;
+  
+        &:hover {
+          background: #bbbbbb;
+        }
+      }
       
       .notes-column {
         flex: 1;
@@ -174,24 +192,6 @@ $blockquote-text-color: #555555;
     
     .note-item:hover {
       transform: translateY(-0.25rem);
-    }
-    
-    .notes-columns::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .notes-columns::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 3px;
-    }
-
-    .notes-columns::-webkit-scrollbar-thumb {
-      background: #cccccc;
-      border-radius: 3px;
-    }
-
-    .notes-columns::-webkit-scrollbar-thumb:hover {
-      background: #bbbbbb;
     }
   }
 }
