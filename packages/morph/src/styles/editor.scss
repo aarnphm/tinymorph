@@ -2,10 +2,24 @@ $line-height: 1.3;
 $gray-light: #e5e5e5;
 $gray-medium: #cccccc;
 
+$base-size: 1rem;
+$scale-ratio: 1.2;
+
+$h6-size: $base-size;
+$h5-size: $base-size * $scale-ratio;                   
+$h4-size: $base-size * $scale-ratio * $scale-ratio;
+$h3-size: $base-size * pow($scale-ratio, 3);
+$h2-size: $base-size * pow($scale-ratio, 4);
+$h1-size: $base-size * pow($scale-ratio, 5);
+
+html {
+  font-size: 14px;
+  line-height: $line-height;
+}
+
 @mixin reset-text {
   margin: 0;
   padding: 0;
-  line-height: $line-height;
 }
 
 .cm-editor {
@@ -29,13 +43,12 @@ $gray-medium: #cccccc;
     vertical-align: middle;
     font-weight: 600;
   }
-
-  h1 { font-size: 2.2rem; }
-  h2 { font-size: 1.8rem; }
-  h3 { font-size: 1.5rem; }
-  h4 { font-size: 1.2rem; }
-  h5 { font-size: 1rem;}
-  h6 { font-size: 0.9rem;}
+  h1 { font-size: $h1-size; }
+  h2 { font-size: $h2-size; }
+  h3 { font-size: $h3-size; }
+  h4 { font-size: $h4-size; }
+  h5 { font-size: $h5-size; }
+  h6 { font-size: $h6-size; }
 
   blockquote {
     @include reset-text;
