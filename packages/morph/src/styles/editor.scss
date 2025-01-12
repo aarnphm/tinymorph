@@ -6,7 +6,7 @@ $base-size: 1rem;
 $scale-ratio: 1.2;
 
 $h6-size: $base-size;
-$h5-size: $base-size * $scale-ratio;                   
+$h5-size: $base-size * $scale-ratio;
 $h4-size: $base-size * $scale-ratio * $scale-ratio;
 $h3-size: $base-size * pow($scale-ratio, 3);
 $h2-size: $base-size * pow($scale-ratio, 4);
@@ -17,32 +17,31 @@ html {
   line-height: $line-height;
 }
 
-@mixin reset-text {
-  margin: 0;
-  padding: 0;
-}
-
 .cm-editor {
-  .cm-scroller .cm-content .cm-line {
-      @include reset-text;
-      white-space: pre-wrap;
-      position: relative; 
+  & > .cm-scroller > .cm-content > .cm-line {
+    margin: 0;
+    padding: 0;
+    white-space: pre-wrap;
+    position: relative;
   }
 }
 
 .cm-markdown-inline {
-  @include reset-text; 
+  margin: 0;
+  padding: 0;
   display: inline-block;
   vertical-align: middle;
   width: 100%;
-  pointer-events: none; 
+  pointer-events: none;
 
   h1, h2, h3, h4, h5, h6 {
-    @include reset-text;
+    margin: 0;
+    padding: 0;
     display: inline-block;
     vertical-align: middle;
     font-weight: 600;
   }
+  
   h1 { font-size: $h1-size; }
   h2 { font-size: $h2-size; }
   h3 { font-size: $h3-size; }
@@ -51,7 +50,8 @@ html {
   h6 { font-size: $h6-size; }
 
   blockquote {
-    @include reset-text;
+    margin: 0;
+    padding: 0;
     display: inline-block;
     vertical-align: middle;
     padding-left: 1rem;
@@ -61,23 +61,29 @@ html {
     white-space: normal;
 
     p {
-      @include reset-text;
+      margin: 0;
+      padding: 0;
       display: inline;
     }
   }
 
-  ul {
-    @include reset-text;
+  ul, ol {
+    margin: 0;
+    padding: 0;
     display: block;
     padding-left: 2rem;
-    list-style-type: disc;
     list-style-position: outside;
     white-space: normal;
 
     li {
-      @include reset-text;
+      margin: 0;
+      padding: 0;
       display: list-item;
     }
+  }
+
+  ul {
+    list-style-type: disc;
 
     ul {
       list-style-type: circle;
@@ -85,17 +91,7 @@ html {
   }
 
   ol {
-    @include reset-text;
-    display: block;
-    padding-left: 2rem;
     list-style-type: decimal;
-    list-style-position: outside;
-    white-space: normal;
-
-    li {
-      @include reset-text;
-      display: list-item;
-    }
 
     ol {
       list-style-type: lower-alpha;
@@ -103,7 +99,8 @@ html {
   }
 
   p {
-    @include reset-text;
+    margin: 0;
+    padding: 0;
     display: inline;
   }
 
@@ -130,12 +127,11 @@ html {
     color: #374151;
   }
 
-  pre code {
+  pre > code {
     display: block;
     padding: 1em;
     overflow-x: auto;
   }
-
 }
 
 .editor-container {
@@ -173,12 +169,12 @@ html {
     min-height: 400px;
     position: sticky;
     top: 1rem;
-    
+
     h2 {
       margin-bottom: 1rem;
       flex-shrink: 0;
     }
-    
+
     .notes-columns {
       display: flex;
       gap: 1rem;
@@ -189,21 +185,21 @@ html {
       &::-webkit-scrollbar {
         width: 6px;
       }
-  
+
       &::-webkit-scrollbar-track {
         background: #f1f1f1;
         border-radius: 3px;
       }
-  
+
       &::-webkit-scrollbar-thumb {
         background: $gray-medium;
         border-radius: 3px;
-  
+
         &:hover {
           background: #bbbbbb;
         }
       }
-      
+
       .notes-column {
         flex: 1;
         display: flex;
@@ -211,7 +207,7 @@ html {
         gap: 1rem;
       }
     }
-    
+
     .note-item {
       background-color: white;
       border-radius: 0.5rem;
@@ -220,7 +216,7 @@ html {
       transform: translateZ(0);
       transition: transform 0.2s ease;
     }
-    
+
     .note-item:hover {
       transform: translateY(-0.25rem);
     }
