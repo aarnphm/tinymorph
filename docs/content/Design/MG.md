@@ -220,6 +220,8 @@ Figure 1: Use hierarchy among modules
 
 ## Design of Communication Protocols
 
+![alt text](../images/modules.drawio.png)
+
 \wss{If appropriate}
 
 ## Timeline
