@@ -9,10 +9,11 @@ title: Module Guide
 
 ## Revision History
 
-| **Date**      | **Version** | **Notes**          |
-| ------------- | ----------- | ------------------ |
-| Sept. 16 2024 | 0.0         | Initial skafolding |
-| Sept. 16 2024 | 0.1         | Initial setup      |
+| **Date**      | **Version** | **Notes**          | **Author** |
+| ------------- | ----------- | ------------------ | --------------- |
+| Jan. 05 2025 | 0.0         | Created rough sketches for architecture| All |
+| Jan. 10 2024 | 0.1         | Purpose | Waleed |
+| Jan. 12 2024 | 0.2         | Project Overview/Diagrams | Waleed |
 
 ## Reference Material
 
@@ -33,6 +34,22 @@ This section records information for easy reference.
 | \progname  | Explanation of program name         |
 | UC         | Unlikely Change                     |
 | etc.       | ...                                 |
+
+## Purpose
+
+### System Purpose
+
+The system is a web-based text editor designed to inspire creativity and make the writing process smoother and more enjoyable. It helps users explore their ideas in a non-linear way, offering interactive suggestions powered by advanced machine learning. 
+With features like text steering, feedback, and note-style suggestions, the system gives writers the flexibility to refine their tone and structure while keeping full control over their work. Everything is stored locally on the user's computer, so there's no need for logins or worrying about data privacy.
+Whether you are working on creative writing or structured documents, the system provides tools to plan, brainstorm, and fine-tune ideas. It's accessible through any modern web browser, ensuring a seamless experience without the hassle of installation or compatibility issues.
+
+### Document Purpose
+
+The purpose of this document is to illustrate and justify the decomposition of the tinymorph system into its core components and provide a Modular Guide for each module. 
+This document will serve as a guide for the implementation of the system, ensuring all components are designed to achieve the system's goals effectively and maintain scalability, modularity, and user-friendliness.
+This document will also serve as a basis for the implementation work scheduled to be completed in the coming months.
+
+
 
 ## Introduction
 
@@ -60,9 +77,8 @@ This section lists possible changes to the system. According to the likeliness o
 
 Anticipated changes are the source of the information that is to be hidden inside the modules. Ideally, changing one of the anticipated changes will only require changing the one module that hides the associated decision. The approach adapted here is called design for change.
 
-- **AC1:** The specific hardware on which the software is running.
-- **AC2:** The format of the initial input data.
-- ...
+- **AC1:** Integrating with newer language models, such as Llama 3.
+
 
 \wss{Anticipated changes relate to changes that would be made in requirements, design or implementation choices. They are not related to changes that are made at run-time, like the values of parameters.}
 
@@ -70,30 +86,43 @@ Anticipated changes are the source of the information that is to be hidden insid
 
 The module design should be as general as possible. However, a general system is more complex. Sometimes this complexity is not necessary. Fixing some design decisions at the system architecture stage can simplify the software design. If these decision should later need to be changed, then many parts of the design will potentially need to be modified. Hence, it is not intended that these decisions will be changed.
 
-- **UC1:** Input/Output devices (Input: File and/or Keyboard, Output: File, Memory, and/or Screen).
-- ...
+- **UC1:** May not support integration with tools like Notion, Obsidian, and text editors such as Neovim and VSCode.
 
 ## Module Hierarchy
 
 This section provides an overview of the module design. Modules are summarized in a hierarchy decomposed by secrets in Table 1. The modules listed below, which are leaves in the hierarchy tree, are the modules that will actually be implemented.
 
-- **M1:** Hardware-Hiding Module
-- ...
+- **M1**: Editor Module
+- **M2**: Inference Module
+- **M3**: User Configuration Module
+- **M4**: Analytics Module
+- **M5**: Export and Integration Module
+- **M6**: Rendering Module
+- **M7**: Data Fetching and State Management Module
+- **M8**: Settings Module
+- **M9**: Notes Module
+- **M10**: Graph View Module
 
-| **Level 1**              | **Level 2** |
-| ------------------------ | ----------- |
-| Hardware-Hiding Module   | ~           |
-| Behaviour-Hiding Module  | ?           |
-|                          | ?           |
-|                          | ?           |
-|                          | ?           |
-|                          | ?           |
-|                          | ?           |
-|                          | ?           |
-|                          | ?           |
-| Software Decision Module | ?           |
-|                          | ?           |
-|                          | ?           |
+| **Level 1**                  | **Level 2**                   | **Level 3**                   |
+|-------------------------------|-------------------------------|--------------------------------|
+| **Behaviour-Hiding Module**   | Editor Module                | File Upload and Parsing       |
+|                               |                               | Sticky Notes                  |
+|                               | Notes Module                 | Note Creation and Deletion    |
+|                               |                               | Context-Aware Suggestions     |
+|                               | Graph View Module            | Visual Document Structure     |
+|                               |                               | Graph Updates                 |
+|                               | Settings Module              | Theme and Preferences         |
+|                               | Rendering Module             | Markdown Rendering            |
+|                               |                               | Text Visualization            |
+|                               | Data Fetching and State Management Module | Local Storage Sync          |
+| **Software Decision Module**  | Inference Module             | Text Generation               |
+|                               |                               | Feature Steering              |
+|                               | User Configuration Module    | User Preference Management    |
+|                               |                               | Persistence                   |
+|                               | Analytics Module             | Progress Tracking             |
+|                               |                               | Writing Goal Analysis         |
+|                               | Export and Integration Module | File Export (Markdown, PDF)   |
+|                               |                               | Third-Party Integrations      |
 
 Table 1: Module Hierarchy
 
