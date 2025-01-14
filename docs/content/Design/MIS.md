@@ -12,7 +12,7 @@ title: Module Interface Specification
 | **Date**      | **Version** | **Notes**          |
 | ------------- | ----------- | ------------------ |
 | Sept. 16 2024 | 0.0         | Initial skafolding |
-| Jan. 12 2025  | 0.1         | Initial skafolding |
+| Jan. 12 2025  | 0.1         | Initial Rev |
 ## Symbols, Abbreviations and Acronyms
 
 The following data dictionary from [[SRS/SRS]] will be used for the symbols:
