@@ -5,8 +5,8 @@ module.exports = {
   theme: {
   	extend: {
 		fontFamily: {
-        sans: ["Raleway", "sans-serif"],
-        heading: ["Playfair Display", "serif"],
+        sans: ["Cardo", "sans-serif"],
+        heading: ["Bricolage Grotesque", "serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
   		borderRadius: {
