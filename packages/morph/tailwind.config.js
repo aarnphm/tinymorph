@@ -4,6 +4,11 @@ module.exports = {
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
   	extend: {
+		fontFamily: {
+        sans: ["Cardo", "sans-serif"],
+        heading: ["Bricolage Grotesque", "serif"],
+        mono: ["JetBrains Mono", "monospace"],
+      },
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
