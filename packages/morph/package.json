@@ -1,5 +1,5 @@
 {
-  "name": "morph",
+  "name": "@aarnphm/morph",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,6 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aarnphm/tinymorph.git"
   },
   "dependencies": {
     "@codemirror/lang-markdown": "^6.3.1",
@@ -26,6 +30,7 @@
     "remark": "^15.0.1",
     "remark-gfm": "^4.0.0",
     "remark-html": "^16.0.1",
+    "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.1",
     "sass": "^1.83.0",
     "tailwind-merge": "^2.6.0",

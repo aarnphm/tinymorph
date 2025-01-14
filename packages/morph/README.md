@@ -15,44 +15,12 @@ Ensure you have the following installed:
 
 ### Installation
 
-1. Clone the Repository
+```bash
+pnpm i
+pnpm run morph:dev
 
-   ```
-   git clone https://github.com/your-username/tinymorph.git
-2. Open the folder where the repository was cloned, then navigate to the `morph` Package:
-
-   ```
-   cd packages/morph
-   ```
-
-3. Install Dependencies
-   ```
-   npm install
-   ```
-
-### Running the Project
-
-1. Start the Development Server
-
-   ```
-   npm run dev
-   ``` 
-
-2. Open in Browser by visiting the application at [http://localhost:5173](http://localhost:5173)
-
-### Building for Production
-
-To create an optimized production build, run the following command:
-```
-npm run build
+# to run build
+pnpm run morph:build
 ```
 
-<br>
-
-This guide provides the steps necessary to set up, run, and build the `tinymorph` web interface locally for development or deployment.
-
-
-
-
-
-
+Open in Browser by visiting the application at [http://localhost:5173](http://localhost:5173)
