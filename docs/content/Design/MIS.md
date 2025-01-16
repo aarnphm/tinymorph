@@ -12,7 +12,7 @@ title: Module Interface Specification
 | **Date**      | **Version** | **Notes**          |
 | ------------- | ----------- | ------------------ |
 | Sept. 16 2024 | 0.0         | Initial skafolding |
-| Jan. 12 2025  | 0.1         | Initial Rev |
+| Jan. 12 2025  | 0.1         | Initial Rev        |
 ## Symbols, Abbreviations and Acronyms
 
 The following data dictionary from [[SRS/SRS]] will be used for the symbols:
@@ -44,6 +44,7 @@ The following table summarizes the primitive data types used by tinymorph.
 | integer        | $\mathbb{Z}$ | a number without a fractional component in (-$\infty$, $\infty$) |
 | natural number | $\mathbb{N}$ | a number without a fractional component in [1, $\infty$)         |
 | real           | $\mathbb{R}$ | any number in (-$\infty$, $\infty$)                              |
+| string         | String       | a sequence of characters representing textual data               |
 
 The specification of tinymorph uses some derived data types: sequences, strings, and
 tuples. Sequences are lists filled with elements of the same data type. Strings
@@ -58,19 +59,17 @@ The following table is taken directly from the Module Guide document for this pr
 
 | **Level 1**       | **Level 2**                     |
 | ----------------- | ------------------------------- |
-| Hardware-Hiding   | Rendering module                           |
-|                   | Storage Management                         |
-|                   | Input Device Handling                      |
-|                   | Display Management                         |
-|                   | Hardware Resource Optimization             |
-| Behaviour-Hiding  | Editor module                   |
-|                   | note module                     |
-|                   | setting module                  |
-|                   | Graph module                    |
-| Software Decision | Sparse Autoencoder (SAE) Integration         |
-|                   | Inference Server Communication               |
-|                   | Data Export and Import                       |
-|                   | UI Rendering Logic                           |
+| Hardware-Hiding   | -                                          |
+| Behaviour-Hiding  | Editor Module                              |
+|                   | Notes Module                               |
+|                   | Graph View Module                          |
+|                   | Settings Module                            |
+|                   | Rendering Module                           |
+|                   | Data Fetching and State Management Module  |
+| Software Decision | Inference Module                           |
+|                   | User Configuration Module                  |
+|                   | Analytics Module                           |
+|                   | Export and Intergration Module             |
 
 Table: Module Hierarchy
 
@@ -81,20 +80,23 @@ Editor module
 ### Uses
 - Rendering Module
 - Markdown Parsing Library
+- Data Fetching and State Management Module
 ### Syntax
 
 #### Exported Constants
 - defaultEditorConfig: Object
+Default configuration for the editor module
 #### Exported Access Programs
 
-| **Name**         | **In** | **Out** | **Exceptions** |
-| ---------------- | ------ | ------- | -------------- |
-| renderMarkdown   | string content      | HTML       | InvalidInput              |
+| **Name**         | **In**          | **Out**    | **Exceptions**            |
+| ---------------- | --------------- | ---------- | ------------------------- |
+| renderMarkdown   | string content  | HTML       | InvalidInput              |
+| applyVimBindings | -               |boolean     | BindingError              |
 
 ### Semantics
 
 #### State Variables
-- editorContent: string — Tracks the current content of the editor.
+- editorContent: String — Tracks the current content of the editor.
 - cursorPosition: Object — Tracks the current position of the cursor.
 
 #### Environment Variables
@@ -113,7 +115,13 @@ renderMarkdown(content: string): HTML
 
 - Transition: Converts Markdown content to HTML for rendering in the editor.
 - Output: Returns a string of valid HTML.
-- Exception: Throws \wss{InvalidInput} if the input string is null or empty.
+- Exception: Throws `InvalidInput` if the input string is null or empty.
+
+renderMarkdown(content: string): HTML
+
+- Transition: Activates Vim-style keyboard bindings for advanced text navigation and editing.
+- Output: Returns `true` if bindings are successfully applied, otherwise `false`.
+- Exception: Throws `BindingError` if the bindings cannot be applied.
 
 #### Local Functions
 
@@ -140,9 +148,9 @@ Default styles for rendering notes
 
 | **Name**         | **In** | **Out** | **Exceptions** |
 | ---------------- | ------ | ------- | -------------- |
-| createNote   | string content      | NoteObject       | InvalidContent              |
-| deleteNote   | int noteId      | boolean       | NoteNotFound              |
-| fetchNotes   | -      | NoteArray       | APICallFailed              |
+| createNote   | string content  | NoteObject       | InvalidContent              |
+| deleteNote   | int noteId      | boolean          | NoteNotFound                |
+| fetchNotes   | -               | NoteArray        | APICallFailed               |
 
 ### Semantics
 
@@ -152,7 +160,7 @@ Default styles for rendering notes
 
 #### Environment Variables
 
-localStorage — Used to cache notes for offline access.
+- localStorage: Used to cache notes for offline access.
 
 #### Assumptions
 
@@ -166,84 +174,19 @@ createNote(content: string): NoteObject
 
 - Transition: Creates a new note with the provided content and adds it to the notes list.
 - Output: Returns the newly created note object.
-- Exception: Throws \wss{InvalidContent} if the input is invalid or null.
+- Exception: Throws `InvalidContent` if the input is invalid or null.
 
 deleteNote(noteId: int): boolean
 
 - Transition: Removes the note with the specified ID from the notes list.
-- Output: Returns true if the note is successfully deleted.
-- Exception: Throws NoteNotFound if the note ID does not exist.
+- Output: Returns `true` if the note is successfully deleted.
+- Exception: Throws `NoteNotFound` if the note ID does not exist.
 
 fetchNotes(): NoteArray
 
 - Transition: Retrieves all stored notes, either from local storage or an API.
 - Output: Returns an array of note objects.
-- Exception: Throws APICallFailed if the external API cannot be reached.
-
-#### Local Functions
-
-1. validateNoteContent(content: string): boolean
-Checks whether the content meets length and format requirements.
-2. syncWithServer(): void
-Synchronizes local notes with the remote server.
-3. cacheNotesLocally(notes: NoteArray): void
-Stores the note array in local storage for offline use.
-
-## MIS of Notes Module
-
-### Module
-Notes Module
-### Uses
-- Data Fetching and State Management Module
-- Rendering Module
-### Syntax
-
-#### Exported Constants
-- defaultEditorConfig: Object
-Default styles for rendering notes
-#### Exported Access Programs
-
-| **Name**         | **In** | **Out** | **Exceptions** |
-| ---------------- | ------ | ------- | -------------- |
-| createNote   | string content      | NoteObject       | InvalidContent              |
-| deleteNote   | int noteId      | boolean       | NoteNotFound              |
-| fetchNotes   | -      | NoteArray       | APICallFailed              |
-
-### Semantics
-
-#### State Variables
-- NoteArray — Tracks the current list of notes.
-- selectedNote: NoteObject — Tracks the currently selected note.
-
-#### Environment Variables
-
-localStorage — Used to cache notes for offline access.
-
-#### Assumptions
-
-- Note objects are properly structured and contain unique identifiers.
-- The local storage system is operational for offline caching.
-- External API endpoints for note synchronization are accessible.
-
-#### Access Routine Semantics
-
-createNote(content: string): NoteObject
-
-- Transition: Creates a new note with the provided content and adds it to the notes list.
-- Output: Returns the newly created note object.
-- Exception: Throws \wss{InvalidContent} if the input is invalid or null.
-
-deleteNote(noteId: int): boolean
-
-- Transition: Removes the note with the specified ID from the notes list.
-- Output: Returns true if the note is successfully deleted.
-- Exception: Throws NoteNotFound if the note ID does not exist.
-
-fetchNotes(): NoteArray
-
-- Transition: Retrieves all stored notes, either from local storage or an API.
-- Output: Returns an array of note objects.
-- Exception: Throws APICallFailed if the external API cannot be reached.
+- Exception: Throws `APICallFailed` if the external API cannot be reached.
 
 #### Local Functions
 
@@ -271,7 +214,7 @@ Default settings for graph rendering
 
 | **Name**         | **In** | **Out** | **Exceptions** |
 | ---------------- | ------ | ------- | -------------- |
-| renderGraph   | GraphDataObject      | HTML       | InvalidGraph              |
+| renderGraph   | GraphDataObject    | HTML          | InvalidGraph               |
 | updateGraph   | GraphUpdateData    | boolean       | GraphNotFound              |
 
 ### Semantics
@@ -282,7 +225,7 @@ Default settings for graph rendering
 
 #### Environment Variables
 
-canvas: DOMObject — Renders the graph visualization.
+- canvas: DOMObject — Renders the graph visualization.
 
 #### Assumptions
 
@@ -296,13 +239,13 @@ renderGraph(data: GraphDataObject): HTML
 
 - Transition: Renders the graph using the given data.
 - Output: Returns HTML for displaying the graph.
-- Exception: Throws \wss{InvalidGraph} if the input data is malformed.
+- Exception: Throws `InvalidGraph` if the input data is malformed.
 
 updateGraph(updateData: GraphUpdateData): boolean
 
 - Transition: Updates the graph with the provided data.
-- Output: Returns true if the update is successful.
-- Exception: Throws \wss{GraphNotFound} if the graph does not exist.
+- Output: Returns `true` if the update is successful.
+- Exception: Throws `GraphNotFound` if the graph does not exist.
 
 #### Local Functions
 
@@ -329,8 +272,8 @@ Default settings for the application
 
 | **Name**         | **In** | **Out** | **Exceptions** |
 | ---------------- | ------ | ------- | -------------- |
-| updateTheme   | string theme      | boolean       | InvalidTheme              |
-| savePreference   | Object prefs    | boolean       | SaveFailed              |
+| updateTheme      | string theme     | boolean       | InvalidTheme            |
+| savePreference   | Object prefs     | boolean       | SaveFailed              |
 
 ### Semantics
 
@@ -371,6 +314,355 @@ Loads default settings into the editor.
 Records changes made to user settings for debugging purposes.
 
 
+## MIS of Rendering Module
+
+### Module
+Rendering Module
+### Uses
+- Editor Module
+- Notes Module
+- Data Fetching and State Management Module
+### Syntax
+
+#### Exported Constants
+- defaultRenderingSettings: Object
+Default settings for rendering views
+#### Exported Access Programs
+
+| **Name**         | **In**            | **Out**       | **Exceptions**         |
+|------------------|-------------------|---------------|------------------------|
+| renderView       | Object viewData   | HTML          | RenderError            |
+| updateRendering  | Object renderData | boolean       | UpdateFailed           |
+
+### Semantics
+
+#### State Variables
+- currentView: Object — Stores the currently rendered view.
+
+#### Environment Variables
+
+- display: DOMObject — Represents the rendering canvas or area.
+
+#### Assumptions
+
+Input data for rendering is always valid.
+The rendering environment (e.g., browser or display) is functional.
+
+#### Access Routine Semantics
+
+renderView(viewData: Object): HTML
+- Transition: Renders the provided view data into HTML format.
+- Output: Returns HTML content for display.
+- Exception: Throws `RenderError` if rendering fails.
+
+updateRendering(renderData: Object): boolean
+- Transition: Updates the rendering based on the new data provided.
+- Output: Returns `true` if the update is successful.
+- Exception: Throws `UpdateFailed` if the update process fails.
+
+#### Local Functions
+
+1. validateViewData(viewData: Object): boolean 
+   Ensures the view data is properly structured.
+
+2. clearRenderArea(): void
+   Clears the rendering canvas or display area.
+
+3. logRenderingErrors(error: string): void
+   Logs errors that occur during the rendering process.
+
+
+
+## MIS of Data Fetching and State Management Module
+
+### Module
+Data Fetching and State Management Module
+### Uses
+- Notes Module
+- Graph View Module
+- Rendering Module
+### Syntax
+
+#### Exported Constants
+- defaultFetchConfig: Object
+Default configuration for data fetching
+#### Exported Access Programs
+
+| **Name**             | **In**          | **Out**           | **Exceptions**      |
+|----------------------|-----------------|-------------------|---------------------|
+| fetchData            | string endpoint | Object fetchedData| FetchError          |
+| updateState          | Object newState | boolean           | StateUpdateFailed   |
+
+### Semantics
+
+#### State Variables
+- currentState: Object — Tracks the current application state.
+
+#### Environment Variables
+
+- networkInterface: Object — Represents the system's network connection.
+
+#### Assumptions
+
+Network connectivity is available for fetching data.
+State updates do not conflict with ongoing processes.
+
+#### Access Routine Semantics
+fetchData(endpoint: string): Object
+- Transition: Retrieves data from the specified endpoint.
+- Output: Returns the fetched data as an object.
+- Exception: Throws `FetchError` if the network request fails.
+
+updateState(newState: Object): boolean
+- Transition: Updates the application state with the provided data.
+- Output: Returns `true` if the update is successful.
+- Exception: Throws `StateUpdateFailed` if the state update process fails.
+
+#### Local Functions
+
+1. validateEndpoint(endpoint: string): boolean
+   Checks whether the given endpoint is valid and reachable.
+
+2. mergeStates(oldState: Object, newState: Object): Object
+   Combines the old state with the new state data.
+
+3. logFetchErrors(error: string): void
+   Logs errors that occur during the data fetching process.
+
+
+## MIS of Inference Module
+
+### Module
+Inference Module
+### Uses
+- Data Fetching and State Management Module
+- Rendering Module
+### Syntax
+
+#### Exported Constants
+- defaultInferenceConfig: Object
+Default configuration for inference tasks
+#### Exported Access Programs
+
+| **Name**         | **In**              | **Out**           | **Exceptions**      |
+|------------------|---------------------|-------------------|---------------------|
+| runInference     | Object inputData    | Object result     | InferenceError      |
+| cancelInference  | string taskId       | boolean           | TaskNotFound        |
+
+### Semantics
+
+#### State Variables
+- currentInferenceTasks: Array — Tracks active inference tasks.
+
+#### Environment Variables
+
+- gpuResources — Tracks GPU usage for inference tasks.
+
+#### Assumptions
+
+Input data is preprocessed and ready for inference.
+Sufficient GPU resources are available for task execution.
+
+#### Access Routine Semantics
+
+runInference(inputData: Object): Object
+- Transition: Runs an inference task using the input data.
+- Output: Returns the processed results.
+- Exception: Throws `InferenceError` if the task fails.
+
+cancelInference(taskId: string): boolean
+- Transition: Cancels the specified inference task.
+- Output: Returns `true` if the task is successfully canceled.
+- Exception: Throws `TaskNotFound` if the task ID does not exist.
+
+#### Local Functions
+
+1. allocateGPU(taskId: string): boolean
+   Allocates GPU resources for a specific task.
+
+2. logInferenceErrors(error: string): void
+   Logs errors that occur during inference.
+
+3. freeResources(taskId: string): void
+   Frees up resources after a task is completed or canceled.
+
+
+## MIS of User Configuration Module
+
+### Module
+User Configuration Module
+### Uses
+- Rendering Module
+- Data Fetching and State Management Module
+### Syntax
+
+#### Exported Constants
+- defaultUserConfig: Object
+Default settings for user configurations
+#### Exported Access Programs
+
+| **Name**            | **In**                | **Out**       | **Exceptions**        |
+|---------------------|-----------------------|---------------|-----------------------|
+| saveUserConfig      | Object userSettings   | boolean       | SaveFailed            |
+| getUserConfig       | -                     | Object         | ConfigNotFound        |
+
+### Semantics
+
+#### State Variables
+- userConfigurations: Object — Tracks current user configurations.
+
+#### Environment Variables
+
+- localStorage — Stores user preferences.
+
+#### Assumptions
+
+User-provided configurations are valid and compatible with the system.
+The local storage system is accessible.
+
+#### Access Routine Semantics
+
+saveUserConfig(userSettings: Object): boolean
+- Transition: Saves user-provided configurations to local storage.
+- Output: Returns `true` if the settings are saved successfully.
+- Exception: Throws `SaveFailed` if the saving process fails.
+
+getUserConfig(): Object
+- Transition: Retrieves the stored user configurations.
+- Output: Returns the user settings as an object.
+- Exception: Throws `ConfigNotFound` if no settings are found.
+
+#### Local Functions
+
+1. validateUserConfig(config: Object): boolean
+   Validates the structure and content of the user-provided configurations.
+
+2. loadDefaultConfig(): Object  
+   Loads the default user settings.
+
+3. logConfigChanges(change: Object): void  
+   Records changes made to the user configurations.
+
+
+## MIS of Analytics Module
+
+### Module
+Analytics Module
+### Uses
+- Data Fetching and State Management Module
+- Rendering Module
+### Syntax
+
+#### Exported Constants
+- defaultAnalyticsConfig: Object
+Default configuration for analytics tasks
+#### Exported Access Programs
+
+| **Name**              | **In**               | **Out**       | **Exceptions**        |
+|-----------------------|----------------------|---------------|-----------------------|
+| logEvent              | Object eventData     | boolean       | LogError              |
+| generateReport        | string reportType    | Object report | ReportGenerationError |
+
+
+### Semantics
+
+#### State Variables
+- eventLogs: Array — Stores all logged events.
+
+#### Environment Variables
+
+- analyticsServer — Tracks the remote server for analytics processing.
+
+#### Assumptions
+
+Event data is valid and formatted correctly.
+The analytics server is accessible for report generation.
+
+#### Access Routine Semantics
+
+logEvent(eventData: Object): boolean
+- Transition: Logs the provided event data for analytics.
+- Output: Returns `true` if the event is successfully logged.
+- Exception: Throws `LogError` if logging fails.
+
+generateReport(reportType: string): Object
+- Transition: Generates a report based on the specified type.
+- Output: Returns the generated report as an object.
+- Exception: Throws `ReportGenerationError` if report creation fails.
+
+#### Local Functions
+
+1. validateEvent(eventData: Object): boolean  
+   Validates the structure and data of the event before logging.
+
+2. sendEventToServer(eventData: Object): boolean 
+   Sends the event data to a remote analytics server.
+
+3. aggregateEventData(): Object  
+   Combines event logs into a structured format for reporting.
+
+
+## MIS of Export and Intergration Module
+
+### Module
+Export and Intergration Module
+### Uses
+- Rendering Module
+- Data Fetching and State Management Module
+### Syntax
+
+#### Exported Constants
+- defaultExportConfig: Object
+Default configuration for exporting tasks
+#### Exported Access Programs
+
+| **Name**               | **In**                | **Out**       | **Exceptions**        |
+|------------------------|-----------------------|---------------|-----------------------|
+| exportData             | Object exportConfig   | boolean       | ExportError           |
+| integrateWithPlatform  | string platform       | boolean       | IntegrationFailed     |
+
+
+### Semantics
+
+#### State Variables
+- exportHistory: Array — Tracks all data export logs.
+
+#### Environment Variables
+
+- externalPlatforms: Tracks available platforms for integration.
+
+#### Assumptions
+
+Export configurations are valid and compatible with the target format.
+External platforms are accessible for integration.
+
+#### Access Routine Semantics
+
+
+exportData(exportConfig: Object): boolean
+- Transition: Exports data based on the provided configurations.
+- Output: Returns `true` if the export is successful.
+- Exception: Throws `ExportError` if the export process fails.
+
+integrateWithPlatform(platform: string): boolean
+- Transition: Integrates the system with the specified external platform.
+- Output: Returns `true` if integration is successful.
+- Exception: Throws `IntegrationFailed` if the process fails.
+
+
+#### Local Functions
+
+1. validateExportConfig(config: Object): boolean 
+   Ensures the export configurations are valid and complete.
+
+2. logExportHistory(config: Object): void  
+   Records export activities for debugging or auditing purposes.
+
+3. checkPlatformAvailability(platform: string): boolean 
+   Verifies if the specified platform is accessible for integration.
+
+
+
 ## References
 - Hoffman and Strooper (1995)
 - Ghezzi et al. (2003)
@@ -387,3 +679,14 @@ graduate attribute of Problem Analysis and Design.
 4. While creating the design doc, what parts of your other documents (e.g. requirements, hazard analysis, etc), it any, needed to be changed, and why?
 5. What are the limitations of your solution? Put another way, given unlimited resources, what could you do to make the project better? (LO_ProbSolutions)
 6. Give a brief overview of other design solutions you considered. What are the benefits and tradeoffs of those other designs compared with the chosen design? From all the potential options, why did you select the documented design? (LO_Explores)
+
+
+<p>
+  Lucas:
+  1. The collaboration on documentation development is getting better, with the past experiences<br>
+  2. The alignment with the other documents(e.g.SRS) need to be reviewed and corrected. This should be improved in coming up revisions.<br>
+  3. The decisions related to technical implementation is quick to decide by the team member, but the functional requirements lack clients to gather requests and feedback for this stage. <br>
+  4. Requirements are needed to be adjusted to be more detailed, together with the assumptions and constraints we observed during design doc development<br>
+  5. The user interface can be brought better fitting end user's experience if time permits, allowing beatifying and improvement<br>
+  6. One of the design solution in the early stage is to implement a cooperative database to support language model with better performance, but due to the demanding implementation effort, time limit and the language model we decided on, this option was dropped. Our current option can still compromise with satisfying results and much more feasible.
+</p>
