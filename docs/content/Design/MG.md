@@ -14,6 +14,8 @@ title: Module Guide
 | Jan. 05 2025 | 0.0         | Created rough sketches for architecture| All |
 | Jan. 10 2024 | 0.1         | Purpose | Waleed |
 | Jan. 12 2024 | 0.2         | Project Overview/Diagrams | Waleed |
+| Jan. 13 2024 | 0.3         | Updated Module Hierarchy and Table | Waleed |
+| Jan. 16 2024 | 0.4         | Finished Module Decomposition | Waleed |
 
 ## Reference Material
 
@@ -24,16 +26,16 @@ This section records information for easy reference.
 | **symbol** | **description**                     |
 | ---------- | ----------------------------------- |
 | AC         | Anticipated Change                  |
-| DAG        | Directed Acyclic Graph              |
+| DOM        | Document Object Model               |
+| GPU        | Graphics Processing Unit            |
 | M          | Module                              |
 | MG         | Module Guide                        |
 | OS         | Operating System                    |
+| PDF        | Portable Document Format            |
 | R          | Requirement                         |
-| SC         | Scientific Computing                |
 | SRS        | Software Requirements Specification |
 | \progname  | Explanation of program name         |
 | UC         | Unlikely Change                     |
-| etc.       | ...                                 |
 
 ## Purpose
 
@@ -92,37 +94,36 @@ The module design should be as general as possible. However, a general system is
 
 This section provides an overview of the module design. Modules are summarized in a hierarchy decomposed by secrets in Table 1. The modules listed below, which are leaves in the hierarchy tree, are the modules that will actually be implemented.
 
-- **M1**: Editor Module
-- **M2**: Inference Module
-- **M3**: User Configuration Module
-- **M4**: Analytics Module
-- **M5**: Export and Integration Module
+## Hardware-Hiding Module(s)
+- **M1**:GPU/Hardware Acceleration Module
+
+## Behaviour-Hiding Module(s)
+- **M2**: Editor Module
+- **M3**: Notes Module
+- **M4**: Graph View Module
+- **M5**: Settings Module
 - **M6**: Rendering Module
 - **M7**: Data Fetching and State Management Module
-- **M8**: Settings Module
-- **M9**: Notes Module
-- **M10**: Graph View Module
 
-| **Level 1**                  | **Level 2**                   | **Level 3**                   |
-|-------------------------------|-------------------------------|--------------------------------|
-| **Behaviour-Hiding Module**   | Editor Module                | File Upload and Parsing       |
-|                               |                               | Sticky Notes                  |
-|                               | Notes Module                 | Note Creation and Deletion    |
-|                               |                               | Context-Aware Suggestions     |
-|                               | Graph View Module            | Visual Document Structure     |
-|                               |                               | Graph Updates                 |
-|                               | Settings Module              | Theme and Preferences         |
-|                               | Rendering Module             | Markdown Rendering            |
-|                               |                               | Text Visualization            |
-|                               | Data Fetching and State Management Module | Local Storage Sync          |
-| **Software Decision Module**  | Inference Module             | Text Generation               |
-|                               |                               | Feature Steering              |
-|                               | User Configuration Module    | User Preference Management    |
-|                               |                               | Persistence                   |
-|                               | Analytics Module             | Progress Tracking             |
-|                               |                               | Writing Goal Analysis         |
-|                               | Export and Integration Module | File Export (Markdown, PDF)   |
-|                               |                               | Third-Party Integrations      |
+## Software Decision Module(s)
+- **M8**: Inference Module
+- **M9**: User Configuration Module
+- **M10**: Analytics Module
+- **M11**: Export and Integration Module
+
+| **Level 1**                   | **Level 2**                   |
+|-------------------------------|-------------------------------|
+| **Hardware Hiding**           | GPU/Hardware Acceleration Module    |
+| **Behaviour-Hiding**          | Editor Module                 |
+|                               | Notes Module                  |
+|                               | Graph View Module             |
+|                               | Settings Module               |
+|                               | Rendering Module              |
+|                               | Data Fetching and State Management Module |
+| **Software Decision**         | Inference Module              | 
+|                               | User Configuration Module     | 
+|                               | Analytics Module              | 
+|                               | Export and Integration Module |
 
 Table 1: Module Hierarchy
 
@@ -136,34 +137,77 @@ The design of the system is intended to satisfy the requirements developed in th
 
 Modules are decomposed according to the principle of "information hiding" proposed by Parnas et al.[1]. The _Secrets_ field in a module decomposition is a brief statement of the design decision hidden by the module. The _Services_ field specifies _what_ the module will do without documenting _how_ to do it. For each module, a suggestion for the implementing software is given under the _Implemented By_ title. If the entry is _OS_, this means that the module is provided by the operating system or by standard programming language libraries. _\progname{}_ means the module will be implemented by the \progname{} software. Only the leaf modules in the hierarchy have to be implemented. If a dash (_--_) is shown, this means that the module is not a leaf and will not have to be implemented.
 
-### Hardware Hiding Modules (M1)
+### Hardware-Hiding
 
-- **Secrets:** The data structure and algorithm used to implement the virtual hardware.
-- **Services:** Serves as a virtual hardware used by the rest of the system. This module provides the interface between the hardware and the software. So, the system can use it to display outputs or to accept inputs.
-- **Implemented By:** OS
+#### GPU/Hardware Acceleration Module (M1)
+- **Secrets:** Algorithms for utilizing GPU resources to enhance performance, such as optimizing parallel computations for feature steering.
+- **Services:** Accelerates computationally intensive tasks, such as generating text or rendering visualizations, by using GPU capabilities.
+- **Implemented By:** GPU drivers, WebGL (if applicable).
+- **Type of Module:** Abstract Object.
 
-### Behaviour-Hiding Module
+### Behaviour-Hiding
 
-- **Secrets:** The contents of the required behaviours.
-- **Services:** Includes programs that provide externally visible behaviour of the system as specified in the software requirements specification (SRS) documents. This module serves as a communication layer between the hardware-hiding module and the software decision module. The programs in this module will need to change if there are changes in the SRS.
-- **Implemented By:** --
+#### Editor Module (M2)
+- **Secrets:** State management of the editor, including virtual DOM updates, handling of formatting rules, and integration of context-sensitive suggestions.
+- **Services:** Serves as the maintain interface for text editing, providing features such as structured editing, real-time text previews, and contextual interactions. Supports seamless file parsing, note suggestions, and user-driven customizations.
+- **Implemented By:** Frontend libraries.
+- **Type of Module:** Abstract Data Type.
 
-#### Input Format Module (M2)
+#### Notes Module (M3)
+- **Secrets:** Storage mechanisms, data structures for dynamic note updates, and algorithms linking notes to specific contexts within the document.
+- **Services:** Enables users to create, edit, delete, and manage notes in real time. Dynamically generates suggestions based on the document's context, aiding the user's creative process.
+- **Implemented By:** Frontend libraries, Machine learning models.
+- **Type of Module:** Library.
 
-- **Secrets:** The format and structure of the input data.
-- **Services:** Converts the input data into the data structure used by the input parameters module.
-- **Implemented By:** [Your Program Name Here]
-- **Type of Module:** [Record, Library, Abstract Object, or Abstract Data Type] [Information to include for leaf modules in the decomposition by secrets tree.]
+#### Graph View Module (M4)
+- **Secrets:** Algorithms for translating document structures into graph visualizations and efficiently synchronizing the graph with real-time document edits.
+- **Services:** Provides users with a graphical overview of the document's structure to aid in navigation and organization. Updates dynamically to reflect changes made in the editor, ensuring consistency between the text and its visual representation.
+- **Implemented By:** Visualization libraries, State management.
+- **Type of Module:** Abstract Object.
 
-#### Etc.
+#### Settings Module (M5)
+- **Secrets:** Mechanism for storing, retrieving, and applying user-specific preferences such as themes, font styles, and interface customizations.
+- **Services:** Allows users to configure the application's appearance and behavior, maintaining these settings across sessions for a consistent experience. Adapts preferences dynamically based on user settings input.
+- **Implemented By:** LocalStorage APIs.
+- **Type of Module:** Abstract Data Type.
 
-### Software Decision Module
+#### Rendering Module (M6)
+- **Secrets:** Parsing and rendering algorithms for converting user input, such as Markdown, into formatted text. Techniques for applying visual enhancements like annotations and syntax highlighting.
+- **Services:** Provides real-time previews of user content, enabling better visualization of the writing process. Enhances readability and interactivity through features such as dynamic formatting and highlights.
+- **Implemented By:** Markdown libraries, Frontend rendering engines.
+- **Type of Module:** Library.
 
-- **Secrets:** The design decision based on mathematical theorems, physical facts, or programming considerations. The secrets of this module are _not_ described in the SRS.
-- **Services:** Includes data structure and algorithms used in the system that do not provide direct interaction with the user....
-- **Implemented By:** --
+#### Data Fetching and State Management Module (M7)
+- **Secrets:** Data synchronization logic for handling drafts, preferences, and metadata between the local storage and the application state.
+- **Services:** Ensures seamless data fetching, caching, and synchronization, preserving user progress and settings across sessions locally. Manages application state for a smooth, uninterrupted user experience.
+- **Implemented By:** LocalStorage.
+- **Type of Module:** Record.
 
-#### Etc.
+### Software Decision
+
+#### Inference Module (M8)
+- **Secrets:** Integration techniques for advanced machine learning models, including parameter tuning and managing interactions between model outputs and user preferences.
+- **Services:** Generates personalized text suggestions by analyzing user input and context. Adapts dynamically to user-defined parameters like tone, style, and creativity.
+- **Implemented By:** Llama 3.
+- **Type of Module:** Library.
+
+#### User Configuration Module (M9)
+- **Secrets:** Data structures and Algorithms for managing user-specific settings, including tone preferences, feature configurations, and real-time updates.
+- **Services:** Maintains user preferences and applies them consistently across all features of the application. Ensures personalized experiences by dynamically adapting configurations during sessions.
+- **Implemented By:** LocalStorage APIs.
+- **Type of Module:** Record.
+
+#### Analytics Module (M10)
+- **Secrets:** Algorithms for tracking user progress metrics such as word count, tone consistency, and goal completion rates. Methods for generating insights and visual feedback.
+- **Services:** Tracks real-time user progress and provides actionable insights to achieve writing goals. Offers intuitive feedback to guide users in improving their writing process.
+- **Implemented By:** Frontend analytics tools.
+- **Type of Module:** Library.
+
+#### Export and Integration Module (M11)
+- **Secrets:** Mechanism for formatting and exporting documents in multiple formats, such as Markdown and PDF, while preserving structure and integrity. Techniques for seamless integration with third-party tools.
+- **Services:** Converts user content into export-ready formats and integrates with platforms like Google Docs or Notion for enhanced workflow and collaboration.
+- **Implemented By:** REST APIs, Browser APIs.
+- **Type of Module:** Abstract Object.
 
 ## Traceability Matrix
 
