@@ -6,6 +6,7 @@ import { inlineMarkdownExtension } from "./MarkdownRenderer";
 import { NotesPanel } from "./NotesPanel";
 import { MarkdownFileUpload } from "./MarkdownFileUpload";
 import { Button } from "@/components/ui/button";
+import { vim } from "@replit/codemirror-vim";
 
 export function Workspace() {
   const [showNotes, setShowNotes] = useState(false);
@@ -20,12 +21,12 @@ export function Workspace() {
 
 This is **bold** text.
 
-[[Wikilink Test]]
-`,
+[[Wikilink Test]]`,
       extensions: [
         basicSetup,
         markdown(),
-        inlineMarkdownExtension
+        inlineMarkdownExtension,
+        vim()
       ]
     });
 
@@ -43,7 +44,7 @@ This is **bold** text.
 
   return (
     <div className="editor-container">
-      <div className="flex justify-end items-center gap-2 mb-2 mr-4">
+      <div className="flex justify-end items-center gap-2 mb-4 mt-2 mr-4">
         <Button
           variant="outline"
           onClick={() => setShowNotes(!showNotes)}

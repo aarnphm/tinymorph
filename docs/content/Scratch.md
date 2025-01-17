@@ -1,5 +1,5 @@
 ---
-id: scratch
+id: Scratch
 aliases:
   - dump
   - scratch
@@ -8,6 +8,7 @@ tags:
 author: aarnphm
 comments: false
 date: "2024-09-18"
+modified: 2024-12-23 16:09:16 GMT-05:00
 title: Scratchpad
 ---
 
@@ -236,3 +237,24 @@ _excerpt from [this transformers threads](https://transformer-circuits.pub/2021/
 ## automatic interpretability
 
 see also: [Transluce's Monitor](https://transluce.org/) [source](https://github.com/TransluceAI/observatory)
+
+## plan
+
+- update docs
+  - waleed & lucas
+- frontend
+  - nebras
+- server
+  - aarnphm
+
+---
+
+Prep for POC interview
+
+1. Lectures
+2. TA meetings
+3. Extras
+
+## Extras
+
+user manual and usability testing
