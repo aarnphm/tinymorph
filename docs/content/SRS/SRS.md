@@ -5,6 +5,7 @@ tags:
 author: aarnphm,waleedmalik7,nebrask,lucas-lizhiwei
 date: "2024-09-16"
 description: "Software Requirements Specification for tinymorph: LLM-steering text editor"
+modified: 2025-01-17 18:37:03 GMT-05:00
 title: Software Requirements Specification
 ---
 
