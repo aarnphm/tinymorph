@@ -1039,17 +1039,17 @@ Export and Intergration Module
 
 <div class="blob">
 
-1. The collaboration on documentation development is getting better, with the past experiences
+1. While writing the MIS, the modular structure of the system provided a clear roadmap for defining each component's responsibilities and interfaces. Breaking down complex functionalities into smaller, manageable modules helped simplify the process. Additionally, frequent team discussions ensured everyone was aligned on the deliverable's scope and avoided duplications or gaps in the document. Having a robust SRS as a foundation made it easier to map requirements to the corresponding modules and focus on addressing user needs effectively.
 
-2. The alignment with the other documents (e.g.SRS) need to be reviewed and corrected. This should be improved in coming up revisions.
+2. A significant challenge was ensuring consistency between the MIS and other documents like the Module Guide and SRS. Discrepancies in terminology and feature descriptions required constant cross-referencing, which was time-consuming. To address this, we introduced a shared glossary and templates for module descriptions to ensure consistency across the team. Another issue was balancing technical details with clarity for non-technical readers, which we resolved by iterating on the document with peer reviews and feedback.
 
-3. The decisions related to technical implementation is quick to decide by the team member, but the functional requirements lack clients to gather requests and feedback for this stage.
+3. Decisions like implementing markdown support and offering export options in various formats (PDF, Markdown, and plain text) were based on direct feedback from potential users who prioritized versatility and compatibility with existing workflows. On the other hand, technical decisions like leveraging sparse autoencoders for feature steering were internally driven. These decisions were informed by research into state-of-the-art AI techniques, balancing feasibility with innovative features that could set the project apart.
 
-4. Requirements are needed to be adjusted to be more detailed, together with the assumptions and constraints we observed during design doc development
+4. We updated the SRS to refine the scope of some features, such as defining limits for planning steps and excluding real-time collaboration for the initial release. The hazard analysis also required revisions to address new risks discovered during design, such as the potential for integration issues with external APIs or libraries. These updates ensured the design doc remained realistic and aligned with the project's technical and time constraints while mitigating overlooked risks.
 
-5. The user interface can be brought better fitting end user's experience if time permits, allowing beatifying and improvement
+5. The solution is limited by the decision to focus on local storage for user privacy, which sacrifices features like cloud backups or real-time collaboration. Additionally, the reliance on browser-based functionality limits performance compared to native desktop applications. With unlimited resources, we could implement a hybrid solution, combining local storage with optional cloud-based features for users who prioritize flexibility over privacy. We could also add advanced AI features like tone analysis and real-time grammar checks to improve the user experience.
 
-6. One of the design solution in the early stage is to implement a cooperative database to support language model with better performance, but due to the demanding implementation effort, time limit and the language model we decided on, this option was dropped. Our current option can still compromise with satisfying results and much more feasible.
+6. We considered using a third-party text editor framework, such as Quill or ProseMirror, to accelerate development. While these frameworks provided robust functionality out of the box, they lacked flexibility for features like graph-based visualizations and interactive notes, leading us to build a custom editor. We also evaluated using an OpenAI-compatible API for inference tasks but opted for locally trained sparse autoencoders to reduce dependency on external services. This choice ensured greater control over the system while maintaining privacy, albeit with slightly higher development complexity.
 
 </div>
 
