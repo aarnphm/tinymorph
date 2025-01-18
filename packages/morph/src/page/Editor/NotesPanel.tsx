@@ -1,11 +1,6 @@
-import React, { useRef, useState, useEffect, RefObject } from 'react';
+import { useRef, useState, useEffect, RefObject } from 'react';
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
-
-interface DataPoint {
-  x: string;
-  y: number;
-}
 
 export interface Note {
   id: number;
@@ -13,6 +8,22 @@ export interface Note {
   content: string;
   graph?: DataPoint[];
 }
+
+interface DataPoint {
+  x: string;
+  y: number;
+}
+
+interface DraggableNoteProps {
+  note: Note;
+  editorRef: RefObject<HTMLDivElement>;
+  onDrop: (note: Note, droppedOverEditor: boolean) => void;
+}
+
+interface NotesPanelProps {
+  editorRef: RefObject<HTMLDivElement>;
+}
+
 
 const sampleNotes: Note[] = [
   { 
@@ -72,12 +83,6 @@ const sampleNotes: Note[] = [
   }
 ];
 
-interface DraggableNoteProps {
-  note: Note;
-  editorRef: RefObject<HTMLDivElement>;
-  onDrop: (note: Note, droppedOverEditor: boolean) => void;
-}
-
 function DraggableNote({ note, editorRef, onDrop }: DraggableNoteProps) {
   const noteRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -89,7 +94,7 @@ function DraggableNote({ note, editorRef, onDrop }: DraggableNoteProps) {
     if (noteRef.current) {
       setFixedWidth(noteRef.current.offsetWidth);
 
-      const dragBehavior = drag<HTMLDivElement, any>()
+      const dragBehavior = drag<HTMLDivElement, unknown>()
         .on("start", (event) => {
           const rect = noteRef.current!.getBoundingClientRect();
           offsetRef.current = {
@@ -163,24 +168,21 @@ function DraggableNote({ note, editorRef, onDrop }: DraggableNoteProps) {
   );
 }
 
-interface NotesPanelProps {
-  editorRef: RefObject<HTMLDivElement>;
-}
-
 export function NotesPanel({ editorRef }: NotesPanelProps) {
   const [notes, setNotes] = useState<Note[]>(sampleNotes);
-  const [droppedNotes, setDroppedNotes] = useState<Note[][]>([]);
+  const [droppedNotes, setDroppedNotes] = useState<Note[]>([]);
 
   const handleDrop = (droppedNote: Note, droppedOverEditor: boolean) => {
     if (droppedOverEditor) {
       setNotes(prevNotes => prevNotes.filter(note => note.id !== droppedNote.id));
       
-      setDroppedNotes(prev => [...prev, [droppedNote]]);
-
-      console.log("Dropped Notes:", [...droppedNotes, [droppedNote]]);
+      const { graph, ...noteWithoutGraph } = droppedNote;
+      setDroppedNotes(prev => [...prev, noteWithoutGraph]);
+  
+      console.log("Dropped Notes:", [...droppedNotes, noteWithoutGraph]);
     }
   };
-
+  
   const leftColumnNotes = notes.filter((_, index) => index % 2 === 0);
   const rightColumnNotes = notes.filter((_, index) => index % 2 === 1);
 
