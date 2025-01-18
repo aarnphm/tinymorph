@@ -4,7 +4,7 @@ tags:
   - design
 author: aarnphm,waleedmalik7,nebrask,lucas-lizhiwei
 date: "2024-09-16"
-modified: 2025-01-17 19:05:14 GMT-05:00
+modified: 2025-01-17 22:28:59 GMT-05:00
 title: Module Interface Specification
 ---
 
@@ -31,20 +31,24 @@ multiple assignment statement and conditional rules follow the form $(c_1 \Right
 
 The following table summarizes the primitive data types used by `tinymorph`.
 
-| **Data Type**  | **Notation** | **Description**                                                  |
-| -------------- | ------------ | ---------------------------------------------------------------- |
-| character      | char         | a single symbol or digit                                         |
-| integer        | $\mathbb{Z}$ | a number without a fractional component in (-$\infty$, $\infty$) |
-| natural number | $\mathbb{N}$ | a number without a fractional component in [1, $\infty$)         |
-| real           | $\mathbb{R}$ | any number in (-$\infty$, $\infty$)                              |
-| string         | string       | a sequence of characters representing textual data               |
+| **Data Type**  | **Notation**              | **Description**                                                                               |
+| -------------- | ------------------------- | --------------------------------------------------------------------------------------------- |
+| character      | $\texttt{char[n]}$        | a single symbol or digit                                                                      |
+| integer        | $\mathbb{Z}$              | a number without a fractional component in (-$\infty$, $\infty$)                              |
+| natural number | $\mathbb{N}$              | a number without a fractional component in [1, $\infty$)                                      |
+| real           | $\mathbb{R}$              | any number in (-$\infty$, $\infty$)                                                           |
+| string         | $\textbf{string}$         | a sequence of characters representing textual data                                            |
+| Tensor         | $\mathbb{R}^{d \times l}$ | a real matrix with shape $d \times l$, with $d, l \in \mathbb{R}$                             |
+| JSON           | $\textbf{JSON}(a=1,b=2)$  | a structured data format consisting of key-value pairs and arrays (for example for $a=1,b=2$) |
+| Function       | $f: Q \to F$              | a structure-preserving maps between two category $Q$ and $F$                                  |
 
-The specification of tinymorph uses some derived data types: sequences, strings, and
-tuples. Sequences are lists filled with elements of the same data type. strings
-are sequences of characters. Tuples contain a list of values, potentially of
-different types. In addition, `tinymorph` uses functions, which
-are defined by the data types of their inputs and outputs. Local functions are
-described by giving their type signature followed by their specification.
+The specification of `tinymorph` uses some derived data types: sequences, strings, Tensor, JSON, and tuples.
+
+- Sequences are lists filled with elements of the same data type.
+- Strings are sequences of characters.
+- Tuples contain a list of values, potentially of different types.
+- In addition, `tinymorph` uses functions, which are defined by the data types of their inputs and outputs.
+- Local functions are described by giving their type signature followed by their specification.
 
 ## Module Decomposition
 
@@ -52,7 +56,9 @@ _excerpt from [[Design#MG|Module Guide]]_
 
 ![[Design/MG#Module Hierarchy]]
 
-## MIS of Editor
+## MIS of Editor Module
+
+The following encapsulate specification of `morph` (Editor Module)
 
 ### Module
 
@@ -507,68 +513,102 @@ Data Fetching and State Management Module
 
 ### Module
 
-Inference Module
+`inference`
 
 ### Uses
 
-- Data Fetching and State Management Module
-- Rendering Module
+- Data Fetching and State Management [[Design/MIS#MIS of Data Fetching and State Management Module|Module]]
+- Rendering [[Design/MIS#MIS of Rendering Module|Module]]
 
 ### Syntax
 
 #### Exported Constants
 
-- `defaultInferenceConfig: Object`
-   - Default configuration for inference tasks
+None
 
 #### Exported Access Programs
 
-| **Name**        | **In**           | **Out**       | **Exceptions** |
-| --------------- | ---------------- | ------------- | -------------- |
-| runInference    | Object inputData | Object result | InferenceError |
-| cancelInference | string taskId    | boolean       | TaskNotFound   |
+| **Name**      | **In**                                                                                           | **Out**                                                                                                                                   | **Exceptions**                |
+| ------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `interp`      | `markdownInput` ($\textbf{String}$)                                                              | $\textbf{JSON}(\text{notes}=[\text{note}_1,\dots,\text{note}_n], \text{suggestions}=[\text{idea}_1,\dots,\text{idea}_m], \text{graph}=G)$ | InferenceError                |
+| `infer_style` | $\textbf{JSON}(\text{text}=\text{String}, \text{style}=[\text{author}_1,\dots,\text{author}_n])$ | $\textbf{JSON}(\text{variations}=[\text{text}_1,\dots,\text{text}_n])$                                                                    | StyleNotFound, InferenceError |
 
 ### Semantics
 
 #### State Variables
 
-- `currentInferenceTasks: Array` 
-   - Tracks active inference tasks.
+- `currentInferenceTasks`: $\textbf{JSON}(\text{tasks}=[\text{task}_1,\dots,\text{task}_n])$ where $\text{task}_i = \{\text{id}, \text{model}, \text{status}, \text{progress}\}$ — Tracks active inference tasks
+- `modelStates`: $\textbf{JSON}(\text{models}=[\{\text{name}: \text{String}, \text{SAE}: \mathbb{R}\}])$ — Tracks loaded models and their Self-Attention Entropy scores
+- `generationStates`: $\textbf{JSON}(\text{intermediates}=[\text{gen}_1,\dots,\text{gen}_k])$ where $\text{gen}_i = \{\text{text}, \text{score}, \text{timestamp}\}$ — Stores intermediate generations for each task
 
 #### Environment Variables
 
-- `gpuResources` 
-   - Tracks GPU usage for inference tasks.
+- `CUDA_VISIBLE_DEVICES` — Tracks current available GPUs devices for inference
 
 #### Assumptions
 
-- Input data is preprocessed and ready for inference.
-- Sufficient GPU resources are available for task execution.
+- Input data is preprocessed and ready for inference
+- GPU resources meet minimum requirements:
+  - Available CUDA-capable GPUs with at least 16GB VRAM per device
+  - Support for concurrent batch processing of multiple inference tasks
+  - Hardware supports mixed-precision (FP16/BF16) inference
+- System can maintain continuous batching pipeline for efficient inference
+- Memory management system can handle dynamic allocation/deallocation during batch processing
+- Sufficient system memory for input/output tensor operations
 
 #### Access Routine Semantics
 
-`runInference(inputData: Object): Object`
+`interp(markdownInput: String): JSON`
 
-- Transition: Runs an inference task using the input data.
-- Output: Returns the processed results.
-- Exception: Throws `InferenceError` if the task fails.
+- Transition: Analyzes markdown input to extract key concepts, generate suggestions, and build relationship graphs
+- Output: Returns JSON containing:
+  - `notes`: Array of extracted note objects from the markdown
+  - `suggestions`: Array of generated writing suggestions and ideas
+  - `graph`: A graph structure representing connections between notes
+- Exception: Throws `InferenceError` if the analysis or generation fails
 
-`cancelInference(taskId: string): boolean`
+`infer_style(text: String, style: Array[String]): JSON`
 
-- Transition: Cancels the specified inference task.
-- Output: Returns `true` if the task is successfully canceled.
-- Exception: Throws `TaskNotFound` if the task ID does not exist.
+- Transition: Transforms input text into variations matching specified author styles
+- Output: Returns JSON containing:
+  - `variations`: Array of transformed text versions, one per requested style
+- Exception:
+  - Throws `StyleNotFound` if a requested author style is not available
+  - Throws `InferenceError` if the style transformation fails
 
 #### Local Functions
 
-1. `allocateGPU(taskId: string): boolean`
-   - Allocates GPU resources for a specific task.
+1. `moveToDevice(data: Tensor, device: string): Tensor`
+   Transfers input tensors from CPU to specified GPU device with proper memory pinning and CUDA streams
 
-2. `logInferenceErrors(error: string): void`
-   - Logs errors that occur during inference.
+2. `allocateResources(modelConfig: Object): Object`
 
-3. `freeResources(taskId: string): void`
-   - Frees up resources after a task is completed or canceled.
+   - Manages GPU memory allocation for model weights and compute buffers
+   - Returns allocation map with device IDs and memory segments
+   - Handles multi-GPU distribution if needed
+
+3. `loadModel(modelPath: string, device: string): Model`
+
+   - Loads model weights and configuration to specified GPU device
+   - Optimizes model for inference (FP16/BF16 quantization)
+   - Returns loaded model handle
+
+4. `traceGPUMetrics(taskId: string): Object`
+
+   - Monitors GPU utilization, memory usage, power draw
+   - Tracks CUDA events for kernel timing
+   - Returns performance metrics for the task
+
+5. `manageRequestQueue(requests: Array): void`
+
+   - Maintains priority queue of inference requests
+   - Handles batching and scheduling across available GPUs
+   - Implements backpressure when queue is full
+
+6. `cleanupResources(taskId: string): void`
+   - Releases GPU memory allocations
+   - Clears CUDA cache and synchronizes streams
+   - Updates resource availability tracking
 
 ## MIS of User Configuration Module
 
@@ -585,57 +625,120 @@ User Configuration Module
 
 #### Exported Constants
 
-- `defaultUserConfig: Object`
-   - Default settings for user configurations
-
-#### Exported Access Programs
-
-| **Name**       | **In**              | **Out** | **Exceptions** |
-| -------------- | ------------------- | ------- | -------------- |
-| saveUserConfig | Object userSettings | boolean | SaveFailed     |
-| getUserConfig  | -                   | Object  | ConfigNotFound |
+- `defaultUserConfig`: Object
+  ```json
+  {
+    "generation": {
+      "temperature": 0.7,
+      "top_p": 0.9,
+      "max_tokens": 1000
+    },
+    "style": {
+      "tonality": "neutral",
+      "formality": 0.5,
+      "creativity": 0.7
+    },
+    "sae": {
+      "auto_tune": true,
+      "min_threshold": 0.1,
+      "max_threshold": 0.9
+    }
+  }
+  ```
 
 ### Semantics
 
 #### State Variables
 
-- `userConfigurations: Object` 
-   - Tracks current user configurations.
+- userConfigurations: Object — Tracks current user configurations including:
+  - generationParams: Object — Temperature, top_p, and token settings
+  - styleConfig: Object — Tonality, formality, and creativity parameters
+  - saeSettings: Object — Self-Attention Entropy tuning configurations
+- configHistory: Array — Maintains history of configuration changes
+- stylePresets: Object — Predefined style combinations
 
 #### Environment Variables
 
-- `localStorage` 
-   - Stores user preferences.
+- localStorage — Stores user preferences
+- modelConfig — Current model configuration state
+- inferenceMetrics — Real-time inference performance metrics
 
 #### Assumptions
 
-- User-provided configurations are valid and compatible with the system.
-- The local storage system is accessible.
+- User-provided configurations are valid and within acceptable ranges
+- The local storage system is accessible
+- Model supports dynamic parameter adjustment during runtime
+- SAE measurements are available for auto-tuning
+- Style parameters can be effectively translated to model behavior
 
 #### Access Routine Semantics
 
 `saveUserConfig(userSettings: Object): boolean`
 
-- Transition: Saves user-provided configurations to local storage.
-- Output: Returns `true` if the settings are saved successfully.
-- Exception: Throws `SaveFailed` if the saving process fails.
+- Transition: Validates and saves comprehensive user configurations including generation, style, and SAE parameters
+- Output: Returns `true` if settings are saved successfully
+- Exception: Throws `SaveFailed` if validation or storage fails
 
 `getUserConfig(): Object`
 
-- Transition: Retrieves the stored user configurations.
-- Output: Returns the user settings as an object.
-- Exception: Throws `ConfigNotFound` if no settings are found.
+- Transition: Retrieves stored user configurations with default fallbacks
+- Output: Returns complete configuration object with all parameters
+- Exception: Throws `ConfigNotFound` if no valid settings exist
+
+updateStyleConfig(styleParams: Object): boolean
+
+- Transition: Updates style-specific parameters (tonality, formality, creativity)
+- Output: Returns `true` if style update is successful
+- Exception: Throws `InvalidStyleParams` if parameters are out of valid ranges
+
+tuneGeneration(generationParams: Object): Object
+
+- Transition: Adjusts generation parameters (temperature, top_p) with validation
+- Output: Returns updated generation configuration with applied constraints
+- Exception: Throws `InvalidGenerationParams` if parameters are invalid
+
+adjustSAE(saeParams: Object): Object
+
+- Transition: Configures Self-Attention Entropy parameters and auto-tuning
+- Output: Returns metrics showing SAE adjustment results
+- Exception: Throws `SAEAdjustmentFailed` if tuning cannot be applied
 
 #### Local Functions
 
-1. `validateUserConfig(config: Object): boolean`
-   - Validates the structure and content of the user-provided configurations.
+1. validateConfigRanges(config: Object): boolean
 
-2. `loadDefaultConfig(): Object`
-   - Loads the default user settings.
+   - Ensures all parameters are within valid ranges
+   - Checks compatibility between different configuration sections
+   - Returns validation status with detailed error messages
 
-3. `logConfigChanges(change: Object): void`
-   - Records changes made to the user configurations.
+2. calculateOptimalSAE(metrics: Object): Object
+
+   - Analyzes inference metrics to determine optimal SAE settings
+   - Adjusts thresholds based on model performance
+   - Returns recommended SAE parameters
+
+3. applyStylePreset(style: string): Object
+
+   - Loads predefined style configurations
+   - Combines with user customizations
+   - Returns merged style parameters
+
+4. validateTonality(params: Object): boolean
+
+   - Checks tonality parameters against defined scales
+   - Ensures consistency with model capabilities
+   - Returns validation status
+
+5. trackConfigPerformance(config: Object): void
+
+   - Monitors generation quality metrics
+   - Records configuration effectiveness
+   - Updates optimization suggestions
+
+6. synchronizeConfigs(): void
+   - Ensures consistency across different configuration aspects
+   - Resolves conflicts between parameters
+   - Updates dependent settings automatically
 
 ## MIS of Analytics Module
 
@@ -657,54 +760,109 @@ Analytics Module
 
 #### Exported Access Programs
 
-| **Name**       | **In**            | **Out**       | **Exceptions**        |
-| -------------- | ----------------- | ------------- | --------------------- |
-| logEvent       | Object eventData  | boolean       | LogError              |
-| generateReport | string reportType | Object report | ReportGenerationError |
+| **Name**            | **In**                    | **Out**        | **Exceptions**          |
+| ------------------- | ------------------------- | -------------- | ----------------------- |
+| `saveUserConfig`    | Object `userSettings`     | boolean        | SaveFailed              |
+| `getUserConfig`     | -                         | Object         | ConfigNotFound          |
+| `updateStyleConfig` | Object `styleParams`      | boolean        | InvalidStyleParams      |
+| `tuneGeneration`    | Object `generationParams` | Object         | InvalidGenerationParams |
+| `adjustSAE`         | Object `saeParams`        | Object metrics | SAEAdjustmentFailed     |
 
 ### Semantics
 
 #### State Variables
 
-- `eventLogs: Array` 
-   - Stores all logged events.
+- userConfigurations: Object — Tracks current user configurations including:
+  - generationParams: Object — Temperature, top_p, and token settings
+  - styleConfig: Object — Tonality, formality, and creativity parameters
+  - saeSettings: Object — Self-Attention Entropy tuning configurations
+- configHistory: Array — Maintains history of configuration changes
+- stylePresets: Object — Predefined style combinations
 
 #### Environment Variables
 
-- `analyticsServer`
-   - Tracks the remote server for analytics processing.
+- localStorage — Stores user preferences
+- modelConfig — Current model configuration state
+- inferenceMetrics — Real-time inference performance metrics
 
 #### Assumptions
 
-- Event data is valid and formatted correctly.
-- The analytics server is accessible for report generation.
+- User-provided configurations are valid and within acceptable ranges
+- The local storage system is accessible
+- Model supports dynamic parameter adjustment during runtime
+- SAE measurements are available for auto-tuning
+- Style parameters can be effectively translated to model behavior
 
 #### Access Routine Semantics
 
-`logEvent(eventData: Object): boolean`
+`saveUserConfig(userSettings: Object): boolean`
 
-- Transition: Logs the provided event data for analytics.
-- Output: Returns `true` if the event is successfully logged.
-- Exception: Throws `LogError` if logging fails.
+- Transition: Validates and saves comprehensive user configurations including generation, style, and SAE parameters
+- Output: Returns `true` if settings are saved successfully
+- Exception: Throws `SaveFailed` if validation or storage fails
 
-`generateReport(reportType: string): Object`
+`getUserConfig(): Object`
 
-- Transition: Generates a report based on the specified type.
-- Output: Returns the generated report as an object.
-- Exception: Throws `ReportGenerationError` if report creation fails.
+- Transition: Retrieves stored user configurations with default fallbacks
+- Output: Returns complete configuration object with all parameters
+- Exception: Throws `ConfigNotFound` if no valid settings exist
+
+`updateStyleConfig(styleParams: Object): boolean`
+
+- Transition: Updates style-specific parameters (tonality, formality, creativity)
+- Output: Returns `true` if style update is successful
+- Exception: Throws `InvalidStyleParams` if parameters are out of valid ranges
+
+`tuneGeneration(generationParams: Object): Object`
+
+- Transition: Adjusts generation parameters (temperature, top_p) with validation
+- Output: Returns updated generation configuration with applied constraints
+- Exception: Throws `InvalidGenerationParams` if parameters are invalid
+
+`adjustSAE(saeParams: Object): Object`
+
+- Transition: Configures Self-Attention Entropy parameters and auto-tuning
+- Output: Returns metrics showing SAE adjustment results
+- Exception: Throws `SAEAdjustmentFailed` if tuning cannot be applied
 
 #### Local Functions
 
-1. `validateEvent(eventData: Object): boolean`
-   - Validates the structure and data of the event before logging.
+1. `validateConfigRanges(config: Object): boolean`
 
-2. `sendEventToServer(eventData: Object): boolean`
-   - Sends the event data to a remote analytics server.
+   - Ensures all parameters are within valid ranges
+   - Checks compatibility between different configuration sections
+   - Returns validation status with detailed error messages
 
-3. `aggregateEventData(): Object`
-   - Combines event logs into a structured format for reporting.
+2. `calculateOptimalSAE(metrics: Object): Object`
 
-## MIS of Export and Intergration Module
+   - Analyzes inference metrics to determine optimal SAE settings
+   - Adjusts thresholds based on model performance
+   - Returns recommended SAE parameters
+
+3. `applyStylePreset(style: string): Object`
+
+   - Loads predefined style configurations
+   - Combines with user customizations
+   - Returns merged style parameters
+
+4. `validateTonality(params: Object): boolean`
+
+   - Checks tonality parameters against defined scales
+   - Ensures consistency with model capabilities
+   - Returns validation status
+
+5. `trackConfigPerformance(config: Object): void`
+
+   - Monitors generation quality metrics
+   - Records configuration effectiveness
+   - Updates optimization suggestions
+
+6. `synchronizeConfigs(): void`
+   - Ensures consistency across different configuration aspects
+   - Resolves conflicts between parameters
+   - Updates dependent settings automatically
+
+## MIS of Export Module
 
 ### Module
 
@@ -777,7 +935,7 @@ Export and Intergration Module
 
 [^ref]
 
-## Revision History
+### Revision
 
 | **Date**      | **Version** | **Notes**          |
 | ------------- | ----------- | ------------------ |

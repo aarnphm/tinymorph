@@ -133,11 +133,6 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
                       <span class="page-modification" title="source de la page">
                         <em>source</em>
                       </span>
-                      <div class="popover">
-                        <div class="popover-inner" data-content-type="text/html">
-                          <pre data-language="markdown">{fileData.markdown}</pre>
-                        </div>
-                      </div>
                     </a>
                   </li>
                   <li>
