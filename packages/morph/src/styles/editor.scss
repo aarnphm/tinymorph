@@ -211,6 +211,7 @@ html {
       overflow-y: auto;
       flex: 1;
       padding-right: 0.5rem;
+      
 
       &::-webkit-scrollbar {
         width: 6px;
@@ -249,8 +250,5 @@ html {
       font-weight: $normalWeight;
     }
 
-    .note-item:hover {
-      transform: translateY(-0.25rem);
-    }
   }
 }
