@@ -967,6 +967,8 @@ Export and Intergration Module
 <!-- 5. What are the limitations of your solution? Put another way, given unlimited resources, what could you do to make the project better? (LO_ProbSolutions) -->
 <!-- 6. Give a brief overview of other design solutions you considered. What are the benefits and tradeoffs of those other designs compared with the chosen design? From all the potential options, why did you select the documented design? (LO_Explores) -->
 
+<br />
+
 
 <div class="reflection-container">
 
@@ -1007,6 +1009,7 @@ Export and Intergration Module
 
 </div>
 
+<br/>
 
 <div class="reflection-container">
 
@@ -1032,6 +1035,7 @@ Export and Intergration Module
 
 </div>
 
+<br/>
 
 <div class="reflection-container">
 
@@ -1057,6 +1061,7 @@ Export and Intergration Module
 
 </div>
 
+<br/>
 
  <div class="reflection-container">
 
