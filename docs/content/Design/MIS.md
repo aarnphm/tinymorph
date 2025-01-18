@@ -4,7 +4,7 @@ tags:
   - design
 author: aarnphm,waleedmalik7,nebrask,lucas-lizhiwei
 date: "2024-09-16"
-modified: 2025-01-17 22:28:59 GMT-05:00
+modified: 2025-01-17 23:04:08 GMT-05:00
 title: Module Interface Specification
 ---
 
@@ -89,16 +89,16 @@ Editor module
 #### State Variables
 
 - `editorContent: string`
-   - Tracks the current content of the editor.
-- `cursorPosition: Object`  
+  - Tracks the current content of the editor.
+- `cursorPosition: Object`
   Tracks the current cursor position, including line and character offsets.
-- `editorView: Object`  
+- `editorView: Object`
   Maintains the reference to the editor's current view, enabling extensions and configurations.
 
 #### Environment Variables
 
 - `window: DOMObject`
-   - Captures user input, events, and resizing behavior for a responsive editing experience.
+  - Captures user input, events, and resizing behavior for a responsive editing experience.
 
 #### Assumptions
 
@@ -122,19 +122,24 @@ Editor module
 
 #### Local Functions
 
-1. `initializeEditor(state: EditorState): EditorView`  
+1. `initializeEditor(state: EditorState): EditorView`
+
    - Configures and initializes the editor view with a given state, including Markdown parsing and Vim extensions.
 
-2. `applyNoteSuggestion(noteContent: string): void`  
+2. `applyNoteSuggestion(noteContent: string): void`
+
    - Integrates content from a note into the editor, either appending it or replacing selected text. Ensures that changes are reflected immediately in the editor's state.
 
-3. `sanitizeInput(input: string): string`  
+3. `sanitizeInput(input: string): string`
+
    - Ensures that the provided input is free from invalid or harmful characters before being processed.
 
-4. `logEvent(event: string): void`  
+4. `logEvent(event: string): void`
+
    - Records interactions within the editor for debugging and analytics purposes.
 
-5. `resetEditor(): void`  
+5. `resetEditor(): void`
+
    - Clears the editor's content and resets its state to the default configuration.
 
 6. `destroyEditor(): void`
@@ -160,23 +165,23 @@ Notes Module
 
 #### Exported Access Programs
 
-| **Name**   | **In**         | **Out**    | **Exceptions** |
-| ---------- | -------------- | ---------- | -------------- |
-| createNote | string content | NoteObject | InvalidContent |
-| deleteNote | int noteId     | boolean    | NoteNotFound   |
-| fetchNotes | -              | NoteArray  | APICallFailed  |
-| onDrop          | NoteObject, boolean | boolean      | DropFailed      |
+| **Name**   | **In**              | **Out**    | **Exceptions** |
+| ---------- | ------------------- | ---------- | -------------- |
+| createNote | string content      | NoteObject | InvalidContent |
+| deleteNote | int noteId          | boolean    | NoteNotFound   |
+| fetchNotes | -                   | NoteArray  | APICallFailed  |
+| onDrop     | NoteObject, boolean | boolean    | DropFailed     |
 
 ### Semantics
 
 #### State Variables
 
 - `NoteArray: NoteObject[]`
-   - Tracks the current list of notes.
+  - Tracks the current list of notes.
 - `selectedNote: NoteObject`
-   - Tracks the currently selected note.
+  - Tracks the currently selected note.
 - `droppedNotes: Note[][]`
-   - Tracks notes that have been dropped into the editor.
+  - Tracks notes that have been dropped into the editor.
 
 #### Environment Variables
 
@@ -210,7 +215,7 @@ Notes Module
 - Output: Returns an array of note objects.
 - Exception: Throws `APICallFailed` if the external API cannot be reached.
 
-`onDrop(note: NoteObject, droppedOverEditor: boolean): boolean`   
+`onDrop(note: NoteObject, droppedOverEditor: boolean): boolean`
 
 - Transition: Removes a note from the list and adds it to the editor if `droppedOverEditor` is `true`.
 - Output: Returns `true` if the note is successfully dropped, otherwise `false`.
@@ -259,15 +264,15 @@ Graph View Module
 
 #### State Variables
 
-- `graphData: GraphDataObject` 
-   - Tracks the current graph structure.
-- `graphSettings: Object` 
-   - Tracks the configuration of the graph.
+- `graphData: GraphDataObject`
+  - Tracks the current graph structure.
+- `graphSettings: Object`
+  - Tracks the configuration of the graph.
 
 #### Environment Variables
 
-- `canvas: DOMObject` 
-   - Renders the graph visualization.
+- `canvas: DOMObject`
+  - Renders the graph visualization.
 
 #### Assumptions
 
@@ -314,7 +319,7 @@ Settings Module
 #### Exported Constants
 
 - `defaultSettings: Object`
-   - Default settings for the application
+  - Default settings for the application
 
 #### Exported Access Programs
 
@@ -328,12 +333,12 @@ Settings Module
 #### State Variables
 
 - `userSettings: Object`
-   - Tracks current user preferences.
+  - Tracks current user preferences.
 
 #### Environment Variables
 
-- `localStorage` 
-   - Persists user settings for future sessions.
+- `localStorage`
+  - Persists user settings for future sessions.
 
 #### Assumptions
 
@@ -381,7 +386,7 @@ Rendering Module
 #### Exported Constants
 
 - `defaultRenderingSettings: Object`
-   - Default settings for rendering views, including Markdown plugins and decoration configurations.
+  - Default settings for rendering views, including Markdown plugins and decoration configurations.
 
 #### Exported Access Programs
 
@@ -394,15 +399,15 @@ Rendering Module
 
 #### State Variables
 
-- `currentView: Object` 
-   - Stores the currently rendered view.
-- `decorations: DecorationSet`  
-   - Manages and applies visual decorations for the editor content.
+- `currentView: Object`
+  - Stores the currently rendered view.
+- `decorations: DecorationSet`
+  - Manages and applies visual decorations for the editor content.
 
 #### Environment Variables
 
-- `display: DOMObject` 
-   - Represents the rendering area provided by the `EditorView` DOM container.  
+- `display: DOMObject`
+  - Represents the rendering area provided by the `EditorView` DOM container.
 
 #### Assumptions
 
@@ -414,28 +419,32 @@ Rendering Module
 
 `renderView(viewData: Object): HTML`
 
-- Transition: Converts Markdown input into HTML using the `unified` processor and plugins.  
+- Transition: Converts Markdown input into HTML using the `unified` processor and plugins.
 - Output: Returns HTML content for display.
-- Exception: Throws `RenderError` if Markdown processing fails.  
+- Exception: Throws `RenderError` if Markdown processing fails.
 
 `updateRendering(renderData: Object): boolean`
 
 - Transition: Applies dynamic updates to the view, such as adding or modifying decorations based on editor changes.
 - Output: Returns `true` if updates are successfully applied.
-- Exception: Throws `UpdateFailed` if the update process encounters errors or invalid inputs.  
+- Exception: Throws `UpdateFailed` if the update process encounters errors or invalid inputs.
 
 #### Local Functions
 
 1. `validateViewData(viewData: Object): boolean`
+
    - Ensures that the input data for rendering is properly structured and compatible with the renderer.
 
 2. `clearRenderArea(): void`
+
    - Removes all existing decorations and resets the rendering area to its initial state.
 
 3. `logRenderingErrors(error: string): void`
+
    - Records errors encountered during the rendering process for debugging and analytics.
 
 4. `processMarkdown(markdown: string): Promise<string>`
+
    - Converts Markdown input into HTML using the `unified` processor, applying caching for efficiency.
 
 5. `computeDecorations(view: EditorView): void`
@@ -471,13 +480,13 @@ Data Fetching and State Management Module
 
 #### State Variables
 
-- `currentState: Object` 
-   - Tracks the current application state.
+- `currentState: Object`
+  - Tracks the current application state.
 
 #### Environment Variables
 
-- `networkInterface: Object` 
-   - Represents the system's network connection.
+- `networkInterface: Object`
+  - Represents the system's network connection.
 
 #### Assumptions
 
@@ -501,9 +510,11 @@ Data Fetching and State Management Module
 #### Local Functions
 
 1. `validateEndpoint(endpoint: string): boolean`
+
    - Checks whether the given endpoint is valid and reachable.
 
 2. `mergeStates(oldState: Object, newState: Object): Object`
+
    - Combines the old state with the new state data.
 
 3. `logFetchErrors(error: string): void`
@@ -756,7 +767,7 @@ Analytics Module
 #### Exported Constants
 
 - `defaultAnalyticsConfig: Object`
-   - Default configuration for analytics tasks
+  - Default configuration for analytics tasks
 
 #### Exported Access Programs
 
@@ -891,13 +902,13 @@ Export and Intergration Module
 
 #### State Variables
 
-- `exportHistory: Array` 
-   - Tracks all data export logs.
+- `exportHistory: Array`
+  - Tracks all data export logs.
 
 #### Environment Variables
 
 - `externalPlatforms`
-   - Tracks available platforms for integration.
+  - Tracks available platforms for integration.
 
 #### Assumptions
 
@@ -921,9 +932,11 @@ Export and Intergration Module
 #### Local Functions
 
 1. `validateExportConfig(config: Object): boolean`
+
    - Ensures the export configurations are valid and complete.
 
 2. `logExportHistory(config: Object): void`
+
    - Records export activities for debugging or auditing purposes.
 
 3. `checkPlatformAvailability(platform: string): boolean`
@@ -954,6 +967,7 @@ Export and Intergration Module
 <!-- 5. What are the limitations of your solution? Put another way, given unlimited resources, what could you do to make the project better? (LO_ProbSolutions) -->
 <!-- 6. Give a brief overview of other design solutions you considered. What are the benefits and tradeoffs of those other designs compared with the chosen design? From all the potential options, why did you select the documented design? (LO_Explores) -->
 
+
 <div class="reflection-container">
 
 <div class="users">
@@ -962,23 +976,37 @@ Export and Intergration Module
 
 <div class="blob">
 
-1. 
+1. Working on the inference specifications helped clarify the technical architecture needed for model deployment and steering. The process of breaking down complex ML components into discrete modules made the implementation path clearer.
 
-2. 
+2. Initially struggled to define clear boundaries between model inference and feature steering components. Resolved this through discussions with Goodfire researchers who shared practical insights about SAE deployment patterns and performance considerations.
 
-3. 
+3. The design for `infer_style` and model interpretability features came directly from conversations with ML engineers working on similar systems. The auto-interp approach was validated through discussions about real-world usage patterns and deployment considerations. Other design decisions emerged from system requirements and prior work in the field.
 
-4. 
+4. The design process confirmed that our initial architecture aligned well with both the functional requirements and hazard analysis. No significant changes were needed.
 
-5. 
+5. Key limitations:
 
-6. 
+   - GPU memory constraints limit model size and batch processing
+   - Network latency affects time-to-first-token
+   - Infrastructure costs scale with usage
+
+   With unlimited resources, we could:
+
+   - Deploy larger models (Llama 3.3 70B)
+   - Trained more SAEs (currently using a general SAEs from Goodfire)
+   - Implement full distributed inference
+   - Support multilingual generation
+   - Build custom training infrastructure
+
+6. Alternative designs considered:
+   - Pure client-side inference: Better privacy but limited by device capabilities
+   - Serverless architecture: Lower maintenance but higher latency
+   - Microservices: More flexible but increased complexity.
 
 </div>
 
 </div>
 
-<br/>
 
 <div class="reflection-container">
 
@@ -988,7 +1016,7 @@ Export and Intergration Module
 
 <div class="blob">
 
-1. I contributed  to the MIS focusing more on the frontend modules, including such as the Editor and Rendering modules. This allowed me to clearly define how these components interact and function within the system. The MIS helped break down complex functionalities into smaller, well-structured modules, making the development process more efficient. Additionally, teamwork played a crucial role in ensuring the deliverable’s success. Each member brought valuable insights and perspectives, which helped refine the design and ensure consistency across all modules. The collaborative effort improved both the quality and clarity of the document.
+1. I contributed to the MIS focusing more on the frontend modules, including such as the Editor and Rendering modules. This allowed me to clearly define how these components interact and function within the system. The MIS helped break down complex functionalities into smaller, well-structured modules, making the development process more efficient. Additionally, teamwork played a crucial role in ensuring the deliverable’s success. Each member brought valuable insights and perspectives, which helped refine the design and ensure consistency across all modules. The collaborative effort improved both the quality and clarity of the document.
 
 2. A significant challenge was interpreting and refining the vague details in the SRS to define precise module interfaces. This required extensive research into tools, libraries, and best practices, which was both time-consuming and detail-oriented. However, our team collaborated effectively, dividing tasks and sharing findings to lighten the workload. Regular discussions and feedback loops helped us iteratively refine the document and address ambiguities, ensuring alignment with the overall project goals.
 
@@ -998,13 +1026,12 @@ Export and Intergration Module
 
 5. Our solution is limited by time and budget, which restricting us from implementing advanced features such as real-time collaboration, cloud integration, and multi-device support. With unlimited resources we could enhance the editor with the best performing GPUs for faster text suggestions and add rich customization options like advanced themes and hotkeys. These improvements would provide a more seamless and feature-rich experience for users but our current constraints focus us on delivering a functional, privacy-focused web application.
 
-6.  We evaluated a centralized approach with cloud-based storage for user data, which could have supported features like real-time multi-user collaboration. Ultimately, we opted for a decentralized model to prioritize user privacy and minimize dependency on external infrastructure. Similarly, while pre-built editors provided a quicker implementation path, we chose a customized editor using a pre-built framework to integrate features like interactive notes and Markdown previews tailored to our goals. This approach strikes a balance between fulfilling user needs, maintaining privacy, and managing resource constraints effectively.
+6. We evaluated a centralized approach with cloud-based storage for user data, which could have supported features like real-time multi-user collaboration. Ultimately, we opted for a decentralized model to prioritize user privacy and minimize dependency on external infrastructure. Similarly, while pre-built editors provided a quicker implementation path, we chose a customized editor using a pre-built framework to integrate features like interactive notes and Markdown previews tailored to our goals. This approach strikes a balance between fulfilling user needs, maintaining privacy, and managing resource constraints effectively.
 
 </div>
 
 </div>
 
-<br/>
 
 <div class="reflection-container">
 
@@ -1025,11 +1052,11 @@ Export and Intergration Module
 5. Our solution is limited by time and budget, but with unlimited resources, we could implement a range of advanced features. For example, consistently utilizing state-of-the-art GPUs would enable faster inference and more responsive text suggestions, significantly reducing latency. Adding more customization options, such as hotkeys, advanced themes, and specialized accessibility features, would enhance the editor's usability and user-friendliness. With sufficient resources, we could integrate with tools like Notion, Obsidian, Google Suite (Docs, Sheets), Evernote, and professional email clients (e.g., Gmail or Outlook), allowing writers to seamlessly incorporate research, drafts, and correspondence into their workflow. Furthermore, we could expand the project to include downloadable desktop and mobile applications after the web launch, catering to both iOS and Android users. These enhancements would establish our application as a cutting-edge, user-centric text editor, but the current limitations of a $700 budget and tight deadlines make such developments challenging.
 
 6. We considered a centralized approach with a cloud-based database to handle user data, but this conflicted with our goal of user privacy. The decentralized model, where everything is stored locally, aligns better with our principles but sacrifices some features like real-time multi-user collaboration. We also debated between using a pre-built editor versus creating a custom one. While pre-built editors would have saved time, a custom solution lets us tailor the experience to our goals, like interactive notes and graph visualizations. Ultimately, our chosen design balances user needs, privacy, and technical feasibility.
-</div>
 
 </div>
 
-<br/>
+</div>
+
 
  <div class="reflection-container">
 
@@ -1054,3 +1081,4 @@ Export and Intergration Module
 </div>
 
 </div>
+
