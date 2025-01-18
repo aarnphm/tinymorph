@@ -24,6 +24,7 @@ This is **bold** text.
 [[Wikilink Test]]`,
       extensions: [
         basicSetup,
+        EditorView.lineWrapping,
         markdown(),
         inlineMarkdownExtension,
         vim()
@@ -54,8 +55,8 @@ This is **bold** text.
         <MarkdownFileUpload editorView={editorView} />
       </div>
       <div className={`editor-content ${showNotes ? 'with-notes' : ''}`}>
-        <div className="editor" ref={editorRef} />
-        {showNotes && <NotesPanel />}
+        <div className="editor" ref={editorRef} data-editor-container="true" />
+        {showNotes && <NotesPanel editorRef={editorRef} />}
       </div>
     </div>
   );
