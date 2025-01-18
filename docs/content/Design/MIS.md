@@ -797,11 +797,89 @@ Export and Intergration Module
 <!-- 6. Give a brief overview of other design solutions you considered. What are the benefits and tradeoffs of those other designs compared with the chosen design? From all the potential options, why did you select the documented design? (LO_Explores) -->
 
 <div class="reflection-container">
+
+<div class="users">
+  <a class="name" href="https://github.com/aarnphm">Aaron</a>
+</div>
+
+<div class="blob">
+
+1. 
+
+2. 
+
+3. 
+
+4. 
+
+5. 
+
+6. 
+
+</div>
+
+</div>
+
+<br/>
+
+<div class="reflection-container">
+
+<div class="users">
+  <a class="name" href="https://github.com/nebrask">Nebras</a>
+</div>
+
+<div class="blob">
+
+1. I contributed  to the MIS focusing more on the frontend modules, including such as the Editor and Rendering modules. This allowed me to clearly define how these components interact and function within the system. The MIS helped break down complex functionalities into smaller, well-structured modules, making the development process more efficient. Additionally, teamwork played a crucial role in ensuring the deliverable’s success. Each member brought valuable insights and perspectives, which helped refine the design and ensure consistency across all modules. The collaborative effort improved both the quality and clarity of the document.
+
+2. A significant challenge was interpreting and refining the vague details in the SRS to define precise module interfaces. This required extensive research into tools, libraries, and best practices, which was both time-consuming and detail-oriented. However, our team collaborated effectively, dividing tasks and sharing findings to lighten the workload. Regular discussions and feedback loops helped us iteratively refine the document and address ambiguities, ensuring alignment with the overall project goals.
+
+3. Many decisions such as prioritizing local data storage for privacy and implementing context-sensitive suggestions were influenced by stakeholder feedback. These decisions aligned with user priorities like ensuring accessibility and data security. Other decisions, such as integrating Vim-style navigation for power users emerged from internal team discussions and reflected our understanding of technical feasibility and user preferences. This combination of external and internal input resulted in a balanced and user-centric design.
+
+4. Developing the MIS revealed areas in the SRS that needed refinement such as adjusting functional requirements to be more realistic and removing overly ambitious features. For example, anticipated changes like adding graph-based visualizations and interactive notes required updates to the SRS to clarify their scope and dependencies. Additionally, hazard analysis needed revisions to address risks tied to module integration and external library dependencies. These adjustments ensured consistency and alignment across all documentation.
+
+5. Our solution is limited by time and budget, which restricting us from implementing advanced features such as real-time collaboration, cloud integration, and multi-device support. With unlimited resources we could enhance the editor with the best performing GPUs for faster text suggestions and add rich customization options like advanced themes and hotkeys. These improvements would provide a more seamless and feature-rich experience for users but our current constraints focus us on delivering a functional, privacy-focused web application.
+
+6.  We evaluated a centralized approach with cloud-based storage for user data, which could have supported features like real-time multi-user collaboration. Ultimately, we opted for a decentralized model to prioritize user privacy and minimize dependency on external infrastructure. Similarly, while pre-built editors provided a quicker implementation path, we chose a customized editor using a pre-built framework to integrate features like interactive notes and Markdown previews tailored to our goals. This approach strikes a balance between fulfilling user needs, maintaining privacy, and managing resource constraints effectively.
+
+</div>
+
+</div>
+
+<br/>
+
+<div class="reflection-container">
+
+<div class="users">
+  <a class="name" href="https://github.com/waleedmalik7">Waleed</a>
+</div>
+
+<div class="blob">
+
+1. In this deliverable, I mainly contributed to the module guide. As someone who has not coded much for this project, I believe it will greatly help my implementation process. I now clearly understand which modules and features to implement, their dependencies, and the required libraries. The module guide has made the system's overall structure more manageable and understandable.
+
+2. A major pain point was obtaining a precise understanding of our implementation details. We started with a fairly abstract SRS that did not specify the tools and libraries we would use. Researching APIs, tools, and libraries was tedious and time-consuming but necessary to define our modules accurately. Collaborating with peers and dividing research tasks helped mitigate the workload and ensured we chose appropriate tools for the project.
+
+3. Most of the design decisions were inspired by stakeholder input, particularly features like context-sensitive suggestions, graph-based document visualization, and a decentralized approach to storing data locally. These decisions aim to prioritize user privacy and accessibility. Some technical decisions, such as the choice of Llama 3 as the language model and the use of local storage instead of a database, were made internally based on factors like cost, efficiency, and feasibility. These technical choices balance the project’s limited resources with achieving the desired functionality.
+
+4. The SRS’s functional requirements needed significant updates. As we refined our design, we added new ideas and removed some overstated features. For instance, anticipated changes like AC5 (adding UI interactive features like collapsible sections and sticky notes) and AC4 (showing progress metrics as graphs) required us to adjust our requirements to reflect these design-specific changes. Additionally, some unlikely changes, like keeping everything locally stored and maintaining a web-only platform, reinforced the importance of not overcomplicating our backend infrastructure.
+
+5. Our solution is limited by time and budget, but with unlimited resources, we could implement a range of advanced features. For example, consistently utilizing state-of-the-art GPUs would enable faster inference and more responsive text suggestions, significantly reducing latency. Adding more customization options, such as hotkeys, advanced themes, and specialized accessibility features, would enhance the editor's usability and user-friendliness. With sufficient resources, we could integrate with tools like Notion, Obsidian, Google Suite (Docs, Sheets), Evernote, and professional email clients (e.g., Gmail or Outlook), allowing writers to seamlessly incorporate research, drafts, and correspondence into their workflow. Furthermore, we could expand the project to include downloadable desktop and mobile applications after the web launch, catering to both iOS and Android users. These enhancements would establish our application as a cutting-edge, user-centric text editor, but the current limitations of a $700 budget and tight deadlines make such developments challenging.
+
+6. We considered a centralized approach with a cloud-based database to handle user data, but this conflicted with our goal of user privacy. The decentralized model, where everything is stored locally, aligns better with our principles but sacrifices some features like real-time multi-user collaboration. We also debated between using a pre-built editor versus creating a custom one. While pre-built editors would have saved time, a custom solution lets us tailor the experience to our goals, like interactive notes and graph visualizations. Ultimately, our chosen design balances user needs, privacy, and technical feasibility.
+</div>
+
+</div>
+
+<br/>
+
+ <div class="reflection-container">
+
 <div class="users">
   <a class="name" href="https://github.com/lucas-lizhiwei">Lucas</a>
 </div>
+
 <div class="blob">
-<p>
 
 1. The collaboration on documentation development is getting better, with the past experiences
 
@@ -814,6 +892,7 @@ Export and Intergration Module
 5. The user interface can be brought better fitting end user's experience if time permits, allowing beatifying and improvement
 
 6. One of the design solution in the early stage is to implement a cooperative database to support language model with better performance, but due to the demanding implementation effort, time limit and the language model we decided on, this option was dropped. Our current option can still compromise with satisfying results and much more feasible.
-</p>
+
 </div>
+
 </div>
