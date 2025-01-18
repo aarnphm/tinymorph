@@ -4,7 +4,7 @@ tags:
   - design
 author: aarnphm,waleedmalik7,nebrask,lucas-lizhiwei
 date: "2024-09-16"
-modified: 2025-01-17 18:38:44 GMT-05:00
+modified: 2025-01-17 21:05:01 GMT-05:00
 title: Module Guide
 ---
 
@@ -18,6 +18,7 @@ This section records information for easy reference.
 | ---------- | ------------------------------------------------------ |
 | AC         | Anticipated Change                                     |
 | DOM        | Document Object Model                                  |
+| FR         | Functional Requirement                                 |
 | GPU        | Graphics Processing Unit                               |
 | M          | Module                                                 |
 | MG         | Module Guide                                           |
@@ -72,17 +73,27 @@ This section lists possible changes to the system. According to the likeliness o
 
 Anticipated changes are the source of the information that is to be hidden inside the modules. Ideally, changing one of the anticipated changes will only require changing the one module that hides the associated decision. The approach adapted here is called design for change.
 
-- **AC1:** Integrating with newer language models, such as Llama 3.
-- **AC2**: Support for exploration of internal embeddings visualisation
-- **AC3**: More analytics to enable better understanding of users' writing
+- **AC1**: Integrating with newer language models, such as Llama 3.
+- **AC2**: Add support for specific GPU drivers to improve performance.
+- **AC3**: Add more customization options like themes, font styles, or hotkeys.
+- **AC4**: Show user progress metrics as graphs or charts.
+- **AC5**: Add UI interactive features like collapsible sections, sticky notes, and inline comments.
+- **AC6**: Add visual indicators for text quality metrics (e.g., grammar or tone).
+- **AC7**: Enable exporting user data for backup purposes.
+- **AC8**: Add tools to compare progress across multiple documents.
+- **AC9**: Use A100 GPU for rendering visualizations and running text generation faster.
+- **AC10**: May not integrate application with Notion and Obsidian. 
+- **AC11**: Add tools to compare progress across multiple documents.
+
 
 ### Unlikely Changes
 
 The module design should be as general as possible. However, a general system is more complex. Sometimes this complexity is not necessary. Fixing some design decisions at the system architecture stage can simplify the software design. If these decision should later need to be changed, then many parts of the design will potentially need to be modified. Hence, it is not intended that these decisions will be changed.
 
-- **UC1:** Vertical integration with tools like Notion, Obsidian, and text editors such as Neovim and VSCode.
-- **UC2**: Building a conversational UI (users can use ChatGPT or other LLMs-based chat UI for that.)
-- **UC3**: collect anonymous metrics (product will be provided as-is.)
+- **UC1:**: Core editor interface will stay the same.
+- **UC2**: Maintain real-time updates and context-sensitive suggestions as core features.
+- **UC3**: No downloads or desktop-only application; the system must stay fully web-based.
+- **UC4**: No removal of interactive elements like notes, real-time suggestions, or graph visualizations, which are central to the application.
 
 ## Module Hierarchy
 
@@ -130,29 +141,35 @@ The design of the system is intended to satisfy the requirements developed in th
 This section documents the primary design decisions made to satisfy the requirements specified in the SRS. By explicitly recording these decisions, we ensure clear traceability between requirements and their implementation in the modular architecture.
 
 ### Text Editor Core (Requirements FR-1 to FR-4)
+
 - Decision to implement a web-based editor using a modular architecture separating the UI components (Editor Module) from the underlying text processing logic
 - Implementation of real-time planning suggestions through dedicated Notes Module and Graph View Module
 - Storage of user preferences and configurations locally through the Settings Module
 - Integration with SAEs for tone and style customization via the Inference Module
 
 ### Document Management (Requirements FR-5 to FR-8)
+
 - Use of local storage for file management to maintain the file-over-app philosophy
 - Implementation of version control through a graph-based data structure
 - Separation of rendering logic from document structure to support multiple export formats
 - Design of an extensible state management system for handling document metadata and user preferences
 
 ### Performance and Scalability (Requirements PR-SLR1, PR-SLR2)
+
 - Integration of GPU acceleration for compute-intensive tasks like inference
 - Implementation of KV cache optimization in the Inference Module for improved TTFT
 - Design of asynchronous processing pipeline for suggestion generation
 - Use of efficient data structures for managing document state and history
 
 ### Security and Privacy (Requirements SR-INT1 to SR-P1)
+
 - Decision to keep all user data local, avoiding cloud storage
 - Implementation of secure communication protocols for inference requests
 - Design of permission system for accessing local files
 - Integration of content filtering mechanisms in the Inference Module
+
 ### User Experience (Requirements UH-EOU1 to UH-A3)
+
 - Implementation of keyboard navigation and accessibility features in the Editor Module
 - Design of intuitive interface components for suggestion interaction
 - Integration of theme customization through the Settings Module
@@ -160,7 +177,7 @@ This section documents the primary design decisions made to satisfy the requirem
 
 ## Module Decomposition
 
-Modules are decomposed according to the principle of "information hiding" proposed by [@10.5555/800054.801999]. The _Secrets_ field in a module decomposition is a brief statement of the design decision hidden by the module. The _Services_ field specifies _what_ the module will do without documenting _how_ to do it. For each module, a suggestion for the implementing software is given under the _Implemented By_ title. If the entry is _OS_, this means that the module is provided by the operating system or by standard programming language libraries. _\progname{}_ means the module will be implemented by the \progname{} software. Only the leaf modules in the hierarchy have to be implemented. If a dash (_--_) is shown, this means that the module is not a leaf and will not have to be implemented.
+Modules are decomposed according to the principle of "information hiding" proposed by [@10.5555/800054.801999]. The _Secrets_ field in a module decomposition is a brief statement of the design decision hidden by the module. The _Services_ field specifies _what_ the module will do without documenting _how_ to do it. For each module, a suggestion for the implementing software is given under the _Implemented By_ title. If the entry is _OS_, this means that the module is provided by the operating system or by standard programming language libraries. [/index|Tinymorph] means the module will be implemented by the [/index|tinymorph] software. Only the leaf modules in the hierarchy have to be implemented. If a dash (_--_) is shown, this means that the module is not a leaf and will not have to be implemented.
 
 ### Hardware-Hiding
 
@@ -176,7 +193,7 @@ Modules are decomposed according to the principle of "information hiding" propos
 #### Editor Module (M2)
 
 - **Secrets:** State management of the editor, including virtual DOM updates, handling of formatting rules, and integration of context-sensitive suggestions.
-- **Services:** Serves as the maintain interface for text editing, providing features such as structured editing, real-time text previews, and contextual interactions. Supports seamless file parsing, note suggestions, and user-driven customizations.
+- **Services:** Serves as the main interface for text editing, providing features such as structured editing, real-time text previews, and contextual interactions. Supports seamless file parsing, note suggestions, and user-driven customizations.
 - **Implemented By:** Frontend libraries.
 - **Type of Module:** Abstract Data Type.
 
@@ -249,48 +266,58 @@ Modules are decomposed according to the principle of "information hiding" propos
 
 This section shows two traceability matrices: between the modules and the requirements and between the modules and the anticipated changes.
 
-| **Req.** | **Modules**             |
-| -------- | ----------------------- |
-| R1       | M1, M2, M3, M4          |
-| R2       | M2, M3                  |
-| R3       | M5                      |
-| R4       | M6, M4                  |
-| R5       | M6, M7, M4, M8, M9, M10 |
-| R6       | M6, M7, M4, M8, M9, M10 |
-| R7       | M6, M11, M4, M8, M10    |
-| R8       | M6, M11, M4, M8, M10    |
-| R9       | M12                     |
-| R10      | M6, M7, M4              |
-| R11      | M6, M7, M11, M4         |
+| **Requirement**      | **Modules**                                 |
+|----------------------|---------------------------------------------|
+| FR-1                 | M2, M3, M4, M8                              |
+| FR-2                 | M8, M9, M3, M5                              |
+| FR-3                 | M2, M6, M8                                  |
+| FR-4                 | M8, M9, M5                                  |
+| FR-5                 | M9, M7, M3                                  |
+| FR-6                 | M4, M7, M3, M10                             |
+| FR-7                 | M3, M8, M9                                  |
+| FR-8                 | M7, M4, M6, M9, M10                         |
+| FR-9                 | M7, M6, M5                                  |
+| FR-10                | M7, M6, M11                                 |
+| FR-11                | M10, M9, M5, M4                             |
+| FR-12                | M4, M9, M3, M8                              |
+| FR-13                | M11, M6, M9                                 |
+| FR-14                | M5, M2, M6                                  |
+
 _Table 2: Trace Between Requirements and Modules_
 
-| **AC** | **Modules** |
-| ------ | ----------- |
-| AC1    | M1          |
-| AC2    | M2          |
-| AC3    | M3          |
-| AC4    | M5          |
-| AC5    | M6          |
-| AC6    | M12         |
-| AC7    | M7          |
-| AC8    | M11         |
-| AC9    | M4          |
-| AC10   | M8          |
-| AC11   | M9          |
-| AC12   | M10         |
+| **AC** | **Modules**       |
+|--------|-------------------|
+| AC1    | M8                |
+| AC2    | M1                |
+| AC3    | M5                |
+| AC4    | M10, M4           |
+| AC5    | M2, M3            |
+| AC6    | M6, M10           |
+| AC7    | M7, M11           |
+| AC8    | M10, M11          |
+| AC9    | M1, M8            |
+| AC10   | M11               |
+| AC11   | M10, M11          |
+
+
 _Table 3: Trace Between Anticipated Changes and Modules_
 
 ## Use Hierarchy Between Modules
 
 In this section, the uses hierarchy between modules is provided. [@10.5555/800054.801999] said of two programs A and B that A _uses_ B if correct execution of B may be necessary for A to complete the task described in its specification. That is, A _uses_ B if there exist situations in which the correct functioning of A depends upon the availability of a correct implementation of B. Figure 1 illustrates the use relation between the modules. It can be seen that the graph is a directed acyclic graph (DAG). Each level of the hierarchy offers a testable and usable subset of the system, and modules in the higher level of the hierarchy are essentially simpler because they use modules from the lower levels.
 
+![[images/modulediagram.png]]
+
+_Figure 1: Use Hierarchy Between Modules_
+
 ## User Interfaces
 
 ![[images/POC.pdf|POC]]
 
-## Design of Communication Protocols
 
 ![[images/modules.drawio.png]]
+
+
 ## Timeline
 
 See also [Projects](https://github.com/users/aarnphm/projects/4?query=sort:updated-desc+is:open)
@@ -310,3 +337,4 @@ See also [Projects](https://github.com/users/aarnphm/projects/4?query=sort:updat
 | Jan. 12 2024 | 0.2         | Project Overview/Diagrams               |
 | Jan. 13 2024 | 0.3         | Updated Module Hierarchy and Table      |
 | Jan. 16 2024 | 0.4         | Finished Module Decomposition           |
+| Jan. 17 2024 | 0.4         | Completed Document                      |
