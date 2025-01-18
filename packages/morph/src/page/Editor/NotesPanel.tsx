@@ -1,14 +1,29 @@
-interface DataPoint {
-  x: string;
-  y: number;
-}
+import { useRef, useState, useEffect, RefObject } from 'react';
+import { drag } from 'd3-drag';
+import { select } from 'd3-selection';
 
-interface Note {
+export interface Note {
   id: number;
   title: string;
   content: string;
   graph?: DataPoint[];
 }
+
+interface DataPoint {
+  x: string;
+  y: number;
+}
+
+interface DraggableNoteProps {
+  note: Note;
+  editorRef: RefObject<HTMLDivElement>;
+  onDrop: (note: Note, droppedOverEditor: boolean) => void;
+}
+
+interface NotesPanelProps {
+  editorRef: RefObject<HTMLDivElement>;
+}
+
 
 const sampleNotes: Note[] = [
   { 
@@ -68,10 +83,108 @@ const sampleNotes: Note[] = [
   }
 ];
 
+function DraggableNote({ note, editorRef, onDrop }: DraggableNoteProps) {
+  const noteRef = useRef<HTMLDivElement>(null);
+  const [dragging, setDragging] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [fixedWidth, setFixedWidth] = useState<number | null>(null);
+  const offsetRef = useRef({ x: 0, y: 0 });
 
-export function NotesPanel() {
-  const leftColumnNotes = sampleNotes.filter((_, index) => index % 2 === 0);
-  const rightColumnNotes = sampleNotes.filter((_, index) => index % 2 === 1);
+  useEffect(() => {
+    if (noteRef.current) {
+      setFixedWidth(noteRef.current.offsetWidth);
+
+      const dragBehavior = drag<HTMLDivElement, unknown>()
+        .on("start", (event) => {
+          const rect = noteRef.current!.getBoundingClientRect();
+          offsetRef.current = {
+            x: event.sourceEvent.clientX - rect.left,
+            y: event.sourceEvent.clientY - rect.top,
+          };
+          setPosition({ x: rect.left, y: rect.top });
+          setDragging(true);
+        })
+        .on("drag", (event) => {
+          const newPosition = {
+            x: event.sourceEvent.clientX - offsetRef.current.x,
+            y: event.sourceEvent.clientY - offsetRef.current.y,
+          };
+          setPosition(newPosition);
+        })
+        .on("end", (event) => {
+          setDragging(false);
+          let droppedOverEditor = false;
+          if (editorRef.current) {
+            const editorRect = editorRef.current.getBoundingClientRect();
+            const finalX = event.sourceEvent.clientX;
+            const finalY = event.sourceEvent.clientY;
+            droppedOverEditor = (
+              finalX >= editorRect.left &&
+              finalX <= editorRect.right &&
+              finalY >= editorRect.top &&
+              finalY <= editorRect.bottom
+            );
+          }
+          onDrop(note, droppedOverEditor);
+        });
+      
+      select(noteRef.current).call(dragBehavior);
+    }
+  }, [editorRef, note, onDrop]);
+
+  return (
+    <>
+      {dragging && (
+        <div 
+          className="note-item ghost"
+          style={{ 
+            width: fixedWidth || 'auto', 
+            opacity: 0.5,
+            position: 'relative',
+          }}
+        >
+          <h3 className="font-semibold mb-2">{note.title}</h3>
+          <p className="text-sm text-gray-600">{note.content}</p>
+        </div>
+      )}
+
+      <div
+        ref={noteRef}
+        className={`note-item ${dragging ? "dragging" : ""}`}
+        style={{
+          cursor: 'grab',
+          position: dragging ? 'fixed' : 'relative',
+          top: dragging ? position.y : undefined,
+          left: dragging ? position.x : undefined,
+          width: fixedWidth || 'auto',
+          zIndex: dragging ? 999 : 'auto',
+          margin: 0,
+        }}
+      >
+        <h3 className="font-semibold mb-2">{note.title}</h3>
+        <p className="text-sm text-gray-600">{note.content}</p>
+      </div>
+    </>
+  );
+}
+
+export function NotesPanel({ editorRef }: NotesPanelProps) {
+  const [notes, setNotes] = useState<Note[]>(sampleNotes);
+  const [droppedNotes, setDroppedNotes] = useState<Note[]>([]);
+
+  const handleDrop = (droppedNote: Note, droppedOverEditor: boolean) => {
+    if (droppedOverEditor) {
+      setNotes(prevNotes => prevNotes.filter(note => note.id !== droppedNote.id));
+      
+      const { graph, ...noteWithoutGraph } = droppedNote;
+      setDroppedNotes(prev => [...prev, noteWithoutGraph]);
+  
+      console.log("Dropped Notes:", [...droppedNotes, noteWithoutGraph]);
+    }
+  };
+  
+  const leftColumnNotes = notes.filter((_, index) => index % 2 === 0);
+  const rightColumnNotes = notes.filter((_, index) => index % 2 === 1);
 
   return (
     <div className="notes-panel">
@@ -79,27 +192,17 @@ export function NotesPanel() {
       <div className="notes-columns">
         <div className="notes-column">
           {leftColumnNotes.map((note) => (
-            <div 
-              key={note.id} 
-              className="note-item"
-            >
-              <h3 className="font-semibold mb-2">{note.title}</h3>
-              <p className="text-sm text-gray-600">{note.content}</p>
-            </div>
+            <DraggableNote key={note.id} note={note} editorRef={editorRef} onDrop={handleDrop} />
           ))}
         </div>
         <div className="notes-column">
           {rightColumnNotes.map((note) => (
-            <div 
-              key={note.id} 
-              className="note-item"
-            >
-              <h3 className="font-semibold mb-2">{note.title}</h3>
-              <p className="text-sm text-gray-600">{note.content}</p>
-            </div>
+            <DraggableNote key={note.id} note={note} editorRef={editorRef} onDrop={handleDrop} />
           ))}
         </div>
       </div>
     </div>
   );
 }
+
+export default NotesPanel;

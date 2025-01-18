@@ -167,3 +167,4 @@ venv/
 _version.py
 target
 .env
+node_modules
