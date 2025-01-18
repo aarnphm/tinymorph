@@ -4,7 +4,7 @@ tags:
   - design
 author: aarnphm,waleedmalik7,nebrask,lucas-lizhiwei
 date: "2024-09-16"
-modified: 2025-01-17 18:38:44 GMT-05:00
+modified: 2025-01-17 21:05:01 GMT-05:00
 title: Module Guide
 ---
 
@@ -130,29 +130,35 @@ The design of the system is intended to satisfy the requirements developed in th
 This section documents the primary design decisions made to satisfy the requirements specified in the SRS. By explicitly recording these decisions, we ensure clear traceability between requirements and their implementation in the modular architecture.
 
 ### Text Editor Core (Requirements FR-1 to FR-4)
+
 - Decision to implement a web-based editor using a modular architecture separating the UI components (Editor Module) from the underlying text processing logic
 - Implementation of real-time planning suggestions through dedicated Notes Module and Graph View Module
 - Storage of user preferences and configurations locally through the Settings Module
 - Integration with SAEs for tone and style customization via the Inference Module
 
 ### Document Management (Requirements FR-5 to FR-8)
+
 - Use of local storage for file management to maintain the file-over-app philosophy
 - Implementation of version control through a graph-based data structure
 - Separation of rendering logic from document structure to support multiple export formats
 - Design of an extensible state management system for handling document metadata and user preferences
 
 ### Performance and Scalability (Requirements PR-SLR1, PR-SLR2)
+
 - Integration of GPU acceleration for compute-intensive tasks like inference
 - Implementation of KV cache optimization in the Inference Module for improved TTFT
 - Design of asynchronous processing pipeline for suggestion generation
 - Use of efficient data structures for managing document state and history
 
 ### Security and Privacy (Requirements SR-INT1 to SR-P1)
+
 - Decision to keep all user data local, avoiding cloud storage
 - Implementation of secure communication protocols for inference requests
 - Design of permission system for accessing local files
 - Integration of content filtering mechanisms in the Inference Module
+
 ### User Experience (Requirements UH-EOU1 to UH-A3)
+
 - Implementation of keyboard navigation and accessibility features in the Editor Module
 - Design of intuitive interface components for suggestion interaction
 - Integration of theme customization through the Settings Module
@@ -262,6 +268,7 @@ This section shows two traceability matrices: between the modules and the requir
 | R9       | M12                     |
 | R10      | M6, M7, M4              |
 | R11      | M6, M7, M11, M4         |
+
 _Table 2: Trace Between Requirements and Modules_
 
 | **AC** | **Modules** |
@@ -278,6 +285,7 @@ _Table 2: Trace Between Requirements and Modules_
 | AC10   | M8          |
 | AC11   | M9          |
 | AC12   | M10         |
+
 _Table 3: Trace Between Anticipated Changes and Modules_
 
 ## Use Hierarchy Between Modules
@@ -291,6 +299,7 @@ In this section, the uses hierarchy between modules is provided. [@10.5555/80005
 ## Design of Communication Protocols
 
 ![[images/modules.drawio.png]]
+
 ## Timeline
 
 See also [Projects](https://github.com/users/aarnphm/projects/4?query=sort:updated-desc+is:open)
