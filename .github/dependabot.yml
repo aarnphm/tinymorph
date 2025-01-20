@@ -12,7 +12,7 @@ updates:
         patterns:
           - "*"
   - package-ecosystem: "npm"
-    directory: "/docs"
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
