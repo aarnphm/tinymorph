@@ -27,13 +27,32 @@ This is **bold** text.
         EditorView.lineWrapping,
         markdown(),
         inlineMarkdownExtension,
-        vim()
-      ]
+        vim(),
+        EditorView.theme({
+          "&": {
+            maxWidth: "75rem",
+            margin: "0 auto",
+            padding: "2rem 4rem",
+          },
+          ".cm-gutters": {
+            display: "none",
+          },
+          ".cm-scroller": {
+            overflowX: "hidden",
+          },
+          ".cm-activeLine": {
+            backgroundColor: "transparent",
+          },
+          "&.cm-editor.cm-focused": {
+            outline: "none",
+          },
+        }),
+      ],
     });
 
     const view = new EditorView({
       state: startState,
-      parent: editorRef.current
+      parent: editorRef.current,
     });
 
     setEditorView(view);
@@ -46,15 +65,20 @@ This is **bold** text.
   return (
     <div className="editor-container">
       <div className="flex justify-end items-center gap-2 mb-4 mt-2 mr-4">
-        <Button
-          variant="outline"
-          onClick={() => setShowNotes(!showNotes)}
-        >
+        <Button variant="outline" onClick={() => setShowNotes(!showNotes)}>
+          <i className="las la-sticky-note text-lg" />
           Notes
         </Button>
+
         <MarkdownFileUpload editorView={editorView} />
+
+        <Button variant="outline">
+          <i className="las la-cog text-lg" />
+          Settings
+        </Button>
       </div>
-      <div className={`editor-content ${showNotes ? 'with-notes' : ''}`}>
+
+      <div className={`editor-content ${showNotes ? "with-notes" : ""}`}>
         <div className="editor" ref={editorRef} data-editor-container="true" />
         {showNotes && <NotesPanel editorRef={editorRef} />}
       </div>
