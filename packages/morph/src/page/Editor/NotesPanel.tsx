@@ -16,12 +16,12 @@ interface DataPoint {
 
 interface DraggableNoteProps {
   note: Note;
-  editorRef: RefObject<HTMLDivElement>;
+  editorRef: RefObject<HTMLDivElement | null>;
   onDrop: (note: Note, droppedOverEditor: boolean) => void;
 }
 
 interface NotesPanelProps {
-  editorRef: RefObject<HTMLDivElement>;
+  editorRef: RefObject<HTMLDivElement | null>;
 }
 
 

@@ -36,6 +36,7 @@ export function MarkdownFileUpload({ editorView }: MarkdownFileUploadProps) {
           onChange={handleFileUpload}
           className="hidden"
         />
+        <i className="las la-upload text-lg" />
         Upload
       </label>
     </Button>
