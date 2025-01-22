@@ -1,6 +1,7 @@
 @use "./styles/global-theme";
 @use "./styles/editor";
 @use "./styles/variables";
+@use "./styles/settings";
 
 @tailwind base;
 @tailwind components;
