@@ -28,25 +28,6 @@ This is **bold** text.
         markdown(),
         inlineMarkdownExtension,
         vim(),
-        EditorView.theme({
-          "&": {
-            maxWidth: "75rem",
-            margin: "0 auto",
-            padding: "2rem 4rem",
-          },
-          ".cm-gutters": {
-            display: "none",
-          },
-          ".cm-scroller": {
-            overflowX: "hidden",
-          },
-          ".cm-activeLine": {
-            backgroundColor: "transparent",
-          },
-          "&.cm-editor.cm-focused": {
-            outline: "none",
-          },
-        }),
       ],
     });
 
