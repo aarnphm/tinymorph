@@ -61,7 +61,7 @@ This is **bold** text.
 
       <div className={`editor-content ${showNotes ? "with-notes" : ""}`}>
         <div className="editor" ref={editorRef} data-editor-container="true" />
-        {showNotes && <NotesPanel editorRef={editorRef} />}
+        {<NotesPanel editorRef={editorRef} />}
       </div>
     </div>
   );
