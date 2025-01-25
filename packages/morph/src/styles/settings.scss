@@ -1,0 +1,82 @@
+@use "./variables.scss" as *;
+
+.settings-container {
+    display: flex;
+}
+  
+.settings-tabs {
+    display: flex;
+    flex-direction: column;
+    width: 23%;
+    padding: 1rem 1rem 12rem 1rem;
+    margin-right: 3.5rem;
+    font-family: $font-body;
+}
+
+.settings-tab {
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 0.5rem 0.5rem;
+    font-size: 1rem;
+    color: #555;
+    cursor: pointer;
+}
+  
+.settings-tab {
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 0.5rem 0.5rem;
+    font-size: 1rem;
+    color: #555;
+    cursor: pointer;
+    margin-bottom: 5px;
+
+    &:not(.active):hover {
+        border-radius: 4px;
+        background-color: #ececec;
+        margin-right: -30px;
+    }
+
+    &.active {
+        color: #000;
+        border-radius: 4px;
+        background-color: #ccc;
+        margin-right: -30px;
+    }
+}
+  
+.settings-content {
+    flex: 1;
+    padding: 1.5rem 1rem 1rem 1rem;
+    
+    .settings-item {
+        display: flex;
+        padding-bottom: 0.75rem;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        font-family: $font-body;
+        border-bottom: 1px solid #ccc;
+
+        span {
+            font-size: 1rem;
+            color: #555;
+        }
+    }
+}
+
+.settings-dialog-title {
+    text-align: left;
+    font-size: 1.5rem !important;
+    border-bottom: 1px solid #ccc;
+    padding: 1rem 1.5rem;
+    margin: 0 -1.5rem;
+    display: block;
+    font-family: $font-heading;
+}
+
+.select-content{
+    font-family: $font-body;
+}
