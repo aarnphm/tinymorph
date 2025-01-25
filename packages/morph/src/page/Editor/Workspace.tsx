@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { EditorState } from "@codemirror/state";
 import { EditorView, basicSetup } from "codemirror";
 import { markdown } from "@codemirror/lang-markdown";
+import { Button } from "@/components/ui/button";
+import { vim } from "@replit/codemirror-vim";
 import { inlineMarkdownExtension } from "./MarkdownRenderer";
 import { NotesPanel } from "./NotesPanel";
 import { MarkdownFileUpload } from "./MarkdownFileUpload";
-import { Button } from "@/components/ui/button";
-import { vim } from "@replit/codemirror-vim";
+import Settings from "./Settings";
 
 export function Workspace() {
   const [showNotes, setShowNotes] = useState(false);
@@ -53,15 +54,12 @@ This is **bold** text.
 
         <MarkdownFileUpload editorView={editorView} />
 
-        <Button variant="outline">
-          <i className="las la-cog text-lg" />
-          Settings
-        </Button>
+        <Settings />
       </div>
 
       <div className={`editor-content ${showNotes ? "with-notes" : ""}`}>
         <div className="editor" ref={editorRef} data-editor-container="true" />
-        <NotesPanel editorRef={editorRef} />
+        {showNotes && <NotesPanel editorRef={editorRef} />}
       </div>
     </div>
   );
