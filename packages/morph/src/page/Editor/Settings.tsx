@@ -16,19 +16,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
-interface SettingsProps {
-  onVimBindingToggle: (enabled: boolean) => void;
-}
-
-const Settings: React.FC<SettingsProps> = ({ onVimBindingToggle }) => {
+const Settings = () => {
   const [activeTab, setActiveTab] = useState("general");
   const [vimBinding, setVimBinding] = useState(false);
   const [theme, setTheme] = useState("system");
-
-  const handleVimBindingChange = (checked: boolean) => {
-    setVimBinding(checked);
-    onVimBindingToggle(checked);
-  };
 
   return (
     <Dialog>
@@ -79,7 +70,7 @@ const Settings: React.FC<SettingsProps> = ({ onVimBindingToggle }) => {
                   <span>Vim Binding</span>
                   <Switch
                     checked={vimBinding}
-                    onCheckedChange={handleVimBindingChange}
+                    onCheckedChange={setVimBinding}
                   />
                 </div>
               </div>
