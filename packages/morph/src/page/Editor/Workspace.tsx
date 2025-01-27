@@ -1,30 +1,31 @@
-import React, { useEffect, useRef, useState } from "react";
-import { EditorState } from "@codemirror/state";
-import { EditorView, basicSetup } from "codemirror";
-import { markdown } from "@codemirror/lang-markdown";
-import { Button } from "@/components/ui/button";
-import { vim } from "@replit/codemirror-vim";
-import { inlineMarkdownExtension } from "./MarkdownRenderer";
-import { NotesPanel } from "./NotesPanel";
-import { MarkdownFileUpload } from "./MarkdownFileUpload";
-import Settings from "./Settings";
+import { useEffect, useRef, useState } from "react"
+import { EditorState } from "@codemirror/state"
+import { EditorView, basicSetup } from "codemirror"
+import { markdown } from "@codemirror/lang-markdown"
+import { Button } from "@/components/ui/button"
+import { vim } from "@replit/codemirror-vim"
+import { inlineMarkdownExtension } from "./MarkdownRenderer"
+import { NotesPanel } from "./NotesPanel"
+import { MarkdownFileUpload } from "./MarkdownFileUpload"
+import Settings from "./Settings"
 
 export function Workspace() {
-  const [showNotes, setShowNotes] = useState(false);
-  const [vimBindingEnabled, setVimBindingEnabled] = useState(false);
-  const editorRef = useRef<HTMLDivElement>(null);
-  const [editorView, setEditorView] = useState<EditorView | null>(null);
+  const [showNotes, setShowNotes] = useState(false)
+  const [vimBindingEnabled, setVimBindingEnabled] = useState(false)
+  const editorRef = useRef<HTMLDivElement>(null)
+  const [editorView, setEditorView] = useState<EditorView | null>(null)
 
   useEffect(() => {
-    if (!editorRef.current) return;
+    if (!editorRef.current) return
 
-    const currentContent = editorView 
-      ? editorView.state.doc.toString() 
-      : `## Hello World
+    const currentContent = editorView
+      ? editorView.state.doc.toString()
+      : `
+## Hello World
 
 This is **bold** text.
 
-[[Wikilink Test]]`;
+[[Wikilink Test]]`
 
     const extensions = [
       basicSetup,
@@ -32,32 +33,32 @@ This is **bold** text.
       markdown(),
       inlineMarkdownExtension,
       ...(vimBindingEnabled ? [vim()] : []),
-    ];
+    ]
 
     const startState = EditorState.create({
       doc: currentContent,
       extensions: extensions,
-    });
+    })
 
     if (editorView) {
-      editorView.destroy();
+      editorView.destroy()
     }
 
     const view = new EditorView({
       state: startState,
       parent: editorRef.current,
-    });
+    })
 
-    setEditorView(view);
+    setEditorView(view)
 
     return () => {
-      view.destroy();
-    };
-  }, [vimBindingEnabled]);
+      view.destroy()
+    }
+  }, [vimBindingEnabled])
 
   const handleVimBindingToggle = (enabled: boolean) => {
-    setVimBindingEnabled(enabled);
-  };
+    setVimBindingEnabled(enabled)
+  }
 
   return (
     <div className="editor-container">
@@ -77,5 +78,5 @@ This is **bold** text.
         {showNotes && <NotesPanel editorRef={editorRef} />}
       </div>
     </div>
-  );
+  )
 }
