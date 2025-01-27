@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import {
   Dialog,
   DialogContent,
@@ -24,6 +24,27 @@ const Settings: React.FC<SettingsProps> = ({ onVimBindingToggle }) => {
   const [vimBinding, setVimBinding] = useState(false);
   const [theme, setTheme] = useState("system");
 
+  useEffect(() => {
+    const root = document.documentElement;
+
+    if (theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+      root.classList.add("dark");
+      root.classList.remove("light");
+    } else {
+      root.classList.add("light");
+      root.classList.remove("dark");
+    }
+
+    if (theme !== "system") {
+      localStorage.setItem("theme", theme);
+    } else {
+      localStorage.removeItem("theme");
+    }
+  }, [theme]);
+
+  const handleThemeChange = (value: string) => {
+    setTheme(value);
+  };
   const handleVimBindingChange = (checked: boolean) => {
     setVimBinding(checked);
     onVimBindingToggle(checked);
@@ -62,7 +83,7 @@ const Settings: React.FC<SettingsProps> = ({ onVimBindingToggle }) => {
               <div>
                 <div className="settings-item mt-[-0.4rem]">
                   <span>Theme</span>
-                    <Select value={theme} onValueChange={setTheme}>
+                    <Select value={theme} onValueChange={handleThemeChange}>
                         <SelectTrigger className="w-[90px] border-none hover:bg-[#ececec] shadow-none focus:outline-none focus:ring-0">
                             <SelectValue placeholder="Select theme" />
                         </SelectTrigger>
