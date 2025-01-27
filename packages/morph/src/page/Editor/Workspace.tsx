@@ -11,26 +11,37 @@ import Settings from "./Settings";
 
 export function Workspace() {
   const [showNotes, setShowNotes] = useState(false);
+  const [vimBindingEnabled, setVimBindingEnabled] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
   const [editorView, setEditorView] = useState<EditorView | null>(null);
 
   useEffect(() => {
     if (!editorRef.current) return;
 
-    const startState = EditorState.create({
-      doc: `## Hello World
+    const currentContent = editorView 
+      ? editorView.state.doc.toString() 
+      : `## Hello World
 
 This is **bold** text.
 
-[[Wikilink Test]]`,
-      extensions: [
-        basicSetup,
-        EditorView.lineWrapping,
-        markdown(),
-        inlineMarkdownExtension,
-        vim(),
-      ],
+[[Wikilink Test]]`;
+
+    const extensions = [
+      basicSetup,
+      EditorView.lineWrapping,
+      markdown(),
+      inlineMarkdownExtension,
+      ...(vimBindingEnabled ? [vim()] : []),
+    ];
+
+    const startState = EditorState.create({
+      doc: currentContent,
+      extensions: extensions,
     });
+
+    if (editorView) {
+      editorView.destroy();
+    }
 
     const view = new EditorView({
       state: startState,
@@ -42,7 +53,11 @@ This is **bold** text.
     return () => {
       view.destroy();
     };
-  }, []);
+  }, [vimBindingEnabled]);
+
+  const handleVimBindingToggle = (enabled: boolean) => {
+    setVimBindingEnabled(enabled);
+  };
 
   return (
     <div className="editor-container">
@@ -54,7 +69,7 @@ This is **bold** text.
 
         <MarkdownFileUpload editorView={editorView} />
 
-        <Settings />
+        <Settings onVimBindingToggle={handleVimBindingToggle} />
       </div>
 
       <div className={`editor-content ${showNotes ? "with-notes" : ""}`}>
