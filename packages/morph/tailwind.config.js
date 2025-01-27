@@ -15,6 +15,22 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+			flexoki: {
+				light: {
+				background: '#faf4ed',
+				text: '#575279',
+				primary: '#286983',
+				secondary: '#907aa9',
+				accent: '#ea9d34',
+				},
+				dark: {
+				background: '#232136',
+				text: '#e0def4',
+				primary: '#286983',
+				secondary: '#907aa9',
+				accent: '#ea9d34',
+				},
+		  },
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
