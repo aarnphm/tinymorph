@@ -16,7 +16,13 @@ html {
   max-width: 75rem;
   margin: 0 auto;
   padding: 2rem 4rem;
-
+  
+  .cm-cursor {
+    border-left: 2px solid black;
+  }
+  html.dark & .cm-cursor {
+    border-left: 2px solid white;
+  }
   .cm-gutters {
     display: none;
   }
@@ -253,9 +259,12 @@ html {
         transition: transform 0.2s ease, font-weight 0.2s ease;
         font-family: $font-body;
         font-weight: $normalWeight;
+        html.dark & {
+          background-color: #010042; // Dark mode
+          color: #e0e0e0; // Dark mode text
+        }
       }
     }
-
     &.with-notes {
       .editor {
         flex: 0 0 74%;
