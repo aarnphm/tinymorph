@@ -44,7 +44,29 @@
       --ring: 212.7 26.8% 83.9%;
       transition: background-color 0.5s ease, color 0.5s ease;
     }
-  
+
+    .text-gray-600 {
+      --tw-text-opacity: 1;
+      color: rgb(75 85 99 / var(--tw-text-opacity, 1));
+    }
+    
+    html.dark .text-gray-600 {
+      --tw-text-opacity: 1;
+      color: rgb(156 163 175 / var(--tw-text-opacity, 1));
+    }
+    .settings-tab {
+      color: #555;
+    }
+    
+    html.dark .settings-tab {
+      color: #aaa;
+    }
+    .settings-content .settings-item span{
+      color: #555;
+    }
+    html.dark .settings-content .settings-item span {
+      color: #aaa;
+    }
     * {
       @apply border-border;
     }
