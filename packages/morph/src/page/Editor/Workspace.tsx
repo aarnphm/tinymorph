@@ -1,31 +1,35 @@
-import { useEffect, useRef, useState } from "react"
-import { EditorState } from "@codemirror/state"
-import { EditorView, basicSetup } from "codemirror"
-import { markdown } from "@codemirror/lang-markdown"
-import { Button } from "@/components/ui/button"
-import { vim } from "@replit/codemirror-vim"
-import { inlineMarkdownExtension } from "./MarkdownRenderer"
-import { NotesPanel } from "./NotesPanel"
-import { MarkdownFileUpload } from "./MarkdownFileUpload"
-import Settings from "./Settings"
+import React, { useEffect, useRef, useState } from "react";
+import { EditorState } from "@codemirror/state";
+import { EditorView, basicSetup } from "codemirror";
+import { markdown } from "@codemirror/lang-markdown";
+import { vim } from "@replit/codemirror-vim";
+import { inlineMarkdownExtension } from "./MarkdownRenderer";
+import { NotesPanel } from "./NotesPanel";
+import { MarkdownFileUpload } from "./MarkdownFileUpload";
+import Settings from "./Settings";
+
+import {
+  Menubar,
+  MenubarMenu,
+  MenubarTrigger,
+} from "@/components/ui/menubar"
 
 export function Workspace() {
-  const [showNotes, setShowNotes] = useState(false)
-  const [vimBindingEnabled, setVimBindingEnabled] = useState(false)
-  const editorRef = useRef<HTMLDivElement>(null)
-  const [editorView, setEditorView] = useState<EditorView | null>(null)
+  const [showNotes, setShowNotes] = useState(false);
+  const [vimBindingEnabled, setVimBindingEnabled] = useState(false);
+  const editorRef = useRef<HTMLDivElement>(null);
+  const [editorView, setEditorView] = useState<EditorView | null>(null);
 
   useEffect(() => {
-    if (!editorRef.current) return
+    if (!editorRef.current) return;
 
     const currentContent = editorView
       ? editorView.state.doc.toString()
-      : `
-## Hello World
+      : `## Hello World
 
 This is **bold** text.
 
-[[Wikilink Test]]`
+[[Wikilink Test]]`;
 
     const extensions = [
       basicSetup,
@@ -33,50 +37,68 @@ This is **bold** text.
       markdown(),
       inlineMarkdownExtension,
       ...(vimBindingEnabled ? [vim()] : []),
-    ]
-
-    const startState = EditorState.create({
-      doc: currentContent,
-      extensions: extensions,
-    })
+    ];
 
     if (editorView) {
-      editorView.destroy()
+      editorView.destroy();
     }
 
     const view = new EditorView({
-      state: startState,
+      state: EditorState.create({
+        doc: currentContent,
+        extensions: extensions,
+      }),
       parent: editorRef.current,
-    })
+    });
 
-    setEditorView(view)
+    setEditorView(view);
 
     return () => {
-      view.destroy()
-    }
-  }, [vimBindingEnabled])
+      view.destroy();
+    };
+  }, [vimBindingEnabled]);
 
   const handleVimBindingToggle = (enabled: boolean) => {
-    setVimBindingEnabled(enabled)
-  }
+    setVimBindingEnabled(enabled);
+  };
+
+  const toggleNotes = () => setShowNotes((prev) => !prev);
 
   return (
-    <div className="editor-container">
-      <div className="flex justify-end items-center gap-2 mb-4 mt-2 mr-4">
-        <Button variant="outline" onClick={() => setShowNotes(!showNotes)}>
-          <i className="las la-sticky-note text-lg" />
-          Notes
-        </Button>
+    <div className={`workspace-container ${showNotes ? "show-notes" : ""}`}>
+      <div className="left">
+        <section className="editor" data-editor-container="true">
+          <div ref={editorRef} />
+        </section>
 
-        <MarkdownFileUpload editorView={editorView} />
+        <section className="menu-bar">
+          <Menubar className="h-11 flex justify-end">
+            <MenubarMenu>
+              <MenubarTrigger onClick={toggleNotes}>
+          <i className="las la-sticky-note text-lg cursor-pointer" />
+              </MenubarTrigger>
+            </MenubarMenu>
 
-        <Settings onVimBindingToggle={handleVimBindingToggle} />
+            <MenubarMenu>
+              <MenubarTrigger>
+          <MarkdownFileUpload editorView={editorView} />
+              </MenubarTrigger>
+            </MenubarMenu>
+
+            <MenubarMenu>
+              <MenubarTrigger>
+          <Settings onVimBindingToggle={handleVimBindingToggle} />
+              </MenubarTrigger>
+            </MenubarMenu>
+          </Menubar>
+        </section>
       </div>
 
-      <div className={`editor-content ${showNotes ? "with-notes" : ""}`}>
-        <div className="editor" ref={editorRef} data-editor-container="true" />
-        {showNotes && <NotesPanel editorRef={editorRef} />}
+      <div className="right">
+        <aside className="notes-panel">
+          <NotesPanel editorRef={editorRef} />
+        </aside>
       </div>
     </div>
-  )
+  );
 }

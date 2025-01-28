@@ -1,6 +1,6 @@
-import { useRef, useState, useEffect, RefObject } from 'react';
-import { drag } from 'd3-drag';
-import { select } from 'd3-selection';
+import { useRef, useState, useEffect, RefObject } from "react";
+import { drag } from "d3-drag";
+import { select } from "d3-selection";
 
 export interface Note {
   id: number;
@@ -24,63 +24,64 @@ interface NotesPanelProps {
   editorRef: RefObject<HTMLDivElement | null>;
 }
 
-
 const sampleNotes: Note[] = [
-  { 
-    id: 1, 
-    title: "Note 1", 
+  {
+    id: 1,
+    title: "Note 1",
     content: "This is the first note. It provides overview of important details.",
     graph: [
-      { x: 'a', y: 0.2 },
-      { x: 'b', y: 0.5 },
-      { x: 'c', y: 0.3 },
-      { x: 'd', y: 0.8 },
-    ]
+      { x: "a", y: 0.2 },
+      { x: "b", y: 0.5 },
+      { x: "c", y: 0.3 },
+      { x: "d", y: 0.8 },
+    ],
   },
-  { 
-    id: 2, 
-    title: "Note 2", 
-    content: "This is the second note, and it includes slightly more details about the topic.",
+  {
+    id: 2,
+    title: "Note 2",
+    content:
+      "This is the second note, and it includes slightly more details about the topic.",
     graph: [
-      { x: 'a', y: 0.5 },
-      { x: 'b', y: 0.7 },
-      { x: 'c', y: 0.6 },
-      { x: 'd', y: 0.4 },
-    ]
+      { x: "a", y: 0.5 },
+      { x: "b", y: 0.7 },
+      { x: "c", y: 0.6 },
+      { x: "d", y: 0.4 },
+    ],
   },
-  { 
-    id: 3, 
-    title: "Note 3", 
+  {
+    id: 3,
+    title: "Note 3",
     content: "This is the third note. It's concise and straight to the point.",
     graph: [
-      { x: 'a', y: 0.3 },
-      { x: 'b', y: 0.4 },
-      { x: 'c', y: 0.6 },
-      { x: 'd', y: 0.8 },
-    ]
+      { x: "a", y: 0.3 },
+      { x: "b", y: 0.4 },
+      { x: "c", y: 0.6 },
+      { x: "d", y: 0.8 },
+    ],
   },
-  { 
-    id: 4, 
-    title: "Note 4", 
-    content: "This is the fourth note. Here, we discuss some related ideas without going too in depth.",
+  {
+    id: 4,
+    title: "Note 4",
+    content:
+      "This is the fourth note. Here, we discuss some related ideas without going too in depth.",
     graph: [
-      { x: 'a', y: 0.1 },
-      { x: 'b', y: 0.3 },
-      { x: 'c', y: 0.5 },
-      { x: 'd', y: 0.4 },
-    ]
+      { x: "a", y: 0.1 },
+      { x: "b", y: 0.3 },
+      { x: "c", y: 0.5 },
+      { x: "d", y: 0.4 },
+    ],
   },
-  { 
-    id: 5, 
-    title: "Note 5", 
+  {
+    id: 5,
+    title: "Note 5",
     content: "This is the fifth note. It's much shorter than the others.",
     graph: [
-      { x: 'a', y: 0.4 },
-      { x: 'b', y: 0.6 },
-      { x: 'c', y: 0.8 },
-      { x: 'd', y: 0.7 },
-    ]
-  }
+      { x: "a", y: 0.4 },
+      { x: "b", y: 0.6 },
+      { x: "c", y: 0.8 },
+      { x: "d", y: 0.7 },
+    ],
+  },
 ];
 
 function DraggableNote({ note, editorRef, onDrop }: DraggableNoteProps) {
@@ -118,29 +119,28 @@ function DraggableNote({ note, editorRef, onDrop }: DraggableNoteProps) {
             const editorRect = editorRef.current.getBoundingClientRect();
             const finalX = event.sourceEvent.clientX;
             const finalY = event.sourceEvent.clientY;
-            droppedOverEditor = (
+            droppedOverEditor =
               finalX >= editorRect.left &&
               finalX <= editorRect.right &&
               finalY >= editorRect.top &&
-              finalY <= editorRect.bottom
-            );
+              finalY <= editorRect.bottom;
           }
           onDrop(note, droppedOverEditor);
         });
-      
+
       select(noteRef.current).call(dragBehavior);
     }
   }, [editorRef, note, onDrop]);
 
   return (
-    <>
+    <section>
       {dragging && (
-        <div 
+        <div
           className="note-item ghost"
-          style={{ 
-            width: fixedWidth || 'auto', 
+          style={{
+            width: fixedWidth || "auto",
             opacity: 0.5,
-            position: 'relative',
+            position: "relative",
           }}
         >
           <h3 className="font-semibold mb-2">{note.title}</h3>
@@ -152,19 +152,19 @@ function DraggableNote({ note, editorRef, onDrop }: DraggableNoteProps) {
         ref={noteRef}
         className={`note-item ${dragging ? "dragging" : ""}`}
         style={{
-          cursor: 'grab',
-          position: dragging ? 'fixed' : 'relative',
+          cursor: "grab",
+          position: dragging ? "fixed" : "relative",
           top: dragging ? position.y : undefined,
           left: dragging ? position.x : undefined,
-          width: fixedWidth || 'auto',
-          zIndex: dragging ? 999 : 'auto',
+          width: fixedWidth || "auto",
+          zIndex: dragging ? 999 : "auto",
           margin: 0,
         }}
       >
         <h3 className="font-semibold mb-2">{note.title}</h3>
         <p className="text-sm text-gray-600">{note.content}</p>
       </div>
-    </>
+    </section>
   );
 }
 
@@ -174,34 +174,46 @@ export function NotesPanel({ editorRef }: NotesPanelProps) {
 
   const handleDrop = (droppedNote: Note, droppedOverEditor: boolean) => {
     if (droppedOverEditor) {
-      setNotes(prevNotes => prevNotes.filter(note => note.id !== droppedNote.id));
-      
+      setNotes((prevNotes) =>
+        prevNotes.filter((note) => note.id !== droppedNote.id)
+      );
+
       const { graph, ...noteWithoutGraph } = droppedNote;
-      setDroppedNotes(prev => [...prev, noteWithoutGraph]);
-  
+      setDroppedNotes((prev) => [...prev, noteWithoutGraph]);
+
       console.log("Dropped Notes:", [...droppedNotes, noteWithoutGraph]);
     }
   };
-  
+
   const leftColumnNotes = notes.filter((_, index) => index % 2 === 0);
   const rightColumnNotes = notes.filter((_, index) => index % 2 === 1);
 
   return (
-    <div className="notes-panel">
+    <section className="notes-panel">
       <h2 className="text-xl font-bold mb-4">Notes</h2>
       <div className="notes-columns">
         <div className="notes-column">
           {leftColumnNotes.map((note) => (
-            <DraggableNote key={note.id} note={note} editorRef={editorRef} onDrop={handleDrop} />
+            <DraggableNote
+              key={note.id}
+              note={note}
+              editorRef={editorRef}
+              onDrop={handleDrop}
+            />
           ))}
         </div>
         <div className="notes-column">
           {rightColumnNotes.map((note) => (
-            <DraggableNote key={note.id} note={note} editorRef={editorRef} onDrop={handleDrop} />
+            <DraggableNote
+              key={note.id}
+              note={note}
+              editorRef={editorRef}
+              onDrop={handleDrop}
+            />
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
