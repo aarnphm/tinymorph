@@ -22,7 +22,8 @@ html {
   padding: 2rem 4rem;
   border: 1px solid $gray-light;
   border-radius: 8px;
-
+  flex: 1;
+  height: calc(100vh - 5rem);
   .cm-gutters {
     display: none;
   }
@@ -170,31 +171,38 @@ html {
 
 .workspace-container {
   display: grid;
-  grid-template-columns: 80rem 0;
+  grid-template-columns: 80% 0;
   justify-content: center;
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
   padding: 1rem;
   box-sizing: border-box;
   overflow-x: auto;
 }
 
 .left {
-  width: 100%;
-  max-width: 80rem;
+  flex: 1;
+  min-width: 55%;
   position: relative;
   transition: transform 0.3s ease-in-out;
   transform: translateX(0);
   margin-left: 5.5rem;
+  display: flex;
+  flex-direction: column; 
+  height: 100%;
 }
 
 .right {
+  flex: 0 0 30%;
   position: relative;
   overflow: hidden; 
-  width: 100%;
   margin-left: 0.5rem;
+  height: 100%;
+  flex-direction: column;
 }
 
 aside.notes-panel {
+  flex: 0 0 auto;
   border: 1px solid $gray-light;
   border-radius: 8px;
   aside {
@@ -202,11 +210,12 @@ aside.notes-panel {
   }
 
   background-color: #fff;
-  position: absolute;
+  position: relative;
   top: 0;
-  right: -40rem; 
-  width: 31rem;
-  height: calc(100vh - 2.3rem);
+  width: 100%;
+  max-width: 400px;
+  min-width: 250px;
+  height: 100%;
   padding: 1rem 1rem; 
   box-sizing: border-box;
   transition: right 0.3s ease-in-out;
@@ -226,6 +235,7 @@ aside.notes-panel {
     padding-right: 0.25rem;
     overflow-y: auto;
     overflow-x: auto;
+    justify-content: space-between;
 
     &::-webkit-scrollbar {
       width: 6px;
@@ -252,6 +262,9 @@ aside.notes-panel {
 
   .note-item {
     background-color: #ffffff;
+      flex: 1;
+      min-width: 45%;
+      max-width: 100%;
     border-radius: 0.5rem;
     padding: 1rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -261,7 +274,7 @@ aside.notes-panel {
 }
 
 .workspace-container.show-notes {
-  grid-template-columns: 77.5rem 31.5rem;
+  grid-template-columns: 2fr 1fr;
 
   .left {
     transform: translateX(-6em);
@@ -270,4 +283,9 @@ aside.notes-panel {
   .notes-panel {
     right: 0;
   }
+}
+
+.workspace-container.show-notes .notes-panel {
+  width: 100%;
+  opacity: 1;
 }
