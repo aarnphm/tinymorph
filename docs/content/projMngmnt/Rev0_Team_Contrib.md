@@ -19,14 +19,13 @@ For each team member how many team meetings have they attended over the time per
 
 | Student | Meetings |
 | ------- | -------- |
-| Total   | Num      |
-| Name 1  | Num      |
-| Name 2  | Num      |
-| Name 3  | Num      |
-| Name 4  | Num      |
-| Name 5  | Num      |
+| Total   | 13       |
+| Aaron (Anh) Pham   | 11       |
+| Nebras Khan  | 13       |
+| Waleed Malik  | 11       |
+| Zhiwei Li  | 13       |
 
-If needed, an explanation for the counts can be provided here.
+The weekly stand-up meeting is agreed by team members as a time slot to sync up the development progress and any important information from TA meeting or lecture, along with the task divisions of the deliverables writing. It also sometimes works as a knowledge sharing session among group members to conduct Q&A about the backgroup theory of the project, when there is a mentioned research direction raised by the supervisor.
 
 ## Supervisor/Stakeholder Meeting Attendance
 
@@ -34,14 +33,13 @@ For each team member how many supervisor/stakeholder team meetings have they att
 
 | Student | Meetings |
 | ------- | -------- |
-| Total   | Num      |
-| Name 1  | Num      |
-| Name 2  | Num      |
-| Name 3  | Num      |
-| Name 4  | Num      |
-| Name 5  | Num      |
+| Total   | 5        |
+| Aaron (Anh) Pham   | 3       |
+| Nebras Khan  | 5       |
+| Waleed Malik  | 4       |
+| Zhiwei Li  | 5       |
 
-If needed, an explanation for the counts can be provided here.
+The team has demonstrated a strong commitment to attending supervisor meetings with Dr. Swati Mishra and preparing for potential stakeholder interactions. Each member prioritized these meetings, and absences occurred only when significant obligations or emergencies arose. In such cases, members provided appropriate notice in advance, ensuring transparency and allowing the team to adjust as needed. This level of communication has helped maintain accountability and demonstrated each member's dedication to the project and to Dr. Mishra's guidance.
 
 ## Lecture Attendance
 
@@ -49,14 +47,13 @@ For each team member how many lectures have they attended over the time period o
 
 | Student | Lectures |
 | ------- | -------- |
-| Total   | Num      |
-| Name 1  | Num      |
-| Name 2  | Num      |
-| Name 3  | Num      |
-| Name 4  | Num      |
-| Name 5  | Num      |
+| Total   | 5      |
+| Aaron (Anh) Pham  | 4      |
+| Nebras Khan  | 4      |
+| Waleed Malik  | 4      |
+| Zhiwei Li  | 5       |
 
-If needed, an explanation for the lecture attendance can be provided here.
+The team incorperated the feedback from POC comments and had members attend and summarize the lectures to stay up to date with the latest in-class updates.
 
 ## TA Document Discussion Attendance
 
@@ -64,14 +61,13 @@ For each team member how many of the informal document discussion meetings with 
 
 | Student | Lectures |
 | ------- | -------- |
-| Total   | Num      |
-| Name 1  | Num      |
-| Name 2  | Num      |
-| Name 3  | Num      |
-| Name 4  | Num      |
-| Name 5  | Num      |
+| Total   | 4      |
+| Aaron (Anh) Pham  | 2      |
+| Nebras Khan  | 4      |
+| Waleed Malik  | 3      |
+| Zhiwei Li  | 4       |
 
-If needed, an explanation for the attendance can be provided here.
+The team has put in an effort to participate in the informal document discussion meetings with the TA, understanding their value for project improvement. Attendance levels varied, but those who were present contributed useful insights and shared notes with members who could not attend. Members who were unable to attend certain meetings had prior significant commitments and informed the team in advance. This proactive approach allowed the team to coordinate effectively, ensuring that feedback and insights from the TA discussions were shared and integrated into the project workflow.
 
 ## Commits
 
@@ -79,14 +75,13 @@ For each team member how many commits to the main branch have been made over the
 
 | Student | Commits | Percent |
 | ------- | ------- | ------- |
-| Total   | Num     | 100%    |
-| Name 1  | Num     | %       |
-| Name 2  | Num     | %       |
-| Name 3  | Num     | %       |
-| Name 4  | Num     | %       |
-| Name 5  | Num     | %       |
+| Total   | 130     | 100%    |
+| Aaron (Anh) Pham  | 88     | 67%       |
+| Nebras Khan  | 25     | 19%       |
+| Waleed Malik  | 8     | 7%       |
+| Zhiwei Li  | 9    | 7%       |
 
-If needed, an explanation for the counts can be provided here. For instance, if a team member has more commits to unmerged branches, these numbers can be provided here. If multiple people contribute to a commit, git allows for multi-author commits.
+
 
 ## Issue Tracker
 
@@ -94,16 +89,14 @@ For each team member how many issues have they authored (including open and clos
 
 | Student | Authored (O+C) | Assigned (C only) |
 | ------- | -------------- | ----------------- |
-| Name 1  | Num            | Num               |
-| Name 2  | Num            | Num               |
-| Name 3  | Num            | Num               |
-| Name 4  | Num            | Num               |
-| Name 5  | Num            | Num               |
+| Aaron (Anh) Pham  | 33   | 23                |
+| Nebras Khan  | 7         | 5                 |
+| Waleed Malik  | 11       | 5                 |
+| Zhiwei Li  | 7           | 7
 
-If needed, an explanation for the counts can be provided here.
+The table records the commits initiated by each seperate team member. Aaron as team leader co-authors **most** group member's commits to make improvements and help to merge to the main branch, along with other commits for independent contributions of document and coding changes. For other group members, there is basically one or two commits for every document deliverable, containing more sub-patches of modification within a single commit with peer-review and modification. Furthermore, Zhiwei and Waleed did alot of the Design Documentation (MG and MIS) while Aaron and Nebras worked on starting the demo development.
 
 ## CICD
 
-Say how CICD is used in your project
-
+Our CI/CD pipeline for tinymorph is currently focused on the frontend, ensuring that the project builds successfully before deployment using Cloudflare Wrangler. Every push or pull request triggers an automated build validation to confirm the frontend compiles without errors, while Cloudflare Workers handle seamless deployment. As we continue development, we are actively working on integrating inference model testing and deployment into the pipeline. This will include automated model validation, API performance tracking, and Docker-based deployments, ensuring stable and efficient text generation alongside the frontend. These improvements will enhance system reliability and scalability, allowing for a more robust and automated development process.
 If your team has additional metrics of productivity, please feel free to add them to this report.
