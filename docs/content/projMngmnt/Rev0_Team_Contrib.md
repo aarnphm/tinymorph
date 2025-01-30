@@ -2,9 +2,8 @@
 id: Rev0_Team_Contrib
 tags:
   - management
-author: aarnphm
-date: "2024-09-16"
-modified: 2025-01-29 22:41:05 GMT-05:00
+author: waleedmalik7
+date: "2025-01-29"
 title: "Team Contributions: Rev 0"
 ---
 
@@ -12,7 +11,7 @@ This document summarizes the contributions of each team member for the Rev 0 Dem
 
 ## Demo Plans
 
-What will you be demonstrating
+We will be demonstrating the Frontend and Backend implementation of tinymorph, showcasing how the text editor and inference model work together. The demo will highlight how the text editor interacts with the inference model to generate sticky notes containing relevant text suggestions, which can be dragged and dropped into the editor to seamlessly continue the user's writing. While integration is ongoing, we will present both components separately and provide a preview of their combined functionality. By the final demonstration, we aim to have a fully functional system with real-time text generation and interactive writing assistance. 
 
 ## Team Meeting Attendance
 
