@@ -256,6 +256,7 @@ aside.notes-panel {
   .note-item {
     background-color: var(--bg-color);
     border-radius: 0.5rem;
+    border: var(--note-border-width) solid var(--note-border-color);
     padding: 1rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     font-family: $font-body;

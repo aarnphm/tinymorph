@@ -24,7 +24,7 @@ const getPreferredTheme = (): string => {
   if (storedTheme) {
     return storedTheme;
   }
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return "system";
 };
 
 const Settings: React.FC<SettingsProps> = ({ onVimBindingToggle }) => {

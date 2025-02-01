@@ -104,7 +104,7 @@ function DraggableNote({ note, editorRef, onDrop }: DraggableNoteProps) {
         }}
       >
         <h3 className="font-semibold mb-2">{note.title}</h3>
-        <p className="text-sm text-gray-600">{note.content}</p>
+        <p className="text-sm text-gray-500">{note.content}</p>
       </div>
     </section>
   )
