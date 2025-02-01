@@ -12,10 +12,16 @@ html {
   font-size: 0.8584em;
 }
 
+.menu-bar {
+  font-family: $font-body;
+  margin-top: 1rem;
+}
+
 .cm-editor {
-  max-width: 75rem;
   margin: 0 auto;
   padding: 2rem 4rem;
+  border: 1px solid $gray-light;
+  border-radius: 8px;
 
   .cm-gutters {
     display: none;
@@ -23,6 +29,8 @@ html {
 
   .cm-scroller {
     overflow-x: hidden;
+    min-height: 80vh;
+    padding-bottom: 1rem;
   }
 
   .cm-activeLine {
@@ -42,6 +50,7 @@ html {
     font-weight: $normalWeight;
   }
 }
+
 
 .cm-markdown-inline {
   margin: 0;
@@ -73,17 +82,9 @@ html {
   h4 { font-size: 1.5811em; }   
   h5 { font-size: 1.3572em; }   
   h6 { font-size: 1.165em; }
-     
-  small { 
-    font-size: 0.8584em;
-    font-weight: $normalWeight;
-  } 
 
   blockquote {
     margin: 0;
-    padding: 0;
-    display: inline-block;
-    vertical-align: baseline;
     padding-left: 1rem;
     border-left: 3px solid $gray-medium;
     color: #555555;
@@ -94,13 +95,12 @@ html {
 
     p {
       margin: 0;
-      padding: 0;
       display: inline;
-      font-weight: inherit;
     }
   }
 
-  ul, ol {
+  ul,
+  ol {
     margin: 0;
     padding: 0;
     display: block;
@@ -118,7 +118,6 @@ html {
 
   ul {
     list-style-type: disc;
-
     ul {
       list-style-type: circle;
     }
@@ -126,7 +125,6 @@ html {
 
   ol {
     list-style-type: decimal;
-
     ol {
       list-style-type: lower-alpha;
     }
@@ -170,100 +168,106 @@ html {
   }
 }
 
-.editor-container {
-  min-height: 100vh;
+.workspace-container {
+  display: grid;
+  grid-template-columns: 80rem 0;
+  justify-content: center;
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+.left {
+  width: 100%;
+  max-width: 80rem;
+  position: relative;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(0);
+  margin-left: 5.5rem;
+}
+
+.right {
+  position: relative;
+  overflow: hidden; 
+  width: 100%;
+  margin-left: 0.5rem;
+}
+
+aside.notes-panel {
+  border: 1px solid $gray-light;
+  border-radius: 8px;
+  aside {
+    border: none !important;
+  }
+
+  background-color: #fff;
+  position: absolute;
+  top: 0;
+  right: -40rem; 
+  width: 31rem;
+  height: calc(100vh - 2.3rem);
+  padding: 1rem 1rem; 
+  box-sizing: border-box;
+  transition: right 0.3s ease-in-out;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  padding-bottom: 1rem;
 
-  .editor-content {
+  h2 {
+    margin-bottom: 1rem;
+    font-family: $font-heading;
+  }
+
+  .notes-columns {
     display: flex;
+    gap: 0.5rem;
     flex: 1;
-    position: relative;
-    min-height: 0;
-    overflow: hidden;
-    
-    .editor {
-      flex: 0 0 100%;
-      transition: flex-basis 0.3s ease;
+    padding-right: 0.25rem;
+    overflow-y: auto;
+    overflow-x: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: $gray-medium;
+      border-radius: 3px;
+      &:hover {
+        background: #bbbbbb;
+      }
     }
 
-    .notes-panel {
-      flex: 0 0 25%; 
-      transform: none !important;
-      transition: transform 0.3s ease;
-      padding: 1rem;
-      border: 1px solid $gray-light;
-      border-radius: 8px;
+    .notes-column {
+      flex: 1;
       display: flex;
       flex-direction: column;
-      height: calc(100vh - 4.8rem);
-      min-height: 400px;
-      position: sticky;
-      top: 1rem;
-      overflow-x: auto;
-      
-      
-      h2 {
-        margin-bottom: 1rem;
-        flex-shrink: 0;
-        font-family: $font-heading;
-      }
-
-      .notes-columns {
-        display: flex;
-        gap: 1rem;
-        overflow-y: auto;
-        overflow-x: auto;
-        flex: 1;
-        padding-right: 0.5rem;
-        
-        &::-webkit-scrollbar {
-          width: 6px;
-        }
-
-        &::-webkit-scrollbar-track {
-          background: #f1f1f1;
-          border-radius: 3px;
-        }
-
-        &::-webkit-scrollbar-thumb {
-          background: $gray-medium;
-          border-radius: 3px;
-
-          &:hover {
-            background: #bbbbbb;
-          }
-        }
-
-        .notes-column {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-      }
-
-      .note-item {
-        background-color: #ffffff;
-        border-radius: 0.5rem;
-        padding: 1rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transform: translateZ(0);
-        transition: transform 0.2s ease, font-weight 0.2s ease;
-        font-family: $font-body;
-        font-weight: $normalWeight;
-      }
+      gap: 0.5rem;
     }
+  }
 
-    &.with-notes {
-      .editor {
-        flex: 0 0 74%;
-      }
+  .note-item {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: $font-body;
+    font-weight: $normalWeight;
+  }
+}
 
-      .notes-panel {
-        transform: translateX(0);
-      }
-    }
+.workspace-container.show-notes {
+  grid-template-columns: 77.5rem 31.5rem;
+
+  .left {
+    transform: translateX(-6em);
+  }
+
+  .notes-panel {
+    right: 0;
   }
 }

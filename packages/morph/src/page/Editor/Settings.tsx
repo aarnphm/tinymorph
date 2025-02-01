@@ -13,7 +13,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";  
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
 interface SettingsProps {
@@ -33,10 +32,9 @@ const Settings: React.FC<SettingsProps> = ({ onVimBindingToggle }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <div className="cursor-pointer flex justify-end items-center">
           <i className="las la-cog text-lg" />
-          Settings
-        </Button>
+        </div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

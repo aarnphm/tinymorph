@@ -1,6 +1,5 @@
 import React from 'react';
 import { EditorView } from "codemirror";
-import { Button } from "@/components/ui/button";
 
 interface MarkdownFileUploadProps {
   editorView: EditorView | null;
@@ -28,8 +27,8 @@ export function MarkdownFileUpload({ editorView }: MarkdownFileUploadProps) {
   };
 
   return (
-    <Button variant="outline" asChild>
-      <label className="cursor-pointer">
+    <div className='flex justify-end items-center'>
+      <label className="cursor-pointer flex justify-end items-center">
         <input
           type="file"
           accept=".md,.markdown"
@@ -37,8 +36,7 @@ export function MarkdownFileUpload({ editorView }: MarkdownFileUploadProps) {
           className="hidden"
         />
         <i className="las la-upload text-lg" />
-        Upload
       </label>
-    </Button>
+    </div>
   );
 }
