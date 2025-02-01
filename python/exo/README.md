@@ -1,5 +1,11 @@
 ## exo
 
-_a series of investigation into SAEs prevention for latent activation_
+a vLLM plugin to serve SAEs within the inference engine.
 
-To be used with `exo-service`
+## installation
+
+```bash
+uv add vllm exo
+```
+
+Note that this will override the default LlamaForCausalLM in vLLM.

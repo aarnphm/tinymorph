@@ -1,4 +1,9 @@
 * text=auto eol=lf
 docs/content/** linguist-documentation
 docs/ linguist-detectable
-docs/content/chicago-fullnote-bibliography.csl linguist-vendored
+*.md linguist-detectable=true
+*.md linguist-documentation=false
+*.md linguist-language=Markdown
+*.markdown linguist-detectable=true
+*.markdown linguist-documentation=false
+*.markdown linguist-language=Markdown
