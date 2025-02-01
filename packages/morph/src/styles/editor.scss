@@ -22,7 +22,10 @@ html {
   padding: 2rem 4rem;
   border: 1px solid $gray-light;
   border-radius: 8px;
-
+  caret-color: var(--cursor-color);
+  .cm-cursor {
+    border-left: 2px solid var(--cursor-color) !important;
+  }
   .cm-gutters {
     display: none;
   }
@@ -201,7 +204,7 @@ aside.notes-panel {
     border: none !important;
   }
 
-  background-color: #fff;
+  background-color: var(--bg-color);
   position: absolute;
   top: 0;
   right: -40rem; 
@@ -251,7 +254,7 @@ aside.notes-panel {
   }
 
   .note-item {
-    background-color: #ffffff;
+    background-color: var(--bg-color);
     border-radius: 0.5rem;
     padding: 1rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

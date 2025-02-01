@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,15 +14,53 @@ import {
     SelectValue,
 } from "@/components/ui/select";  
 import { Switch } from "@/components/ui/switch";
-
 interface SettingsProps {
   onVimBindingToggle: (enabled: boolean) => void;
 }
 
+const THEME_KEY = "theme";
+const getPreferredTheme = (): string => {
+  const storedTheme = localStorage.getItem(THEME_KEY);
+  if (storedTheme) {
+    return storedTheme;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+};
+
 const Settings: React.FC<SettingsProps> = ({ onVimBindingToggle }) => {
   const [activeTab, setActiveTab] = useState("general");
   const [vimBinding, setVimBinding] = useState(false);
-  const [theme, setTheme] = useState("system");
+  const [theme, setTheme] = useState(getPreferredTheme());
+  console.log("Theme updated to:", theme);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute("data-theme", theme);
+    console.log("Theme updated to:", root);
+    if (theme !== "system") {
+        localStorage.setItem("theme", theme);
+    } else {
+        localStorage.removeItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: Dark)").matches;
+        root.setAttribute("data-theme", prefersDark ? "Dark" : "Light");
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: Dark)");
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      if (!localStorage.getItem(THEME_KEY)) {
+        setTheme(e.matches ? "Dark" : "Light");
+      }
+    };
+    mediaQuery.addEventListener("change", handleSystemThemeChange);
+    return () => mediaQuery.removeEventListener("change", handleSystemThemeChange);
+  }, []);
+
+  const handleThemeChange = (value: string) => {
+    setTheme(value);
+  };
+
 
   const handleVimBindingChange = (checked: boolean) => {
     setVimBinding(checked);
@@ -62,7 +100,7 @@ const Settings: React.FC<SettingsProps> = ({ onVimBindingToggle }) => {
               <div>
                 <div className="settings-item mt-[-0.4rem]">
                   <span>Theme</span>
-                    <Select value={theme} onValueChange={setTheme}>
+                    <Select value={theme} onValueChange={handleThemeChange}>
                         <SelectTrigger className="w-[90px] border-none hover:bg-[#ececec] shadow-none focus:outline-none focus:ring-0">
                             <SelectValue placeholder="Select theme" />
                         </SelectTrigger>
