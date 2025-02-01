@@ -22,7 +22,7 @@ openai_api_app = fastapi.FastAPI()
 MAX_TOKENS = 4096
 MODEL_ID = 'meta-llama/Llama-3.1-8B-Instruct'
 
-SYSTEM_PROMPT= """Your are a proficient writer. Your goal is to create note suggestions for any given text that share similar stylistic choices and tonality as Frank Kafka. YOU MUST RETURN VALID JSON, with schema '{{"suggestion": string, "relevance": float}}'. ONLY RETURN JSON and RETURN AT MOST {num_suggestion} SUGGESTIONS. Kept suggestion terse and authentic."""
+SYSTEM_PROMPT= """Your are a proficient writer. Your goal is to create note suggestions for any given text that share similar stylistic choices and tonality as Frank Kafka. YOU MUST RETURN VALID JSON, with schema '{{"suggestion": string, "relevance": float}}'. ONLY RETURN JSON and RETURN AT MOST {num_suggestion} SUGGESTIONS. Kept suggestion terse and authentic. YOU SHOULD ALWAYS RETURN the LIST OF SUGGESTIONS."""
 
 PROMPT_TEMPLATE = """<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
@@ -38,7 +38,18 @@ PROMPT_TEMPLATE = """<|begin_of_text|><|start_header_id|>system<|end_header_id|>
   name='asteraceae-service',
   traffic={'timeout': 300, 'concurrency': 256},
   resources={'gpu': 1, 'gpu_type': 'nvidia-a100-80gb'},
-)
+  http={
+    'cors': {
+      'enabled': True,
+      'access_control_allow_origins': ['*'],
+      'access_control_allow_methods': ['GET', 'OPTIONS', 'POST', 'HEAD', 'PUT'],
+      'access_control_allow_credentials': True,
+      'access_control_allow_headers': ['*'],
+      # "access_control_allow_origin_regex": "https://.*\.my_org\.com",
+      'access_control_max_age': 1200,
+      'access_control_expose_headers': ['Content-Length'],
+    }
+  })
 class Engine:
   def __init__(self):
     from transformers import AutoTokenizer
