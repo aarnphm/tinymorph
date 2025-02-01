@@ -51,15 +51,16 @@ PROMPT_TEMPLATE = """<|begin_of_text|><|start_header_id|>system<|end_header_id|>
     }
   })
 class Engine:
+  model_ref = bentoml.models.HuggingFaceModel(MODEL_ID, exclude=["*.pth"])
   def __init__(self):
     from transformers import AutoTokenizer
     from vllm import AsyncEngineArgs, AsyncLLMEngine
     from vllm.entrypoints.openai.api_server import init_app_state
     import vllm.entrypoints.openai.api_server as vllm_api_server
 
-    ENGINE_ARGS = AsyncEngineArgs(model=MODEL_ID, max_model_len=MAX_TOKENS, enable_prefix_caching=True)
+    ENGINE_ARGS = AsyncEngineArgs(model=self.model_ref, max_model_len=MAX_TOKENS, enable_prefix_caching=True)
     self.engine = AsyncLLMEngine.from_engine_args(ENGINE_ARGS)
-    self.tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
+    self.tokenizer = AutoTokenizer.from_pretrained(self.model_ref)
 
     OPENAI_ENDPOINTS = [
         ["/chat/completions", vllm_api_server.create_chat_completion, ["POST"]],
