@@ -19,7 +19,7 @@
     text-align: left;
     padding: 0.5rem 0.5rem;
     font-size: 1rem;
-    color: #555;
+    color: var(--foreground);
     cursor: pointer;
 }
   
@@ -29,14 +29,15 @@
     text-align: left;
     padding: 0.5rem 0.5rem;
     font-size: 1rem;
-    color: #555;
     cursor: pointer;
     margin-bottom: 5px;
 
     &:not(.active):hover {
         border-radius: 4px;
-        background-color: #ececec;
+        background-color: #9c9c9c;
         margin-right: -30px;
+        color: var(--foreground);
+        
     }
 
     &.active {
@@ -62,7 +63,7 @@
 
         span {
             font-size: 1rem;
-            color: #555;
+            color: var(--foreground);
         }
     }
 }
