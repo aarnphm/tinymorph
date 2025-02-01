@@ -1,0 +1,189 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 215 20.2% 65.1%;
+
+    --radius: 0.5rem;
+  }
+}
+
+/* CodeMirror Styles */
+.cm-editor {
+  height: 100%;
+  font-family: var(--font-eb-garamond), serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.cm-scroller {
+  padding: 16px;
+}
+
+.cm-content {
+  caret-color: #1e293b;
+}
+
+.cm-line {
+  padding: 0 4px;
+}
+
+.cm-activeLine {
+  background-color: rgba(226, 232, 240, 0.5);
+}
+
+.cm-activeLineGutter {
+  background-color: rgba(226, 232, 240, 0.5);
+}
+
+.cm-selectionBackground {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+.cm-cursor {
+  border-left-color: #1e293b;
+}
+
+.cm-gutters {
+  border-right: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  color: #64748b;
+  font-size: 14px;
+  font-family: var(--font-bricolage-grotesque), sans-serif;
+}
+
+.cm-lineNumbers .cm-gutterElement {
+  padding: 0 8px 0 4px;
+}
+
+/* Syntax highlighting */
+.cm-header {
+  color: #0369a1;
+  font-weight: bold;
+  font-family: var(--font-bricolage-grotesque), sans-serif;
+}
+.cm-strong {
+  color: #0369a1;
+  font-weight: bold;
+}
+.cm-em {
+  color: #0369a1;
+  font-style: italic;
+}
+.cm-link {
+  color: #2563eb;
+  text-decoration: underline;
+}
+.cm-strikethrough {
+  text-decoration: line-through;
+}
+.cm-quote {
+  color: #15803d;
+  font-style: italic;
+}
+.cm-keyword {
+  color: #7c3aed;
+}
+.cm-atom {
+  color: #ea580c;
+}
+.cm-number {
+  color: #0891b2;
+}
+.cm-def {
+  color: #be123c;
+}
+.cm-variable {
+  color: #1e293b;
+}
+.cm-variable-2 {
+  color: #0369a1;
+}
+.cm-type {
+  color: #0d9488;
+}
+.cm-comment {
+  color: #64748b;
+  font-style: italic;
+}
+.cm-string {
+  color: #15803d;
+}
+.cm-meta {
+  color: #64748b;
+}
+.cm-qualifier {
+  color: #6b7280;
+}
+.cm-builtin {
+  color: #0369a1;
+}
+.cm-bracket {
+  color: #64748b;
+}
+.cm-tag {
+  color: #be123c;
+}
+.cm-attribute {
+  color: #0369a1;
+}
+.cm-hr {
+  color: #64748b;
+}
+.cm-url {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Markdown inline styles */
+.cm-markdown-inline {
+  @apply prose prose-sm max-w-none;
+  font-family: var(--font-eb-garamond), serif;
+}
+
+.cm-markdown-inline h1,
+.cm-markdown-inline h2,
+.cm-markdown-inline h3,
+.cm-markdown-inline h4,
+.cm-markdown-inline h5,
+.cm-markdown-inline h6 {
+  font-family: var(--font-bricolage-grotesque), sans-serif;
+}
+
+.cm-markdown-inline > *:first-child {
+  @apply mt-0;
+}
+
+.cm-markdown-inline > *:last-child {
+  @apply mb-0;
+}
+
