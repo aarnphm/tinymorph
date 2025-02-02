@@ -167,3 +167,4 @@ _version.py
 target
 .env
 node_modules
+.vercel
