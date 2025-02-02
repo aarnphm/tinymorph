@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { Copy } from "lucide-react"
 import CodeMirror from "@uiw/react-codemirror"
 import { markdown as markdownExtension } from "@codemirror/lang-markdown"
 import { languages } from "@codemirror/language-data"
@@ -9,6 +8,7 @@ import { NoteCard } from "./note-card"
 import { markdownLanguage } from "@codemirror/lang-markdown"
 import { EditorView } from "@codemirror/view"
 import { inlineMarkdownExtension } from "./inlineMarkdownExtension"
+import { Toolbar } from "./toolbar"
 
 const SAMPLE_NOTES = [
   {
@@ -86,42 +86,42 @@ export default function Editor() {
     setMarkdownContent(value)
   }, [])
 
+  const toggleNotes = React.useCallback(() => {
+    setShowNotes((prev) => !prev)
+  }, [])
+
   return (
-    <div
-      className="grid h-screen bg-white"
-      style={{
-        gridTemplateColumns: showNotes ? "1fr 300px" : "1fr",
-      }}
-    >
-      <div className="flex flex-col border-r">
-        <CodeMirror
-          value={markdownContent}
-          height="100%"
-          extensions={[
-            markdownExtension({ base: markdownLanguage, codeLanguages: languages }),
-            inlineMarkdownExtension,
-            EditorView.lineWrapping,
-          ]}
-          onChange={handleChange}
-          className="flex-1 overflow-auto border-0"
-          theme="light"
-        />
+    <div className="grid h-screen grid-cols-[1fr,auto] grid-rows-[auto,1fr] bg-white">
+      <div className="col-span-2 border-sm">
+        <Toolbar toggleNotes={toggleNotes} />
       </div>
-      {showNotes && (
-        <div className="flex flex-col p-4 bg-gray-50/50 border-l">
-          <h2 className="mb-4 text-lg font-semibold text-[#1e293b] font-bricolage-grotesque">Notes</h2>
-          <div className="grid gap-4 overflow-auto">
-            {SAMPLE_NOTES.map((note, index) => (
-              <NoteCard key={index} {...note} />
-            ))}
-          </div>
+      <div className="grid grid-cols-[1fr,auto]">
+        <div className="border-r">
+          <CodeMirror
+            value={markdownContent}
+            height="calc(100vh - 40px)"
+            extensions={[
+              markdownExtension({ base: markdownLanguage, codeLanguages: languages }),
+              inlineMarkdownExtension,
+              EditorView.lineWrapping,
+            ]}
+            onChange={handleChange}
+            className="overflow-auto"
+            theme="light"
+          />
         </div>
-      )}
-      <div
-        className="fixed bottom-4 right-4 p-2 bg-white rounded shadow-md cursor-pointer hover:bg-gray-50 transition-colors"
-        onClick={() => setShowNotes(!showNotes)}
-      >
-        <Copy className="h-5 w-5 text-gray-600" />
+        {showNotes && (
+          <div className="w-80 overflow-auto border-sm bg-gray-50">
+            <div className="p-4">
+              <h2 className="mb-4 text-lg font-semibold text-[#1e293b] font-bricolage-grotesque">Notes</h2>
+              <div className="grid gap-4">
+                {SAMPLE_NOTES.map((note, index) => (
+                  <NoteCard key={index} {...note} />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
