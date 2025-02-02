@@ -43,6 +43,10 @@
     "unified": "^11.0.5",
     "vfile": "^6.0.3"
   },
+  "engines": {
+    "npm": ">=9.3.1",
+    "node": "20 || >=22"
+  },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
