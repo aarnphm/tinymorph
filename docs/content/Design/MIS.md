@@ -363,11 +363,11 @@ Settings Module
 #### Local Functions
 
 1. `validateTheme(theme: string): boolean`
-   Checks if the given theme is supported by the system.
+   - Checks if the given theme is supported by the system.
 2. `loadDefaultSettings(): Object`
-   Loads default settings into the editor.
+   - Loads default settings into the editor.
 3. `logSettingsChange(change: Object): void`
-   Records changes made to user settings for debugging purposes.
+   - Records changes made to user settings for debugging purposes.
 
 ## MIS of Rendering Module
 
@@ -548,13 +548,17 @@ None
 
 #### State Variables
 
-- `currentInferenceTasks`: $\textbf{JSON}(\text{tasks}=[\text{task}_1,\dots,\text{task}_n])$ where $\text{task}_i = \{\text{id}, \text{model}, \text{status}, \text{progress}\}$ — Tracks active inference tasks
-- `modelStates`: $\textbf{JSON}(\text{models}=[\{\text{name}: \text{String}, \text{SAE}: \mathbb{R}\}])$ — Tracks loaded models and their Self-Attention Entropy scores
-- `generationStates`: $\textbf{JSON}(\text{intermediates}=[\text{gen}_1,\dots,\text{gen}_k])$ where $\text{gen}_i = \{\text{text}, \text{score}, \text{timestamp}\}$ — Stores intermediate generations for each task
+- `currentInferenceTasks`: $\textbf{JSON}(\text{tasks}=[\text{task}_1,\dots,\text{task}_n])$ where $\text{task}_i = \{\text{id}, \text{model}, \text{status}, \text{progress}\}$ 
+   - Tracks active inference tasks
+- `modelStates`: $\textbf{JSON}(\text{models}=[\{\text{name}: \text{String}, \text{SAE}: \mathbb{R}\}])$ 
+   - Tracks loaded models and their Self-Attention Entropy scores
+- `generationStates`: $\textbf{JSON}(\text{intermediates}=[\text{gen}_1,\dots,\text{gen}_k])$ where $\text{gen}_i = \{\text{text}, \text{score}, \text{timestamp}\}$
+   - Stores intermediate generations for each task
 
 #### Environment Variables
 
-- `CUDA_VISIBLE_DEVICES` — Tracks current available GPUs devices for inference
+- `CUDA_VISIBLE_DEVICES` 
+   - Tracks current available GPUs devices for inference
 
 #### Assumptions
 
@@ -590,7 +594,7 @@ None
 #### Local Functions
 
 1. `moveToDevice(data: Tensor, device: string): Tensor`
-   Transfers input tensors from CPU to specified GPU device with proper memory pinning and CUDA streams
+   - Transfers input tensors from CPU to specified GPU device with proper memory pinning and CUDA streams
 
 2. `allocateResources(modelConfig: Object): Object`
 
@@ -636,7 +640,7 @@ User Configuration Module
 
 #### Exported Constants
 
-- `defaultUserConfig`: Object
+- `defaultUserConfig: Object`
   ```json
   {
     "generation": {
@@ -661,18 +665,27 @@ User Configuration Module
 
 #### State Variables
 
-- userConfigurations: Object — Tracks current user configurations including:
-  - generationParams: Object — Temperature, top_p, and token settings
-  - styleConfig: Object — Tonality, formality, and creativity parameters
-  - saeSettings: Object — Self-Attention Entropy tuning configurations
-- configHistory: Array — Maintains history of configuration changes
-- stylePresets: Object — Predefined style combinations
+- `userConfigurations: Object`
+   - Tracks current user configurations
+- `generationParams: Object` 
+   - Part of user configuration involving temperature, top_p, and token settings
+- `styleConfig: Object` 
+   - Part of user configuration involving tonality, formality, and creativity parameters
+- `saeSettings: Object` 
+   - Part of user configuration involving Self-Attention Entropy tuning configurations
+- `configHistory: Array`
+   - Maintains history of configuration changes
+- `stylePresets: Object` 
+   - Predefined style combinations
 
 #### Environment Variables
 
-- localStorage — Stores user preferences
-- modelConfig — Current model configuration state
-- inferenceMetrics — Real-time inference performance metrics
+- `localStorage` 
+   - Stores user preferences
+- `modelConfig` 
+   - Current model configuration state
+- `inferenceMetrics`
+   - Real-time inference performance metrics
 
 #### Assumptions
 
@@ -696,19 +709,19 @@ User Configuration Module
 - Output: Returns complete configuration object with all parameters
 - Exception: Throws `ConfigNotFound` if no valid settings exist
 
-updateStyleConfig(styleParams: Object): boolean
+`updateStyleConfig(styleParams: Object): boolean`
 
 - Transition: Updates style-specific parameters (tonality, formality, creativity)
 - Output: Returns `true` if style update is successful
 - Exception: Throws `InvalidStyleParams` if parameters are out of valid ranges
 
-tuneGeneration(generationParams: Object): Object
+`tuneGeneration(generationParams: Object): Object`
 
 - Transition: Adjusts generation parameters (temperature, top_p) with validation
 - Output: Returns updated generation configuration with applied constraints
 - Exception: Throws `InvalidGenerationParams` if parameters are invalid
 
-adjustSAE(saeParams: Object): Object
+`adjustSAE(saeParams: Object): Object`
 
 - Transition: Configures Self-Attention Entropy parameters and auto-tuning
 - Output: Returns metrics showing SAE adjustment results
@@ -716,37 +729,37 @@ adjustSAE(saeParams: Object): Object
 
 #### Local Functions
 
-1. validateConfigRanges(config: Object): boolean
+1. `validateConfigRanges(config: Object): boolean`
 
    - Ensures all parameters are within valid ranges
    - Checks compatibility between different configuration sections
    - Returns validation status with detailed error messages
 
-2. calculateOptimalSAE(metrics: Object): Object
+2. `calculateOptimalSAE(metrics: Object): Object`
 
    - Analyzes inference metrics to determine optimal SAE settings
    - Adjusts thresholds based on model performance
    - Returns recommended SAE parameters
 
-3. applyStylePreset(style: string): Object
+3. `applyStylePreset(style: string): Object`
 
    - Loads predefined style configurations
    - Combines with user customizations
    - Returns merged style parameters
 
-4. validateTonality(params: Object): boolean
+4. `validateTonality(params: Object): boolean`
 
    - Checks tonality parameters against defined scales
    - Ensures consistency with model capabilities
    - Returns validation status
 
-5. trackConfigPerformance(config: Object): void
+5. `trackConfigPerformance(config: Object): void`
 
    - Monitors generation quality metrics
    - Records configuration effectiveness
    - Updates optimization suggestions
 
-6. synchronizeConfigs(): void
+6. `synchronizeConfigs(): void`
    - Ensures consistency across different configuration aspects
    - Resolves conflicts between parameters
    - Updates dependent settings automatically
@@ -773,28 +786,37 @@ Analytics Module
 
 | **Name**            | **In**                    | **Out**        | **Exceptions**          |
 | ------------------- | ------------------------- | -------------- | ----------------------- |
-| `saveUserConfig`    | Object `userSettings`     | boolean        | SaveFailed              |
-| `getUserConfig`     | -                         | Object         | ConfigNotFound          |
-| `updateStyleConfig` | Object `styleParams`      | boolean        | InvalidStyleParams      |
-| `tuneGeneration`    | Object `generationParams` | Object         | InvalidGenerationParams |
-| `adjustSAE`         | Object `saeParams`        | Object metrics | SAEAdjustmentFailed     |
+| saveUserConfig    | Object userSettings     | boolean        | SaveFailed              |
+| getUserConfig     | -                         | Object         | ConfigNotFound          |
+| updateStyleConfig | Object styleParams      | boolean        | InvalidStyleParams      |
+| tuneGeneration    | Object generationParams | Object         | InvalidGenerationParams |
+| adjustSAE         | Object saeParams        | Object metrics | SAEAdjustmentFailed     |
 
 ### Semantics
 
 #### State Variables
 
-- userConfigurations: Object — Tracks current user configurations including:
-  - generationParams: Object — Temperature, top_p, and token settings
-  - styleConfig: Object — Tonality, formality, and creativity parameters
-  - saeSettings: Object — Self-Attention Entropy tuning configurations
-- configHistory: Array — Maintains history of configuration changes
-- stylePresets: Object — Predefined style combinations
+- `userConfigurations: Object`
+   - Tracks current user configurations
+- `generationParams: Object` 
+   - Part of user configuration involving temperature, top_p, and token settings
+- `styleConfig: Object`
+   - Part of user configuration involving tonality, formality, and creativity parameters
+- `saeSettings: Object`
+   - Part of user configuration involving Self-Attention Entropy tuning configurations
+- `configHistory: Array`
+   - Maintains history of configuration changes
+- `stylePresets: Object`
+   - Predefined style combinations
 
 #### Environment Variables
 
-- localStorage — Stores user preferences
-- modelConfig — Current model configuration state
-- inferenceMetrics — Real-time inference performance metrics
+- `localStorage`
+   - Stores user preferences
+- `modelConfig`
+   - Current model configuration state
+- `inferenceMetrics` 
+   - Real-time inference performance metrics
 
 #### Assumptions
 
@@ -1086,4 +1108,3 @@ Export and Intergration Module
 </div>
 
 </div>
-
