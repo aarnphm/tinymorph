@@ -287,6 +287,12 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      d3-drag:
+        specifier: ^3.0.0
+        version: 3.0.0
+      d3-selection:
+        specifier: ^3.0.0
+        version: 3.0.0
       lucide-react:
         specifier: ^0.474.0
         version: 0.474.0(react@19.0.0)
@@ -330,6 +336,12 @@ importers:
       '@eslint/eslintrc':
         specifier: ^3
         version: 3.2.0
+      '@types/d3-drag':
+        specifier: ^3.0.7
+        version: 3.0.7
+      '@types/d3-selection':
+        specifier: ^3.0.11
+        version: 3.0.11
       '@types/node':
         specifier: ^20
         version: 20.17.16
