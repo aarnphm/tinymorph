@@ -10,6 +10,20 @@ import { EditorView } from "@codemirror/view"
 import { vim } from "@replit/codemirror-vim"
 import { inlineMarkdownExtension } from "./inlineMarkdownExtension"
 import { Toolbar } from "./toolbar"
+import { drag } from "d3-drag"
+import { select } from "d3-selection"
+import { useRef, useState } from "react";
+
+
+interface Note {
+  title: string
+  content: string
+}
+
+interface DraggableNoteProps extends Note {
+  onDrop: (note: Note, droppedOverEditor: boolean) => void
+  editorRef: React.RefObject<HTMLDivElement | null>
+}
 
 const SAMPLE_NOTES = [
   {
@@ -91,11 +105,95 @@ X_AE_B-22's pursuit leads it to the subterranean depths of the city, where forgo
 
 Amidst the neon-lit chaos, X_AE_B-22 encounters a diverse cast of allies and adversaries, each with their own agendas and secrets. There is Luna, a rebellious hacker with a vendetta against the megacorporations, and Kyro, a seasoned detective with a cybernetic arm who has seen too much in his lifetime.`
 
+function DraggableNoteCard({ title, content, onDrop, editorRef }: DraggableNoteProps) {
+  const noteRef = useRef<HTMLDivElement>(null)
+  const [dragging, setDragging] = useState(false)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [fixedWidth, setFixedWidth] = useState<number | null>(null)
+  const offsetRef = useRef({ x: 0, y: 0 })
+
+  React.useEffect(() => {
+    if (!noteRef.current) return
+
+    setFixedWidth(noteRef.current.offsetWidth)
+
+    const dragBehavior = drag<HTMLDivElement, unknown>()
+      .on("start", (event) => {
+        const rect = noteRef.current!.getBoundingClientRect()
+        offsetRef.current = {
+          x: event.sourceEvent.clientX - rect.left,
+          y: event.sourceEvent.clientY - rect.top,
+        }
+        setPosition({ x: rect.left, y: rect.top })
+        setDragging(true)
+      })
+      .on("drag", (event) => {
+        setPosition({
+          x: event.sourceEvent.clientX - offsetRef.current.x,
+          y: event.sourceEvent.clientY - offsetRef.current.y,
+        })
+      })
+      .on("end", (event) => {
+        setDragging(false)
+        let droppedOverEditor = false
+        
+        if (editorRef.current) {
+          const editorRect = editorRef.current.getBoundingClientRect()
+          const finalX = event.sourceEvent.clientX
+          const finalY = event.sourceEvent.clientY
+          
+          droppedOverEditor = 
+            finalX >= editorRect.left &&
+            finalX <= editorRect.right &&
+            finalY >= editorRect.top &&
+            finalY <= editorRect.bottom
+        }
+        
+        onDrop({ title, content }, droppedOverEditor)
+      })
+
+    select(noteRef.current).call(dragBehavior)
+  }, [title, content, onDrop, editorRef])
+
+  return (
+    <>
+      {dragging && (
+        <NoteCard
+          title={title}
+          content={content}
+          style={{
+            width: fixedWidth || "auto",
+            opacity: 0.5,
+            position: "relative",
+          }}
+        />
+      )}
+      
+      <NoteCard
+        ref={noteRef}
+        title={title}
+        content={content}
+        style={{
+          cursor: "grab",
+          position: dragging ? "fixed" : "relative",
+          top: dragging ? position.y : undefined,
+          left: dragging ? position.x : undefined,
+          width: fixedWidth || "auto",
+          zIndex: dragging ? 999 : "auto",
+          margin: 0,
+        }}
+      />
+    </>
+  )
+}
+
 export default function Editor() {
-  const [showNotes, setShowNotes] = React.useState(true)
-  const [markdownContent, setMarkdownContent] = React.useState(initialMarkdown)
-  const [theme, setTheme] = React.useState<"light" | "dark" | "system">("system")
-  const [vimMode, setVimMode] = React.useState(false)
+  const [showNotes, setShowNotes] = useState(true)
+  const [markdownContent, setMarkdownContent] = useState(initialMarkdown)
+  const [theme, setTheme] = useState<"light" | "dark" | "system">("system")
+  const [vimMode, setVimMode] = useState(false)
+  const [notes, setNotes] = useState<Note[]>(SAMPLE_NOTES)
+  const editorRef = useRef<HTMLDivElement>(null)
 
   const handleChange = React.useCallback((value: string) => {
     setMarkdownContent(value)
@@ -103,6 +201,16 @@ export default function Editor() {
 
   const toggleNotes = React.useCallback(() => {
     setShowNotes((prev) => !prev)
+  }, [])
+
+  const handleNoteDrop = React.useCallback((note: Note, droppedOverEditor: boolean) => {
+    if (droppedOverEditor) {
+      setNotes((prevNotes) => 
+        prevNotes.filter(
+          (n) => !(n.title === note.title && n.content === note.content)
+        )
+      )
+    }
   }, [])
 
   const editorExtensions = React.useMemo(() => {
@@ -131,7 +239,7 @@ export default function Editor() {
         />
       </div>
       <div className="grid grid-cols-[1fr,auto]">
-        <div className="border-r h-[calc(100vh-40px)]">
+        <div ref={editorRef} className="border-r h-[calc(100vh-40px)]">
           <CodeMirror
             value={markdownContent}
             height="100%"
@@ -145,8 +253,13 @@ export default function Editor() {
           <div className="w-80 h-[calc(100vh-40px)] overflow-auto border-l border-border bg-background">
             <div className="p-4">
               <div className="grid gap-4">
-                {SAMPLE_NOTES.map((note, index) => (
-                  <NoteCard key={index} {...note} />
+                {notes.map((note, index) => (
+                  <DraggableNoteCard
+                    key={index}
+                    {...note}
+                    editorRef={editorRef}
+                    onDrop={handleNoteDrop}
+                  />
                 ))}
               </div>
             </div>
