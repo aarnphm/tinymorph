@@ -1,320 +1,412 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-Thin.woff2") format("woff2");
-  font-weight: 100;
-  font-style: normal;
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: var(--font-parclo-serif);
+  --font-mono: var(--font-berkeley-mono);
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
 }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-ThinItalic.woff2") format("woff2");
-  font-weight: 100;
-  font-style: italic;
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
 }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-Light.woff2") format("woff2");
-  font-weight: 300;
-  font-style: normal;
-}
+@layer utilities {
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-Thin.woff2") format("woff2");
+    font-weight: 100;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-LightItalic.woff2") format("woff2");
-  font-weight: 300;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-ThinItalic.woff2") format("woff2");
+    font-weight: 100;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-Light.woff2") format("woff2");
+    font-weight: 300;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-Italic.woff2") format("woff2");
-  font-weight: 400;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-LightItalic.woff2") format("woff2");
+    font-weight: 300;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-MediumItalic.woff2") format("woff2");
-  font-weight: 500;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-Italic.woff2") format("woff2");
+    font-weight: 400;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-SemiBold.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-Medium.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-SemiBoldItalic.woff2") format("woff2");
-  font-weight: 600;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-MediumItalic.woff2") format("woff2");
+    font-weight: 500;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-SemiBold.woff2") format("woff2");
+    font-weight: 600;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-BoldItalic.woff2") format("woff2");
-  font-weight: 700;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-SemiBoldItalic.woff2") format("woff2");
+    font-weight: 600;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-Black.woff2") format("woff2");
-  font-weight: 800;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-BlackItalic.woff2") format("woff2");
-  font-weight: 800;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-BoldItalic.woff2") format("woff2");
+    font-weight: 700;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-Ultra.woff2") format("woff2");
-  font-weight: 950;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-Black.woff2") format("woff2");
+    font-weight: 800;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-UltraItalic.woff2") format("woff2");
-  font-weight: 950;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-BlackItalic.woff2") format("woff2");
+    font-weight: 800;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Parclo Serif";
-  src: url("/fonts/ParcloSerifStudent-ExtraBlack.woff2") format("woff2");
-  font-weight: 900;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-Ultra.woff2") format("woff2");
+    font-weight: 950;
+    font-style: normal;
+  }
 
-/* Berkeley Mono Font Family */
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Thin.woff2") format("woff2");
-  font-weight: 100;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-UltraItalic.woff2") format("woff2");
+    font-weight: 950;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Thin-Oblique.woff2") format("woff2");
-  font-weight: 100;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Parclo Serif";
+    src: url("/fonts/ParcloSerifStudent-ExtraBlack.woff2") format("woff2");
+    font-weight: 900;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-ExtraLight.woff2") format("woff2");
-  font-weight: 200;
-  font-style: normal;
-}
+  /* Berkeley Mono Font Family */
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Thin.woff2") format("woff2");
+    font-weight: 100;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-ExtraLight-Oblique.woff2") format("woff2");
-  font-weight: 200;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Thin-Oblique.woff2") format("woff2");
+    font-weight: 100;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Light.woff2") format("woff2");
-  font-weight: 300;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-ExtraLight.woff2") format("woff2");
+    font-weight: 200;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Light-Oblique.woff2") format("woff2");
-  font-weight: 300;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-ExtraLight-Oblique.woff2") format("woff2");
+    font-weight: 200;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-SemiLight.woff2") format("woff2");
-  font-weight: 350;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Light.woff2") format("woff2");
+    font-weight: 300;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-SemiLight-Oblique.woff2") format("woff2");
-  font-weight: 350;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Light-Oblique.woff2") format("woff2");
+    font-weight: 300;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Retina.woff2") format("woff2");
-  font-weight: 350;
-  font-style: normal;
-  font-display: swap;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-SemiLight.woff2") format("woff2");
+    font-weight: 350;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Retina-Oblique.woff2") format("woff2");
-  font-weight: 350;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-SemiLight-Oblique.woff2") format("woff2");
+    font-weight: 350;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Retina.woff2") format("woff2");
+    font-weight: 350;
+    font-style: normal;
+    font-display: swap;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Regular-Oblique.woff2") format("woff2");
-  font-weight: 400;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Retina-Oblique.woff2") format("woff2");
+    font-weight: 350;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Regular-Book.woff2") format("woff2");
-  font-weight: 425;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Regular-Book-Oblique.woff2") format("woff2");
-  font-weight: 425;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Regular-Oblique.woff2") format("woff2");
+    font-weight: 400;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Regular-Book.woff2") format("woff2");
+    font-weight: 425;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Medium-Oblique.woff2") format("woff2");
-  font-weight: 500;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Regular-Book-Oblique.woff2") format("woff2");
+    font-weight: 425;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-SemiBold.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Medium.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-SemiBold-Oblique.woff2") format("woff2");
-  font-weight: 600;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Medium-Oblique.woff2") format("woff2");
+    font-weight: 500;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-SemiBold.woff2") format("woff2");
+    font-weight: 600;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Bold-Oblique.woff2") format("woff2");
-  font-weight: 700;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-SemiBold-Oblique.woff2") format("woff2");
+    font-weight: 600;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-ExtraBold.woff2") format("woff2");
-  font-weight: 800;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-ExtraBold-Oblique.woff2") format("woff2");
-  font-weight: 800;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Bold-Oblique.woff2") format("woff2");
+    font-weight: 700;
+    font-style: italic;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Black.woff2") format("woff2");
-  font-weight: 900;
-  font-style: normal;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-ExtraBold.woff2") format("woff2");
+    font-weight: 800;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Black-Oblique.woff2") format("woff2");
-  font-weight: 900;
-  font-style: italic;
-}
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-ExtraBold-Oblique.woff2") format("woff2");
+    font-weight: 800;
+    font-style: italic;
+  }
 
-:root {
-  --font-parclo-serif: "Parclo Serif", serif;
-  --font-berkeley-mono: "Berkeley Mono", monospace;
-  --font-live-editor: var(--font-parclo-serif);
-  --background: 48 100% 97%;
-  --foreground: 60 2% 8%;
-  --card: 48 100% 97%;
-  --card-foreground: 60 2% 8%;
-  --popover: 48 100% 97%;
-  --popover-foreground: 60 2% 8%;
-  --primary: 0 63% 42%;
-  --primary-foreground: 48 100% 97%;
-  --secondary: 44 24% 90%;
-  --secondary-foreground: 60 2% 8%;
-  --muted: 44 24% 90%;
-  --muted-foreground: 45 3% 48%;
-  --accent: 44 24% 90%;
-  --accent-foreground: 60 2% 8%;
-  --destructive: 0 63% 42%;
-  --destructive-foreground: 48 100% 97%;
-  --border: 44 14% 84%;
-  --input: 44 14% 84%;
-  --ring: 45 3% 48%;
-  --radius: 0.5rem;
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Black.woff2") format("woff2");
+    font-weight: 900;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: "Berkeley Mono";
+    src: url("/fonts/BerkeleyMono-Black-Oblique.woff2") format("woff2");
+    font-weight: 900;
+    font-style: italic;
+  }
+
+  :root {
+    --font-parclo-serif: "Parclo Serif", serif;
+    --font-berkeley-mono: "Berkeley Mono", monospace;
+    --font-live-editor: var(--font-parclo-serif);
+    --background: 48 100% 97%;
+    --foreground: 60 2% 8%;
+    --card: 48 100% 97%;
+    --card-foreground: 60 2% 8%;
+    --popover: 48 100% 97%;
+    --popover-foreground: 60 2% 8%;
+    --primary: 0 63% 42%;
+    --primary-foreground: 48 100% 97%;
+    --secondary: 44 24% 90%;
+    --secondary-foreground: 60 2% 8%;
+    --muted: 44 24% 90%;
+    --muted-foreground: 45 3% 48%;
+    --accent: 44 24% 90%;
+    --accent-foreground: 60 2% 8%;
+    --destructive: 0 63% 42%;
+    --destructive-foreground: 48 100% 97%;
+    --border: 44 14% 84%;
+    --input: 44 14% 84%;
+    --ring: 45 3% 48%;
+    --radius: 0.5rem;
+  }
 }
 
 @layer base {
@@ -550,7 +642,6 @@
 }
 
 .cm-markdown-inline {
-  @apply prose prose-sm max-w-none;
   font-family: var(--font-live-editor), serif;
   margin: 0;
   padding: 0;

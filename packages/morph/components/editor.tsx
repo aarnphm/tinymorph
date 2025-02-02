@@ -15,6 +15,7 @@ import { Toolbar } from "./toolbar"
 import { drag } from "d3-drag"
 import { select } from "d3-selection"
 import { useRef, useState } from "react"
+import usePersistedSettings from "@/hooks/use-persisted-settings"
 
 interface Note {
   title: string
@@ -255,8 +256,7 @@ function DraggableNoteCard({ title, content, onDrop, editorRef }: DraggableNoteP
 export default function Editor() {
   const [showNotes, setShowNotes] = useState(true)
   const [markdownContent, setMarkdownContent] = useState(initialMarkdown)
-  const [theme, setTheme] = useState<"light" | "dark" | "system">("system")
-  const [vimMode, setVimMode] = useState(false)
+  const { settings } = usePersistedSettings()
   const [notes, setNotes] = useState<Note[]>(SAMPLE_NOTES)
   const editorRef = useRef<HTMLDivElement>(null)
 
@@ -282,26 +282,20 @@ export default function Editor() {
       inlineMarkdownExtension,
       EditorView.lineWrapping,
     ]
-    if (vimMode) {
+    if (settings.vimMode) {
       extensions.push(vim())
     }
     return extensions
-  }, [vimMode])
+  }, [settings.vimMode])
 
   return (
-    <div className={theme === "dark" ? "dark" : ""}>
+    <div className={settings.theme === "dark" ? "dark" : ""}>
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
           <header className="flex h-10 shrink-0 items-center justify-between px-4 border-b">
             <SidebarTrigger className="-ml-1" />
-            <Toolbar
-              toggleNotes={toggleNotes}
-              theme={theme}
-              setTheme={setTheme}
-              vimMode={vimMode}
-              setVimMode={setVimMode}
-            />
+            <Toolbar toggleNotes={toggleNotes} />
           </header>
           <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
             <div ref={editorRef} className="flex-1 relative border-border border">
@@ -311,7 +305,7 @@ export default function Editor() {
                 extensions={editorExtensions}
                 onChange={handleChange}
                 className="overflow-auto h-full mx-4 pt-4"
-                theme={theme === "dark" ? "dark" : "light"}
+                theme={settings.theme === "dark" ? "dark" : "light"}
               />
             </div>
             {showNotes && (

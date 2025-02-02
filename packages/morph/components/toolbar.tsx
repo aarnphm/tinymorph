@@ -5,13 +5,9 @@ import { SettingsPanel } from "./settings-panel"
 
 interface ToolbarProps {
   toggleNotes: () => void
-  theme: "light" | "dark" | "system"
-  setTheme: (theme: "light" | "dark" | "system") => void
-  vimMode: boolean
-  setVimMode: (enabled: boolean) => void
 }
 
-export function Toolbar({ toggleNotes, theme, setTheme, vimMode, setVimMode }: ToolbarProps) {
+export function Toolbar({ toggleNotes }: ToolbarProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   return (
@@ -31,14 +27,7 @@ export function Toolbar({ toggleNotes, theme, setTheme, vimMode, setVimMode }: T
           </Button>
         </div>
       </div>
-      <SettingsPanel
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        theme={theme}
-        setTheme={setTheme}
-        vimMode={vimMode}
-        setVimMode={setVimMode}
-      />
+      <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </>
   )
 }

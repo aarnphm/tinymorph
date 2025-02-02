@@ -6,14 +6,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { X } from "lucide-react"
+import usePersistedSettings from "@/hooks/use-persisted-settings"
 
 interface SettingsPanelProps {
   isOpen: boolean
   onClose: () => void
-  theme: "light" | "dark" | "system"
-  setTheme: (theme: "light" | "dark" | "system") => void
-  vimMode: boolean
-  setVimMode: (enabled: boolean) => void
 }
 
 type SettingsCategory = {
@@ -30,17 +27,12 @@ const categories: SettingsCategory[] = [
   { id: "about", label: "About" },
 ]
 
-export function SettingsPanel({
-  isOpen,
-  onClose,
-  theme,
-  setTheme,
-  vimMode,
-  setVimMode,
-}: SettingsPanelProps) {
+export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const [activeCategory, setActiveCategory] = React.useState("general")
+  const { settings, updateSettings, isLoaded } = usePersistedSettings()
 
-  if (!isOpen) return null
+  // Don't render until settings are loaded from localStorage
+  if (!isLoaded || !isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -89,8 +81,10 @@ export function SettingsPanel({
                         <div>
                           <Label className="text-sm mb-2 block">Theme</Label>
                           <RadioGroup
-                            value={theme}
-                            onValueChange={(value: "light" | "dark" | "system") => setTheme(value)}
+                            value={settings.theme}
+                            onValueChange={(value: "light" | "dark" | "system") =>
+                              updateSettings({ theme: value })
+                            }
                             className="space-y-2"
                           >
                             <div className="flex items-center space-x-2">
@@ -125,7 +119,11 @@ export function SettingsPanel({
                             Enable Vim key bindings
                           </div>
                         </div>
-                        <Switch id="vim-mode" checked={vimMode} onCheckedChange={setVimMode} />
+                        <Switch
+                          id="vim-mode"
+                          checked={settings.vimMode}
+                          onCheckedChange={(checked) => updateSettings({ vimMode: checked })}
+                        />
                       </div>
                     </div>
                   </div>
