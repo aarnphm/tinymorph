@@ -1,3 +1,5 @@
 public
+.next
+.vercel
 node_modules
-.quartz-cache
+components/ui

@@ -14,7 +14,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { Toolbar } from "./toolbar"
 import { drag } from "d3-drag"
 import { select } from "d3-selection"
-import { useRef, useState } from "react";
+import { useRef, useState } from "react"
 
 interface Note {
   title: string
@@ -25,7 +25,6 @@ interface DraggableNoteProps extends Note {
   onDrop: (note: Note, droppedOverEditor: boolean) => void
   editorRef: React.RefObject<HTMLDivElement | null>
 }
-
 
 const SAMPLE_NOTES = [
   {
@@ -140,19 +139,19 @@ function DraggableNoteCard({ title, content, onDrop, editorRef }: DraggableNoteP
       .on("end", (event) => {
         setDragging(false)
         let droppedOverEditor = false
-        
+
         if (editorRef.current) {
           const editorRect = editorRef.current.getBoundingClientRect()
           const finalX = event.sourceEvent.clientX
           const finalY = event.sourceEvent.clientY
-          
-          droppedOverEditor = 
+
+          droppedOverEditor =
             finalX >= editorRect.left &&
             finalX <= editorRect.right &&
             finalY >= editorRect.top &&
             finalY <= editorRect.bottom
         }
-        
+
         onDrop({ title, content }, droppedOverEditor)
       })
 
@@ -172,7 +171,7 @@ function DraggableNoteCard({ title, content, onDrop, editorRef }: DraggableNoteP
           }}
         />
       )}
-      
+
       <NoteCard
         ref={noteRef}
         title={title}
@@ -209,10 +208,8 @@ export default function Editor() {
 
   const handleNoteDrop = React.useCallback((note: Note, droppedOverEditor: boolean) => {
     if (droppedOverEditor) {
-      setNotes((prevNotes) => 
-        prevNotes.filter(
-          (n) => !(n.title === note.title && n.content === note.content)
-        )
+      setNotes((prevNotes) =>
+        prevNotes.filter((n) => !(n.title === note.title && n.content === note.content)),
       )
     }
   }, [])
@@ -254,7 +251,7 @@ export default function Editor() {
                 className="overflow-auto bg-background h-full"
                 theme={theme === "dark" ? "dark" : "light"}
               />
-          </div>
+            </div>
             {showNotes && (
               <div className="w-80 overflow-auto border-l border-border bg-background">
                 <div className="p-4">
