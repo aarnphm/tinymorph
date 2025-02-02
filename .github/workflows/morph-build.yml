@@ -1,4 +1,4 @@
-name: Build Morph Package
+name: build-morph
 
 on:
   push:
