@@ -241,19 +241,19 @@ export default function Editor() {
               setVimMode={setVimMode}
             />
           </header>
-          <div className="flex h-[calc(100vh-64px)]">
+          <div className="flex h-[calc(100vh-64px)] px-4">
             <div ref={editorRef} className="flex-1">
               <CodeMirror
                 value={markdownContent}
                 height="100%"
                 extensions={editorExtensions}
                 onChange={handleChange}
-                className="overflow-auto bg-background h-full"
+                className="overflow-auto h-full pt-4"
                 theme={theme === "dark" ? "dark" : "light"}
               />
             </div>
             {showNotes && (
-              <div className="w-80 overflow-auto border-l border-border bg-background">
+              <div className="w-80 overflow-auto border-l border-border">
                 <div className="p-4">
                   <div className="grid gap-4">
                     {notes.map((note, index) => (

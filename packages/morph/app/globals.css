@@ -347,17 +347,15 @@
   font-size: 16px;
   line-height: 1.6;
   margin: 0 auto;
-  padding: 2rem 4rem;
   border: none;
   border-radius: 0;
   background-color: hsl(var(--background));
 }
 
 .cm-editor .cm-scroller {
-  padding: 16px;
-  overflow-x: hidden;
   min-height: 80vh;
-  padding-bottom: 1rem;
+  max-width: 100%;
+  width: 100%;
 }
 
 .cm-editor .cm-gutters {
