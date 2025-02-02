@@ -23,9 +23,6 @@ lock_packages = false
 python_version = "3.11"
 [[tool.bentoml.build.envs]]
 name = "HF_TOKEN"
-[[tool.bentoml.build.envs]]
-name = "HF_HUB_ENABLE_HF_TRANSFER"
-value = "1"
 
 [tool.uv.sources]
 exo = { workspace = true }
