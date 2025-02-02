@@ -11,4 +11,3 @@ export function NoteCard({ title, content }: NoteCardProps) {
     </div>
   )
 }
-

@@ -8,7 +8,9 @@ import { NoteCard } from "./note-card"
 import { markdownLanguage } from "@codemirror/lang-markdown"
 import { EditorView } from "@codemirror/view"
 import { vim } from "@replit/codemirror-vim"
-import { inlineMarkdownExtension } from "./inlineMarkdownExtension"
+import { inlineMarkdownExtension } from "./markdown-inline"
+import { AppSidebar } from "./app-sidebar"
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Toolbar } from "./toolbar"
 
 const SAMPLE_NOTES = [
@@ -74,22 +76,24 @@ const SAMPLE_NOTES = [
   },
 ]
 
-const initialMarkdown = `# Heading 1
-## Heading 2
-### Heading 3
-#### Heading 4
-##### Heading 5
-###### Heading 6
+const initialMarkdown = `# Hello, world!
 
-## Chapter 1, The History
+This is a sample markdown document. You can edit it using the editor on the left.
 
-The city, a kaleidoscope of digital billboards and holographic projections, is in a state of perpetual twilight, casting an ethereal glow on its inhabitants.
+## Features
 
-X_AE_B-22's mission is to locate the source of a mysterious signal that has been disrupting the neural networks of both humans and synthetics alike. This signal, rumored to be the work of a rogue faction known as the Shadow Code, has the potential to rewrite the very fabric of consciousness.
+* **Markdown support:** Write in markdown and see the rendered output in real time.
+* **Vim mode:** Enable vim mode for a more efficient editing experience.
+* **Syntax highlighting:** Code blocks are syntax highlighted for better readability.
+* **Line wrapping:** Long lines are automatically wrapped to prevent horizontal scrolling.
+* **Notes panel:** View notes related to the document in the right panel.
 
-X_AE_B-22's pursuit leads it to the subterranean depths of the city, where forgotten tunnels and abandoned cyber-labs hide secrets long buried by time. Each step forward unravels more of the intricate web spun by the Shadow Code, revealing a plot to seize control of the entire megacity.
+## Getting started
 
-Amidst the neon-lit chaos, X_AE_B-22 encounters a diverse cast of allies and adversaries, each with their own agendas and secrets. There is Luna, a rebellious hacker with a vendetta against the megacorporations, and Kyro, a seasoned detective with a cybernetic arm who has seen too much in his lifetime.`
+To get started, simply start typing in the editor. You can use all the standard markdown features, such as headings, lists, and code blocks.
+
+For more information, please refer to the documentation.
+`
 
 export default function Editor() {
   const [showNotes, setShowNotes] = React.useState(true)
@@ -118,41 +122,46 @@ export default function Editor() {
   }, [vimMode])
 
   return (
-    <div
-      className={`grid h-screen grid-cols-[1fr,auto] grid-rows-[auto,1fr] ${theme === "dark" ? "dark" : ""}`}
-    >
-      <div className="col-span-2 border-sm">
-        <Toolbar
-          toggleNotes={toggleNotes}
-          theme={theme}
-          setTheme={setTheme}
-          vimMode={vimMode}
-          setVimMode={setVimMode}
-        />
-      </div>
-      <div className="grid grid-cols-[1fr,auto]">
-        <div className="border-r h-[calc(100vh-40px)]">
-          <CodeMirror
-            value={markdownContent}
-            height="100%"
-            extensions={editorExtensions}
-            onChange={handleChange}
-            className="overflow-auto bg-background h-full"
-            theme={theme === "dark" ? "dark" : "light"}
-          />
-        </div>
-        {showNotes && (
-          <div className="w-80 h-[calc(100vh-40px)] overflow-auto border-l border-border bg-background">
-            <div className="p-4">
-              <div className="grid gap-4">
-                {SAMPLE_NOTES.map((note, index) => (
-                  <NoteCard key={index} {...note} />
-                ))}
-              </div>
+    <div className={theme === "dark" ? "dark" : ""}>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <header className="flex h-8 shrink-0 items-center justify-between px-4 border-b">
+            <SidebarTrigger className="-ml-1" />
+            <Toolbar
+              className="pl-4"
+              toggleNotes={toggleNotes}
+              theme={theme}
+              setTheme={setTheme}
+              vimMode={vimMode}
+              setVimMode={setVimMode}
+            />
+          </header>
+          <div className="flex h-[calc(100vh-64px)]">
+            <div className="flex-1">
+              <CodeMirror
+                value={markdownContent}
+                height="100%"
+                extensions={editorExtensions}
+                onChange={handleChange}
+                className="overflow-auto bg-background h-full"
+                theme={theme === "dark" ? "dark" : "light"}
+              />
             </div>
+            {showNotes && (
+              <div className="w-80 overflow-auto border-l border-border bg-background">
+                <div className="p-4">
+                  <div className="grid gap-4">
+                    {SAMPLE_NOTES.map((note, index) => (
+                      <NoteCard key={index} {...note} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </SidebarInset>
+      </SidebarProvider>
     </div>
   )
 }
