@@ -20,4 +20,3 @@ pnpm run morph:build
 ```
 
 Open in Browser by visiting the application at [http://localhost:5173](http://localhost:5173)
-

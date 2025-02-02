@@ -21,12 +21,12 @@ export function Toolbar({ toggleNotes, theme, setTheme, vimMode, setVimMode }: T
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 w-8 p-0"
+            className="h-7 w-7 p-0"
             onClick={() => setIsSettingsOpen(true)}
           >
             <Settings className="h-3 w-3" width={16} height={16} />
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={toggleNotes}>
+          <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={toggleNotes}>
             <Copy className="h-3 w-3" width={16} height={16} />
           </Button>
         </div>

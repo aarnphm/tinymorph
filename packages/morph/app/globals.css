@@ -52,7 +52,7 @@
 /* CodeMirror Styles */
 .cm-editor {
   height: 100%;
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-parclo-serif), serif;
   font-size: 16px;
   line-height: 1.6;
   margin: 0 auto;
@@ -261,7 +261,8 @@
 /* Markdown inline styles */
 .cm-markdown-inline {
   @apply prose prose-sm max-w-none;
-  font-family: var(--font-eb-garamond), serif;
+  font-family: var(--font-parclo-serif), serif;
+  font-weight: 400;
   margin: 0;
   padding: 0;
   display: inline-block;
@@ -277,7 +278,7 @@
 .cm-markdown-inline h4,
 .cm-markdown-inline h5,
 .cm-markdown-inline h6 {
-  font-family: var(--font-bricolage-grotesque), sans-serif;
+  font-family: var(--font-parclo-serif), sans-serif;
   margin: 0;
   padding: 0;
   display: inline-block;
@@ -379,6 +380,8 @@
 }
 
 .cm-markdown-inline code {
+  font-family: var(--font-berkeley-mono), serif;
+  font-weight: 350;
   background: #f2f0e5;
   padding: 2px 4px;
   border-radius: 4px;
@@ -441,4 +444,3 @@
   width: 0.5rem;
   height: 0.25rem;
 }
-
