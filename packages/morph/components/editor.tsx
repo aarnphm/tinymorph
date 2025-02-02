@@ -12,6 +12,20 @@ import { inlineMarkdownExtension } from "./markdown-inline"
 import { AppSidebar } from "./app-sidebar"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Toolbar } from "./toolbar"
+import { drag } from "d3-drag"
+import { select } from "d3-selection"
+import { useRef, useState } from "react";
+
+interface Note {
+  title: string
+  content: string
+}
+
+interface DraggableNoteProps extends Note {
+  onDrop: (note: Note, droppedOverEditor: boolean) => void
+  editorRef: React.RefObject<HTMLDivElement | null>
+}
+
 
 const SAMPLE_NOTES = [
   {
@@ -95,11 +109,95 @@ To get started, simply start typing in the editor. You can use all the standard 
 For more information, please refer to the documentation.
 `
 
+function DraggableNoteCard({ title, content, onDrop, editorRef }: DraggableNoteProps) {
+  const noteRef = useRef<HTMLDivElement>(null)
+  const [dragging, setDragging] = useState(false)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [fixedWidth, setFixedWidth] = useState<number | null>(null)
+  const offsetRef = useRef({ x: 0, y: 0 })
+
+  React.useEffect(() => {
+    if (!noteRef.current) return
+
+    setFixedWidth(noteRef.current.offsetWidth)
+
+    const dragBehavior = drag<HTMLDivElement, unknown>()
+      .on("start", (event) => {
+        const rect = noteRef.current!.getBoundingClientRect()
+        offsetRef.current = {
+          x: event.sourceEvent.clientX - rect.left,
+          y: event.sourceEvent.clientY - rect.top,
+        }
+        setPosition({ x: rect.left, y: rect.top })
+        setDragging(true)
+      })
+      .on("drag", (event) => {
+        setPosition({
+          x: event.sourceEvent.clientX - offsetRef.current.x,
+          y: event.sourceEvent.clientY - offsetRef.current.y,
+        })
+      })
+      .on("end", (event) => {
+        setDragging(false)
+        let droppedOverEditor = false
+        
+        if (editorRef.current) {
+          const editorRect = editorRef.current.getBoundingClientRect()
+          const finalX = event.sourceEvent.clientX
+          const finalY = event.sourceEvent.clientY
+          
+          droppedOverEditor = 
+            finalX >= editorRect.left &&
+            finalX <= editorRect.right &&
+            finalY >= editorRect.top &&
+            finalY <= editorRect.bottom
+        }
+        
+        onDrop({ title, content }, droppedOverEditor)
+      })
+
+    select(noteRef.current).call(dragBehavior)
+  }, [title, content, onDrop, editorRef])
+
+  return (
+    <>
+      {dragging && (
+        <NoteCard
+          title={title}
+          content={content}
+          style={{
+            width: fixedWidth || "auto",
+            opacity: 0.5,
+            position: "relative",
+          }}
+        />
+      )}
+      
+      <NoteCard
+        ref={noteRef}
+        title={title}
+        content={content}
+        style={{
+          cursor: "grab",
+          position: dragging ? "fixed" : "relative",
+          top: dragging ? position.y : undefined,
+          left: dragging ? position.x : undefined,
+          width: fixedWidth || "auto",
+          zIndex: dragging ? 999 : "auto",
+          margin: 0,
+        }}
+      />
+    </>
+  )
+}
+
 export default function Editor() {
-  const [showNotes, setShowNotes] = React.useState(true)
-  const [markdownContent, setMarkdownContent] = React.useState(initialMarkdown)
-  const [theme, setTheme] = React.useState<"light" | "dark" | "system">("system")
-  const [vimMode, setVimMode] = React.useState(false)
+  const [showNotes, setShowNotes] = useState(true)
+  const [markdownContent, setMarkdownContent] = useState(initialMarkdown)
+  const [theme, setTheme] = useState<"light" | "dark" | "system">("system")
+  const [vimMode, setVimMode] = useState(false)
+  const [notes, setNotes] = useState<Note[]>(SAMPLE_NOTES)
+  const editorRef = useRef<HTMLDivElement>(null)
 
   const handleChange = React.useCallback((value: string) => {
     setMarkdownContent(value)
@@ -107,6 +205,16 @@ export default function Editor() {
 
   const toggleNotes = React.useCallback(() => {
     setShowNotes((prev) => !prev)
+  }, [])
+
+  const handleNoteDrop = React.useCallback((note: Note, droppedOverEditor: boolean) => {
+    if (droppedOverEditor) {
+      setNotes((prevNotes) => 
+        prevNotes.filter(
+          (n) => !(n.title === note.title && n.content === note.content)
+        )
+      )
+    }
   }, [])
 
   const editorExtensions = React.useMemo(() => {
@@ -138,7 +246,7 @@ export default function Editor() {
             />
           </header>
           <div className="flex h-[calc(100vh-64px)]">
-            <div className="flex-1">
+            <div ref={editorRef} className="flex-1">
               <CodeMirror
                 value={markdownContent}
                 height="100%"
@@ -147,13 +255,18 @@ export default function Editor() {
                 className="overflow-auto bg-background h-full"
                 theme={theme === "dark" ? "dark" : "light"}
               />
-            </div>
+          </div>
             {showNotes && (
               <div className="w-80 overflow-auto border-l border-border bg-background">
                 <div className="p-4">
                   <div className="grid gap-4">
-                    {SAMPLE_NOTES.map((note, index) => (
-                      <NoteCard key={index} {...note} />
+                    {notes.map((note, index) => (
+                      <DraggableNoteCard
+                        key={index}
+                        {...note}
+                        editorRef={editorRef}
+                        onDrop={handleNoteDrop}
+                      />
                     ))}
                   </div>
                 </div>
