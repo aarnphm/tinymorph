@@ -1,5 +1,12 @@
 import type { VFile } from "vfile"
-import { Decoration, type DecorationSet, ViewPlugin, type ViewUpdate, WidgetType, EditorView } from "@codemirror/view"
+import {
+  Decoration,
+  type DecorationSet,
+  ViewPlugin,
+  type ViewUpdate,
+  WidgetType,
+  EditorView,
+} from "@codemirror/view"
 import { RangeSetBuilder, StateEffect, StateField } from "@codemirror/state"
 import { unified } from "unified"
 import remarkParse from "remark-parse"
@@ -179,4 +186,3 @@ class MarkdownLineWidget extends WidgetType {
     return wrapper
   }
 }
-
