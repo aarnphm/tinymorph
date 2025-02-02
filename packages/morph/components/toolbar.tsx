@@ -17,8 +17,8 @@ export function Toolbar({ toggleNotes, theme, setTheme, vimMode, setVimMode }: T
 
   return (
     <>
-      <div className="flex items-center justify-between px-2 bg-background border-b border-border h-10">
-        <div className="flex-1"></div>
+      <div className="flex items-center justify-between px-4 bg-background border-b border-border h-10">
+        <div className="flex-1" />
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
