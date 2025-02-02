@@ -6,33 +6,23 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
-
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
-
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
-
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
-
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-
     --ring: 215 20.2% 65.1%;
-
     --radius: 0.5rem;
   }
 }
@@ -43,46 +33,48 @@
   font-family: var(--font-eb-garamond), serif;
   font-size: 16px;
   line-height: 1.6;
+  margin: 0 auto;
+  padding: 2rem 4rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
 }
 
-.cm-scroller {
+.cm-editor .cm-scroller {
   padding: 16px;
+  overflow-x: hidden;
+  min-height: 80vh;
+  padding-bottom: 1rem;
 }
 
-.cm-content {
+.cm-editor .cm-gutters {
+  display: none;
+}
+
+.cm-editor .cm-activeLine,
+.cm-editor .cm-activeLineGutter {
+  background-color: transparent;
+}
+
+.cm-editor.cm-focused {
+  outline: none;
+}
+
+.cm-editor .cm-line {
+  padding: 0 0 0 1px;
+  white-space: pre-wrap;
+  position: relative;
+}
+
+.cm-editor .cm-content {
   caret-color: #1e293b;
 }
 
-.cm-line {
-  padding: 0 4px;
-}
-
-.cm-activeLine {
-  background-color: rgba(226, 232, 240, 0.5);
-}
-
-.cm-activeLineGutter {
-  background-color: rgba(226, 232, 240, 0.5);
-}
-
-.cm-selectionBackground {
+.cm-editor .cm-selectionBackground {
   background-color: rgba(59, 130, 246, 0.2) !important;
 }
 
-.cm-cursor {
+.cm-editor .cm-cursor {
   border-left-color: #1e293b;
-}
-
-.cm-gutters {
-  border-right: 1px solid #e2e8f0;
-  background-color: #f8fafc;
-  color: #64748b;
-  font-size: 14px;
-  font-family: var(--font-bricolage-grotesque), sans-serif;
-}
-
-.cm-lineNumbers .cm-gutterElement {
-  padding: 0 8px 0 4px;
 }
 
 /* Syntax highlighting */
@@ -138,11 +130,9 @@
 .cm-string {
   color: #15803d;
 }
-.cm-meta {
-  color: #64748b;
-}
+.cm-meta,
 .cm-qualifier {
-  color: #6b7280;
+  color: #64748b;
 }
 .cm-builtin {
   color: #0369a1;
@@ -168,6 +158,13 @@
 .cm-markdown-inline {
   @apply prose prose-sm max-w-none;
   font-family: var(--font-eb-garamond), serif;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  vertical-align: baseline;
+  width: 100%;
+  pointer-events: none;
+  line-height: inherit;
 }
 
 .cm-markdown-inline h1,
@@ -177,13 +174,116 @@
 .cm-markdown-inline h5,
 .cm-markdown-inline h6 {
   font-family: var(--font-bricolage-grotesque), sans-serif;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  vertical-align: baseline;
 }
 
-.cm-markdown-inline > *:first-child {
-  @apply mt-0;
+.cm-markdown-inline h1,
+.cm-markdown-inline h2 {
+  font-weight: 700;
+}
+.cm-markdown-inline h3,
+.cm-markdown-inline h4 {
+  font-weight: 600;
+}
+.cm-markdown-inline h5,
+.cm-markdown-inline h6 {
+  font-weight: 400;
 }
 
-.cm-markdown-inline > *:last-child {
-  @apply mb-0;
+.cm-markdown-inline h1 {
+  font-size: 2.5em;
+}
+.cm-markdown-inline h2 {
+  font-size: 2.1459em;
+}
+.cm-markdown-inline h3 {
+  font-size: 1.842em;
+}
+.cm-markdown-inline h4 {
+  font-size: 1.5811em;
+}
+.cm-markdown-inline h5 {
+  font-size: 1.3572em;
+}
+.cm-markdown-inline h6 {
+  font-size: 1.165em;
 }
 
+.cm-markdown-inline blockquote {
+  margin: 0;
+  padding-left: 1rem;
+  border-left: 3px solid #cccccc;
+  color: #555555;
+  position: relative;
+  white-space: normal;
+}
+
+.cm-markdown-inline blockquote p {
+  margin: 0;
+  display: inline;
+}
+
+.cm-markdown-inline ul,
+.cm-markdown-inline ol {
+  margin: 0;
+  padding: 0 0 0 2rem;
+  display: block;
+  list-style-position: outside;
+  white-space: normal;
+}
+
+.cm-markdown-inline ul {
+  list-style-type: disc;
+}
+.cm-markdown-inline ul ul {
+  list-style-type: circle;
+}
+.cm-markdown-inline ol {
+  list-style-type: decimal;
+}
+.cm-markdown-inline ol ol {
+  list-style-type: lower-alpha;
+}
+
+.cm-markdown-inline li {
+  margin: 0;
+  padding: 0;
+  display: list-item;
+}
+
+.cm-markdown-inline p {
+  margin: 0;
+  padding: 0;
+  display: inline;
+}
+
+.cm-markdown-inline img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em 0;
+}
+
+.cm-markdown-inline hr {
+  border: none;
+  border-top: 1px solid #e5e5e5;
+  margin: 0.5rem 0;
+  width: 100%;
+}
+
+.cm-markdown-inline code {
+  background: #f3f4f6;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #374151;
+}
+
+.cm-markdown-inline pre > code {
+  display: block;
+  padding: 1em;
+  overflow-x: auto;
+}
