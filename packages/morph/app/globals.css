@@ -59,6 +59,7 @@
   padding: 2rem 4rem;
   border: none;
   border-radius: 0;
+  background-color: hsl(var(--background));
 }
 
 .cm-editor .cm-scroller {
@@ -177,7 +178,7 @@
 
 /* Dark mode syntax highlighting */
 .dark .cm-editor {
-  background-color: #100f0f;
+  background-color: hsl(var(--background));
 }
 
 .dark .cm-editor .cm-content {

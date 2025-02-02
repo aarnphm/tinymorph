@@ -14,51 +14,63 @@ import { Toolbar } from "./toolbar"
 const SAMPLE_NOTES = [
   {
     title: "Jogging",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "games",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Jogging",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Examination",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Classes",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Race",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Speech",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Party",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Reminder",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "games",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Speech",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Party",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
 ]
 
@@ -106,7 +118,9 @@ export default function Editor() {
   }, [vimMode])
 
   return (
-    <div className={`grid h-screen grid-cols-[1fr,auto] grid-rows-[auto,1fr] ${theme === "dark" ? "dark" : ""}`}>
+    <div
+      className={`grid h-screen grid-cols-[1fr,auto] grid-rows-[auto,1fr] ${theme === "dark" ? "dark" : ""}`}
+    >
       <div className="col-span-2 border-sm">
         <Toolbar
           toggleNotes={toggleNotes}
@@ -117,18 +131,18 @@ export default function Editor() {
         />
       </div>
       <div className="grid grid-cols-[1fr,auto]">
-        <div className="border-r">
+        <div className="border-r h-[calc(100vh-40px)]">
           <CodeMirror
             value={markdownContent}
-            height="calc(100vh - 40px)"
+            height="100%"
             extensions={editorExtensions}
             onChange={handleChange}
-            className="overflow-auto"
+            className="overflow-auto bg-background h-full"
             theme={theme === "dark" ? "dark" : "light"}
           />
         </div>
         {showNotes && (
-          <div className="w-80 h-[calc(100vh-40px)] overflow-auto border-l border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <div className="w-80 h-[calc(100vh-40px)] overflow-auto border-l border-border bg-background">
             <div className="p-4">
               <div className="grid gap-4">
                 {SAMPLE_NOTES.map((note, index) => (
@@ -142,4 +156,3 @@ export default function Editor() {
     </div>
   )
 }
-
