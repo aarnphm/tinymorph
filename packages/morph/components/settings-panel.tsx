@@ -30,14 +30,7 @@ const categories: SettingsCategory[] = [
   { id: "about", label: "About" },
 ]
 
-export function SettingsPanel({
-  isOpen,
-  onClose,
-  theme,
-  setTheme,
-  vimMode,
-  setVimMode,
-}: SettingsPanelProps) {
+export function SettingsPanel({ isOpen, onClose, theme, setTheme, vimMode, setVimMode }: SettingsPanelProps) {
   const [activeCategory, setActiveCategory] = React.useState("general")
 
   if (!isOpen) return null
@@ -71,9 +64,7 @@ export function SettingsPanel({
         {/* Right content area */}
         <div className="flex-1">
           <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-800">
-            <h2 className="text-lg font-medium">
-              {categories.find((c) => c.id === activeCategory)?.label}
-            </h2>
+            <h2 className="text-lg font-medium">{categories.find((c) => c.id === activeCategory)?.label}</h2>
             <Button variant="ghost" size="icon" onClick={onClose}>
               <X className="h-4 w-4" />
             </Button>
@@ -121,9 +112,7 @@ export function SettingsPanel({
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <Label htmlFor="vim-mode">Vim Mode</Label>
-                          <div className="text-sm text-muted-foreground">
-                            Enable Vim key bindings
-                          </div>
+                          <div className="text-sm text-muted-foreground">Enable Vim key bindings</div>
                         </div>
                         <Switch id="vim-mode" checked={vimMode} onCheckedChange={setVimMode} />
                       </div>
@@ -158,9 +147,7 @@ export function SettingsPanel({
                   </div>
                   <div>
                     <h3 className="text-sm font-medium mb-2">About</h3>
-                    <p className="text-sm text-muted-foreground">
-                      A simple markdown editor with live preview.
-                    </p>
+                    <p className="text-sm text-muted-foreground">A simple markdown editor with live preview.</p>
                   </div>
                 </div>
               )}
@@ -171,3 +158,4 @@ export function SettingsPanel({
     </div>
   )
 }
+

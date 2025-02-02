@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { Copy, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { SettingsPanel } from "./settings"
+import { SettingsPanel } from "./settings-panel"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface ToolbarProps {
   toggleNotes: () => void
@@ -27,9 +28,18 @@ export function Toolbar({ toggleNotes, theme, setTheme, vimMode, setVimMode }: T
           >
             <Settings className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={toggleNotes}>
-            <Copy className="h-4 w-4" />
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={toggleNotes}>
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" align="end" className="text-xs py-1 px-2">
+                <p>Toggle Notes</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
       <SettingsPanel
