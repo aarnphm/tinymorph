@@ -7,57 +7,70 @@ import { languages } from "@codemirror/language-data"
 import { NoteCard } from "./note-card"
 import { markdownLanguage } from "@codemirror/lang-markdown"
 import { EditorView } from "@codemirror/view"
+import { vim } from "@replit/codemirror-vim"
 import { inlineMarkdownExtension } from "./inlineMarkdownExtension"
 import { Toolbar } from "./toolbar"
 
 const SAMPLE_NOTES = [
   {
     title: "Jogging",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "games",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Jogging",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Examination",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Classes",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Race",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Speech",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Party",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Reminder",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "games",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Speech",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
   {
     title: "Party",
-    content: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+    content:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
   },
 ]
 
@@ -81,6 +94,8 @@ Amidst the neon-lit chaos, X_AE_B-22 encounters a diverse cast of allies and adv
 export default function Editor() {
   const [showNotes, setShowNotes] = React.useState(true)
   const [markdownContent, setMarkdownContent] = React.useState(initialMarkdown)
+  const [theme, setTheme] = React.useState<"light" | "dark" | "system">("system")
+  const [vimMode, setVimMode] = React.useState(false)
 
   const handleChange = React.useCallback((value: string) => {
     setMarkdownContent(value)
@@ -90,30 +105,48 @@ export default function Editor() {
     setShowNotes((prev) => !prev)
   }, [])
 
+  const editorExtensions = React.useMemo(() => {
+    const extensions = [
+      markdownExtension({ base: markdownLanguage, codeLanguages: languages }),
+      inlineMarkdownExtension,
+      EditorView.lineWrapping,
+    ]
+    if (vimMode) {
+      extensions.push(vim())
+    }
+    return extensions
+  }, [vimMode])
+
   return (
-    <div className="grid h-screen grid-cols-[1fr,auto] grid-rows-[auto,1fr] bg-white">
+    <div
+      className={`grid h-screen grid-cols-[1fr,auto] grid-rows-[auto,1fr] ${theme === "dark" ? "dark" : ""}`}
+    >
       <div className="col-span-2 border-sm">
-        <Toolbar toggleNotes={toggleNotes} />
+        <Toolbar
+          toggleNotes={toggleNotes}
+          theme={theme}
+          setTheme={setTheme}
+          vimMode={vimMode}
+          setVimMode={setVimMode}
+        />
       </div>
       <div className="grid grid-cols-[1fr,auto]">
         <div className="border-r">
           <CodeMirror
             value={markdownContent}
             height="calc(100vh - 40px)"
-            extensions={[
-              markdownExtension({ base: markdownLanguage, codeLanguages: languages }),
-              inlineMarkdownExtension,
-              EditorView.lineWrapping,
-            ]}
+            extensions={editorExtensions}
             onChange={handleChange}
             className="overflow-auto"
-            theme="light"
+            theme={theme === "dark" ? "dark" : "light"}
           />
         </div>
         {showNotes && (
-          <div className="w-80 overflow-auto border-sm bg-gray-50">
+          <div className="w-80 overflow-auto border-sm bg-gray-50 dark:bg-gray-800">
             <div className="p-4">
-              <h2 className="mb-4 text-lg font-semibold text-[#1e293b] font-bricolage-grotesque">Notes</h2>
+              <h2 className="mb-4 text-lg font-semibold text-[#1e293b] dark:text-gray-200 font-bricolage-grotesque">
+                Notes
+              </h2>
               <div className="grid gap-4">
                 {SAMPLE_NOTES.map((note, index) => (
                   <NoteCard key={index} {...note} />
@@ -126,4 +159,3 @@ export default function Editor() {
     </div>
   )
 }
-

@@ -25,6 +25,28 @@
     --ring: 215 20.2% 65.1%;
     --radius: 0.5rem;
   }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --ring: 217.2 32.6% 17.5%;
+  }
 }
 
 /* CodeMirror Styles */
@@ -309,3 +331,93 @@
 .note-card:hover {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+.dark .cm-editor {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.dark .cm-editor .cm-content {
+  caret-color: hsl(var(--foreground));
+}
+
+.dark .cm-editor .cm-cursor {
+  border-left-color: hsl(var(--foreground));
+}
+
+.dark .cm-editor .cm-selectionBackground {
+  background-color: rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Update syntax highlighting for dark mode */
+.dark .cm-header {
+  color: #63b3ed;
+}
+.dark .cm-strong {
+  color: #63b3ed;
+}
+.dark .cm-em {
+  color: #63b3ed;
+}
+.dark .cm-link {
+  color: #4299e1;
+}
+.dark .cm-quote {
+  color: #68d391;
+}
+.dark .cm-keyword {
+  color: #b794f4;
+}
+.dark .cm-atom {
+  color: #f6ad55;
+}
+.dark .cm-number {
+  color: #4fd1c5;
+}
+.dark .cm-def {
+  color: #fc8181;
+}
+.dark .cm-variable {
+  color: #e2e8f0;
+}
+.dark .cm-variable-2 {
+  color: #63b3ed;
+}
+.dark .cm-type {
+  color: #4fd1c5;
+}
+.dark .cm-comment {
+  color: #a0aec0;
+}
+.dark .cm-string {
+  color: #68d391;
+}
+.dark .cm-meta,
+.dark .cm-qualifier {
+  color: #a0aec0;
+}
+.dark .cm-builtin {
+  color: #63b3ed;
+}
+.dark .cm-bracket {
+  color: #a0aec0;
+}
+.dark .cm-tag {
+  color: #fc8181;
+}
+.dark .cm-attribute {
+  color: #63b3ed;
+}
+.dark .cm-hr {
+  color: #a0aec0;
+}
+.dark .cm-url {
+  color: #4299e1;
+}
+
+/* Update NoteCard styles for dark mode */
+.dark .note-card {
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+}
+
