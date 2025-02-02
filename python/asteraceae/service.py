@@ -98,11 +98,12 @@ class Engine:
   ) -> AsyncGenerator[str, None]:
     from vllm.sampling_params import GuidedDecodingParams, SamplingParams
 
+    # NOTE: we set delta=2 for now to simulate "randomness"
     Output = pydantic.create_model(
       'Output',
       __module__=Suggestion.__module__,
       __base__=pydantic.BaseModel,
-      suggestions=(pydantic.conlist(Suggestion, min_length=1, max_length=num_suggestions), ...),
+      suggestions=(pydantic.conlist(Suggestion, min_length=num_suggestions-2, max_length=num_suggestions), ...),
     )
     SAMPLING_PARAM = SamplingParams(
       max_tokens=max_tokens,
