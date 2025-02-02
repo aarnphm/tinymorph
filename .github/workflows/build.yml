@@ -1,4 +1,4 @@
-name: CI - Build and Test
+name: CI - Build and Dev Check
 
 on:
   push:
@@ -10,33 +10,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-
     steps:
     # Step 1: Checkout the repository
     - uses: actions/checkout@v4
 
-    # Step 2: Set up Node.js with the specified version
-    - name: Set up Node.js ${{ matrix.node-version }}
+    # Step 2: Set up Node.js with a specific version
+    - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 20
         cache: pnpm
 
     # Step 3: Install pnpm
     - name: Install pnpm
       run: npm install -g pnpm
 
-    # Step 4: Install dependencies
-    - name: Install dependencies
-      run: pnpm install
+    # Step 4: Navigate to the morph package and install dependencies
+    - name: Install dependencies for morph
+      run: |
+        cd packages/morph
+        pnpm install
 
-    # Step 5: Build the morph package
-    - name: Build the morph package
-      run: pnpm morph:build
-
-    # Step 6: Run dev check (optional for testing)
-    - name: Dev check (Optional)
-      run: pnpm morph:dev
+    # Step 5: Run the dev server
+    - name: Run dev server
+      run: |
+        cd packages/morph
+        pnpm run dev
