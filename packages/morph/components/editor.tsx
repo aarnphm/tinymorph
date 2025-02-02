@@ -89,24 +89,86 @@ const SAMPLE_NOTES = [
   },
 ]
 
-const initialMarkdown = `# Hello, world!
+const initialMarkdown = `---
+id: mechanistic interpretability
+aliases:
+  - mechinterp
+  - reveng neural net
+tags:
+  - interp
+abstract: The subfield of alignment, or reverse engineering neural network. In a sense, it is the field of learning models' world representation.
+date: 2024-10-30
+description: and reverse engineering neural networks.
+modified: 2025-02-02 07:17:20 GMT-05:00
+permalinks:
+  - /mechinterp
+title: mechanistic interpretability
+---
 
-This is a sample markdown document. You can edit it using the editor on the left.
+[whirlwind tour](https://www.youtube.com/watch?v=veT2VI4vHyU&ab_channel=FAR%E2%80%A2AI), [[thoughts/pdfs/tinymorph exploration.pdf|initial exploration]], [glossary](https://dynalist.io/d/n2ZWtnoYHrU1s4vnFSAQ519J)
 
-## Features
+> The subfield of alignment that delves into reverse engineering of a neural network, especially [[thoughts/LLMs]]
 
-* **Markdown support:** Write in markdown and see the rendered output in real time.
-* **Vim mode:** Enable vim mode for a more efficient editing experience.
-* **Syntax highlighting:** Code blocks are syntax highlighted for better readability.
-* **Line wrapping:** Long lines are automatically wrapped to prevent horizontal scrolling.
-* **Notes panel:** View notes related to the document in the right panel.
+To attack the *curse of dimensionality*, the question remains: *==how do we hope to understand a function over such a large space, without an exponential amount of time?==* [^lesswrongarc]
 
-## Getting started
+[^lesswrongarc]: good read from [Lawrence C](https://www.lesswrong.com/posts/6FkWnktH3mjMAxdRT/what-i-would-do-if-i-wasn-t-at-arc-evals#Ambitious_mechanistic_interpretability) for ambitious mech interp.
 
-To get started, simply start typing in the editor. You can use all the standard markdown features, such as headings, lists, and code blocks.
+Topics:
 
-For more information, please refer to the documentation.
-`
+- [[thoughts/sparse autoencoder]]
+- [[thoughts/sparse crosscoders]]
+- [[thoughts/Attribution parameter decomposition]]
+
+## open problems
+
+@sharkey2025openproblemsmechanisticinterpretability
+
+- differentiate between "reverse engineering" versus "concept-based"
+  - reverse engineer:
+    - decomposition -> hypotheses -> validation
+      - Decomposition via dimensionality [[thoughts/university/twenty-four-twenty-five/sfwr-4ml3/principal component analysis|reduction]]
+  - drawbacks with [[thoughts/sparse autoencoder#sparse dictionary learning|SDL]]:
+    - SDL reconstruction error are way too high [@rajamanoharan2024improvingdictionarylearninggated{see section 2.3}]
+    - SDL assumes linear representation hypothesis against non-linear feature space.
+    - SDL leaves feature geometry unexplained ^geometry
+
+## inference
+
+Application in the wild: [Goodfire](https://goodfire.ai/) and [Transluce](https://transluce.org/)
+
+> [!question]- How we would do inference with SAE?
+>
+> https://x.com/aarnphm_/status/1839016131321016380
+
+idea: treat SAEs as a logit bias, similar to [[thoughts/vllm#guided decoding]]
+
+## steering
+
+refers to the process of manually modifying certain activations and hidden state of the neural net to influence its
+outputs
+
+For example, the following is a toy example of how a decoder-only transformers (i.e: GPT-2) generate text given the prompt "The weather in California is"
+
+\`\`\`mermaid
+flowchart LR
+  A[The weather in California is] --> B[H0] --> D[H1] --> E[H2] --> C[... hot]
+\`\`\`
+
+To steer to model, we modify $H_2$ layers with certain features amplifier with scale 20 (called it $H_{3}$)[^1]
+
+[^1]: An example steering function can be:
+
+    $$
+    H_{3} = H_{2} + \\text{steering_strength} * \\text{SAE}.W_{\\text{dec}}[20] * \\text{max_activation}
+    $$
+
+\`\`\`mermaid
+flowchart LR
+  A[The weather in California is] --> B[H0] --> D[H1] --> E[H3] --> C[... cold]
+\`\`\`
+
+One usually use techniques such as [[thoughts/mechanistic interpretability#sparse autoencoders]] to decompose model activations into a set of
+interpretable features.`
 
 function DraggableNoteCard({ title, content, onDrop, editorRef }: DraggableNoteProps) {
   const noteRef = useRef<HTMLDivElement>(null)
@@ -231,7 +293,7 @@ export default function Editor() {
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-          <header className="flex h-8 shrink-0 items-center justify-between px-4 border-b">
+          <header className="flex h-10 shrink-0 items-center justify-between px-4 border-b">
             <SidebarTrigger className="-ml-1" />
             <Toolbar
               toggleNotes={toggleNotes}
@@ -241,19 +303,19 @@ export default function Editor() {
               setVimMode={setVimMode}
             />
           </header>
-          <div className="flex h-[calc(100vh-64px)] px-4">
-            <div ref={editorRef} className="flex-1">
+          <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
+            <div ref={editorRef} className="flex-1 relative border-border border">
               <CodeMirror
                 value={markdownContent}
                 height="100%"
                 extensions={editorExtensions}
                 onChange={handleChange}
-                className="overflow-auto h-full pt-4"
+                className="overflow-auto h-full mx-4 pt-4"
                 theme={theme === "dark" ? "dark" : "light"}
               />
             </div>
             {showNotes && (
-              <div className="w-80 overflow-auto border-l border-border">
+              <div className="w-80 overflow-auto border">
                 <div className="p-4">
                   <div className="grid gap-4">
                     {notes.map((note, index) => (
@@ -268,7 +330,18 @@ export default function Editor() {
                 </div>
               </div>
             )}
-          </div>
+          </section>
+          <footer className="flex h-8 shrink-0 items-end justify-end px-4 border-t text-xs">
+            <div className="flex items-end justify-between align-middle font-mono pb-[0.5rem]">
+              <div className="flex items-end gap-4">
+                <div>
+                  <a href="https://tinymorph.aarnphm.xyz" target="_blank">
+                    Documentation
+                  </a>
+                </div>
+              </div>
+            </div>
+          </footer>
         </SidebarInset>
       </SidebarProvider>
     </div>

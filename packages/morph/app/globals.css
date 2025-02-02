@@ -587,25 +587,6 @@
   font-weight: 400;
 }
 
-.cm-markdown-inline h1 {
-  font-size: 2.5em;
-}
-.cm-markdown-inline h2 {
-  font-size: 2.1459em;
-}
-.cm-markdown-inline h3 {
-  font-size: 1.842em;
-}
-.cm-markdown-inline h4 {
-  font-size: 1.5811em;
-}
-.cm-markdown-inline h5 {
-  font-size: 1.3572em;
-}
-.cm-markdown-inline h6 {
-  font-size: 1.165em;
-}
-
 .cm-markdown-inline blockquote {
   margin: 0;
   padding-left: 1rem;

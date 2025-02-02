@@ -47,12 +47,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t border-border p-4">
+      <SidebarFooter className="border-t border-border h-8 px-4 py-1">
         <div className="flex items-center justify-between">
+          {/* TODO: Update the text state here */}
           <span className="text-sm text-muted-foreground truncate">"~"</span>
-          {/* Add onClick event here */}
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-            <FolderSearch className="h-4 w-4" />
+          {/* TODO: Add onClick event here */}
+          <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+            <FolderSearch className="h-3 w-3" width={16} height={16} />
           </Button>
         </div>
       </SidebarFooter>
