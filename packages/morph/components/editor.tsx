@@ -129,7 +129,6 @@ export default function Editor() {
           <header className="flex h-8 shrink-0 items-center justify-between px-4 border-b">
             <SidebarTrigger className="-ml-1" />
             <Toolbar
-              className="pl-4"
               toggleNotes={toggleNotes}
               theme={theme}
               setTheme={setTheme}

@@ -1,5 +1,5 @@
 import type * as React from "react"
-import { useState, useCallback } from "react"
+import { useState } from "react"
 import { ChevronRight, File, Folder, FolderSearch } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -16,12 +16,6 @@ import {
   SidebarRail,
   SidebarFooter,
 } from "@/components/ui/sidebar"
-
-interface FileSystemNode {
-  name: string
-  kind: "file" | "directory"
-  children?: FileSystemNode[]
-}
 
 // This is sample data.
 const data = {
@@ -40,58 +34,6 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const [folderName, setFolderName] = useState("~/")
-  const [tree, setTree] = useState<FileSystemNode[]>([])
-
-  const traverseFileSystem = async (
-    dirHandle: FileSystemDirectoryHandle,
-    path: string = "",
-  ): Promise<FileSystemNode[]> => {
-    const entries: FileSystemNode[] = []
-
-    try {
-      for await (const [name, handle] of (dirHandle as any).entries()) {
-        if (handle.kind === "file") {
-          entries.push({
-            name,
-            kind: "file",
-          })
-        } else if (handle.kind === "directory") {
-          const children = await traverseFileSystem(
-            handle as FileSystemDirectoryHandle,
-            `${path}/${name}`,
-          )
-          entries.push({
-            name,
-            kind: "directory",
-            children,
-          })
-        }
-      }
-    } catch (error) {
-      console.error("Error traversing directory:", error)
-    }
-
-    return entries.sort((a, b) => {
-      // Sort directories first, then files
-      if (a.kind === "directory" && b.kind === "file") return -1
-      if (a.kind === "file" && b.kind === "directory") return 1
-      return a.name.localeCompare(b.name)
-    })
-  }
-
-  const openFolder = useCallback(async () => {
-    try {
-      const dirHandle = await window.showDirectoryPicker()
-      setFolderName(dirHandle.name)
-      const newTree = await traverseFileSystem(dirHandle)
-      setTree(newTree)
-    } catch (err) {
-      console.error("Error opening folder:", err)
-      alert("Failed to open folder. This feature may not be supported in your browser.")
-    }
-  }, [])
-
   return (
     <Sidebar className="bg-background" {...props}>
       <SidebarContent>
@@ -107,8 +49,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter className="border-t border-border p-4">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground truncate">{folderName}</span>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={openFolder}>
+          <span className="text-sm text-muted-foreground truncate">"~"</span>
+          {/* Add onClick event here */}
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
             <FolderSearch className="h-4 w-4" />
           </Button>
         </div>
