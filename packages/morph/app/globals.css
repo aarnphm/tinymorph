@@ -294,6 +294,7 @@
 :root {
   --font-parclo-serif: "Parclo Serif", serif;
   --font-berkeley-mono: "Berkeley Mono", monospace;
+  --font-live-editor: var(--font-parclo-serif);
   --background: 48 100% 97%;
   --foreground: 60 2% 8%;
   --card: 48 100% 97%;
@@ -343,9 +344,9 @@
 /* CodeMirror Styles */
 .cm-editor {
   height: 100%;
-  font-family: var(--font-parclo-serif), serif;
-  font-size: 16px;
+  font-family: var(--font-live-editor), serif;
   line-height: 1.6;
+  font-size: 16px;
   margin: 0 auto;
   border: none;
   border-radius: 0;
@@ -356,6 +357,8 @@
   min-height: 80vh;
   max-width: 100%;
   width: 100%;
+  font-family: var(--font-live-editor), serif;
+  line-height: 1.6;
 }
 
 .cm-editor .cm-gutters {
@@ -393,7 +396,6 @@
 .cm-header {
   color: #205ea6;
   font-weight: bold;
-  font-family: var(--font-bricolage-grotesque), sans-serif;
 }
 .cm-strong {
   color: #205ea6;
@@ -547,11 +549,9 @@
   color: #4385be;
 }
 
-/* Markdown inline styles */
 .cm-markdown-inline {
   @apply prose prose-sm max-w-none;
-  font-family: var(--font-parclo-serif), serif;
-  font-weight: 400;
+  font-family: var(--font-live-editor), serif;
   margin: 0;
   padding: 0;
   display: inline-block;
