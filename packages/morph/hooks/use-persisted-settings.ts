@@ -2,7 +2,6 @@ import { useState, useEffect } from "react"
 
 interface Settings {
   vimMode: boolean
-  theme: "light" | "dark" | "system"
   tabSize: number
   ignorePatterns: string[]
   editModeShortcut: string
@@ -10,10 +9,17 @@ interface Settings {
 
 const defaultSettings: Settings = {
   vimMode: false,
-  theme: "system",
   tabSize: 2,
-  ignorePatterns: ['**/.*', '**/node_modules/**', '.vercel/**', '**/dist/**', '__pycache__/**', '*.log', '.DS_Store'],
-  editModeShortcut: "e"
+  ignorePatterns: [
+    "**/.*",
+    "**/node_modules/**",
+    ".vercel/**",
+    "**/dist/**",
+    "__pycache__/**",
+    "*.log",
+    ".DS_Store",
+  ],
+  editModeShortcut: "e",
 }
 
 export default function usePersistedSettings() {
@@ -25,7 +31,7 @@ export default function usePersistedSettings() {
     const savedSettings = localStorage.getItem("morph-settings")
     if (savedSettings) {
       try {
-        const parsedSettings = {...defaultSettings, ...JSON.parse(savedSettings)}
+        const parsedSettings = { ...defaultSettings, ...JSON.parse(savedSettings) }
         setSettings(parsedSettings)
       } catch (error) {
         console.error("Failed to parse settings:", error)
@@ -47,6 +53,6 @@ export default function usePersistedSettings() {
     settings,
     updateSettings,
     isLoaded,
-    defaultSettings
+    defaultSettings,
   }
 }

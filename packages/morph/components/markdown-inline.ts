@@ -55,20 +55,21 @@ function processor(filename?: string) {
     return unified()
   }
 
-  return unified()
-    .use(remarkParse)
-    .use(markdownPlugins())
-    .use(remarkRehype, { allowDangerousHtml: true })
-    // @ts-expect-error
-    // For some reason, ts fails to recognize the correct type for all plugins.
-    .use(htmlPlugins())
-    .use(rehypeStringify, { allowDangerousHtml: true }) as Processor<
-    MdRoot,
-    MdRoot,
-    HtmlRoot,
-    HtmlRoot,
-    string
-  >
+  return (
+    unified()
+      .use(remarkParse)
+      .use(markdownPlugins())
+      .use(remarkRehype, { allowDangerousHtml: true })
+      // @ts-expect-error For some reason, ts fails to recognize the correct type for all plugins.
+      .use(htmlPlugins())
+      .use(rehypeStringify, { allowDangerousHtml: true }) as Processor<
+      MdRoot,
+      MdRoot,
+      HtmlRoot,
+      HtmlRoot,
+      string
+    >
+  )
 }
 
 let mdProcessor: ReturnType<typeof processor> | null = null
@@ -81,14 +82,25 @@ function getProcessor(filename?: string) {
 }
 
 export async function mdToHtml(value: string, filename?: string): Promise<string>
-export async function mdToHtml(value: string, filename: string | undefined, returnHast: true): Promise<HtmlRoot>
-export async function mdToHtml(value: string, filename?: string, returnHast?: boolean): Promise<HtmlRoot | string> {
+export async function mdToHtml(
+  value: string,
+  filename: string | undefined,
+  returnHast: true,
+): Promise<HtmlRoot>
+export async function mdToHtml(
+  value: string,
+  filename?: string,
+  returnHast?: boolean,
+): Promise<HtmlRoot | string> {
   returnHast = returnHast ?? false
-  if (!value.trim()) return returnHast ? { type: 'root', children: [] } : ""
-  if (filename && !shouldProcessFile(filename)) return returnHast ? {
-    type: 'root',
-    children: [{ type: 'text', value }]
-  } : value
+  if (!value.trim()) return returnHast ? { type: "root", children: [] } : ""
+  if (filename && !shouldProcessFile(filename))
+    return returnHast
+      ? {
+          type: "root",
+          children: [{ type: "text", value }],
+        }
+      : value
 
   value = value
     .replace(/^ +/, (spaces) => spaces.replace(/ /g, "\u00A0"))
@@ -113,10 +125,12 @@ export async function mdToHtml(value: string, filename?: string, returnHast?: bo
     return returnHast ? newAst : result.toString()
   } catch (error) {
     console.error("Error rendering content:", error)
-    return returnHast ? {
-      type: 'root',
-      children: [{ type: 'text', value }]
-    } : value
+    return returnHast
+      ? {
+          type: "root",
+          children: [{ type: "text", value }],
+        }
+      : value
   }
 }
 

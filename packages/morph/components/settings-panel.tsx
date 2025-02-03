@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { X } from "lucide-react"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
+import { useTheme } from "next-themes"
 
 interface SettingsPanelProps {
   isOpen: boolean
@@ -21,7 +22,6 @@ type SettingsCategory = {
 const categories: SettingsCategory[] = [
   { id: "general", label: "General" },
   { id: "editor", label: "Editor" },
-  { id: "appearance", label: "Appearance" },
   { id: "keyboard", label: "Keyboard" },
   { id: "files", label: "Files and Links" },
   { id: "about", label: "About" },
@@ -30,6 +30,7 @@ const categories: SettingsCategory[] = [
 export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const [activeCategory, setActiveCategory] = React.useState("general")
   const { settings, updateSettings, isLoaded, defaultSettings } = usePersistedSettings()
+  const { theme, setTheme } = useTheme()
 
   // Add escape key handler here
   React.useEffect(() => {
@@ -81,42 +82,37 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
           <ScrollArea className="h-[calc(85vh-60px)]">
             <div className="p-6 space-y-6">
               {activeCategory === "general" && (
-                <>
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="text-sm font-medium mb-4">Appearance</h3>
-                      <div className="space-y-4">
-                        <div>
-                          <Label className="text-sm mb-2 block">Theme</Label>
-                          <RadioGroup
-                            value={settings.theme}
-                            onValueChange={(value: "light" | "dark" | "system") =>
-                              updateSettings({ theme: value })
-                            }
-                            className="space-y-2"
-                          >
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="light" id="light" />
-                              <Label htmlFor="light">Light</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="dark" id="dark" />
-                              <Label htmlFor="dark">Dark</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="system" id="system" />
-                              <Label htmlFor="system">System</Label>
-                            </div>
-                          </RadioGroup>
-                        </div>
-                      </div>
-                    </div>
+                <div className="space-y-4">
+                  <div className="text-sm text-muted-foreground">
+                    General settings will be implemented in the future.
                   </div>
-                </>
+                </div>
               )}
 
               {activeCategory === "editor" && (
-                <div className="space-y-4">
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-sm font-medium mb-4">Appearance</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <Label className="text-sm mb-2 block">Theme</Label>
+                        <RadioGroup value={theme} onValueChange={setTheme} className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="light" id="light" />
+                            <Label htmlFor="light">Light</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="dark" id="dark" />
+                            <Label htmlFor="dark">Dark</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="system" id="system" />
+                            <Label htmlFor="system">System</Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
+                    </div>
+                  </div>
                   <div>
                     <h3 className="text-sm font-medium mb-4">Editor Settings</h3>
                     <div className="space-y-4">

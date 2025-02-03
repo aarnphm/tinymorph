@@ -383,27 +383,6 @@
   }
 
   :root {
-    --background: 48 100% 97%;
-    --foreground: 60 2% 8%;
-    --card: 48 100% 97%;
-    --card-foreground: 60 2% 8%;
-    --popover: 48 100% 97%;
-    --popover-foreground: 60 2% 8%;
-    --primary: 0 63% 42%;
-    --primary-foreground: 48 100% 97%;
-    --secondary: 44 24% 90%;
-    --secondary-foreground: 60 2% 8%;
-    --muted: 44 24% 90%;
-    --muted-foreground: 45 3% 48%;
-    --accent: 44 24% 90%;
-    --accent-foreground: 60 2% 8%;
-    --destructive: 0 63% 42%;
-    --destructive-foreground: 48 100% 97%;
-    --border: 44 14% 84%;
-    --input: 44 14% 84%;
-    --ring: 45 3% 48%;
-    --radius: 0.5rem;
-
     --font-parclo-serif: "Parclo Serif", serif;
     --font-berkeley-mono: "Berkeley Mono", monospace;
     --font-live-editor: var(--font-parclo-serif);
@@ -432,29 +411,57 @@
     --h5-style: normal;
     --h6-style: normal;
   }
-}
 
-@layer base {
+  :root {
+    --flexoki-bg: 48 100% 97%;
+    --flexoki-bg-2: 51 33% 92%;
+
+    --flexoki-ui: 51 21% 88%;
+    --flexoki-ui-2: 50 14% 83%;
+    --flexoki-ui-3: 55 10% 79%;
+
+    --flexoki-tx: 0 3% 6%;
+    --flexoki-tx-2: 50 3% 42%;
+    --flexoki-tx-3: 49 7% 70%;
+
+    --flexoki-re: 3 62% 42%;
+  }
   .dark {
-    --background: 60 2% 8%;
-    --foreground: 48 100% 97%;
-    --card: 60 2% 8%;
-    --card-foreground: 48 100% 97%;
-    --popover: 60 2% 8%;
-    --popover-foreground: 48 100% 97%;
-    --primary: 0 63% 42%;
-    --primary-foreground: 48 100% 97%;
-    --secondary: 45 3% 18%;
-    --secondary-foreground: 48 100% 97%;
-    --muted: 45 3% 18%;
-    --muted-foreground: 45 3% 65%;
-    --accent: 45 3% 18%;
-    --accent-foreground: 48 100% 97%;
-    --destructive: 0 63% 42%;
-    --destructive-foreground: 48 100% 97%;
-    --border: 45 3% 18%;
-    --input: 45 3% 18%;
-    --ring: 45 3% 65%;
+    --flexoki-bg: 0 3% 6%;
+    --flexoki-bg-2: 30 4% 11%;
+
+    --flexoki-ui: 30 3% 15%;
+    --flexoki-ui-2: 40 3% 20%;
+    --flexoki-ui-3: 30 3% 24%;
+
+    --flexoki-tx: 55 10% 79%;
+    --flexoki-tx-2: 43 3% 52%;
+    --flexoki-tx-3: 45 2% 33%;
+
+    --flexoki-re: 5 61% 54%;
+  }
+
+  :root {
+    --background: var(--flexoki-bg);
+    --foreground: var(--flexoki-tx);
+    --card: var(--flexoki-bg);
+    --card-foreground: var(--flexoki-tx);
+    --popover: var(--flexoki-bg);
+    --popover-foreground: var(--flexoki-tx);
+    --primary: var(--flexoki-tx);
+    --primary-foreground: var(--flexoki-bg);
+    --secondary: var(--flexoki-ui-2);
+    --secondary-foreground: var(--flexoki-tx-2);
+    --muted: var(--flexoki-bg-2);
+    --muted-foreground: var(--flexoki-tx-3);
+    --accent: var(--flexoki-ui);
+    --accent-foreground: var(--flexoki-tx-2);
+    --destructive: var(--flexoki-re);
+    --destructive-foreground: var(--flexoki-bg);
+    --border: var(--flexoki-ui-2);
+    --input: var(--flexoki-ui-2);
+    --ring: var(--flexoki-ui-3);
+    --radius: 0.5rem;
   }
 }
 
@@ -468,6 +475,10 @@
   border: none;
   border-radius: 0;
   background-color: hsl(var(--background));
+}
+
+.cm-content {
+  padding: 0 !important;
 }
 
 .cm-panels-bottom {
