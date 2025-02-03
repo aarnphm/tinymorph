@@ -9,7 +9,11 @@ interface NoteCardProps {
 export const NoteCard = forwardRef<HTMLDivElement, NoteCardProps>(
   ({ title, content, style }, ref) => {
     return (
-      <div ref={ref} className="p-4 bg-card border border-border" style={style}>
+      <div
+        ref={ref}
+        className="p-4 bg-card border border-border transition-all duration-200 hover:shadow-lg hover:bg-gradient-to-br from-background to-muted"
+        style={style}
+      >
         <h3 className="mb-2 text-sm font-medium text-foreground">{title}</h3>
         <p className="text-xs text-muted-foreground leading-relaxed">{content}</p>
       </div>

@@ -466,12 +466,26 @@
   background-color: hsl(var(--background));
 }
 
+.cm-panels-bottom {
+  display: flex;
+  position: relative;
+  border-top: 0px !important;
+  background-color: hsl(var(--background)) !important;
+}
+
+.cm-vim-panel {
+  font-size: 11.1px;
+  padding: 0px !important;
+  background-color: hsl(var(--background));
+  font-family: var(--font-berkeley-mono) !important;
+}
+
 .cm-editor .cm-scroller {
+  width: 100%;
   min-height: 80vh;
   max-width: 100%;
-  width: 100%;
-  font-family: var(--font-live-editor), serif;
   line-height: 1.6;
+  font-family: var(--font-live-editor), serif;
 }
 
 .cm-editor .cm-gutters {

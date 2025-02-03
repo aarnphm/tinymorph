@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { X } from "lucide-react"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
+import { Textarea } from "@/components/ui/textarea"
 
 interface SettingsPanelProps {
   isOpen: boolean
@@ -29,7 +30,18 @@ const categories: SettingsCategory[] = [
 
 export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const [activeCategory, setActiveCategory] = React.useState("general")
-  const { settings, updateSettings, isLoaded } = usePersistedSettings()
+  const { settings, updateSettings, isLoaded, defaultSettings } = usePersistedSettings()
+
+  // Add escape key handler here
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose()
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose])
 
   // Don't render until settings are loaded from localStorage
   if (!isLoaded || !isOpen) return null
@@ -62,12 +74,9 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
 
         {/* Right content area */}
         <div className="flex-1">
-          <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-800">
-            <h2 className="text-lg font-medium">
-              {categories.find((c) => c.id === activeCategory)?.label}
-            </h2>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-4 w-4" />
+          <div className="h-10 flex shrink-0 justify-end items-center mx-4">
+            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={onClose}>
+              <X className="h-3 w-3 p-0" width={16} height={16} />
             </Button>
           </div>
           <ScrollArea className="h-[calc(85vh-60px)]">
@@ -143,8 +152,55 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
               )}
 
               {activeCategory === "files" && (
-                <div className="text-sm text-muted-foreground">
-                  Files and links settings will be implemented in the future.
+                <div className="space-y-4">
+                  <div>
+                    <div className="space-y-8">
+                      <div className="space-y-4">
+                        <Label>Ignore Patterns</Label>
+                        <p className="text-sm text-muted-foreground italic">
+                          Globbing patterns to exclude from file listings
+                        </p>
+                        <div className="space-y-2">
+                          {settings.ignorePatterns
+                            .filter(p => !defaultSettings.ignorePatterns.includes(p))
+                            .map((pattern, index) => (
+                              <div key={index} className="flex items-center gap-2">
+                                <input
+                                  type="text"
+                                  value={pattern}
+                                  onChange={(e) => {
+                                    const newPatterns = [...settings.ignorePatterns]
+                                    newPatterns[newPatterns.indexOf(pattern)] = e.target.value
+                                    updateSettings({ ignorePatterns: newPatterns })
+                                  }}
+                                  className="flex-1 text-sm p-1.5 border"
+                                />
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0"
+                                  onClick={() => updateSettings({
+                                    ignorePatterns: settings.ignorePatterns.filter(p => p !== pattern)
+                                  })}
+                                >
+                                  -
+                                </Button>
+                              </div>
+                            ))}
+                          <Button
+                            variant="default"
+                            size="sm"
+                            className="mt-2"
+                            onClick={() => updateSettings({
+                              ignorePatterns: [...settings.ignorePatterns, '']
+                            })}
+                          >
+                            Add New Pattern
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
