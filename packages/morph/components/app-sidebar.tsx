@@ -2,6 +2,7 @@ import type * as React from "react"
 import { useState } from "react"
 import { ChevronRight, File, Folder, FolderSearch } from "lucide-react"
 import { Button } from "@/components/ui/button"
+// import { globby } from 'globby'
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
@@ -16,6 +17,7 @@ import {
   SidebarRail,
   SidebarFooter,
 } from "@/components/ui/sidebar"
+import usePersistedSettings from "@/hooks/use-persisted-settings"
 
 // This is sample data.
 const data = {
@@ -34,13 +36,61 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [fileTree, setFileTree] = useState<[string| string[]][]>([])
+  const [currentDirName, setCurrentDirName] = useState('~')
+  const { settings } = usePersistedSettings()
+
+  const traverseDirectoryHandle = async (handle: any, path = '') => {
+    const entries: any[] = []
+    
+    // Get all entries as paths
+    const paths = await globby('**/*', {
+      cwd: handle,
+      dot: true,
+      onlyFiles: false,
+      ignore: settings.ignorePatterns,
+      objectMode: true
+    })
+
+    // Build tree structure from paths
+    const tree = {}
+    for (const entry of paths) {
+      const parts = entry.path.split('/')
+      let current = tree
+      for (const part of parts) {
+        current[part] = current[part] || []
+        current = current[part]
+      }
+    }
+
+    // Convert tree to nested arrays
+    const buildNestedArray = (node) => {
+      return Object.entries(node).map(([name, children]) => {
+        return children.length ? [name, ...buildNestedArray(children)] : name
+      })
+    }
+
+    return buildNestedArray(tree)
+  }
+
+  const handleOpenFolder = async () => {
+    try {
+      const handle = await window.showDirectoryPicker()
+      const tree = await traverseDirectoryHandle(handle)
+      setFileTree(tree)
+      setCurrentDirName(handle.name)
+    } catch (err) {
+      console.error('Error accessing directory:', err)
+    }
+  }
+
   return (
     <Sidebar className="bg-background" {...props}>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {data.tree.map((item, index) => (
+              {fileTree.map((item, index) => (
                 <Tree key={index} item={item} />
               ))}
             </SidebarMenu>
@@ -49,10 +99,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter className="border-t border-border h-8 px-4 py-1">
         <div className="flex items-center justify-between">
-          {/* TODO: Update the text state here */}
-          <span className="text-sm text-muted-foreground truncate">"~"</span>
-          {/* TODO: Add onClick event here */}
-          <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+          <span className="text-sm text-muted-foreground truncate">{currentDirName}</span>
+          <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={handleOpenFolder}>
             <FolderSearch className="h-3 w-3" width={16} height={16} />
           </Button>
         </div>
