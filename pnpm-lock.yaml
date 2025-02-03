@@ -7479,9 +7479,6 @@ snapshots:
 
   flexsearch@0.7.43: {}
 
-<<<<<<<<< Temporary merge branch 1
-  for-each@0.3.4:
-=========
   /follow-redirects@1.15.9:
     resolution: {integrity: sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==}
     engines: {node: '>=4.0'}
@@ -7495,7 +7492,6 @@ snapshots:
   /for-each@0.3.4:
     resolution: {integrity: sha512-kKaIINnFpzW6ffJNDjjyjrk21BkDx38c0xa/klsT8VzLCaMEefv4ZTacrcVR4DmgTeBra++jMDAfS/tS799YDw==}
     engines: {node: '>= 0.4'}
->>>>>>>>> Temporary merge branch 2
     dependencies:
       is-callable: 1.2.7
 
@@ -8902,9 +8898,6 @@ snapshots:
 
   property-information@6.5.0: {}
 
-<<<<<<<<< Temporary merge branch 1
-  psl@1.9.0: {}
-=========
   /proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
     dev: false
@@ -8912,7 +8905,6 @@ snapshots:
   /psl@1.9.0:
     resolution: {integrity: sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==}
     dev: false
->>>>>>>>> Temporary merge branch 2
 
   punycode@2.3.1: {}
 
