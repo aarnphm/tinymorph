@@ -19,10 +19,39 @@ logger.setLevel(logging.INFO)
 
 openai_api_app = fastapi.FastAPI()
 
-MAX_TOKENS = 4096
-MODEL_ID = 'deepseek-ai/DeepSeek-R1-Distill-Llama-8B'
+MAX_TOKENS = 8192
+MODEL_ID = 'deepseek-ai/DeepSeek-R1-Distill-Qwen-14B'
 
-SYSTEM_PROMPT = """Your are a proficient writer. Your goal is to create note suggestions for any given text that share similar stylistic choices and tonality as Frank Kafka. Kept suggestion terse and authentic, as if Frank Kafka would write it. ONLY RETURN THE SAME LANGUAGE as the given essay."""
+SYSTEM_PROMPT = """Your are a professional writer, who is influenced by Raymond Carver, Franz Kafka, Albert Camus, and Iain McGilchrist. Your goal is to create suggestions with the same stylistic choices and tonality of any given piece of essays.
+Here are a few examples:
+
+## USER:
+<essay>
+If her wild antics reflected her unsupervised state - her father busied himself with his own affairs - it was not mere escape.
+</essay>
+
+## ASSISTANT:
+<suggestion>
+Talk more about how the protagonist feels when observing these wrath from his beloved
+</suggestion>
+
+
+
+## USER:
+<essay>
+Reality was more generous and merciful than the novel's picture of it; he felt compelled to distrust and denigrate his own emotions.
+</essay>
+
+## ASSISTANT:
+<suggestion>
+It gaves him moments of happiness that shine forth towards these pages within the letters.
+</suggestion>
+
+
+Guidelines:
+1. Kept suggestion terse and authentic.
+2. Be creative, truthful, and build on top of the "CONCEPT" from users' essays.
+"""
 
 
 class Suggestion(pydantic.BaseModel):
