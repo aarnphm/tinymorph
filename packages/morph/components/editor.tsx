@@ -12,14 +12,18 @@ import { Compartment, EditorState } from "@codemirror/state"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { vim, Vim } from "@replit/codemirror-vim"
-import { inlineMarkdownExtension } from "./markdown-inline"
 import { NoteCard } from "./note-card"
-import { AppSidebar } from "./app-sidebar"
+import { MorphSidebar } from "./explorer"
 import { Toolbar } from "./toolbar"
 import jsPDF from "jspdf"
 import { SettingsPanel } from "./settings-panel"
+import { FileSystemPermissionPrompt } from "./popup/permission"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { setFile, fileField, liveMode, mdToHtml } from "./markdown-inline"
+import toJsx from "@/lib/jsx"
+import type { Root } from "hast"
 
-const NOTE_KEYBOARD_SHORTCUT = "e"
+const NOTE_KEYBOARD_SHORTCUT = "i"
 
 interface Note {
   title: string
@@ -138,6 +142,32 @@ export default function Editor() {
   const editorRef = React.useRef<HTMLDivElement>(null)
   const debounceTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
+  const [fileSystemPermissionGranted, setFileSystemPermissionGranted] = React.useState(false)
+  const [showPopover, setShowPopover] = React.useState(false)
+  const [currentFile, setCurrentFile] = React.useState<string>("")
+  const [isEditMode, setIsEditMode] = React.useState(true)
+  const [previewNode, setPreviewNode] = React.useState<Root | null>(null)
+
+  const memoizedExtensions = React.useMemo(() => {
+    const tabSize = new Compartment()
+    const extensions = [
+      markdown({ base: markdownLanguage, codeLanguages: languages }),
+      liveMode,
+      EditorView.lineWrapping,
+      tabSize.of(EditorState.tabSize.of(settings.tabSize)),
+      fileField.init(() => currentFile),
+    ]
+    if (settings.vimMode) {
+      extensions.push(vim())
+      Vim.defineEx("yank", "y", () => {
+        const text = Vim.getRegister('"')
+        if (text) {
+          navigator.clipboard.writeText(text).catch(console.error)
+        }
+      })
+    }
+    return extensions
+  }, [settings.vimMode, settings.tabSize, currentFile])
 
   const handleChange = React.useCallback((value: string) => {
     setMarkdownContent(value)
@@ -155,28 +185,8 @@ export default function Editor() {
     }
   }, [])
 
-  const memoizedExtensions = React.useMemo(() => {
-    const tabSize = new Compartment()
-    const extensions = [
-      markdown({ base: markdownLanguage, codeLanguages: languages }),
-      inlineMarkdownExtension,
-      EditorView.lineWrapping,
-      tabSize.of(EditorState.tabSize.of(settings.tabSize)),
-    ]
-    if (settings.vimMode) {
-      extensions.push(vim())
-      Vim.defineEx("yank", "y", () => {
-        const text = Vim.getRegister('"')
-        if (text) {
-          navigator.clipboard.writeText(text).catch(console.error)
-        }
-      })
-    }
-    return extensions
-  }, [settings.vimMode, settings.tabSize])
-
   // Function to export Markdown file
-  const exportMarkdown = () => {
+  const handleExportMarkdown = React.useCallback(() => {
     const blob = new Blob([markdownContent], { type: "text/markdown" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
@@ -187,10 +197,9 @@ export default function Editor() {
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
-  }
+  }, [markdownContent])
 
-  // Function to export as PDF
-  const exportPDF = () => {
+  const handleExportPdf = React.useCallback(() => {
     const pdf = new jsPDF()
     pdf.setFont("helvetica", "normal")
 
@@ -198,7 +207,11 @@ export default function Editor() {
     pdf.text(lines, 10, 10)
 
     pdf.save("document.pdf")
-  }
+  }, [markdownContent])
+
+  const handlePermissionGranted = React.useCallback(() => {
+    setFileSystemPermissionGranted(true)
+  }, [])
 
   const fetchNewNotes = async (content: string): Promise<Note[]> => {
     try {
@@ -254,54 +267,122 @@ export default function Editor() {
   }, [markdownContent])
 
   React.useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === NOTE_KEYBOARD_SHORTCUT && (event.metaKey || event.ctrlKey)) {
-        event.preventDefault()
-        toggleNotes()
-      }
+    const permissionGranted = localStorage.getItem("fileSystemPermissionGranted")
+    if (permissionGranted === "true") {
+      setFileSystemPermissionGranted(true)
     }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [toggleNotes])
+  }, [])
 
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === ',' && !(event.target instanceof HTMLInputElement)) {
+      if (event.key === NOTE_KEYBOARD_SHORTCUT && (event.metaKey || event.altKey)) {
+        event.preventDefault()
+        toggleNotes()
+      } else if (event.key === "," && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
         setIsSettingsOpen(true)
+      } else if (event.key === settings.editModeShortcut && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault()
+        setIsEditMode((prev) => !prev)
       }
     }
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [toggleNotes, settings.editModeShortcut])
+
+  // Update file selection handler
+  const handleFileSelect = React.useCallback((filename: string, content: string) => {
+    setCurrentFile(filename)
+    setMarkdownContent(content)
+    // Dispatch file change to CodeMirror
+    if (editorRef.current) {
+      const view = EditorView.findFromDOM(editorRef.current)
+      if (view) {
+        view.dispatch({
+          effects: setFile.of(filename),
+        })
+      }
+    }
   }, [])
+
+  React.useEffect(() => {
+    const updatePreview = async () => {
+      try {
+        const hastNode = await mdToHtml(markdownContent, currentFile, true)
+        setPreviewNode(hastNode)
+      } catch (error) {
+        console.error("Error converting markdown to JSX:", error)
+      }
+    }
+    updatePreview()
+  }, [markdownContent, currentFile])
 
   return (
     <div className={settings.theme === "dark" ? "dark" : ""}>
+      <FileSystemPermissionPrompt onPermissionGranted={handlePermissionGranted} />
       <SidebarProvider defaultOpen={false}>
-        <AppSidebar />
+        <MorphSidebar
+          onFileSelect={handleFileSelect}
+          onExportMarkdown={handleExportMarkdown}
+          onExportPDF={handleExportPdf}
+        />
         <SidebarInset>
           <header className="inline-block h-10 border-b">
             <div className="h-full flex shrink-0 items-center justify-between mx-4">
-              <SidebarTrigger className="-ml-1" />
-              <Toolbar
-                toggleNotes={toggleNotes}
-                exportMarkdown={exportMarkdown}
-                exportPDF={exportPDF}
-              />
+              <Popover open={!fileSystemPermissionGranted && showPopover}>
+                <PopoverTrigger asChild>
+                  <div
+                    className="relative"
+                    onMouseEnter={() => !fileSystemPermissionGranted && setShowPopover(true)}
+                    onMouseLeave={() => !fileSystemPermissionGranted && setShowPopover(false)}
+                  >
+                    <SidebarTrigger className="-ml-1" disabled={!fileSystemPermissionGranted} />
+                  </div>
+                </PopoverTrigger>
+                {!fileSystemPermissionGranted && (
+                  <PopoverContent
+                    side="right"
+                    className="w-80 transition-opacity duration-200"
+                    sideOffset={8}
+                  >
+                    <div className="text-sm">
+                      <p className="text-muted-foreground mt-1">
+                        File system access is required to use the file explorer.
+                      </p>
+                    </div>
+                  </PopoverContent>
+                )}
+              </Popover>
+              <Toolbar toggleNotes={toggleNotes} />
             </div>
           </header>
           <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
-            <div ref={editorRef} className="flex-1 relative border-border border">
-              <CodeMirror
-                value={markdownContent}
-                height="100%"
-                extensions={memoizedExtensions}
-                onChange={handleChange}
-                className="overflow-auto h-full mx-4 pt-4"
-                theme={settings.theme === "dark" ? "dark" : "light"}
-              />
+            <div className="flex-1 relative border">
+              <div
+                className={`editor-mode absolute inset-0 transition-opacity duration-200 ${
+                  isEditMode ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                }`}
+                ref={editorRef}
+              >
+                <CodeMirror
+                  value={markdownContent}
+                  height="100%"
+                  extensions={memoizedExtensions}
+                  onChange={handleChange}
+                  className="overflow-auto h-full mx-4 pt-4"
+                  theme={settings.theme === "dark" ? "dark" : "light"}
+                />
+              </div>
+              <div
+                className={`reading-mode absolute inset-0 transition-opacity duration-200 ${
+                  isEditMode ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"
+                }`}
+              >
+                <div className="prose dark:prose-invert max-w-none mx-4 pt-4 overflow-auto h-full">
+                  {previewNode && toJsx(previewNode)}
+                </div>
+              </div>
             </div>
             {showNotes && (
               <div className="w-80 overflow-auto border">
@@ -339,12 +420,9 @@ export default function Editor() {
           </footer>
         </SidebarInset>
       </SidebarProvider>
-      
+
       {isSettingsOpen && (
-        <SettingsPanel
-          isOpen={isSettingsOpen}
-          onClose={() => setIsSettingsOpen(false)}
-        />
+        <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       )}
     </div>
   )

@@ -7,7 +7,6 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { X } from "lucide-react"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
-import { Textarea } from "@/components/ui/textarea"
 
 interface SettingsPanelProps {
   isOpen: boolean
@@ -35,12 +34,12 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   // Add escape key handler here
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen) {
+      if (event.key === "Escape" && isOpen) {
         onClose()
       }
     }
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
+    document.addEventListener("keydown", handleKeyDown)
+    return () => document.removeEventListener("keydown", handleKeyDown)
   }, [isOpen, onClose])
 
   // Don't render until settings are loaded from localStorage
@@ -146,8 +145,33 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
               )}
 
               {activeCategory === "keyboard" && (
-                <div className="text-sm text-muted-foreground">
-                  Keyboard settings will be implemented in the future.
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-sm font-medium mb-4">Keyboard Shortcuts</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <Label htmlFor="edit-mode-shortcut">Edit Mode Toggle</Label>
+                          <div className="text-sm text-muted-foreground">
+                            Shortcut to toggle between edit and reading mode (⌘ or Ctrl + key)
+                          </div>
+                        </div>
+                        <input
+                          id="edit-mode-shortcut"
+                          type="text"
+                          value={settings.editModeShortcut}
+                          onChange={(e) => {
+                            const key = e.target.value.slice(-1).toLowerCase()
+                            if (key.match(/[a-z]/i)) {
+                              updateSettings({ editModeShortcut: key })
+                            }
+                          }}
+                          className="w-16 text-center border rounded-md"
+                          maxLength={1}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -162,7 +186,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                         </p>
                         <div className="space-y-2">
                           {settings.ignorePatterns
-                            .filter(p => !defaultSettings.ignorePatterns.includes(p))
+                            .filter((p) => !defaultSettings.ignorePatterns.includes(p))
                             .map((pattern, index) => (
                               <div key={index} className="flex items-center gap-2">
                                 <input
@@ -179,9 +203,13 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                                   variant="ghost"
                                   size="sm"
                                   className="h-8 w-8 p-0"
-                                  onClick={() => updateSettings({
-                                    ignorePatterns: settings.ignorePatterns.filter(p => p !== pattern)
-                                  })}
+                                  onClick={() =>
+                                    updateSettings({
+                                      ignorePatterns: settings.ignorePatterns.filter(
+                                        (p) => p !== pattern,
+                                      ),
+                                    })
+                                  }
                                 >
                                   -
                                 </Button>
@@ -191,9 +219,11 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                             variant="default"
                             size="sm"
                             className="mt-2"
-                            onClick={() => updateSettings({
-                              ignorePatterns: [...settings.ignorePatterns, '']
-                            })}
+                            onClick={() =>
+                              updateSettings({
+                                ignorePatterns: [...settings.ignorePatterns, ""],
+                              })
+                            }
                           >
                             Add New Pattern
                           </Button>

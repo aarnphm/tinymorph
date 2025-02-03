@@ -5,13 +5,15 @@ interface Settings {
   theme: "light" | "dark" | "system"
   tabSize: number
   ignorePatterns: string[]
+  editModeShortcut: string
 }
 
 const defaultSettings: Settings = {
   vimMode: false,
   theme: "system",
   tabSize: 2,
-  ignorePatterns: ['**/.*', '**/node_modules/**', '.vercel/**', '**/dist/**', '__pycache__/**', '*.log', '.DS_Store']
+  ignorePatterns: ['**/.*', '**/node_modules/**', '.vercel/**', '**/dist/**', '__pycache__/**', '*.log', '.DS_Store'],
+  editModeShortcut: "e"
 }
 
 export default function usePersistedSettings() {

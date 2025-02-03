@@ -1,4 +1,3 @@
-import type { VFile } from "vfile"
 import {
   Decoration,
   type DecorationSet,
@@ -8,53 +7,116 @@ import {
   EditorView,
 } from "@codemirror/view"
 import { RangeSetBuilder, StateEffect, StateField } from "@codemirror/state"
-import { unified } from "unified"
+import type { Root as HtmlRoot } from "hast"
+import type { Root as MdRoot } from "mdast"
+import { VFile } from "vfile"
+import { type Processor, unified } from "unified"
 import remarkParse from "remark-parse"
 import remarkRehype from "remark-rehype"
 import rehypeStringify from "rehype-stringify"
 import remarkGfm from "remark-gfm"
+import smartypants from "remark-smartypants"
 import rehypeSlug from "rehype-slug"
+import rehypePrettyCode from "rehype-pretty-code"
+import rehypeKatex from "rehype-katex"
+import rehypeRaw from "rehype-raw"
 
-let mdProcessor: ReturnType<typeof createProcessor> | null = null
+export type HtmlContent = [HtmlRoot, VFile, string]
 
-const processedCache = new Map<string, VFile>()
-
-function createProcessor() {
-  return unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeSlug)
-    .use(rehypeStringify, { allowDangerousHtml: true })
+function markdownPlugins() {
+  return [remarkGfm, smartypants]
 }
 
-function getProcessor() {
-  if (!mdProcessor) {
-    mdProcessor = createProcessor()
+function htmlPlugins() {
+  return [
+    rehypeRaw,
+    rehypeSlug,
+    [
+      rehypePrettyCode,
+      {
+        theme: {
+          light: "github-light",
+          dark: "github-dark",
+        },
+        keepBackground: false,
+      },
+    ],
+    [rehypeKatex, { output: "htmlAndMathml" }],
+  ]
+}
+
+function shouldProcessFile(filename: string): boolean {
+  const processableExtensions = [".md", ".mdx", ".markdown", ".txt"]
+  return processableExtensions.some((ext) => filename.toLowerCase().endsWith(ext))
+}
+
+function processor(filename?: string) {
+  if (filename?.endsWith(".mdx")) {
+    return unified()
   }
+
+  return unified()
+    .use(remarkParse)
+    .use(markdownPlugins())
+    .use(remarkRehype, { allowDangerousHtml: true })
+    // @ts-expect-error
+    // For some reason, ts fails to recognize the correct type for all plugins.
+    .use(htmlPlugins())
+    .use(rehypeStringify, { allowDangerousHtml: true }) as Processor<
+    MdRoot,
+    MdRoot,
+    HtmlRoot,
+    HtmlRoot,
+    string
+  >
+}
+
+let mdProcessor: ReturnType<typeof processor> | null = null
+
+const cached = new Map<string, HtmlContent>()
+
+function getProcessor(filename?: string) {
+  if (!mdProcessor) mdProcessor = processor(filename)
   return mdProcessor
 }
 
-async function processMarkdown(markdown: string): Promise<string> {
-  if (!markdown.trim()) {
-    return ""
-  }
+export async function mdToHtml(value: string, filename?: string): Promise<string>
+export async function mdToHtml(value: string, filename: string | undefined, returnHast: true): Promise<HtmlRoot>
+export async function mdToHtml(value: string, filename?: string, returnHast?: boolean): Promise<HtmlRoot | string> {
+  returnHast = returnHast ?? false
+  if (!value.trim()) return returnHast ? { type: 'root', children: [] } : ""
+  if (filename && !shouldProcessFile(filename)) return returnHast ? {
+    type: 'root',
+    children: [{ type: 'text', value }]
+  } : value
 
-  const preprocessedMarkdown = markdown.replace(/^ +/, (spaces) => spaces.replace(/ /g, "\u00A0"))
+  value = value
+    .replace(/^ +/, (spaces) => spaces.replace(/ /g, "\u00A0"))
+    .toString()
+    .trim()
 
-  const cachedFile = processedCache.get(preprocessedMarkdown)
-  if (cachedFile) {
-    return String(cachedFile.value)
-  }
+  const cacheKey = `${filename || "local"}:${value}`
+  const cachedResult = cached.get(cacheKey)
+  if (cachedResult) return returnHast ? cachedResult[0] : String(cachedResult[2])
+
+  const file = new VFile()
+  file.value = value
+  if (filename) file.path = filename
 
   try {
-    const processor = getProcessor()
-    const file = (await processor.process(preprocessedMarkdown)) as VFile
-    processedCache.set(preprocessedMarkdown, file)
-    return String(file.value)
+    const proc = getProcessor(filename)
+    const ast = proc.parse(file) as MdRoot
+    const newAst = (await proc.run(ast, file)) as HtmlRoot
+    const result = proc.stringify(newAst, file)
+    // save ast for parsing reading mode
+    cached.set(cacheKey, [newAst, file, result.toString()])
+    return returnHast ? newAst : result.toString()
   } catch (error) {
-    console.error("Error rendering Markdown:", error)
-    return markdown
+    console.error("Error rendering content:", error)
+    return returnHast ? {
+      type: 'root',
+      children: [{ type: 'text', value }]
+    } : value
   }
 }
 
@@ -82,16 +144,30 @@ interface PendingDecoration {
   html: string
 }
 
-export const inlineMarkdownExtension = ViewPlugin.fromClass(
+export const setFile = StateEffect.define<string>()
+
+export const fileField = StateField.define<string>({
+  create: () => "",
+  update: (value, tr) => {
+    for (const effect of tr.effects) {
+      if (effect.is(setFile)) return effect.value
+    }
+    return value
+  },
+})
+
+export const liveMode = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet
     pending: Map<number, boolean>
     currentView: EditorView
+    filename?: string
 
     constructor(view: EditorView) {
       this.decorations = Decoration.none
       this.pending = new Map()
       this.currentView = view
+      this.filename = view.state.field(fileField, false)
       this.computeDecorations(view)
     }
 
@@ -118,7 +194,7 @@ export const inlineMarkdownExtension = ViewPlugin.fromClass(
         this.pending.set(lineNum, true)
 
         try {
-          const renderedHTML = await processMarkdown(lineText)
+          const renderedHTML = await mdToHtml(lineText, this.filename)
           if (view.dom.isConnected) {
             pendingDecorations.push({
               from: line.from,
@@ -145,12 +221,19 @@ export const inlineMarkdownExtension = ViewPlugin.fromClass(
 
         pendingDecorations.sort((a, b) => a.from - b.from)
 
-        for (const deco of pendingDecorations) {
+        for (const { from, to, html } of pendingDecorations) {
           builder.add(
-            deco.from,
-            deco.to,
+            from,
+            to,
             Decoration.replace({
-              widget: new MarkdownLineWidget(deco.html),
+              widget: new (class extends WidgetType {
+                toDOM(): HTMLElement {
+                  const wrapper = document.createElement("div")
+                  wrapper.className = "cm-live-mode"
+                  wrapper.innerHTML = html
+                  return wrapper
+                }
+              })(),
             }),
           )
         }
@@ -170,19 +253,3 @@ export const inlineMarkdownExtension = ViewPlugin.fromClass(
     provide: () => [markdownDecorations],
   },
 )
-
-class MarkdownLineWidget extends WidgetType {
-  private html: string
-
-  constructor(html: string) {
-    super()
-    this.html = html
-  }
-
-  toDOM(): HTMLElement {
-    const wrapper = document.createElement("div")
-    wrapper.className = "cm-markdown-inline"
-    wrapper.innerHTML = this.html
-    return wrapper
-  }
-}

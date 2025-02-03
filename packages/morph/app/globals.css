@@ -383,9 +383,6 @@
   }
 
   :root {
-    --font-parclo-serif: "Parclo Serif", serif;
-    --font-berkeley-mono: "Berkeley Mono", monospace;
-    --font-live-editor: var(--font-parclo-serif);
     --background: 48 100% 97%;
     --foreground: 60 2% 8%;
     --card: 48 100% 97%;
@@ -406,6 +403,34 @@
     --input: 44 14% 84%;
     --ring: 45 3% 48%;
     --radius: 0.5rem;
+
+    --font-parclo-serif: "Parclo Serif", serif;
+    --font-berkeley-mono: "Berkeley Mono", monospace;
+    --font-live-editor: var(--font-parclo-serif);
+    --h1-size: 1.125em;
+    --h2-size: 1.05em;
+    --h3-size: 1em;
+    --h4-size: 0.9em;
+    --h5-size: 0.85em;
+    --h6-size: 0.85em;
+    --h1-weight: 600;
+    --h2-weight: 600;
+    --h3-weight: 500;
+    --h4-weight: 500;
+    --h5-weight: 500;
+    --h6-weight: 400;
+    --h1-variant: normal;
+    --h2-variant: normal;
+    --h3-variant: normal;
+    --h4-variant: normal;
+    --h5-variant: small-caps;
+    --h6-variant: small-caps;
+    --h1-style: normal;
+    --h2-style: normal;
+    --h3-style: normal;
+    --h4-style: normal;
+    --h5-style: normal;
+    --h6-style: normal;
   }
   .dark {
     --background: 60 2% 8%;
@@ -676,7 +701,8 @@
   color: #4385be;
 }
 
-.cm-markdown-inline {
+.cm-reading-mode,
+.cm-live-mode {
   font-family: var(--font-live-editor), serif;
   margin: 0;
   padding: 0;
@@ -687,33 +713,34 @@
   line-height: inherit;
 }
 
-.cm-markdown-inline h1,
-.cm-markdown-inline h2,
-.cm-markdown-inline h3,
-.cm-markdown-inline h4,
-.cm-markdown-inline h5,
-.cm-markdown-inline h6 {
+.cm-live-mode h1,
+.cm-live-mode h2,
+.cm-live-mode h3,
+.cm-live-mode h4,
+.cm-live-mode h5,
+.cm-live-mode h6 {
   font-family: var(--font-parclo-serif), sans-serif;
   margin: 0;
   padding: 0;
-  display: inline-block;
+  gap: 0.3rem;
+  display: inline-flex;
   vertical-align: baseline;
 }
 
-.cm-markdown-inline h1,
-.cm-markdown-inline h2 {
+.cm-live-mode h1,
+.cm-live-mode h2 {
   font-weight: 700;
 }
-.cm-markdown-inline h3,
-.cm-markdown-inline h4 {
+.cm-live-mode h3,
+.cm-live-mode h4 {
   font-weight: 600;
 }
-.cm-markdown-inline h5,
-.cm-markdown-inline h6 {
+.cm-live-mode h5,
+.cm-live-mode h6 {
   font-weight: 400;
 }
 
-.cm-markdown-inline blockquote {
+.cm-live-mode blockquote {
   margin: 0;
   padding-left: 1rem;
   border-left: 3px solid #878580;
@@ -722,13 +749,13 @@
   white-space: normal;
 }
 
-.cm-markdown-inline blockquote p {
+.cm-live-mode blockquote p {
   margin: 0;
   display: inline;
 }
 
-.cm-markdown-inline ul,
-.cm-markdown-inline ol {
+.cm-live-mode ul,
+.cm-live-mode ol {
   margin: 0;
   padding: 0 0 0 2rem;
   display: block;
@@ -736,46 +763,46 @@
   white-space: normal;
 }
 
-.cm-markdown-inline ul {
+.cm-live-mode ul {
   list-style-type: disc;
 }
-.cm-markdown-inline ul ul {
+.cm-live-mode ul ul {
   list-style-type: circle;
 }
-.cm-markdown-inline ol {
+.cm-live-mode ol {
   list-style-type: decimal;
 }
-.cm-markdown-inline ol ol {
+.cm-live-mode ol ol {
   list-style-type: lower-alpha;
 }
 
-.cm-markdown-inline li {
+.cm-live-mode li {
   margin: 0;
   padding: 0;
   display: list-item;
 }
 
-.cm-markdown-inline p {
+.cm-live-mode p {
   margin: 0;
   padding: 0;
   display: inline;
 }
 
-.cm-markdown-inline img {
+.cm-live-mode img {
   max-width: 100%;
   height: auto;
   display: block;
   margin: 1em 0;
 }
 
-.cm-markdown-inline hr {
+.cm-live-mode hr {
   border: none;
   border-top: 1px solid #e6e4d9;
   margin: 0.5rem 0;
   width: 100%;
 }
 
-.cm-markdown-inline code {
+.cm-live-mode code {
   font-family: var(--font-berkeley-mono), serif;
   font-weight: 350;
   background: #f2f0e5;
@@ -785,12 +812,12 @@
   color: #100f0f;
 }
 
-.dark .cm-markdown-inline code {
+.dark .cm-live-mode code {
   background: #1c1b1a;
   color: #fffcf0;
 }
 
-.cm-markdown-inline pre > code {
+.cm-live-mode pre > code {
   display: block;
   padding: 1em;
   overflow-x: auto;
@@ -839,4 +866,134 @@
 .tooltip-arrow {
   width: 0.5rem;
   height: 0.25rem;
+}
+
+.cm-reading-mode .cm-line {
+  white-space: normal !important;
+  padding: 0.25rem 0;
+}
+
+.cm-reading-mode .cm-content {
+  padding: 1rem !important;
+}
+
+.cm-reading-mode .cm-gutters {
+  display: none !important;
+}
+
+.cm-reading-mode .cm-activeLine {
+  background: transparent !important;
+}
+
+.cm-reading-mode .cm-activeLineGutter {
+  background: transparent !important;
+}
+
+.cm-reading-mode .cm-selectionBackground {
+  display: none !important;
+}
+
+.cm-reading-mode .cm-cursor {
+  display: none !important;
+}
+
+.cm-reading-mode .cm-line {
+  cursor: default !important;
+}
+
+.cm-reading-mode .cm-scroller {
+  overflow-x: hidden !important;
+}
+
+.cm-reading-mode h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+  font-weight: bold;
+}
+
+.cm-reading-mode h2 {
+  font-size: 1.5em;
+  margin: 0.83em 0;
+  font-weight: bold;
+}
+
+.cm-reading-mode h3 {
+  font-size: 1.17em;
+  margin: 1em 0;
+  font-weight: bold;
+}
+
+.cm-reading-mode h4 {
+  font-size: 1em;
+  margin: 1.33em 0;
+  font-weight: bold;
+}
+
+.cm-reading-mode h5 {
+  font-size: 0.83em;
+  margin: 1.67em 0;
+  font-weight: bold;
+}
+
+.cm-reading-mode h6 {
+  font-size: 0.67em;
+  margin: 2.33em 0;
+  font-weight: bold;
+}
+
+.cm-reading-mode p {
+  margin: 1em 0;
+}
+
+.cm-reading-mode blockquote {
+  margin: 1em 40px;
+  padding-left: 1rem;
+  border-left: 3px solid #878580;
+  color: #6f6e69;
+}
+
+.cm-reading-mode ul,
+.cm-reading-mode ol {
+  margin: 1em 0;
+  padding-left: 40px;
+}
+
+.cm-reading-mode pre {
+  margin: 1em 0;
+  padding: 1em;
+  background: #f5f5f5;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.dark .cm-reading-mode pre {
+  background: #1c1b1a;
+}
+
+.cm-reading-mode code {
+  font-family: var(--font-berkeley-mono), monospace;
+  background: #f5f5f5;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.dark .cm-reading-mode code {
+  background: #1c1b1a;
+}
+
+.cm-reading-mode img {
+  max-width: 100%;
+  height: auto;
+  margin: 1em 0;
+}
+
+.cm-reading-mode hr {
+  margin: 1em 0;
+  border: 0;
+  border-top: 1px solid #e6e4d9;
+}
+
+.dark .cm-reading-mode hr {
+  border-top-color: #1c1b1a;
 }
