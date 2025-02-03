@@ -535,9 +535,9 @@ The software validation process ensures that `tinymorph` meets user requirements
 
 | Component         | Criteria                                                                                        | Validation Method                      |
 | ----------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------- |
-| Text Editor       | - Text manipulation responsiveness<br>- File operation reliability<br>- Interface accessibility | Usability testing, Performance metrics |
-| Planning Features | - Suggestion relevance<br>- Planning workflow efficiency<br>- User satisfaction                 | User feedback, Feature usage analysis  |
-| Feature Steering  | - Style accuracy<br>- Generation consistency<br>- User control effectiveness                    | Style analysis, User validation        |
+| Text Editor       | - Text manipulation responsiveness<br>- File operation reliability<br>- Interface accessibility<br>- Customizable visualization workflows | Usability testing, Performance metrics, Accessibility testing |
+| Planning Features | - Suggestion relevance<br>- Planning workflow efficiency<br>- User satisfaction<br>- Customizable task and progress options                 | User feedback, Feature usage analysis, Workflow adaptability testing  |
+| Feature Steering  | - Style accuracy<br>- Generation consistency<br>- User control effectiveness                    | Style analysis, User validation, Customization testing        |
 | Performance       | - Response time targets<br>- System stability<br>- Resource utilization                         | Automated monitoring, Load testing     |
 | Security          | - Data privacy<br>- Access control<br>- Secure communication                                    | Security audit, Penetration testing    |
 
