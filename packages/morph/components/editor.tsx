@@ -246,6 +246,7 @@ export default function Editor() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
+    // TODO: update the name based on users imported files.
     a.download = "document.md";
     document.body.appendChild(a);
     a.click();
