@@ -121,7 +121,7 @@ function DraggableNoteCard({ title, content, onDrop, editorRef }: DraggableNoteP
 }
 
 export default function Editor() {
-  const [showNotes, setShowNotes] = React.useState(true)
+  const [showNotes, setShowNotes] = React.useState(false)
   const [markdownContent, setMarkdownContent] = React.useState(initialMarkdown)
   const { settings } = usePersistedSettings()
   const [notes, setNotes] = React.useState<Note[]>([])
@@ -217,12 +217,14 @@ export default function Editor() {
 
   return (
     <div className={settings.theme === "dark" ? "dark" : ""}>
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={false}>
         <AppSidebar />
         <SidebarInset>
-          <header className="flex h-10 shrink-0 items-center justify-between mx-4 border-b">
-            <SidebarTrigger className="-ml-1" />
-            <Toolbar toggleNotes={toggleNotes} />
+          <header className="inline-block h-10 border-b">
+            <div className="h-full flex shrink-0 items-center justify-between mx-4">
+              <SidebarTrigger className="-ml-1" />
+              <Toolbar toggleNotes={toggleNotes} />
+            </div>
           </header>
           <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
             <div ref={editorRef} className="flex-1 relative border-border border">
@@ -252,17 +254,19 @@ export default function Editor() {
               </div>
             )}
           </section>
-          <footer className="flex h-8 shrink-0 items-end justify-end mx-4 border-t text-xs">
-            <div className="flex items-end justify-between align-middle font-mono pb-[0.5rem]">
-              <div className="flex items-end gap-4">
-                <div>
-                  <a
-                    href="https://tinymorph.aarnphm.xyz"
-                    target="_blank"
-                    className="hover:underline"
-                  >
-                    Documentation
-                  </a>
+          <footer className="inline-block h-8 border-t text-xs">
+            <div className="h-full flex shrink-0 items-end justify-end mx-4">
+              <div className="flex items-end justify-between align-middle font-mono pb-[0.5rem]">
+                <div className="flex items-end gap-4">
+                  <div>
+                    <a
+                      href="https://tinymorph.aarnphm.xyz"
+                      target="_blank"
+                      className="hover:underline"
+                    >
+                      Documentation
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
