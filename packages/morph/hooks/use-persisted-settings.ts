@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-
+import { useTheme } from "next-themes"
 interface Settings {
   vimMode: boolean
   theme: "light" | "dark" | "system"
@@ -13,6 +13,7 @@ const defaultSettings: Settings = {
 export default function usePersistedSettings() {
   const [settings, setSettings] = useState<Settings>(defaultSettings)
   const [isLoaded, setIsLoaded] = useState(false)
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     // Load settings from localStorage on mount
@@ -21,6 +22,10 @@ export default function usePersistedSettings() {
       try {
         const parsedSettings = JSON.parse(savedSettings)
         setSettings(parsedSettings)
+        // setting theme here
+        if (parsedSettings.theme) {
+          setTheme(parsedSettings.theme);
+        }
       } catch (error) {
         console.error("Failed to parse settings:", error)
       }
@@ -28,28 +33,15 @@ export default function usePersistedSettings() {
     setIsLoaded(true)
   }, [])
 
-  useEffect(() => {
-    if (!isLoaded) return
-
-    const root = document.documentElement
-    root.classList.remove("light", "dark")
-
-    if (settings.theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-      root.classList.add(systemTheme)
-    } else {
-      root.classList.add(settings.theme)
-    }
-
-    console.log("Applied theme:", root.className)
-  }, [settings.theme, isLoaded])
-
   const updateSettings = (newSettings: Partial<Settings>) => {
     setSettings((prev) => {
       const updated = { ...prev, ...newSettings }
-      console.log(updated)
       // Save to localStorage
       localStorage.setItem("morph-settings", JSON.stringify(updated))
+      // setting theme here
+      if (newSettings.theme) {
+        setTheme(newSettings.theme);
+      }
       return updated
     })
   }

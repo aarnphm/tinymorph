@@ -1,6 +1,8 @@
 import "./globals.css"
 import type React from "react"
 import PlausibleProvider from "next-plausible"
+import ClientWrapper from "@/components/client-wrapper.tsx";
+
 
 export const metadata = {
   title: "morph-editor.app",
@@ -18,7 +20,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           enabled={process.env.CF_PAGES === "1" || process.env.NODE_ENV === "production"}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <ClientWrapper>{children}</ClientWrapper>
+      </body>
     </html>
   )
 }
