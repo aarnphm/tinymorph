@@ -1,4 +1,3 @@
-import type { VFile } from "vfile"
 import {
   Decoration,
   type DecorationSet,
@@ -8,53 +7,120 @@ import {
   EditorView,
 } from "@codemirror/view"
 import { RangeSetBuilder, StateEffect, StateField } from "@codemirror/state"
-import { unified } from "unified"
+import type { Root as HtmlRoot } from "hast"
+import { s } from "hastscript"
+import { VFile } from "vfile"
+import { PluggableList, unified } from "unified"
 import remarkParse from "remark-parse"
 import remarkRehype from "remark-rehype"
 import rehypeStringify from "rehype-stringify"
 import remarkGfm from "remark-gfm"
+import smartypants from "remark-smartypants"
 import rehypeSlug from "rehype-slug"
+import rehypePrettyCode from "rehype-pretty-code"
+import rehypeKatex from "rehype-katex"
+import rehypeAutolinkHeadings from "rehype-autolink-headings"
+import rehypeRaw from "rehype-raw"
 
-let mdProcessor: ReturnType<typeof createProcessor> | null = null
+export type HtmlContent = [HtmlRoot, VFile]
 
-const processedCache = new Map<string, VFile>()
-
-function createProcessor() {
-  return unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeSlug)
-    .use(rehypeStringify, { allowDangerousHtml: true })
+function markdownPlugins() {
+  return [remarkGfm, smartypants] as PluggableList
 }
 
-function getProcessor() {
-  if (!mdProcessor) {
-    mdProcessor = createProcessor()
-  }
+function htmlPlugins() {
+  return [
+    rehypeRaw,
+    rehypeSlug,
+    [
+      rehypeAutolinkHeadings,
+      {
+        behavior: "append",
+        properties: {
+          "data-role": "anchor",
+          "data-no-popover": true,
+        },
+        content: s(
+          "svg",
+          {
+            xmlns: "http://www.w3.org/2000/svg",
+            width: 16,
+            height: 16,
+            viewbox: "0 0 24 24",
+            strokelinecap: "round",
+            strokelinejoin: "round",
+            fill: "none",
+            stroke: "currentColor",
+            strokewidth: "2",
+          },
+          s("path", { d: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" }),
+          s("path", {
+            d: "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
+          }),
+        ),
+      },
+    ],
+    [
+      rehypePrettyCode,
+      {
+        theme: {
+          light: "github-light",
+          dark: "github-dark",
+        },
+        keepBackground: false,
+      },
+    ],
+    [rehypeKatex, { output: "htmlAndMathml" }],
+  ] as PluggableList
+}
+
+function processor() {
+  return (
+    unified()
+      // base Markdown -> MD AST
+      .use(remarkParse)
+      .use(markdownPlugins())
+      // MD AST -> HTML AST
+      .use(remarkRehype, { allowDangerousHtml: true })
+      // HTML AST -> HTML AST transforms
+      .use(htmlPlugins())
+      // HTML AST transforms -> string
+      // TODO: we can parse directly to react components (given that this is updated within CodeMirror components)
+      .use(rehypeStringify, { allowDangerousHtml: true })
+  )
+}
+
+let mdProcessor: ReturnType<typeof processor> | null = null
+
+const cached = new Map<string, VFile>()
+
+function cacheProcessor() {
+  if (!mdProcessor) mdProcessor = processor()
   return mdProcessor
 }
 
-async function processMarkdown(markdown: string): Promise<string> {
-  if (!markdown.trim()) {
-    return ""
-  }
+async function mdToHtml(value: string): Promise<string> {
+  if (!value.trim()) return ""
 
-  const preprocessedMarkdown = markdown.replace(/^ +/, (spaces) => spaces.replace(/ /g, "\u00A0"))
+  value = value
+    .replace(/^ +/, (spaces) => spaces.replace(/ /g, "\u00A0"))
+    .toString()
+    .trim()
 
-  const cachedFile = processedCache.get(preprocessedMarkdown)
-  if (cachedFile) {
-    return String(cachedFile.value)
-  }
+  const cachedResult = cached.get(value)
+  if (cachedResult) return String(cachedResult.value)
+
+  const file = new VFile("")
+  file.value = value
 
   try {
-    const processor = getProcessor()
-    const file = (await processor.process(preprocessedMarkdown)) as VFile
-    processedCache.set(preprocessedMarkdown, file)
+    const processor = cacheProcessor()
+    const processed = await processor.process(file)
+    cached.set(value, processed)
     return String(file.value)
   } catch (error) {
     console.error("Error rendering Markdown:", error)
-    return markdown
+    return value
   }
 }
 
@@ -82,7 +148,7 @@ interface PendingDecoration {
   html: string
 }
 
-export const inlineMarkdownExtension = ViewPlugin.fromClass(
+export const inlineMarkdown = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet
     pending: Map<number, boolean>
@@ -118,7 +184,7 @@ export const inlineMarkdownExtension = ViewPlugin.fromClass(
         this.pending.set(lineNum, true)
 
         try {
-          const renderedHTML = await processMarkdown(lineText)
+          const renderedHTML = await mdToHtml(lineText)
           if (view.dom.isConnected) {
             pendingDecorations.push({
               from: line.from,
@@ -170,6 +236,8 @@ export const inlineMarkdownExtension = ViewPlugin.fromClass(
     provide: () => [markdownDecorations],
   },
 )
+
+export default inlineMarkdown
 
 class MarkdownLineWidget extends WidgetType {
   private html: string

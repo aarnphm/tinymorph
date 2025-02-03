@@ -17,6 +17,7 @@ interface FileSystemTreeNode {
   handle: FileSystemHandle
   children?: FileSystemTreeNode[]
   isLoading?: boolean
+  isOpen?: boolean
 }
 
 interface UseFileTreeOptions {
@@ -179,5 +180,39 @@ export default function useFileTree({ ignorePattern, onFileSelect }: UseFileTree
     }
   }, [onFileSelect])
 
-  return { root, openDirectory, isLoading, handleFileSelect }
+  // Add new function to expand/collapse all nodes
+  const setAllNodesExpanded = useCallback((expanded: boolean) => {
+    if (!root) return
+
+    const updateNodes = (node: FileSystemTreeNode): FileSystemTreeNode => {
+      if (node.kind === "directory") {
+        return {
+          ...node,
+          isOpen: expanded,
+          children: node.children?.map(updateNodes)
+        }
+      }
+      return node
+    }
+
+    setRoot(root => root ? updateNodes({...root}) : null)
+  }, [])
+
+  // Add new function to create a new file
+  const createNewFile = useCallback(async () => {
+    if (!root) return
+
+    // Implementation for creating new file
+    // This is a placeholder - you'll need to implement the actual file creation logic
+    console.log("Create new file")
+  }, [root])
+
+  return { 
+    root, 
+    openDirectory, 
+    isLoading, 
+    handleFileSelect,
+    setAllNodesExpanded,
+    createNewFile 
+  }
 }

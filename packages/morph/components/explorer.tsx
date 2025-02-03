@@ -1,7 +1,7 @@
 "use client"
 import type * as React from "react"
 import { useState } from "react"
-import { ChevronRight, File, Folder, FolderOpen, FolderSearch, Loader2 } from "lucide-react"
+import { ChevronRight, FolderSearch, Loader2, Plus, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -16,6 +16,7 @@ import {
   SidebarMenuSub,
   SidebarRail,
   SidebarFooter,
+  SidebarHeader,
 } from "@/components/ui/sidebar"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
 import useFileTree from "@/hooks/use-file-tree"
@@ -25,18 +26,21 @@ interface FileSystemTreeNode {
   kind: "file" | "directory"
   handle: FileSystemHandle
   children?: FileSystemTreeNode[]
+  isOpen?: boolean
 }
 
-function FileTreeNode({
-  node,
-  onFileSelect,
-}: {
+interface FileTreeNodeProps {
   node: FileSystemTreeNode
   onFileSelect?: (node: FileSystemTreeNode) => void
-}) {
-  const [isOpen, setIsOpen] = useState(false)
+}
 
-  const toggleOpen = () => setIsOpen(!isOpen)
+const FileTreeNode: React.FC<FileTreeNodeProps> = ({ node, onFileSelect }) => {
+  const [isOpen, setIsOpen] = useState(node.isOpen ?? false)
+
+  const toggleOpen = () => {
+    setIsOpen(!isOpen)
+    node.isOpen = !isOpen
+  }
 
   if (node.kind === "file") {
     return (
@@ -44,7 +48,6 @@ function FileTreeNode({
         className="data-[active=true]:bg-transparent hover:bg-accent/50 transition-colors"
         onClick={() => onFileSelect?.(node)}
       >
-        <File className="w-4 h-4 mr-2 shrink-0" />
         <span className="truncate">{node.name}</span>
       </SidebarMenuButton>
     )
@@ -56,13 +59,8 @@ function FileTreeNode({
         <CollapsibleTrigger asChild>
           <SidebarMenuButton onClick={toggleOpen} className="hover:bg-accent/50 transition-colors">
             <ChevronRight
-              className={`transition-transform ${isOpen ? "rotate-90" : ""} w-4 h-4 mr-2 shrink-0`}
+              className={`transition-transform ${isOpen ? "rotate-90" : ""} w-4 h-4 mr-1 shrink-0`}
             />
-            {isOpen ? (
-              <FolderOpen className="w-4 h-4 mr-2 shrink-0" />
-            ) : (
-              <Folder className="w-4 h-4 mr-2 shrink-0" />
-            )}
             <span className="truncate">{node.name}</span>
           </SidebarMenuButton>
         </CollapsibleTrigger>
@@ -84,14 +82,39 @@ interface MorphSidebarProps extends React.ComponentProps<typeof Sidebar> {
 
 export function MorphSidebar({ onFileSelect, ...props }: MorphSidebarProps) {
   const { settings } = usePersistedSettings()
-  const { root, openDirectory, isLoading, handleFileSelect } = useFileTree({
-    ignorePattern: settings.ignorePatterns,
-    onFileSelect,
-  })
+  const { root, openDirectory, isLoading, handleFileSelect, setAllNodesExpanded, createNewFile } =
+    useFileTree({
+      ignorePattern: settings.ignorePatterns,
+      onFileSelect,
+    })
 
   return (
     <Sidebar className="bg-background" {...props}>
       <SidebarContent>
+        <SidebarHeader>
+          <div className="flex items-center justify-between px-2 py-2 border-b border-border">
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0"
+                title="Expand All"
+                onClick={() => setAllNodesExpanded(true)}
+              >
+                <ChevronDown className="h-3 w-3" width={16} height={16} />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0"
+                title="New File"
+                onClick={createNewFile}
+              >
+                <Plus className="h-3 w-3" width={16} height={16} />
+              </Button>
+            </div>
+          </div>
+        </SidebarHeader>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>

@@ -12,7 +12,7 @@ import { Compartment, EditorState } from "@codemirror/state"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { vim, Vim } from "@replit/codemirror-vim"
-import { inlineMarkdownExtension } from "./markdown-inline"
+import { inlineMarkdown } from "./markdown-inline"
 import { NoteCard } from "./note-card"
 import { MorphSidebar } from "./explorer"
 import { Toolbar } from "./toolbar"
@@ -147,7 +147,7 @@ export default function Editor() {
     const tabSize = new Compartment()
     const extensions = [
       markdown({ base: markdownLanguage, codeLanguages: languages }),
-      inlineMarkdownExtension,
+      inlineMarkdown,
       EditorView.lineWrapping,
       tabSize.of(EditorState.tabSize.of(settings.tabSize)),
     ]
@@ -285,7 +285,13 @@ export default function Editor() {
   return (
     <div className={settings.theme === "dark" ? "dark" : ""}>
       <FileSystemPermissionPrompt onPermissionGranted={handlePermissionGranted} />
-      <SidebarProvider defaultOpen={false}>
+      <SidebarProvider
+        defaultOpen={false}
+        style={{
+          "--sidebar-width": "20rem",
+          "--sidebar-width-mobile": "20rem",
+        }}
+      >
         <MorphSidebar onFileSelect={handleChange} />
         <SidebarInset>
           <header className="inline-block h-10 border-b">
