@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import axios from "axios"
 import CodeMirror from "@uiw/react-codemirror"
 import { markdown as markdownExtension } from "@codemirror/lang-markdown"
 import { languages } from "@codemirror/language-data"
@@ -10,11 +11,15 @@ import { EditorView } from "@codemirror/view"
 import { vim } from "@replit/codemirror-vim"
 import { inlineMarkdownExtension } from "./markdown-inline"
 import { AppSidebar } from "./app-sidebar"
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
 import { Toolbar } from "./toolbar"
 import { drag } from "d3-drag"
 import { select } from "d3-selection"
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect, useCallback, useMemo } from "react"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
 import jsPDF from "jspdf";
 
@@ -23,73 +28,15 @@ interface Note {
   content: string
 }
 
+interface Suggestion {
+  suggestion: string
+  relevance: number
+}
+
 interface DraggableNoteProps extends Note {
   onDrop: (note: Note, droppedOverEditor: boolean) => void
   editorRef: React.RefObject<HTMLDivElement | null>
 }
-
-const SAMPLE_NOTES = [
-  {
-    title: "Jogging",
-    content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-  },
-  {
-    title: "games",
-    content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-  },
-  {
-    title: "Jogging",
-    content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-  },
-  {
-    title: "Examination",
-    content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-  },
-  {
-    title: "Classes",
-    content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-  },
-  {
-    title: "Race",
-    content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-  },
-  {
-    title: "Speech",
-    content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-  },
-  {
-    title: "Party",
-    content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-  },
-  {
-    title: "Reminder",
-    content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-  },
-  {
-    title: "games",
-    content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-  },
-  {
-    title: "Speech",
-    content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-  },
-  {
-    title: "Party",
-    content:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-  },
-]
 
 const initialMarkdown = `---
 id: mechanistic interpretability
@@ -254,30 +201,34 @@ function DraggableNoteCard({ title, content, onDrop, editorRef }: DraggableNoteP
   )
 }
 
+
 export default function Editor() {
   const [showNotes, setShowNotes] = useState(true)
   const [markdownContent, setMarkdownContent] = useState(initialMarkdown)
   const { settings } = usePersistedSettings()
-  const [notes, setNotes] = useState<Note[]>(SAMPLE_NOTES)
+  const [notes, setNotes] = useState<Note[]>([])
   const editorRef = useRef<HTMLDivElement>(null)
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  const handleChange = React.useCallback((value: string) => {
+  const handleChange = useCallback((value: string) => {
     setMarkdownContent(value)
   }, [])
 
-  const toggleNotes = React.useCallback(() => {
+  const toggleNotes = useCallback(() => {
     setShowNotes((prev) => !prev)
   }, [])
 
-  const handleNoteDrop = React.useCallback((note: Note, droppedOverEditor: boolean) => {
+  const handleNoteDrop = useCallback((note: Note, droppedOverEditor: boolean) => {
     if (droppedOverEditor) {
       setNotes((prevNotes) =>
-        prevNotes.filter((n) => !(n.title === note.title && n.content === note.content)),
+        prevNotes.filter(
+          (n) => !(n.title === note.title && n.content === note.content)
+        )
       )
     }
   }, [])
 
-  const editorExtensions = React.useMemo(() => {
+  const editorExtensions = useMemo(() => {
     const extensions = [
       markdownExtension({ base: markdownLanguage, codeLanguages: languages }),
       inlineMarkdownExtension,
@@ -312,6 +263,54 @@ export default function Editor() {
 
     pdf.save("document.pdf");
   };
+
+  const fetchNewNotes = async (content: string): Promise<Note[]> => {
+    try {
+      const apiEndpoint = "<URL>"
+      const response = await axios.post<Suggestion[]>(
+        `${apiEndpoint}/suggests`,
+        {
+          essay: content,
+          num_suggestions: 5,
+          max_tokens: 4096,
+        },
+        {
+          headers: {
+            Accept: "text/event-stream",
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      const data = Array.isArray(response.data) ? response.data : [];
+      const newNotes = data.map((item, index) => ({
+        title: `Note ${index + 1}`,
+        content: item.suggestion,
+      }))
+      return newNotes
+    } catch (error) {
+      console.error("Error fetching suggestions:", error)
+      return []
+    }
+  }
+
+  useEffect(() => {
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current)
+    }
+    debounceTimeoutRef.current = setTimeout(() => {
+      fetchNewNotes(markdownContent).then((newNotes) => {
+        if (newNotes.length > 0) {
+          setNotes(newNotes)
+        }
+      })
+    }, 1000)
+
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current)
+      }
+    }
+  }, [markdownContent])
 
   return (
     <div className={settings.theme === "dark" ? "dark" : ""}>
