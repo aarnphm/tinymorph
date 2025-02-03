@@ -18,6 +18,8 @@ import { AppSidebar } from "./app-sidebar"
 import { Toolbar } from "./toolbar"
 import jsPDF from "jspdf"
 import { SettingsPanel } from "./settings-panel"
+import { FileSystemPermissionPrompt } from "./popup/permission"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 const NOTE_KEYBOARD_SHORTCUT = "e"
 
@@ -138,22 +140,8 @@ export default function Editor() {
   const editorRef = React.useRef<HTMLDivElement>(null)
   const debounceTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
-
-  const handleChange = React.useCallback((value: string) => {
-    setMarkdownContent(value)
-  }, [])
-
-  const toggleNotes = React.useCallback(() => {
-    setShowNotes((prev) => !prev)
-  }, [])
-
-  const handleNoteDrop = React.useCallback((note: Note, droppedOverEditor: boolean) => {
-    if (droppedOverEditor) {
-      setNotes((prevNotes) =>
-        prevNotes.filter((n) => !(n.title === note.title && n.content === note.content)),
-      )
-    }
-  }, [])
+  const [fileSystemPermissionGranted, setFileSystemPermissionGranted] = React.useState(false)
+  const [showPopover, setShowPopover] = React.useState(false)
 
   const memoizedExtensions = React.useMemo(() => {
     const tabSize = new Compartment()
@@ -175,8 +163,24 @@ export default function Editor() {
     return extensions
   }, [settings.vimMode, settings.tabSize])
 
+  const handleChange = React.useCallback((value: string) => {
+    setMarkdownContent(value)
+  }, [])
+
+  const toggleNotes = React.useCallback(() => {
+    setShowNotes((prev) => !prev)
+  }, [])
+
+  const handleNoteDrop = React.useCallback((note: Note, droppedOverEditor: boolean) => {
+    if (droppedOverEditor) {
+      setNotes((prevNotes) =>
+        prevNotes.filter((n) => !(n.title === note.title && n.content === note.content)),
+      )
+    }
+  }, [])
+
   // Function to export Markdown file
-  const exportMarkdown = () => {
+  const handleExportMarkdown = React.useCallback(() => {
     const blob = new Blob([markdownContent], { type: "text/markdown" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
@@ -187,10 +191,9 @@ export default function Editor() {
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
-  }
+  }, [markdownContent])
 
-  // Function to export as PDF
-  const exportPDF = () => {
+  const handleExportPdf = React.useCallback(() => {
     const pdf = new jsPDF()
     pdf.setFont("helvetica", "normal")
 
@@ -198,7 +201,11 @@ export default function Editor() {
     pdf.text(lines, 10, 10)
 
     pdf.save("document.pdf")
-  }
+  }, [markdownContent])
+
+  const handlePermissionGranted = React.useCallback(() => {
+    setFileSystemPermissionGranted(true)
+  }, [])
 
   const fetchNewNotes = async (content: string): Promise<Note[]> => {
     try {
@@ -254,41 +261,63 @@ export default function Editor() {
   }, [markdownContent])
 
   React.useEffect(() => {
+    const permissionGranted = localStorage.getItem("fileSystemPermissionGranted")
+    if (permissionGranted === "true") {
+      setFileSystemPermissionGranted(true)
+    }
+  }, [])
+
+  React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === NOTE_KEYBOARD_SHORTCUT && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
         toggleNotes()
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [toggleNotes])
-
-  React.useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === ',' && !(event.target instanceof HTMLInputElement)) {
+      } else if (event.key === "," && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
         setIsSettingsOpen(true)
       }
     }
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [])
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [toggleNotes])
 
   return (
     <div className={settings.theme === "dark" ? "dark" : ""}>
+      <FileSystemPermissionPrompt onPermissionGranted={handlePermissionGranted} />
       <SidebarProvider defaultOpen={false}>
         <AppSidebar />
         <SidebarInset>
           <header className="inline-block h-10 border-b">
             <div className="h-full flex shrink-0 items-center justify-between mx-4">
-              <SidebarTrigger className="-ml-1" />
+              <Popover open={!fileSystemPermissionGranted && showPopover}>
+                <PopoverTrigger asChild>
+                  <div
+                    className="relative"
+                    onMouseEnter={() => !fileSystemPermissionGranted && setShowPopover(true)}
+                    onMouseLeave={() => !fileSystemPermissionGranted && setShowPopover(false)}
+                  >
+                    <SidebarTrigger className="-ml-1" disabled={!fileSystemPermissionGranted} />
+                  </div>
+                </PopoverTrigger>
+                {!fileSystemPermissionGranted && (
+                  <PopoverContent
+                    side="right"
+                    className="w-80 transition-opacity duration-200"
+                    sideOffset={8}
+                  >
+                    <div className="text-sm">
+                      <p className="text-muted-foreground mt-1">
+                        File system access is required to use the file explorer.
+                      </p>
+                    </div>
+                  </PopoverContent>
+                )}
+              </Popover>
               <Toolbar
                 toggleNotes={toggleNotes}
-                exportMarkdown={exportMarkdown}
-                exportPDF={exportPDF}
+                exportMarkdown={handleExportMarkdown}
+                exportPDF={handleExportPdf}
               />
             </div>
           </header>
@@ -339,12 +368,9 @@ export default function Editor() {
           </footer>
         </SidebarInset>
       </SidebarProvider>
-      
+
       {isSettingsOpen && (
-        <SettingsPanel
-          isOpen={isSettingsOpen}
-          onClose={() => setIsSettingsOpen(false)}
-        />
+        <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       )}
     </div>
   )
