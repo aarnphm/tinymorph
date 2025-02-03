@@ -949,8 +949,8 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Type**: Structural, Dynamic, Automatic
 - **Initial State**: The inference server and application are operational.
 - **Input/Condition**: Submit requests for suggestions and planning.
-- **Output/Result**: TTFT is between 200-500ms.
-- **How test will be performed**: Performance testing tools will be used to automatically simulate user requests for suggestions and planning features. The time from request submission to the receipt of the first token will be recorded. Tests will be conducted under various network conditions including different latencies, to assess performance across typical user scenarios. The results will be compiled into a report detailing average TTFT and any deviations, ensuring the application's responsiveness meets the specified requirements.
+- **Output/Result**: TTFT should meet a 95th percentile threshold below 500ms.
+- **How test will be performed**: Performance testing tools will be used to automatically simulate user requests for suggestions and planning features. The time from request submission to the receipt of the first token will be recorded. Tests will be conducted under various network conditions, including different latencies, to assess performance across typical user scenarios. The results will be compiled into a report detailing average TTFT, the 95th percentile, and any deviations to ensure the application’s responsiveness meets the specified flexible requirements.
 
 #### 4.2.3.2 Evaluate Throughput of Inference Server
 
@@ -1483,7 +1483,7 @@ _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 | Test-UH-A1       | Test text resizing functionality for accessibility.                                                          | User Interface                       |
 | Test-UH-A2       | Verify keyboard navigation accessibility for interactive components.                                         | User Interface                       |
 | Test-UH-A3       | Implement and test ARIA attributes for screen reader compatibility.                                          | User Interface                       |
-| Test-PR-SLR1     | Measure TTFT (Time-to-First-Token) between 200-500ms during requests.                                        | Inference Engine                     |
+| Test-PR-SLR1     | Measure TTFT (Time-to-First-Token) with a 95th percentile below 500ms during requests.                                        | Inference Engine                     |
 | Test-PR-SLR2     | Evaluate throughput of the inference server with batch processing capabilities.                              | Inference Engine                     |
 | Test-PR-SCR1     | Validate that suggestions are non-harmful and appropriate.                                                   | Inference Engine                     |
 | Test-PR-SCR2     | Ensure interface content contains no harmful or NSFW elements.                                               | User Interface                       |
