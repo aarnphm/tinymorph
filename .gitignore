@@ -168,3 +168,4 @@ target
 .env
 node_modules
 .vercel
+*.code-workspace

@@ -1,8 +1,14 @@
 "use client"
 import type * as React from "react"
 import { useState } from "react"
-import { ChevronRight, FolderSearch, Loader2, Plus, ChevronDown } from "lucide-react"
+import { ChevronRight, FolderSearch, Loader2, Plus, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
@@ -19,7 +25,7 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
-import useFileTree from "@/hooks/use-file-tree"
+import useFileTree, { UseFileTreeOptions } from "@/hooks/use-file-tree"
 
 interface FileSystemTreeNode {
   name: string
@@ -76,33 +82,31 @@ const FileTreeNode: React.FC<FileTreeNodeProps> = ({ node, onFileSelect }) => {
   )
 }
 
-interface MorphSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  onFileSelect?: (value: string) => void
+interface MorphSidebarProps
+  extends React.ComponentProps<typeof Sidebar>,
+    Omit<UseFileTreeOptions, "ignorePattern"> {
+  onExportMarkdown?: () => void
+  onExportPDF?: () => void
 }
 
-export function MorphSidebar({ onFileSelect, ...props }: MorphSidebarProps) {
+export function MorphSidebar({
+  onFileSelect,
+  onExportMarkdown,
+  onExportPDF,
+  ...props
+}: MorphSidebarProps) {
   const { settings } = usePersistedSettings()
-  const { root, openDirectory, isLoading, handleFileSelect, setAllNodesExpanded, createNewFile } =
-    useFileTree({
-      ignorePattern: settings.ignorePatterns,
-      onFileSelect,
-    })
+  const { root, openDirectory, isLoading, handleFileSelect, createNewFile } = useFileTree({
+    ignorePattern: settings.ignorePatterns,
+    onFileSelect,
+  })
 
   return (
     <Sidebar className="bg-background" {...props}>
       <SidebarContent>
-        <SidebarHeader>
-          <div className="flex items-center justify-between px-2 py-2 border-b border-border">
+        <SidebarHeader className="border-b h-10 p-0">
+          <div className="h-full flex items-center justify-between mx-4">
             <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-6 w-6 p-0"
-                title="Expand All"
-                onClick={() => setAllNodesExpanded(true)}
-              >
-                <ChevronDown className="h-3 w-3" width={16} height={16} />
-              </Button>
               <Button
                 variant="ghost"
                 size="sm"
@@ -111,6 +115,15 @@ export function MorphSidebar({ onFileSelect, ...props }: MorphSidebarProps) {
                 onClick={createNewFile}
               >
                 <Plus className="h-3 w-3" width={16} height={16} />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0"
+                onClick={openDirectory}
+                title="Open Directory"
+              >
+                <FolderSearch className="h-3 w-3" width={16} height={16} />
               </Button>
             </div>
           </div>
@@ -127,21 +140,29 @@ export function MorphSidebar({ onFileSelect, ...props }: MorphSidebarProps) {
                 <FileTreeNode node={root} onFileSelect={handleFileSelect} />
               ) : (
                 <div className="p-4 text-sm text-muted-foreground italic">
-                  No directory selected. Click the folder icon below to choose a directory.
+                  No directory selected. Click the folder search icon above to choose a directory.
                 </div>
               )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t border-border h-8 px-4 py-1">
-        <div className="flex items-center justify-between">
+      <SidebarFooter className="border-t h-8 p-0">
+        <div className="flex items-center justify-between mx-4 h-full">
           <span className="text-sm text-muted-foreground truncate">
             {root ? root.name : "local"}
           </span>
-          <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={openDirectory}>
-            <FolderSearch className="h-3 w-3" width={16} height={16} />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" title="Export">
+                <Download className="h-3 w-3" width={16} height={16} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="top" align="center" sideOffset={5} alignOffset={2}>
+              <DropdownMenuItem onClick={onExportMarkdown}>Markdown</DropdownMenuItem>
+              <DropdownMenuItem onClick={onExportPDF}>PDF</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </SidebarFooter>
       <SidebarRail />

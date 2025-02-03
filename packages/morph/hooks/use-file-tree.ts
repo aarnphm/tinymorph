@@ -20,9 +20,9 @@ interface FileSystemTreeNode {
   isOpen?: boolean
 }
 
-interface UseFileTreeOptions {
+export interface UseFileTreeOptions {
   ignorePattern?: string | string[]
-  onFileSelect?: (content: string) => void
+  onFileSelect?: (filename: string, content: string) => void
 }
 
 // Much smaller chunk size for better responsiveness
@@ -168,35 +168,20 @@ export default function useFileTree({ ignorePattern, onFileSelect }: UseFileTree
     })
   }
 
-  const handleFileSelect = useCallback(async (node: FileSystemTreeNode) => {
-    if (node.kind === "file" && node.handle instanceof FileSystemFileHandle) {
-      try {
-        const file = await node.handle.getFile()
-        const content = await file.text()
-        onFileSelect?.(content)
-      } catch (error) {
-        console.error("Error reading file:", error)
-      }
-    }
-  }, [onFileSelect])
-
-  // Add new function to expand/collapse all nodes
-  const setAllNodesExpanded = useCallback((expanded: boolean) => {
-    if (!root) return
-
-    const updateNodes = (node: FileSystemTreeNode): FileSystemTreeNode => {
-      if (node.kind === "directory") {
-        return {
-          ...node,
-          isOpen: expanded,
-          children: node.children?.map(updateNodes)
+  const handleFileSelect = useCallback(
+    async (node: FileSystemTreeNode) => {
+      if (node.kind === "file" && node.handle instanceof FileSystemFileHandle) {
+        try {
+          const file = await node.handle.getFile()
+          const content = await file.text()
+          onFileSelect?.(file.name, content)
+        } catch (error) {
+          console.error("Error reading file:", error)
         }
       }
-      return node
-    }
-
-    setRoot(root => root ? updateNodes({...root}) : null)
-  }, [])
+    },
+    [onFileSelect],
+  )
 
   // Add new function to create a new file
   const createNewFile = useCallback(async () => {
@@ -207,12 +192,11 @@ export default function useFileTree({ ignorePattern, onFileSelect }: UseFileTree
     console.log("Create new file")
   }, [root])
 
-  return { 
-    root, 
-    openDirectory, 
-    isLoading, 
+  return {
+    root,
+    openDirectory,
+    isLoading,
     handleFileSelect,
-    setAllNodesExpanded,
-    createNewFile 
+    createNewFile,
   }
 }

@@ -145,8 +145,33 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
               )}
 
               {activeCategory === "keyboard" && (
-                <div className="text-sm text-muted-foreground">
-                  Keyboard settings will be implemented in the future.
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-sm font-medium mb-4">Keyboard Shortcuts</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <Label htmlFor="edit-mode-shortcut">Edit Mode Toggle</Label>
+                          <div className="text-sm text-muted-foreground">
+                            Shortcut to toggle between edit and reading mode (⌘ or Ctrl + key)
+                          </div>
+                        </div>
+                        <input
+                          id="edit-mode-shortcut"
+                          type="text"
+                          value={settings.editModeShortcut}
+                          onChange={(e) => {
+                            const key = e.target.value.slice(-1).toLowerCase()
+                            if (key.match(/[a-z]/i)) {
+                              updateSettings({ editModeShortcut: key })
+                            }
+                          }}
+                          className="w-16 text-center border rounded-md"
+                          maxLength={1}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 

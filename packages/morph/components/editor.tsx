@@ -12,7 +12,6 @@ import { Compartment, EditorState } from "@codemirror/state"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { vim, Vim } from "@replit/codemirror-vim"
-import { inlineMarkdown } from "./markdown-inline"
 import { NoteCard } from "./note-card"
 import { MorphSidebar } from "./explorer"
 import { Toolbar } from "./toolbar"
@@ -20,8 +19,11 @@ import jsPDF from "jspdf"
 import { SettingsPanel } from "./settings-panel"
 import { FileSystemPermissionPrompt } from "./popup/permission"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { setFile, fileField, liveMode, mdToHtml } from "./markdown-inline"
+import toJsx from "@/lib/jsx"
+import type { Root } from "hast"
 
-const NOTE_KEYBOARD_SHORTCUT = "e"
+const NOTE_KEYBOARD_SHORTCUT = "i"
 
 interface Note {
   title: string
@@ -142,14 +144,18 @@ export default function Editor() {
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
   const [fileSystemPermissionGranted, setFileSystemPermissionGranted] = React.useState(false)
   const [showPopover, setShowPopover] = React.useState(false)
+  const [currentFile, setCurrentFile] = React.useState<string>("")
+  const [isEditMode, setIsEditMode] = React.useState(true)
+  const [previewNode, setPreviewNode] = React.useState<Root | null>(null)
 
   const memoizedExtensions = React.useMemo(() => {
     const tabSize = new Compartment()
     const extensions = [
       markdown({ base: markdownLanguage, codeLanguages: languages }),
-      inlineMarkdown,
+      liveMode,
       EditorView.lineWrapping,
       tabSize.of(EditorState.tabSize.of(settings.tabSize)),
+      fileField.init(() => currentFile),
     ]
     if (settings.vimMode) {
       extensions.push(vim())
@@ -161,7 +167,7 @@ export default function Editor() {
       })
     }
     return extensions
-  }, [settings.vimMode, settings.tabSize])
+  }, [settings.vimMode, settings.tabSize, currentFile])
 
   const handleChange = React.useCallback((value: string) => {
     setMarkdownContent(value)
@@ -269,24 +275,58 @@ export default function Editor() {
 
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === NOTE_KEYBOARD_SHORTCUT && (event.metaKey || event.ctrlKey)) {
+      if (event.key === NOTE_KEYBOARD_SHORTCUT && (event.metaKey || event.altKey)) {
         event.preventDefault()
         toggleNotes()
       } else if (event.key === "," && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
         setIsSettingsOpen(true)
+      } else if (event.key === settings.editModeShortcut && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault()
+        setIsEditMode((prev) => !prev)
       }
     }
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [toggleNotes])
+  }, [toggleNotes, settings.editModeShortcut])
+
+  // Update file selection handler
+  const handleFileSelect = React.useCallback((filename: string, content: string) => {
+    setCurrentFile(filename)
+    setMarkdownContent(content)
+    // Dispatch file change to CodeMirror
+    if (editorRef.current) {
+      const view = EditorView.findFromDOM(editorRef.current)
+      if (view) {
+        view.dispatch({
+          effects: setFile.of(filename),
+        })
+      }
+    }
+  }, [])
+
+  React.useEffect(() => {
+    const updatePreview = async () => {
+      try {
+        const hastNode = await mdToHtml(markdownContent, currentFile, true)
+        setPreviewNode(hastNode)
+      } catch (error) {
+        console.error("Error converting markdown to JSX:", error)
+      }
+    }
+    updatePreview()
+  }, [markdownContent, currentFile])
 
   return (
     <div className={settings.theme === "dark" ? "dark" : ""}>
       <FileSystemPermissionPrompt onPermissionGranted={handlePermissionGranted} />
       <SidebarProvider defaultOpen={false}>
-        <MorphSidebar onFileSelect={handleChange} />
+        <MorphSidebar
+          onFileSelect={handleFileSelect}
+          onExportMarkdown={handleExportMarkdown}
+          onExportPDF={handleExportPdf}
+        />
         <SidebarInset>
           <header className="inline-block h-10 border-b">
             <div className="h-full flex shrink-0 items-center justify-between mx-4">
@@ -314,23 +354,35 @@ export default function Editor() {
                   </PopoverContent>
                 )}
               </Popover>
-              <Toolbar
-                toggleNotes={toggleNotes}
-                exportMarkdown={handleExportMarkdown}
-                exportPDF={handleExportPdf}
-              />
+              <Toolbar toggleNotes={toggleNotes} />
             </div>
           </header>
           <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
-            <div ref={editorRef} className="flex-1 relative border-border border">
-              <CodeMirror
-                value={markdownContent}
-                height="100%"
-                extensions={memoizedExtensions}
-                onChange={handleChange}
-                className="overflow-auto h-full mx-4 pt-4"
-                theme={settings.theme === "dark" ? "dark" : "light"}
-              />
+            <div className="flex-1 relative border">
+              <div
+                className={`editor-mode absolute inset-0 transition-opacity duration-200 ${
+                  isEditMode ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                }`}
+                ref={editorRef}
+              >
+                <CodeMirror
+                  value={markdownContent}
+                  height="100%"
+                  extensions={memoizedExtensions}
+                  onChange={handleChange}
+                  className="overflow-auto h-full mx-4 pt-4"
+                  theme={settings.theme === "dark" ? "dark" : "light"}
+                />
+              </div>
+              <div
+                className={`reading-mode absolute inset-0 transition-opacity duration-200 ${
+                  isEditMode ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"
+                }`}
+              >
+                <div className="prose dark:prose-invert max-w-none mx-4 pt-4 overflow-auto h-full">
+                  {previewNode && toJsx(previewNode)}
+                </div>
+              </div>
             </div>
             {showNotes && (
               <div className="w-80 overflow-auto border">
