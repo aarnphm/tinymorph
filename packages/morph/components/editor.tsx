@@ -9,6 +9,7 @@ import { markdown, markdownLanguage } from "@codemirror/lang-markdown"
 import { languages } from "@codemirror/language-data"
 import { EditorView } from "@codemirror/view"
 import { Compartment, EditorState } from "@codemirror/state"
+import { Pencil, Eye } from "lucide-react"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { vim, Vim } from "@replit/codemirror-vim"
@@ -18,10 +19,12 @@ import { Toolbar } from "./toolbar"
 import jsPDF from "jspdf"
 import { SettingsPanel } from "./settings-panel"
 import { FileSystemPermissionPrompt } from "./popup/permission"
+import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { setFile, fileField, liveMode, mdToHtml } from "./markdown-inline"
 import toJsx from "@/lib/jsx"
 import type { Root } from "hast"
+import { useTheme } from "next-themes"
 
 const NOTE_KEYBOARD_SHORTCUT = "i"
 
@@ -135,6 +138,7 @@ function DraggableNoteCard({ title, content, onDrop, editorRef }: DraggableNoteP
 }
 
 export default function Editor() {
+  const { theme } = useTheme()
   const [showNotes, setShowNotes] = React.useState(false)
   const [markdownContent, setMarkdownContent] = React.useState(initialMarkdown)
   const { settings } = usePersistedSettings()
@@ -319,7 +323,7 @@ export default function Editor() {
   }, [markdownContent, currentFile])
 
   return (
-    <div className={settings.theme === "dark" ? "dark" : ""}>
+    <div>
       <FileSystemPermissionPrompt onPermissionGranted={handlePermissionGranted} />
       <SidebarProvider defaultOpen={false}>
         <MorphSidebar
@@ -360,8 +364,8 @@ export default function Editor() {
           <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
             <div className="flex-1 relative border">
               <div
-                className={`editor-mode absolute inset-0 transition-opacity duration-200 ${
-                  isEditMode ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                className={`editor-mode absolute inset-0 ${
+                  isEditMode ? "h-full pointer-events-auto" : "h-0 pointer-events-none"
                 }`}
                 ref={editorRef}
               >
@@ -371,12 +375,12 @@ export default function Editor() {
                   extensions={memoizedExtensions}
                   onChange={handleChange}
                   className="overflow-auto h-full mx-4 pt-4"
-                  theme={settings.theme === "dark" ? "dark" : "light"}
+                  theme={theme === "dark" ? "dark" : "light"}
                 />
               </div>
               <div
-                className={`reading-mode absolute inset-0 transition-opacity duration-200 ${
-                  isEditMode ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"
+                className={`reading-mode absolute inset-0 ${
+                  isEditMode ? "h-0 pointer-events-none" : "h-full pointer-events-auto"
                 }`}
               >
                 <div className="prose dark:prose-invert max-w-none mx-4 pt-4 overflow-auto h-full">
@@ -402,20 +406,19 @@ export default function Editor() {
             )}
           </section>
           <footer className="inline-block h-8 border-t text-xs">
-            <div className="h-full flex shrink-0 items-end justify-end mx-4">
-              <div className="flex items-end justify-between align-middle font-mono pb-[0.5rem]">
-                <div className="flex items-end gap-4">
-                  <div>
-                    <a
-                      href="https://tinymorph.aarnphm.xyz"
-                      target="_blank"
-                      className="hover:underline"
-                    >
-                      Documentation
-                    </a>
-                  </div>
-                </div>
-              </div>
+            <div className="h-full flex shrink-0 items-center align-middle font-mono justify-end mx-4">
+              <Button
+                onClick={() => setIsEditMode((prev) => !prev)}
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0"
+              >
+                {isEditMode ? (
+                  <Eye className="h-3 w-3" widths={16} height={16} />
+                ) : (
+                  <Pencil className="h-3 w-3" widths={16} height={16} />
+                )}
+              </Button>
             </div>
           </footer>
         </SidebarInset>
