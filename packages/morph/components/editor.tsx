@@ -285,13 +285,7 @@ export default function Editor() {
   return (
     <div className={settings.theme === "dark" ? "dark" : ""}>
       <FileSystemPermissionPrompt onPermissionGranted={handlePermissionGranted} />
-      <SidebarProvider
-        defaultOpen={false}
-        style={{
-          "--sidebar-width": "20rem",
-          "--sidebar-width-mobile": "20rem",
-        }}
-      >
+      <SidebarProvider defaultOpen={false}>
         <MorphSidebar onFileSelect={handleChange} />
         <SidebarInset>
           <header className="inline-block h-10 border-b">
