@@ -21,6 +21,7 @@ interface FileSystemTreeNode {
 
 interface UseFileTreeOptions {
   ignorePattern?: string | string[]
+  onFileSelect?: (content: string) => void
 }
 
 // Much smaller chunk size for better responsiveness
@@ -30,7 +31,7 @@ const PROCESS_DELAY = 1
 // Markdown file patterns
 const MARKDOWN_PATTERNS = ["*.md", "*.mdx"]
 
-export default function useFileTree({ ignorePattern }: UseFileTreeOptions = {}) {
+export default function useFileTree({ ignorePattern, onFileSelect }: UseFileTreeOptions = {}) {
   const [root, setRoot] = useState<FileSystemTreeNode | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -128,7 +129,7 @@ export default function useFileTree({ ignorePattern }: UseFileTreeOptions = {}) 
     for (const entry of entries) {
       if (entry.kind === "file") {
         parentNode.children?.push({
-          name: entry.name,
+          name: entry.name.replace(/\.[^/.]+$/, ""),
           kind: "file",
           handle: entry,
         })
@@ -166,5 +167,17 @@ export default function useFileTree({ ignorePattern }: UseFileTreeOptions = {}) 
     })
   }
 
-  return { root, openDirectory, isLoading }
+  const handleFileSelect = useCallback(async (node: FileSystemTreeNode) => {
+    if (node.kind === "file" && node.handle instanceof FileSystemFileHandle) {
+      try {
+        const file = await node.handle.getFile()
+        const content = await file.text()
+        onFileSelect?.(content)
+      } catch (error) {
+        console.error("Error reading file:", error)
+      }
+    }
+  }, [onFileSelect])
+
+  return { root, openDirectory, isLoading, handleFileSelect }
 }

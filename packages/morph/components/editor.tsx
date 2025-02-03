@@ -14,7 +14,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { vim, Vim } from "@replit/codemirror-vim"
 import { inlineMarkdownExtension } from "./markdown-inline"
 import { NoteCard } from "./note-card"
-import { AppSidebar } from "./app-sidebar"
+import { MorphSidebar } from "./explorer"
 import { Toolbar } from "./toolbar"
 import jsPDF from "jspdf"
 import { SettingsPanel } from "./settings-panel"
@@ -286,7 +286,7 @@ export default function Editor() {
     <div className={settings.theme === "dark" ? "dark" : ""}>
       <FileSystemPermissionPrompt onPermissionGranted={handlePermissionGranted} />
       <SidebarProvider defaultOpen={false}>
-        <AppSidebar />
+        <MorphSidebar onFileSelect={handleChange} />
         <SidebarInset>
           <header className="inline-block h-10 border-b">
             <div className="h-full flex shrink-0 items-center justify-between mx-4">
