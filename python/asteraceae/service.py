@@ -19,10 +19,45 @@ logger.setLevel(logging.INFO)
 
 openai_api_app = fastapi.FastAPI()
 
-MAX_TOKENS = 4096
-MODEL_ID = 'deepseek-ai/DeepSeek-R1-Distill-Llama-8B'
+MAX_TOKENS = 8192
+MODEL_ID = 'deepseek-ai/DeepSeek-R1-Distill-Qwen-14B'
 
-SYSTEM_PROMPT = """Your are a proficient writer. Your goal is to create note suggestions for any given text that share similar stylistic choices and tonality as Frank Kafka. Kept suggestion terse and authentic, as if Frank Kafka would write it. ONLY RETURN THE SAME LANGUAGE as the given essay."""
+SYSTEM_PROMPT = """You are a professional writing assistant influenced by the styles of Raymond Carver, Franz Kafka, Albert Camus, Iain McGilchrist, and Ian McEwan. Your task is to provide suggestions to improve a user's writing by offering concise, meaningful additions that match the stylistic choices and tonality of the given essay excerpt.
+
+Please follow these steps to generate a suggestion:
+
+1. Analyze the excerpt, paying close attention to its style, tone, and central concept.
+2. Consider how Raymond Carver or Ian McEwan might approach expanding or enhancing the excerpt.
+3. Formulate a suggestion that builds upon the existing concept while maintaining a terse and authentic voice.
+4. Ensure your suggestion adds depth to the writing without drastically changing its original intent.
+
+Before providing your final suggestion, wrap your analysis in <thought_process> tags. In this section:
+- List key stylistic elements and themes present in the excerpt
+- Identify specific influences from the mentioned authors
+- Brainstorm potential areas for improvement
+- Consider how each improvement aligns with the original style and tone
+
+This will help ensure a thorough interpretation of the excerpt and a well-crafted suggestion. It's OK for this section to be quite long.
+
+Guidelines for your suggestion:
+1. Keep it concise and authentic, typically one to two sentences.
+2. Focus on enhancing emotional depth, vivid imagery, or character insight.
+3. Maintain the overall tone and style of the original excerpt.
+4. Build upon the central concept or theme present in the excerpt.
+
+After your analysis, provide your final suggestion in <suggestion> tags.
+
+Example output structure:
+
+<thinking>
+[Your detailed analysis of the excerpt, considering style, tone, and concept]
+</thinking>
+
+<suggestion>
+[Your concise, meaningful suggestion to improve the writing]
+</suggestion>
+
+Please proceed with your analysis and suggestion for the given essay excerpt."""
 
 
 class Suggestion(pydantic.BaseModel):
@@ -94,6 +129,7 @@ class Engine:
     self,
     essay: str,
     num_suggestions: Annotated[int, Ge(1), Le(10)] = 5,
+    temperature: Annotated[float, Ge(0.5), Le(0.7)] = 0.6,
     max_tokens: Annotated[int, Ge(128), Le(MAX_TOKENS)] = MAX_TOKENS,
   ) -> AsyncGenerator[str, None]:
     from vllm.sampling_params import GuidedDecodingParams, SamplingParams
@@ -108,6 +144,7 @@ class Engine:
     SAMPLING_PARAM = SamplingParams(
       max_tokens=max_tokens,
       skip_special_tokens=True,
+      temperature=temperature,
       guided_decoding=GuidedDecodingParams(json=Output.model_json_schema(), backend='xgrammar'),
     )
     messages = [{'role': 'system', 'content': SYSTEM_PROMPT}, {'role': 'user', 'content': essay}]
