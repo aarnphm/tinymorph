@@ -16,6 +16,8 @@ import { inlineMarkdownExtension } from "./markdown-inline"
 import { NoteCard } from "./note-card"
 import { AppSidebar } from "./app-sidebar"
 import { Toolbar } from "./toolbar"
+import jsPDF from "jspdf"
+
 
 interface Note {
   title: string
@@ -166,10 +168,34 @@ export default function Editor() {
           navigator.clipboard.writeText(text).catch(console.error)
         }
       })
-    }
-
+    }    
     return extensions
   }, [settings.vimMode, settings.tabSize])
+
+   // Function to export Markdown file
+   const exportMarkdown = () => {
+    const blob = new Blob([markdownContent], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    // TODO: update the name based on users imported files.
+    a.download = "document.md";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // Function to export as PDF
+  const exportPDF = () => {
+    const pdf = new jsPDF();
+    pdf.setFont("helvetica", "normal");
+
+    const lines = pdf.splitTextToSize(markdownContent, 180);
+    pdf.text(lines, 10, 10);
+
+    pdf.save("document.pdf");
+  };
 
   const fetchNewNotes = async (content: string): Promise<Note[]> => {
     try {
@@ -229,7 +255,7 @@ export default function Editor() {
           <header className="inline-block h-10 border-b">
             <div className="h-full flex shrink-0 items-center justify-between mx-4">
               <SidebarTrigger className="-ml-1" />
-              <Toolbar toggleNotes={toggleNotes} />
+              <Toolbar toggleNotes={toggleNotes} exportMarkdown={exportMarkdown} exportPDF={exportPDF} />
             </div>
           </header>
           <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
