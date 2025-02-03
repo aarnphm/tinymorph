@@ -17,6 +17,9 @@ import { NoteCard } from "./note-card"
 import { AppSidebar } from "./app-sidebar"
 import { Toolbar } from "./toolbar"
 import jsPDF from "jspdf"
+import { SettingsPanel } from "./settings-panel"
+
+const NOTE_KEYBOARD_SHORTCUT = "e"
 
 interface Note {
   title: string
@@ -134,6 +137,7 @@ export default function Editor() {
   const [notes, setNotes] = React.useState<Note[]>([])
   const editorRef = React.useRef<HTMLDivElement>(null)
   const debounceTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
 
   const handleChange = React.useCallback((value: string) => {
     setMarkdownContent(value)
@@ -249,6 +253,30 @@ export default function Editor() {
     }
   }, [markdownContent])
 
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === NOTE_KEYBOARD_SHORTCUT && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault()
+        toggleNotes()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [toggleNotes])
+
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === ',' && !(event.target instanceof HTMLInputElement)) {
+        event.preventDefault()
+        setIsSettingsOpen(true)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   return (
     <div className={settings.theme === "dark" ? "dark" : ""}>
       <SidebarProvider defaultOpen={false}>
@@ -311,6 +339,13 @@ export default function Editor() {
           </footer>
         </SidebarInset>
       </SidebarProvider>
+      
+      {isSettingsOpen && (
+        <SettingsPanel
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+        />
+      )}
     </div>
   )
 }
