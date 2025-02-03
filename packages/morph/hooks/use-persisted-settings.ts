@@ -3,11 +3,13 @@ import { useState, useEffect } from "react"
 interface Settings {
   vimMode: boolean
   theme: "light" | "dark" | "system"
+  tabSize: number
 }
 
 const defaultSettings: Settings = {
   vimMode: false,
   theme: "system",
+  tabSize: 2,
 }
 
 export default function usePersistedSettings() {

@@ -2,25 +2,20 @@
 
 import * as React from "react"
 import axios from "axios"
-import CodeMirror from "@uiw/react-codemirror"
-import { markdown as markdownExtension } from "@codemirror/lang-markdown"
-import { languages } from "@codemirror/language-data"
-import { NoteCard } from "./note-card"
-import { markdownLanguage } from "@codemirror/lang-markdown"
-import { EditorView } from "@codemirror/view"
-import { vim } from "@replit/codemirror-vim"
-import { inlineMarkdownExtension } from "./markdown-inline"
-import { AppSidebar } from "./app-sidebar"
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { Toolbar } from "./toolbar"
 import { drag } from "d3-drag"
 import { select } from "d3-selection"
-import { useRef, useState, useEffect, useCallback, useMemo } from "react"
+import CodeMirror from "@uiw/react-codemirror"
+import { markdown, markdownLanguage } from "@codemirror/lang-markdown"
+import { languages } from "@codemirror/language-data"
+import { EditorView } from "@codemirror/view"
+import { Compartment, EditorState } from "@codemirror/state"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { vim, Vim } from "@replit/codemirror-vim"
+import { inlineMarkdownExtension } from "./markdown-inline"
+import { NoteCard } from "./note-card"
+import { AppSidebar } from "./app-sidebar"
+import { Toolbar } from "./toolbar"
 
 interface Note {
   title: string
@@ -32,98 +27,23 @@ interface Suggestion {
   relevance: number
 }
 
+interface AsteraceaResponse {
+  suggestions: Suggestion[]
+}
+
 interface DraggableNoteProps extends Note {
   onDrop: (note: Note, droppedOverEditor: boolean) => void
   editorRef: React.RefObject<HTMLDivElement | null>
 }
 
-const initialMarkdown = `---
-id: mechanistic interpretability
-aliases:
-  - mechinterp
-  - reveng neural net
-tags:
-  - interp
-abstract: The subfield of alignment, or reverse engineering neural network. In a sense, it is the field of learning models' world representation.
-date: 2024-10-30
-description: and reverse engineering neural networks.
-modified: 2025-02-02 07:17:20 GMT-05:00
-permalinks:
-  - /mechinterp
-title: mechanistic interpretability
----
-
-[whirlwind tour](https://www.youtube.com/watch?v=veT2VI4vHyU&ab_channel=FAR%E2%80%A2AI), [[thoughts/pdfs/tinymorph exploration.pdf|initial exploration]], [glossary](https://dynalist.io/d/n2ZWtnoYHrU1s4vnFSAQ519J)
-
-> The subfield of alignment that delves into reverse engineering of a neural network, especially [[thoughts/LLMs]]
-
-To attack the *curse of dimensionality*, the question remains: *==how do we hope to understand a function over such a large space, without an exponential amount of time?==* [^lesswrongarc]
-
-[^lesswrongarc]: good read from [Lawrence C](https://www.lesswrong.com/posts/6FkWnktH3mjMAxdRT/what-i-would-do-if-i-wasn-t-at-arc-evals#Ambitious_mechanistic_interpretability) for ambitious mech interp.
-
-Topics:
-
-- [[thoughts/sparse autoencoder]]
-- [[thoughts/sparse crosscoders]]
-- [[thoughts/Attribution parameter decomposition]]
-
-## open problems
-
-@sharkey2025openproblemsmechanisticinterpretability
-
-- differentiate between "reverse engineering" versus "concept-based"
-  - reverse engineer:
-    - decomposition -> hypotheses -> validation
-      - Decomposition via dimensionality [[thoughts/university/twenty-four-twenty-five/sfwr-4ml3/principal component analysis|reduction]]
-  - drawbacks with [[thoughts/sparse autoencoder#sparse dictionary learning|SDL]]:
-    - SDL reconstruction error are way too high [@rajamanoharan2024improvingdictionarylearninggated{see section 2.3}]
-    - SDL assumes linear representation hypothesis against non-linear feature space.
-    - SDL leaves feature geometry unexplained ^geometry
-
-## inference
-
-Application in the wild: [Goodfire](https://goodfire.ai/) and [Transluce](https://transluce.org/)
-
-> [!question]- How we would do inference with SAE?
->
-> https://x.com/aarnphm_/status/1839016131321016380
-
-idea: treat SAEs as a logit bias, similar to [[thoughts/vllm#guided decoding]]
-
-## steering
-
-refers to the process of manually modifying certain activations and hidden state of the neural net to influence its
-outputs
-
-For example, the following is a toy example of how a decoder-only transformers (i.e: GPT-2) generate text given the prompt "The weather in California is"
-
-\`\`\`mermaid
-flowchart LR
-  A[The weather in California is] --> B[H0] --> D[H1] --> E[H2] --> C[... hot]
-\`\`\`
-
-To steer to model, we modify $H_2$ layers with certain features amplifier with scale 20 (called it $H_{3}$)[^1]
-
-[^1]: An example steering function can be:
-
-    $$
-    H_{3} = H_{2} + \\text{steering_strength} * \\text{SAE}.W_{\\text{dec}}[20] * \\text{max_activation}
-    $$
-
-\`\`\`mermaid
-flowchart LR
-  A[The weather in California is] --> B[H0] --> D[H1] --> E[H3] --> C[... cold]
-\`\`\`
-
-One usually use techniques such as [[thoughts/mechanistic interpretability#sparse autoencoders]] to decompose model activations into a set of
-interpretable features.`
+const initialMarkdown = `Each word was a stone dropped into the deep well of his chest, reverberating with the cold certainty of fate. His heart, once aflutter with the possibility of hope, now lay still, entombed in the icy chambers of reality`
 
 function DraggableNoteCard({ title, content, onDrop, editorRef }: DraggableNoteProps) {
-  const noteRef = useRef<HTMLDivElement>(null)
-  const [dragging, setDragging] = useState(false)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [fixedWidth, setFixedWidth] = useState<number | null>(null)
-  const offsetRef = useRef({ x: 0, y: 0 })
+  const noteRef = React.useRef<HTMLDivElement>(null)
+  const [dragging, setDragging] = React.useState(false)
+  const [position, setPosition] = React.useState({ x: 0, y: 0 })
+  const [fixedWidth, setFixedWidth] = React.useState<number | null>(null)
+  const offsetRef = React.useRef({ x: 0, y: 0 })
 
   React.useEffect(() => {
     if (!noteRef.current) return
@@ -200,76 +120,83 @@ function DraggableNoteCard({ title, content, onDrop, editorRef }: DraggableNoteP
   )
 }
 
-
 export default function Editor() {
-  const [showNotes, setShowNotes] = useState(true)
-  const [markdownContent, setMarkdownContent] = useState(initialMarkdown)
+  const [showNotes, setShowNotes] = React.useState(true)
+  const [markdownContent, setMarkdownContent] = React.useState(initialMarkdown)
   const { settings } = usePersistedSettings()
-  const [notes, setNotes] = useState<Note[]>([])
-  const editorRef = useRef<HTMLDivElement>(null)
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const [notes, setNotes] = React.useState<Note[]>([])
+  const editorRef = React.useRef<HTMLDivElement>(null)
+  const debounceTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
 
-  const handleChange = useCallback((value: string) => {
+  const handleChange = React.useCallback((value: string) => {
     setMarkdownContent(value)
   }, [])
 
-  const toggleNotes = useCallback(() => {
+  const toggleNotes = React.useCallback(() => {
     setShowNotes((prev) => !prev)
   }, [])
 
-  const handleNoteDrop = useCallback((note: Note, droppedOverEditor: boolean) => {
+  const handleNoteDrop = React.useCallback((note: Note, droppedOverEditor: boolean) => {
     if (droppedOverEditor) {
       setNotes((prevNotes) =>
-        prevNotes.filter(
-          (n) => !(n.title === note.title && n.content === note.content)
-        )
+        prevNotes.filter((n) => !(n.title === note.title && n.content === note.content)),
       )
     }
   }, [])
 
-  const editorExtensions = useMemo(() => {
+  const memoizedExtensions = React.useMemo(() => {
+    const tabSize = new Compartment()
     const extensions = [
-      markdownExtension({ base: markdownLanguage, codeLanguages: languages }),
+      markdown({ base: markdownLanguage, codeLanguages: languages }),
       inlineMarkdownExtension,
       EditorView.lineWrapping,
+      tabSize.of(EditorState.tabSize.of(settings.tabSize)),
     ]
     if (settings.vimMode) {
       extensions.push(vim())
+      Vim.defineEx("yank", "y", () => {
+        const text = Vim.getRegister('"')
+        if (text) {
+          navigator.clipboard.writeText(text).catch(console.error)
+        }
+      })
     }
-    return extensions
-  }, [settings.vimMode])
 
+    return extensions
+  }, [settings.vimMode, settings.tabSize])
 
   const fetchNewNotes = async (content: string): Promise<Note[]> => {
     try {
       const apiEndpoint = "<URL>"
-      const response = await axios.post<Suggestion[]>(
-        `${apiEndpoint}/suggests`,
-        {
-          essay: content,
-          num_suggestions: 5,
-          max_tokens: 4096,
-        },
-        {
-          headers: {
-            Accept: "text/event-stream",
-            "Content-Type": "application/json",
+      return await axios
+        .post<AsteraceaResponse>(
+          `${apiEndpoint}/suggests`,
+          {
+            essay: content,
+            num_suggestions: 8,
+            max_tokens: 8192,
           },
-        }
-      )
-      const data = Array.isArray(response.data) ? response.data : [];
-      const newNotes = data.map((item, index) => ({
-        title: `Note ${index + 1}`,
-        content: item.suggestion,
-      }))
-      return newNotes
+          {
+            headers: {
+              Accept: "text/event-stream",
+              "Content-Type": "application/json",
+            },
+          },
+        )
+        .then((resp) => {
+          const data = resp.data
+          return data.suggestions.map((item, index) => ({
+            title: `Note ${index + 1}`,
+            content: item.suggestion,
+          }))
+        })
     } catch (error) {
       console.error("Error fetching suggestions:", error)
       return []
     }
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (debounceTimeoutRef.current) {
       clearTimeout(debounceTimeoutRef.current)
     }
@@ -293,7 +220,7 @@ export default function Editor() {
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-          <header className="flex h-10 shrink-0 items-center justify-between px-4 border-b">
+          <header className="flex h-10 shrink-0 items-center justify-between mx-4 border-b">
             <SidebarTrigger className="-ml-1" />
             <Toolbar toggleNotes={toggleNotes} />
           </header>
@@ -302,7 +229,7 @@ export default function Editor() {
               <CodeMirror
                 value={markdownContent}
                 height="100%"
-                extensions={editorExtensions}
+                extensions={memoizedExtensions}
                 onChange={handleChange}
                 className="overflow-auto h-full mx-4 pt-4"
                 theme={settings.theme === "dark" ? "dark" : "light"}
@@ -325,11 +252,15 @@ export default function Editor() {
               </div>
             )}
           </section>
-          <footer className="flex h-8 shrink-0 items-end justify-end px-4 border-t text-xs">
+          <footer className="flex h-8 shrink-0 items-end justify-end mx-4 border-t text-xs">
             <div className="flex items-end justify-between align-middle font-mono pb-[0.5rem]">
               <div className="flex items-end gap-4">
                 <div>
-                  <a href="https://tinymorph.aarnphm.xyz" target="_blank">
+                  <a
+                    href="https://tinymorph.aarnphm.xyz"
+                    target="_blank"
+                    className="hover:underline"
+                  >
                     Documentation
                   </a>
                 </div>
