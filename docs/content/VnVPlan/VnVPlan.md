@@ -114,14 +114,20 @@ This section provides general information about the plan of testing, including t
 
 The following project members are responsible for all procedures of the validation process, including writing and executing tests:
 
-| Team Member  | Responsibility                                |
-| ------------ | --------------------------------------------- |
-| Aaron Pham   | SRS Verification, Implementation Verification |
-| Nebras Khan  | Design Verification                           |
-| Waleed Malik | Automated Testing                             |
-| Zhiwei Li    | Software Validation                           |
+| Team Member     | Responsibility                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------- |
+| **Aaron Pham**   | SRS Verification, Implementation Verification (specifically functional requirements and performance)    |
+| **Nebras Khan**  | Design Verification, UI/UX testing, and system interaction validation                                  |
+| **Waleed Malik** | Automated Testing (focusing on backend logic, integration tests, and continuous integration pipelines)    |
+| **Zhiwei Li**    | Software Validation (end-to-end testing, regression testing, and security testing)                     |
 
-The tasks over the SRS verification, design verification, implementation verification, automated test and software validation will be handled among team members accordingly.
+**Regular Guidance and Review:**  
+- Weekly reviews and feedback sessions with Dr. Swati Mishra to ensure testing progress aligns with project milestones and system requirements.  
+- Additional support and guidance will be provided by TA Hunter Ceranic as needed, especially during critical testing phases.  
+
+**Collaborative Testing:**  
+- Verification and validation tasks related to large documents (e.g., the SRS) will be divided among team members based on their expertise. Multiple team members may collaborate on key sections to ensure thorough coverage and efficiency.  
+- Overlapping areas will be coordinated during team meetings to avoid redundancy and ensure clear role allocation.
 
 ### 3.2 Milestones
 
