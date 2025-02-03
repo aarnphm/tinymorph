@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import axios from "axios"
+import axios, { AxiosResponse } from "axios"
 import { drag } from "d3-drag"
 import { select } from "d3-selection"
 import CodeMirror from "@uiw/react-codemirror"
@@ -25,6 +25,12 @@ interface Note {
 interface Suggestion {
   suggestion: string
   relevance: number
+}
+
+interface AsteraceaRequest {
+  essay: string
+  num_suggestions: number
+  max_tokens: number
 }
 
 interface AsteraceaResponse {
@@ -169,7 +175,7 @@ export default function Editor() {
     try {
       const apiEndpoint = "<URL>"
       return await axios
-        .post<AsteraceaResponse>(
+        .post<AsteraceaResponse, AxiosResponse<AsteraceaResponse>, AsteraceaRequest>(
           `${apiEndpoint}/suggests`,
           {
             essay: content,
