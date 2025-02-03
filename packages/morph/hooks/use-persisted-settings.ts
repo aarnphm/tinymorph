@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react"
-import { useTheme } from "next-themes"
+
 interface Settings {
   vimMode: boolean
-  theme: "light" | "dark" | "system"
   tabSize: number
   ignorePatterns: string[]
   editModeShortcut: string
@@ -10,7 +9,6 @@ interface Settings {
 
 const defaultSettings: Settings = {
   vimMode: false,
-  theme: "system",
   tabSize: 2,
   ignorePatterns: ['**/.*', '**/node_modules/**', '.vercel/**', '**/dist/**', '__pycache__/**', '*.log', '.DS_Store'],
   editModeShortcut: "e"
@@ -19,7 +17,6 @@ const defaultSettings: Settings = {
 export default function usePersistedSettings() {
   const [settings, setSettings] = useState<Settings>(defaultSettings)
   const [isLoaded, setIsLoaded] = useState(false)
-  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     // Load settings from localStorage on mount
@@ -28,10 +25,6 @@ export default function usePersistedSettings() {
       try {
         const parsedSettings = {...defaultSettings, ...JSON.parse(savedSettings)}
         setSettings(parsedSettings)
-        // setting theme here
-        if (parsedSettings.theme) {
-          setTheme(parsedSettings.theme);
-        }
       } catch (error) {
         console.error("Failed to parse settings:", error)
       }
@@ -44,10 +37,6 @@ export default function usePersistedSettings() {
       const updated = { ...prev, ...newSettings }
       // Save to localStorage
       localStorage.setItem("morph-settings", JSON.stringify(updated))
-      // setting theme here
-      if (newSettings.theme) {
-        setTheme(newSettings.theme);
-      }
       return updated
     })
   }

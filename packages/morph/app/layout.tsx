@@ -1,8 +1,7 @@
 import "./globals.css"
 import type React from "react"
 import PlausibleProvider from "next-plausible"
-import ClientWrapper from "@/components/client-wrapper.tsx";
-
+import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata = {
   title: "morph-editor.app",
@@ -21,7 +20,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <ClientWrapper>{children}</ClientWrapper>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )
