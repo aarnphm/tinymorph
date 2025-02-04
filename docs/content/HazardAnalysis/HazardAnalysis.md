@@ -6,14 +6,15 @@ author: aarnphm,waleedmalik7,nebrask,lucas-lizhiwei
 date: "2024-09-16"
 description: "Hazard Analysis for tinymorph: LLM-steering text editor"
 title: Hazard Analysis
+counter: true
 ---
 
-## 1. Introduction
+## Introduction
 
 This ducument is the hazard analysis of `tinymorph`
 ![[SRS/SRS#^introduction|intro]]
 
-## 2. Scope and Purpose of Hazard Analysis
+## Scope and Purpose of Hazard Analysis
 
 The purpose of this hazard analysis is to:
 
@@ -27,60 +28,60 @@ This analysis covers the web-based text editor, its LLM inference system, user i
 
 By examining these hazards, the analysis seeks to outline preventive measures to avoid and minimize these losses, ensuring that the system operates reliably and securely while protecting user content and experience.
 
-## 3. System Boundaries
+## System Boundaries
 
 
 The following defines system boundaries for `tinymorph`:
 
-### 3.1 Core Functionalities
+### Core Functionalities
 
-#### 3.1.1 User interface
+#### User interface
 
 - User can compose, modify and refine their writing through spatial interfaces for non-linear exploration.
 - UI of the editor includes components of text editor, steering controller and posted-notes dashboard for suggestion.
 
-#### 3.1.2 Steering control panel
+#### Steering control panel
 
 - Refers to options panels allowing users to adjust and change preferences accordingly based on what they want their
   suggestion to focus on.
 
-#### 3.1.3 Local file storage system
+#### Local file storage system
 
 - maintains file-over-app philosophy, allowing users full control of the artifacts they create
 
-#### 3.1.4 Inference engine (asteraceae)
+#### Inference engine (asteraceae)
 
 - LLM inference engine used for ideas generations and steering.
 - mainly used as backend for interfaces for suggestions.
 
-#### 3.1.5 LLM-based suggestion generations
+#### LLM-based suggestion generations
 
 - suggestion generated from said inference engine to cultivate ideas and thoughts for writing piece.
 
-### 3.2 Interactions
+### Interactions
 
-#### 3.2.1 Infrastructure reliability
+#### Infrastructure reliability
 
 - First iterations of LLM engine will depend on running inference on a remote server, which depends on reliable network
   connection.
 - Uptime and performance of servers must be reliable during high traffic usage.
 
-#### 3.2.2 File system operations
+#### File system operations
 
 - File system operations are critical for `tinymorph` to function properly, where it allows users to include files as
   context or saving their progress.
 
-### 3.3 Components outside the boundary
+### Components outside the boundary
 
-#### 3.3.1 User devices and platforms
+#### User devices and platforms
 
 - `tinymorph` aims to provide support on cross platforms, and supports running on modern browsers.
 
-#### 3.3.2 Networking connections
+#### Networking connections
 
 - The system will rely on networking connections to communicate with the inference engine.
 
-## 4. Definition of Hazard
+## Definition of Hazard
 
 The definition of a hazard in this document is adapted from Nancy Leveson's work[^hazard].
 
@@ -99,15 +100,15 @@ In the context of `tinymorph`, hazard is related to:
 
 [^hazard]: Nancy Leveson, [How to Perform Hazard Analysis on a "System-of-Systems"](http://sunnyday.mit.edu/SOS-hazard-analysis.pdf)
 
-## 5. Critical Assumptions
+## Critical Assumptions
 
 
 Except for the assumption that the team has no control over the user's hardware, no critical assumptions are being made for `tinymorph` that would limit the scope of mitigating or eliminating potential hazards.
 
-## 6. Failure Mode and Effect Analysis
+## Failure Mode and Effect Analysis
 
 
-### 6.1 Hazards Out of Scope
+### Hazards Out of Scope
 
 - Physical hardware failures
 - Operating system incompatibilities
@@ -130,34 +131,34 @@ control over the service's availability.
 > These hazards and risks connected the aforementioned assumptions can't be completely solved; instead, they will be
 > mitigated as much as possible.
 
-### 6.2 Failure Modes & Effects Analysis Table
+### Failure Modes & Effects Analysis Table
 
-The following is the FEMA table for `tinymorph`.
+| Component            | Failure Modes                                                                   | Effects of Failure                                              | Causes of Failure                                                                                                                                                                                       | Recommended Actions                                                                                                               | SR                                                                                                                                                                                                              | Ref. |
+| -------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
+| User Interface       | Document is deleted/fails to save                                               | Users loss current progress, creative work loss                 | a. Browser crashes<br>b.files failed to save                                                                                                                                                            | a. Implement a revision control system<br>b. Automatic save given a time inverval                                                 | [[SRS/SRS#9.1 Functional Requirements\|FR-6]] <br>[[SRS/SRS#5.1 Relevant Facts\|RFA-BR1]]                                                                                                                       | H1.1 |
+|                      | Version controls fails to track                                                 | Change not tracked; unable to determine history                 | a. Synchromization failed<br>b. Merkle trees not implemented correctly<br>c. Metadata corruption                                                                                                        | a. Display popup toast warning about errors<br>b. optionally ask users to save current edits locally                              | [[SRS/SRS#9.1 Functional Requirements\|FR-8]]<br>[[SRS/SRS#9.1 Functional Requirements\|FR-13]]<br>H1.1                                                                                                         | H1.2 |
+|                      | Configuration corruptions                                                       | lost users' preferences; degraded users' experience             | a. Configuration schema out of date<br>b. File was corrupted<br>c. Invalid data format                                                                                                                  | a. Maintain config backups<br>b. Validate all changes<br>c. Provide default fallbacks                                             | [[SRS/SRS#22.1 Requirements for Migration to the New Product\|MNP-DMTNS1]]<br>[[SRS/SRS#24.1 User Documentation Requirements\|UDT-D2]]<br>[[SRS/SRS#9.1 Functional Requirements\|FR-5]]                         | H1.3 |
+|                      | Ambiguous configuration parameters                                              | confusion; potential for jailbreaking                           | a. Too complex parameters that is not relevant to end-users                                                                                                                                             | a. Display relevant support popup for each parameters                                                                             | [[SRS/SRS#3.1 Solution Constraints\|MC-S5]]<br>[[SRS/SRS#9.1 Functional Requirements\|FR-4]]                                                                                                                    | H1.4 |
+| Inference Engine     | Suggestions for planning fails                                                  | No assistance provided; workflow disrupted                      | a. Server overload<br>b. Model errors<br>c. Resource exhaustion                                                                                                                                         | a. Implement load balancing<br>b. Provide fallback mechanisms<br>c. Monitor server health<br>d. Implement KV cache optimization   | [[SRS/SRS#9.1 Functional Requirements\|FR-3]]<br>                                                                                                                                                               | H2.1 |
+|                      | Harmful content suggestions                                                     | Legal liability; inappropriate suggestions, potential user harm | a. [[glossary#sparse autoencoders\|feature steering]] failures<br>b. AI's [[glossary#bias bug\|bias bug]]<br>c. Insufficient filtering and guardrails<br>d. [[glossary#hallucinations\|hallucinations]] | a. Warn upfront as a research preview<br>b. Incorporate manual feedback to improve SAEs generations<br>c. Add relevant guardrails | [[SRS/SRS#9.1 Functional Requirements\|FR-7]]<br>[[SRS/SRS#9.1 Functional Requirements\|FR-11]]<br>[[SRS/SRS#15.2 Integrity Requirements\|SR-INT6]]                                                             | H2.2 |
+| Network connections  | Server outages                                                                 | interrupt users flow                                            | a. Server congestion                                                                                                                                       | a. Display a toast warning about server outage<br>b. Recommendation to save locally<br>c. Same as H1.1                           | [[SRS/SRS#9.1 Functional Requirements\|FR-9]]                                                                                                                                                                   | H3.1 |
+| Authentication       | Privacy breach                                                                  | Exposure of user content, trust                                 | a. Insecure transmission<br>b. Authentication token expire                                                                                                                                              | a. Implement end-to-end encryption<br>b. Secure all inference endpoint                                                            | [[SRS/SRS#13.1 Expected Physical Environment\|OER-MR1]]<br>[[SRS/SRS#15.2 Integrity Requirements\|SR-INT1]]<br>[[SRS/SRS#15.2 Integrity Requirements\|SR-INT4]]<br>[[SRS/SRS#15.3 Privacy Requirements\|SR-P1]] | H4.1 |
+| General              | front-end unresponsiveness                                                      | The website interface freeze and not responsive                 | a. Browser limitation                                                                                                                                                                                   | a. Implement early degradation detection and display warning                                                                      | [[SRS/SRS#20.4 Limitations in the Anticipated Implementation Environment That May Inhibit the New Product\|LAIETMINP-1]]                                                                                        | H5.1 |
+|                      | back-end unresponsiveness                                                       | Some feature not properly loaded                                | a. Memory leak<br>b. Resource starvation                                                                                                                                                                | a. Optimize memory usage                                                                                                          | [[SRS/SRS#20.4 Limitations in the Anticipated Implementation Environment That May Inhibit the New Product\|LAIETMINP-1]]                                                                                        | H5.2 |
+| User devices support | Unpredictable system behavior or crashes caused by device-level vulnerabilities | Crashes users system                                            | a. out-dated browsers                                                                                                                                                                                   | a. Recommend users to regularly update their browsers and device firmware<br>b. Same as H1.1                                      | [[SRS/SRS#15.5 Immunity Requirements\|SR-IM1]]                                                                                                                                                                  | H6.1 |
+| Infrastructure       | Downtime                                                                        | Interruption in users' workflow                                 | a. SLO and third-party service downtime                                                                                                                                                                 | a. Same as H2.1<br>b. Add rollback and scaling for backup region                                                                  | [[SRS/SRS#15.4 Audit Requirements\|SR-AU1]]                                                                                                                                                                     | H7.1 |
 
-| Component            | Failure Modes                                                                   | Effects of Failure                                              | Causes of Failure                                                                                                                                                                                       | Recommended Actions                                                                                                               | SR                                                                                                                                                                                                              | Ref. |     |
-| -------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- | --- |
-| User Interface       | Document is deleted/fails to save                                               | Users loss current progress, creative work loss                 | a. Browser crashes<br>b.files failed to save                                                                                                                                                            | a. Implement a revision control system<br>b. Automatic save given a time inverval                                                 | [[SRS/SRS#9.1 Functional Requirements\|FR-6]] <br>[[SRS/SRS#5.1 Relevant Facts\|RFA-BR1]]                                                                                                                       | H1.1 |     |
-|                      | Version controls fails to track                                                 | Change not tracked; unable to determine history                 | a. Synchromization failed<br>b. Merkle trees not implemented correctly<br>c. Metadata corruption                                                                                                        | a. Display popup toast warning about errors<br>b. optionally ask users to save current edits locally                              | [[SRS/SRS#9.1 Functional Requirements\|FR-8]]<br>[[SRS/SRS#9.1 Functional Requirements\|FR-13]]<br>H1.1                                                                                                         | H1.2 |     |
-|                      | Configuration corruptions                                                       | lost users' preferences; degraded users' experience             | a. Configuration schema out of date<br>b. File was corrupted<br>c. Invalid data format                                                                                                                  | a. Maintain config backups<br>b. Validate all changes<br>c. Provide default fallbacks                                             | [[SRS/SRS#22.1 Requirements for Migration to the New Product\|MNP-DMTNS1]]<br>[[SRS/SRS#24.1 User Documentation Requirements\|UDT-D2]]<br>[[SRS/SRS#9.1 Functional Requirements\|FR-5]]                         | H1.3 |     |
-|                      | Ambiguous configuration parameters                                              | confusion; potential for jailbreaking                           | a. Too complex parameters that is not relevant to end-users                                                                                                                                             | a. Display relevant support popup for each parameters                                                                             | [[SRS/SRS#3.1 Solution Constraints\|MC-S5]]<br>[[SRS/SRS#9.1 Functional Requirements\|FR-4]]                                                                                                                    | H1.4 |     |
-| Inference Engine     | Suggestions for planning fails                                                  | No assistance provided; workflow disrupted                      | a. Server overload<br>b. Model errors<br>c. Resource exhaustion                                                                                                                                         | a. Implement load balancing<br>b. Provide fallback mechanisms<br>c. Monitor server health<br>d. Implement KV cache optimization   | [[SRS/SRS#9.1 Functional Requirements\|FR-3]]<br>                                                                                                                                                               | H2.1 |     |
-|                      | Harmful content suggestions                                                     | Legal liability; inappropriate suggestions, potential user harm | a. [[glossary#sparse autoencoders\|feature steering]] failures<br>b. AI's [[glossary#bias bug\|bias bug]]<br>c. Insufficient filtering and guardrails<br>d. [[glossary#hallucinations\|hallucinations]] | a. Warn upfront as a research preview<br>b. Incorporate manual feedback to improve SAEs generations<br>c. Add relevant guardrails | [[SRS/SRS#9.1 Functional Requirements\|FR-7]]<br>[[SRS/SRS#9.1 Functional Requirements\|FR-11]]<br>[[SRS/SRS#15.2 Integrity Requirements\|SR-INT6]]                                                             | H2.2 |     |
-| Network connections  | Server outages                                                                 | interrupt users flow                                            | a. Server congestion                                                                                                                                       | a. Display a toast warning about server outage<br>b. Recommendation to save locally<br>c. Same as H1.1                           | [[SRS/SRS#9.1 Functional Requirements\|FR-9]]                                                                                                                                                                   | H3.1 |     |
-| Authentication       | Privacy breach                                                                  | Exposure of user content, trust                                 | a. Insecure transmission<br>b. Authentication token expire                                                                                                                                              | a. Implement end-to-end encryption<br>b. Secure all inference endpoint                                                            | [[SRS/SRS#13.1 Expected Physical Environment\|OER-MR1]]<br>[[SRS/SRS#15.2 Integrity Requirements\|SR-INT1]]<br>[[SRS/SRS#15.2 Integrity Requirements\|SR-INT4]]<br>[[SRS/SRS#15.3 Privacy Requirements\|SR-P1]] | H4.1 |     |
-| General              | front-end unresponsiveness                                                      | The website interface freeze and not responsive                 | a. Browser limitation                                                                                                                                                                                   | a. Implement early degradation detection and display warning                                                                      | [[SRS/SRS#20.4 Limitations in the Anticipated Implementation Environment That May Inhibit the New Product\|LAIETMINP-1]]                                                                                        | H5.1 |     |
-|                      | back-end unresponsiveness                                                       | Some feature not properly loaded                                | a. Memory leak<br>b. Resource starvation                                                                                                                                                                | a. Optimize memory usage                                                                                                          | [[SRS/SRS#20.4 Limitations in the Anticipated Implementation Environment That May Inhibit the New Product\|LAIETMINP-1]]                                                                                        | H5.2 |     |
-| User devices support | Unpredictable system behavior or crashes caused by device-level vulnerabilities | Crashes users system                                            | a. out-dated browsers                                                                                                                                                                                   | a. Recommend users to regularly update their browsers and device firmware<br>b. Same as H1.1                                      | [[SRS/SRS#15.5 Immunity Requirements\|SR-IM1]]                                                                                                                                                                  | H6.1 |     |
-| Infrastructure       | Downtime                                                                        | Interruption in users' workflow                                 | a. SLO and third-party service downtime                                                                                                                                                                 | a. Same as H2.1<br>b. Add rollback and scaling for backup region                                                                  | [[SRS/SRS#15.4 Audit Requirements\|SR-AU1]]                                                                                                                                                                     | H7.1 |     |
-Table 1: FEMA Table of Tinymorph
-## 7. Safety and Security Requirements
+Table 1: FEMA Table of `tinymorph`
+
+## Safety and Security Requirements
 
 Requirements intended for inclusion in Revision 0.2 of the Security Requirements section of the SRS document are highlighted in bold. Bolded items also include notes explaining the absence of specific requirements.
 
-### 7.1 Access Requirements
+### Access Requirements
 
 **Not applicable given the application is open source, and inference server are exposed over a HTTPS endpoints.**
 
-### 7.2 Integrity Requirements
+### Integrity Requirements
 
 ![[SRS/SRS#15.2 Integrity Requirements|SRSIR]]
 
@@ -173,19 +174,19 @@ Rationale: Corrupted file format can lead to loss in data. This applies to both 
 
 Rationale: SAEs must comply to certain features, stay true to trained tonality (for example Raymond Carver's SAEs should depict his writing style), and the system should reject inappropriate suggestions. This is to ensure that the system is not biased towards certain features.
 
-### 7.3 Privacy Requirements
+### Privacy Requirements
 
 ![[SRS/SRS#15.3 Privacy Requirements|SRSPR]]
 
-### 7.4 Audit Requirements
+### Audit Requirements
 
 ![[SRS/SRS#15.4 Audit Requirements|SRSAR]]
 
-### 7.5 Immunity Requirements
+### Immunity Requirements
 
 ![[SRS/SRS#15.5 Immunity Requirements|SRSImR]]
 
-## 8. Roadmap
+## Roadmap
 
 
 The following roadmap for safety requirements will be divided into three phases:
