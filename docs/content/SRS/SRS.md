@@ -15,9 +15,65 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 
 ## 1. Purpose of the Project
 
-> `tinymorph` aims to explore new interfaces and workflow for [[glossary#auto-regressive model]] to help writers craft better writing artifacts. ^introduction
+> `tinymorph` is an AI-powered writing assistant that leverages [[glossary#auto-regressive model|auto-regressive models]] to enhance the writing process by providing interactive and context-aware suggestions. Rather than automating content creation, it allows users to steer AI-generated text in real time, ensuring alignment with their intent and style. The system offers AI-driven notes that help users expand on ideas, structure their content, and fill in text naturally. By integrating interactive feedback and contextual text additions, `tinymorph` supports a more intentional, personalized, and dynamic writing experience.
 
-### 1.1 User Business
+### 1.1 Abbreviations and Acronyms
+
+| Acronym   | Definition                                                                                 |
+|:----------|:-------------------------------------------------------------------------------------------|
+| AI        | Artificial Intelligence                                                                    |
+| API       | Application Programming Interface                                                          |
+| BUC       | Business Use Case                                                                          |
+| CD        | Continuous Deployment                                                                      |
+| CI        | Continuous Integration                                                                     |
+| CR        | Cultural Requirement                                                                       |
+| CSP       | Content Security Policy                                                                    |
+| CompR     | Compliance Requirement                                                                     |
+| CompR-SCR | Compliance Requirement - Standards Compliance Requirement                                  |
+| DNS       | Domain Name System                                                                         |
+| EoCE      | Effects on the Current Environment                                                         |
+| EoIS      | Effects on the Installed Systems                                                           |
+| FLOPs     | Floating Point Operations                                                                  |
+| FR        | Functional Requirement                                                                     |
+| FUP       | Follow-Up Problems                                                                         |
+| GPT       | Generative Pretrained Transformer                                                          |
+| HTTP      | Hypertext Transfer Protocol                                                                |
+| IDE       | Integrated Development Environment                                                         |
+| JSON      | JavaScript Object Notation                                                                 |
+| JWT       | JSON Web Token                                                                             |
+| KV        | Key-Value                                                                                  |
+| LAIETMINP | Limitations in the Anticipated Implementation Environment That May Inhibit the New Product |
+| LLM       | Large Language Model                                                                       |
+| LTR       | Left-to-Right                                                                              |
+| LoRA      | Low-Rank Adaptation                                                                        |
+| MC        | Mandated Constraint                                                                        |
+| MLP       | Multi-Layer Perceptron                                                                     |
+| NSFW      | Not Safe For Work                                                                          |
+| OER       | Operational and Environmental Requirement                                                  |
+| OI        | Open Issue                                                                                 |
+| PR        | Performance Requirement                                                                    |
+| PR-CR     | Performance Requirement - Capacity Requirement                                             |
+| PR-LR     | Performance Requirement - Longevity Requirement                                            |
+| PR-PAR    | Performance Requirement - Precision or Accuracy Requirement                                |
+| PR-RFR    | Performance Requirement - Robustness or Fault-Tolerance Requirement                        |
+| PR-SER    | Performance Requirement - Scalability or Extensibility Requirement                         |
+| PR-SLR    | Performance Requirement - Speed and Latency Requirement                                    |
+| PUC       | Product Use Case                                                                           |
+| PUP       | Potential User Problems                                                                    |
+| RAG       | Retrieval-Augmented Generation                                                             |
+| RBAC      | Role-Based Access Control                                                                  |
+| RELU      | Rectified Linear Unit                                                                      |
+| RTL       | Right-to-Left                                                                              |
+| SAE       | Sparse Autoencoder                                                                         |
+| SOC2      | System and Organization Controls 2                                                         |
+| SR        | Security Requirement                                                                       |
+| SRS       | Software Requirements Specification                                                        |
+| TTFT      | Time-To-First-Tokens                                                                       |
+| UH        | Usability and Humanity Requirement                                                         |
+| WYSIWYG   | What-You-See-Is-What-You-Get                                                               |
+
+
+### 1.2 User Business
 
 > [!important] UB-1
 >
@@ -32,7 +88,7 @@ Rationale: `tinymorph` is a web-based text editor, thus, its main goal is to pro
 Rationale: `tinymorph` will provide environment for stakeholders to do creative writing. That means writing artifacts
 are self-contained, owned by users, forever.
 
-### 1.2 Goals of the Project
+### 1.3 Goals of the Project
 
 _[[ProblemStatementAndGoals/ProblemStatement#Goals|comprehensive lists]]_
 
@@ -45,7 +101,7 @@ _[[ProblemStatementAndGoals/ProblemStatement#Goals|comprehensive lists]]_
 Rationale:
 
 <p class="quotes">
-  <i>The files you create are more important than the tools you use to create them. Apps are ephemeral, but your files have a chance to last.</i> -- Steph Ango
+  <i>The files you create are more important than the tools you use to create them. Apps are ephemeral, but your files have a chance to last.</i> - Steph Ango
 </p>
 
 `tinymorph` aims to amplify users' ability to write through planning and suggestion interfaces, done over files that
@@ -381,7 +437,7 @@ If any dependencies use a more strict license, the team must address license and
 
 Rationale: This ensures that any models integrated into tinymorph comply with their community usage terms, preventing misuse and maintaining alignment with ethical research standards.
 
-## 4. Naming Conventions and Terminology
+## 4. Naming Conventions and Terminology (Formalized)
 
 ![[glossary]]
 
@@ -443,7 +499,7 @@ Rationale: The assumption for `tinymorph` relies on users who have interests in 
 
 ## 6. The Scope of the Work
 
-### 6.1 The Current Situation
+### 6.1 Existing Writing Tools Limitations
 
 The problem with writers block is that it is cyclical by nature. Julia Cameron's [The Artist
 Way](https://juliacameronlive.com/the-artists-way/) suggests people to commit writing a certain numbers of words
@@ -474,7 +530,7 @@ This "How Now" view aims to replace the rigidity of current LLM-powered text edi
 workflow, allowing users to manually steer and direct generations based on their tonality that is closed to their true
 writing style, creating a more enjoyable and cohesive writing experience.
 
-### 6.2 The Context of the Work
+### 6.2 Context of the Work
 
 `tinymorph`'s work context identifies the environment, systems, and users that the tool interacts with, defining the boundaries of its operation.
 Understanding the following milestones would help `tinymorph` better help writers with their creative writing experience.
@@ -1179,7 +1235,26 @@ Rationale: `tinymorph` will require users' inputs to make corresponding suggesti
 
 Rationale: `tinymorph` will adhere to Hypertext Transfer Protocol (HTTP/1.1) standards as defined by the Internet Engineering Task Force (IETF) in RFC 2616 (for HTTP/1.1).
 
-## 18. Open Issues
+## 18. Requirements Traceability Matrix
+
+| Functional Requirement (FR)                                                       | Non-Functional Requirements (NFR)   |
+|:----------------------------------------------------------------------------------|:------------------------------------|
+| FR-1: Provide suggestions during the planning phase of creative writing.          | LF-S1, UH-EOU1, PR-SLR1             |
+| FR-2: Enable users to manually control text generation (tone, style, creativity). | UH-EOU3, MC-S5, PR-PAR1             |
+| FR-3: Provide a left-to-right feedback panel for text interaction.                | LF-S4, UH-PI1, PR-SLR2              |
+| FR-4: Allow users to set preferences for tone, style, voice, and formality.       | UH-UP1, MC-S5, PR-SER1              |
+| FR-5: Enable saving of preferred configurations as profiles.                      | UH-EOU2, MC-I2, SR-IM1              |
+| FR-6: Support non-linear text navigation with visual maps or tree views.          | LF-S4, UH-PI2, PR-RFR2              |
+| FR-7: Offer planning steps users can modify, choose, or combine.                  | UH-EOU1, PR-CR1                     |
+| FR-8: Provide version control features for document edits and comparison.         | MC-I3, SR-AU1, PR-LR1               |
+| FR-9: Support an offline mode for writing and saving locally.                     | OER-RR1, SR-AU1                     |
+| FR-10: Allow writing and saving files locally during offline sessions.            | OER-EPE2, PR-RFR2                   |
+| FR-11: Set and track specific writing goals with customizable progress tracking.  | UH-UP1, PR-SLR1                     |
+| FR-12: Categorize and tag sections of text, auto-generate outlines.               | UH-A2, MC-I1                        |
+| FR-13: Export documents in .pdf, .md, and plain text formats.                     | UH-PI2, PR-LR2, CompR-LR1           |
+| FR-14: Customize visual appearance with themes (dark mode, etc.).                 | LF-S3, UH-A1, PR-SCR1               |
+
+## 19. Open Issues
 
 > [!question] OI-1
 >
@@ -1247,9 +1322,9 @@ Rationale: LLMs we are considering for `tinymorph` doesn't have good multilingua
 of datasets during pre-training of these foundation models. Therefore, to fully support analysing essays with language
 other than English, we must use base models that support multilingual, with the likes of [aya](https://cohere.com/research/aya), followed with a set of SAEs trained against this model.
 
-## 19. Off-the-Shelf Solutions
+## 20. Off-the-Shelf Solutions
 
-### 19.1 Ready-Made Products
+### 20.1 Ready-Made Products
 
 The following encapsulate a few existing products that may fits for `tinymorph`:
 
@@ -1296,11 +1371,11 @@ Goodfire:
 - recently releases [preview](https://preview.goodfire.ai/) demonstrate the usage of SAEs to steer Llama in conversational settings
 - can be use as reference for `tinymorph` UX design for feature steering
 
-### 19.2 Reusable Components
+### 20.2 Reusable Components
 
 ![[glossary#sparse autoencoders|Sparse autoencoders]]
 
-### 19.3 Products That Can Be Copied
+### 20.3 Products That Can Be Copied
 
 GitHub Copilot (Interaction Paradigms):
 
@@ -1317,9 +1392,9 @@ Grammarly’s Tone Detector (Tone Adjustment Feature):
 - tone detection system analyzes writing to give feedback on the mood and tone of the content.
 - `tinymorph` could replicate this feature via SAEs to train on the user’s writing style and suggesting tone adjustments, allowing users to fine-tune the emotional or stylistic qualities of their text.
 
-## 20. New Problems
+## 21. New Problems
 
-### 20.1 Effects on the Current Environment
+### 21.1 Effects on the Current Environment
 
 > [!IMPORTANT] EoCE-1
 >
@@ -1334,7 +1409,7 @@ Rationale: `tinymorph` will introduce an alternative way to plan and write essay
 Rationale: `tinymorph` can provide real-time feedback on certain planning steps, which could influence how users
 approach one's writing.
 
-### 20.2 Effects on the Installed Systems
+### 21.2 Effects on the Installed Systems
 
 > [!IMPORTANT] EoIS-1
 >
@@ -1351,7 +1426,7 @@ efficiently.
 Rationale: `tinymorph` follows "file-over-app" philosophy, meaning certain folders structures for users files must be
 adhere to in order for applications to function correctly.
 
-### 20.3 Potential User Problems
+### 21.3 Potential User Problems
 
 > [!IMPORTANT] PUP-1
 >
@@ -1367,7 +1442,7 @@ accordingly.
 Rationale: Changing ones' behaviour is hard, which means users might find a hard time to integrate `tinymorph` into
 their existing writing workflow.
 
-### 20.4 Limitations in the Anticipated Implementation Environment That May Inhibit the New Product
+### 21.4 Limitations in the Anticipated Implementation Environment That May Inhibit the New Product
 
 > [!IMPORTANT] LAIETMINP-1
 >
@@ -1384,7 +1459,7 @@ interfere with usability.
 Rationale: If users wish to run models on-device, they might not have the sufficient hardware to perform given tasks.
 Additionally, setting up local inference might be proven to be challenging for the unversed.
 
-### 20.5 Follow-Up Problems
+### 21.5 Follow-Up Problems
 
 > [!IMPORTANT] FUP-1
 >
@@ -1411,16 +1486,16 @@ Rationale: constant suggestion prompt might prove to be annoying to writers' flo
 Rationale: The setup/UX might be too complex, potentially too intimidating for users who might prefer the simplicity of
 CUIs.
 
-## 21. Tasks
+## 22. Tasks
 
 See also [[DevelopmentPlan/DevelopmentPlan|Development Plan]] for an up-to-date development cycle as well as project
 planning.
 
 For a more unstructured brain dump for potential exploration avenue see [[Scratch|ideas]].
 
-## 22. Migration to the New Product
+## 23. Migration to the New Product
 
-### 22.1 Requirements for Migration to the New Product
+### 23.1 Requirements for Migration to the New Product
 
 > [!IMPORTANT] MNP-RMNP1
 >
@@ -1428,7 +1503,7 @@ For a more unstructured brain dump for potential exploration avenue see [[Scratc
 
 Rationale: When the inference server is updating or maintaining, users should be aware of the downtime, given it shouldn't affect users' workflow.
 
-### 22.2 Data That Has to be Modified or Translated for the New System
+### 23.2 Data That Has to be Modified or Translated for the New System
 
 > [!IMPORTANT] MNP-DMTNS1
 >
@@ -1436,7 +1511,7 @@ Rationale: When the inference server is updating or maintaining, users should be
 
 Rationale: When configuration or certain features require breaking change, `tinymorph` must be able to migrate existing configuration to the new format without breaking change. ^MNP-DMTNS1
 
-## 23. Costs
+## 24. Costs
 
 > [!IMPORTANT] C1
 >
@@ -1460,9 +1535,9 @@ $$
 
 _note: we exclude the calculation for hosting the sites, given we will be using GitHub pages to serve the web interface_
 
-## 24. User Documentation and Training
+## 25. User Documentation and Training
 
-### 24.1 User Documentation Requirements
+### 25.1 User Documentation Requirements
 
 > [!important] UDT-D1
 >
@@ -1500,7 +1575,7 @@ Rationale: Serves as a foundational document that guides the entire development 
 
 Rationale: Essential for enabling users to quickly respond to and resolve emergencies. This manual reduces downtime and ensures continuous operational efficiency, bolstering user confidence and system reliability.
 
-### 24.2 Training Requirements
+### 25.2 Training Requirements
 
 > [!important] UDT-T1
 >
@@ -1520,9 +1595,9 @@ Rationale: Video tutorials allow users to visually follow processes at their own
 
 Rationale: Scheduled Q&A sessions after updates ensure that users fully understand new functionalities and can discuss any issues or suggestions. This helps in maintaining high user satisfaction and engagement with the platform.
 
-## 25. Waiting Room
+## 26. Waiting Room
 
-### 25.1 Future Functional Requirements
+### 26.1 Future Functional Requirements
 
 > [!important] FR-15
 >
@@ -1536,7 +1611,7 @@ Rationale: Providing users with quick access to alternative phrasings or structu
 
 Rationale: Offline functionality would rely on on-device inference to ensure users can generate text without internet connectivity. While this requires more local computational resources, it allows for uninterrupted productivity in environments where internet access is limited or unavailable. However, this feature might be deferred to future iterations due to the complexity of integrating efficient on-device inference for large language models.
 
-## 26. Ideas for Solution
+## 27. Ideas for Solution
 
 _includes a few solutions for `tinymorph`_
 
