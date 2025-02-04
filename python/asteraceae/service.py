@@ -67,7 +67,7 @@ class Suggestion(pydantic.BaseModel):
 @bentoml.asgi_app(openai_api_app, path='/v1')
 @bentoml.service(
   name='asteraceae-service',
-  traffic={'timeout': 300, 'concurrency': 256},
+  traffic={'timeout': 300, 'concurrency': 128},
   resources={'gpu': 1, 'gpu_type': 'nvidia-a100-80gb'},
   http={
     'cors': {
@@ -76,7 +76,6 @@ class Suggestion(pydantic.BaseModel):
       'access_control_allow_methods': ['GET', 'OPTIONS', 'POST', 'HEAD', 'PUT'],
       'access_control_allow_credentials': True,
       'access_control_allow_headers': ['*'],
-      # "access_control_allow_origin_regex": "https://.*\.my_org\.com",
       'access_control_max_age': 1200,
       'access_control_expose_headers': ['Content-Length'],
     }

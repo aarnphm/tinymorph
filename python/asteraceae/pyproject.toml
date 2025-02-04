@@ -8,6 +8,7 @@ authors = [{ name = "Aaron Pham", email = "contact@aarnphm.xyz" }]
 dependencies = ["bentoml>=1.3.20", "kantoku>=0.18.1", "vllm>=0.7.0"]
 version = "0.0.0"
 [project.urls]
+Website = "https://morph-editor.app"
 Documentation = "https://tinymorph.aarnphm.xyz"
 GitHub = "https://github.com/aarnphm/tinymorph"
 Twitter = "https://twitter.com/aarnphm_"
@@ -21,8 +22,6 @@ include = ["service.py"]
 lock_packages = false
 [tool.bentoml.build.docker]
 python_version = "3.11"
-[[tool.bentoml.build.envs]]
-name = "HF_TOKEN"
 
 [tool.uv.sources]
 exo = { workspace = true }
