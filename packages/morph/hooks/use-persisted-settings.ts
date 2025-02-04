@@ -5,6 +5,7 @@ interface Settings {
   tabSize: number
   ignorePatterns: string[]
   editModeShortcut: string
+  notePanelShortcut: string
 }
 
 const defaultSettings: Settings = {
@@ -18,8 +19,10 @@ const defaultSettings: Settings = {
     "__pycache__/**",
     "*.log",
     ".DS_Store",
+    ".obsidian", // TODO: support obsidian vault
   ],
   editModeShortcut: "e",
+  notePanelShortcut: "i",
 }
 
 export default function usePersistedSettings() {

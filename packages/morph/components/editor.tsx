@@ -2,8 +2,6 @@
 
 import * as React from "react"
 import axios, { AxiosResponse } from "axios"
-import { drag } from "d3-drag"
-import { select } from "d3-selection"
 import CodeMirror from "@uiw/react-codemirror"
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown"
 import { languages } from "@codemirror/language-data"
@@ -13,8 +11,8 @@ import { Pencil, Eye } from "lucide-react"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { vim, Vim } from "@replit/codemirror-vim"
-import { NoteCard } from "./note-card"
-import { MorphSidebar } from "./explorer"
+import { NoteCard, DraggableNoteCard, Note } from "./note-card"
+import { Explorer } from "./explorer"
 import { Toolbar } from "./toolbar"
 import jsPDF from "jspdf"
 import { SettingsPanel } from "./settings-panel"
@@ -25,14 +23,10 @@ import { setFile, fileField, liveMode, mdToHtml } from "./markdown-inline"
 import toJsx from "@/lib/jsx"
 import type { Root } from "hast"
 import { useTheme } from "next-themes"
-
-
-const NOTE_KEYBOARD_SHORTCUT = "i"
-
-interface Note {
-  title: string
-  content: string
-}
+import useVaults from "@/hooks/use-vaults"
+import { WELCOME_MD } from "@/lib/constants"
+import { FileSystemTreeNode } from "@/hooks/use-file-tree"
+import { useVaultContext } from "@/context/vault-context"
 
 interface Suggestion {
   suggestion: string
@@ -49,111 +43,27 @@ interface AsteraceaResponse {
   suggestions: Suggestion[]
 }
 
-interface DraggableNoteProps extends Note {
-  onDrop: (note: Note, droppedOverEditor: boolean) => void
-  editorRef: React.RefObject<HTMLDivElement | null>
+interface EditorProps {
+  vaultId: string
 }
 
-const initialMarkdown = `Each word was a stone dropped into the deep well of his chest, reverberating with the cold certainty of fate. His heart, once aflutter with the possibility of hope, now lay still, entombed in the icy chambers of reality`
-
-function DraggableNoteCard({ title, content, onDrop, editorRef }: DraggableNoteProps) {
-  const noteRef = React.useRef<HTMLDivElement>(null)
-  const [dragging, setDragging] = React.useState(false)
-  const [position, setPosition] = React.useState({ x: 0, y: 0 })
-  const [fixedWidth, setFixedWidth] = React.useState<number | null>(null)
-  const offsetRef = React.useRef({ x: 0, y: 0 })
-
-  React.useEffect(() => {
-    if (!noteRef.current) return
-
-    setFixedWidth(noteRef.current.offsetWidth)
-
-    const dragBehavior = drag<HTMLDivElement, unknown>()
-      .on("start", (event) => {
-        const rect = noteRef.current!.getBoundingClientRect()
-        offsetRef.current = {
-          x: event.sourceEvent.clientX - rect.left,
-          y: event.sourceEvent.clientY - rect.top,
-        }
-        setPosition({ x: rect.left, y: rect.top })
-        setDragging(true)
-      })
-      .on("drag", (event) => {
-        setPosition({
-          x: event.sourceEvent.clientX - offsetRef.current.x,
-          y: event.sourceEvent.clientY - offsetRef.current.y,
-        })
-      })
-      .on("end", (event) => {
-        setDragging(false)
-        let droppedOverEditor = false
-
-        if (editorRef.current) {
-          const editorRect = editorRef.current.getBoundingClientRect()
-          const finalX = event.sourceEvent.clientX
-          const finalY = event.sourceEvent.clientY
-
-          droppedOverEditor =
-            finalX >= editorRect.left &&
-            finalX <= editorRect.right &&
-            finalY >= editorRect.top &&
-            finalY <= editorRect.bottom
-        }
-
-        onDrop({ title, content }, droppedOverEditor)
-      })
-
-    select(noteRef.current).call(dragBehavior)
-  }, [title, content, onDrop, editorRef])
-
-  return (
-    <>
-      {dragging && (
-        <NoteCard
-          title={title}
-          content={content}
-          style={{
-            width: fixedWidth || "auto",
-            opacity: 0.5,
-            position: "relative",
-          }}
-        />
-      )}
-
-      <NoteCard
-        ref={noteRef}
-        title={title}
-        content={content}
-        style={{
-          cursor: "grab",
-          position: dragging ? "fixed" : "relative",
-          top: dragging ? position.y : undefined,
-          left: dragging ? position.x : undefined,
-          width: fixedWidth || "auto",
-          zIndex: dragging ? 999 : "auto",
-          margin: 0,
-        }}
-      />
-    </>
-  )
-}
-
-export default function Editor() {
+export default function Editor({ vaultId }: EditorProps) {
   const { theme } = useTheme()
-  const [showNotes, setShowNotes] = React.useState(false)
-  const [markdownContent, setMarkdownContent] = React.useState(initialMarkdown)
-  const { settings } = usePersistedSettings()
-  const [notes, setNotes] = React.useState<Note[]>([])
   const editorRef = React.useRef<HTMLDivElement>(null)
   const debounceTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
-  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
-  const [fileSystemPermissionGranted, setFileSystemPermissionGranted] = React.useState(false)
   const [showPopover, setShowPopover] = React.useState(false)
   const [currentFile, setCurrentFile] = React.useState<string>("")
   const [isEditMode, setIsEditMode] = React.useState(true)
   const [previewNode, setPreviewNode] = React.useState<Root | null>(null)
   const [isLoading, setIsLoading] = React.useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
 
+  const { settings } = usePersistedSettings()
+  const { getActiveVault } = useVaultContext()
+  const { updateVaultTree } = useVaults()
+
+  // TODO: support opening recent vaults and switching states
+  const vault = getActiveVault()
 
   const memoizedExtensions = React.useMemo(() => {
     const tabSize = new Compartment()
@@ -176,14 +86,17 @@ export default function Editor() {
     return extensions
   }, [settings.vimMode, settings.tabSize, currentFile])
 
-  const handleChange = React.useCallback((value: string) => {
+  const [markdownContent, setMarkdownContent] = React.useState(WELCOME_MD)
+  const onContentChange = React.useCallback((value: string) => {
     setMarkdownContent(value)
   }, [])
 
+  const [showNotes, setShowNotes] = React.useState(false)
   const toggleNotes = React.useCallback(() => {
     setShowNotes((prev) => !prev)
   }, [])
 
+  const [notes, setNotes] = React.useState<Note[]>([])
   const handleNoteDrop = React.useCallback((note: Note, droppedOverEditor: boolean) => {
     if (droppedOverEditor) {
       setNotes((prevNotes) =>
@@ -192,7 +105,7 @@ export default function Editor() {
     }
   }, [])
 
-  // Function to export Markdown file
+  // FIXME: increase in memory usage
   const handleExportMarkdown = React.useCallback(() => {
     const blob = new Blob([markdownContent], { type: "text/markdown" })
     const url = URL.createObjectURL(blob)
@@ -216,16 +129,16 @@ export default function Editor() {
     pdf.save("document.pdf")
   }, [markdownContent])
 
-  const handlePermissionGranted = React.useCallback(() => {
-    setFileSystemPermissionGranted(true)
-  }, [])
-
-  const fetchNewNotes = async (content: string): Promise<Note[]> => {
+  const fetchNewNotes = async (content: string) => {
     try {
-      const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT
-      if (!apiEndpoint) {
-        throw new Error("NEXT_PUBLIC_API_ENDPOINT environment variable is not set")
-      }
+      const apiEndpoint =
+        process.env.CF_PAGES === "1"
+          ? process.env.API_ENDPOINT
+          : process.env.NEXT_PUBLIC_API_ENDPOINT
+
+      // TODO: should disable or greyed out the notes button
+      if (!apiEndpoint) throw new Error("ENDPOINT cannot be found, notes won't be functional")
+
       return await axios
         .post<AsteraceaResponse, AxiosResponse<AsteraceaResponse>, AsteraceaRequest>(
           `${apiEndpoint}/suggests`,
@@ -242,8 +155,7 @@ export default function Editor() {
           },
         )
         .then((resp) => {
-          const data = resp.data
-          return data.suggestions.map((item, index) => ({
+          return resp.data.suggestions.map((item, index) => ({
             title: `Note ${index + 1}`,
             content: item.suggestion,
           }))
@@ -255,14 +167,10 @@ export default function Editor() {
   }
 
   React.useEffect(() => {
-    if (!showNotes) {
-      return
-    }
-  
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current)
-    }
-  
+    if (!showNotes) return
+
+    if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current)
+
     setIsLoading(true)
     debounceTimeoutRef.current = setTimeout(() => {
       fetchNewNotes(markdownContent).then((newNotes) => {
@@ -270,29 +178,31 @@ export default function Editor() {
         setIsLoading(false)
       })
     }, 1000)
-  
+
     return () => {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current)
-      }
+      if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current)
     }
   }, [showNotes, markdownContent])
 
+  // Check for file permission
+  const [fileSystemPermissionGranted, setFileSystemPermissionGranted] = React.useState(false)
+  const handlePermissionGranted = React.useCallback(() => {
+    setFileSystemPermissionGranted(true)
+  }, [])
   React.useEffect(() => {
     const permissionGranted = localStorage.getItem("fileSystemPermissionGranted")
-    if (permissionGranted === "true") {
-      setFileSystemPermissionGranted(true)
-    }
+    if (permissionGranted === "true") setFileSystemPermissionGranted(true)
   }, [])
 
+  // Keybind events
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === NOTE_KEYBOARD_SHORTCUT && (event.metaKey || event.altKey)) {
+      if (event.key === settings.notePanelShortcut && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
         toggleNotes()
       } else if (event.key === "," && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
-        setIsSettingsOpen(true)
+        setIsSettingsOpen((prev) => !prev)
       } else if (event.key === settings.editModeShortcut && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
         setIsEditMode((prev) => !prev)
@@ -303,20 +213,41 @@ export default function Editor() {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [toggleNotes, settings.editModeShortcut])
 
-  // Update file selection handler
-  const handleFileSelect = React.useCallback((filename: string, content: string) => {
-    setCurrentFile(filename)
-    setMarkdownContent(content)
-    // Dispatch file change to CodeMirror
-    if (editorRef.current) {
-      const view = EditorView.findFromDOM(editorRef.current)
-      if (view) {
-        view.dispatch({
-          effects: setFile.of(filename),
-        })
+  // Update file selection handler to work with vault tree
+  const handleFileSelect = React.useCallback(
+    async (node: FileSystemTreeNode) => {
+      if (!vault || node.kind !== "file" || !(node.handle instanceof FileSystemFileHandle)) return
+
+      try {
+        const file = await node.handle.getFile()
+        const content = await file.text()
+        setCurrentFile(file.name)
+        setMarkdownContent(content)
+
+        // Dispatch file change to CodeMirror
+        if (editorRef.current) {
+          const view = EditorView.findFromDOM(editorRef.current)
+          if (view) {
+            view.dispatch({
+              effects: setFile.of(file.name),
+            })
+          }
+        }
+      } catch (error) {
+        console.error("Error reading file:", error)
       }
-    }
-  }, [])
+    },
+    [vault],
+  )
+
+  // Update tree when files change
+  const handleTreeUpdate = React.useCallback(
+    async (newRoot: FileSystemTreeNode) => {
+      if (!vault?.handle) return
+      await updateVaultTree(vaultId, vault.handle, newRoot)
+    },
+    [vault, vaultId, updateVaultTree],
+  )
 
   React.useEffect(() => {
     const updatePreview = async () => {
@@ -334,8 +265,9 @@ export default function Editor() {
     <div>
       <FileSystemPermissionPrompt onPermissionGranted={handlePermissionGranted} />
       <SidebarProvider defaultOpen={false}>
-        <MorphSidebar
+        <Explorer
           onFileSelect={handleFileSelect}
+          onTreeUpdate={handleTreeUpdate}
           onExportMarkdown={handleExportMarkdown}
           onExportPDF={handleExportPdf}
         />
@@ -360,7 +292,7 @@ export default function Editor() {
                   >
                     <div className="text-sm">
                       <p className="text-muted-foreground mt-1">
-                        File system access is required to use the file explorer.
+                        File system access is required to use FileSystem API.
                       </p>
                     </div>
                   </PopoverContent>
@@ -373,7 +305,7 @@ export default function Editor() {
             <div className="flex-1 relative border">
               <div
                 className={`editor-mode absolute inset-0 ${
-                  isEditMode ? "h-full pointer-events-auto" : "h-0 pointer-events-none"
+                  isEditMode ? "block h-full pointer-events-auto" : "hidden h-0 pointer-events-none"
                 }`}
                 ref={editorRef}
               >
@@ -381,14 +313,14 @@ export default function Editor() {
                   value={markdownContent}
                   height="100%"
                   extensions={memoizedExtensions}
-                  onChange={handleChange}
+                  onChange={onContentChange}
                   className="overflow-auto h-full mx-4 pt-4"
                   theme={theme === "dark" ? "dark" : "light"}
                 />
               </div>
               <div
                 className={`reading-mode absolute inset-0 ${
-                  isEditMode ? "h-0 pointer-events-none" : "h-full pointer-events-auto"
+                  isEditMode ? "hidden h-0 pointer-events-auto" : "block h-full pointer-events-none"
                 }`}
               >
                 <div className="prose dark:prose-invert max-w-none mx-4 pt-4 overflow-auto h-full">

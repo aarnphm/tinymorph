@@ -1,13 +1,14 @@
-"use client"
 import type * as React from "react"
-import { useState } from "react"
-import { ChevronRight, FolderSearch, Loader2, Plus, Download } from "lucide-react"
+import { useState, useEffect } from "react"
+import { ChevronRight, Plus, Download, ChevronDown } from "lucide-react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -26,6 +27,9 @@ import {
 } from "@/components/ui/sidebar"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
 import useFileTree, { UseFileTreeOptions } from "@/hooks/use-file-tree"
+import useVaults, { Vault } from "@/hooks/use-vaults"
+import { useRouter } from "next/navigation"
+import { useVaultContext } from "@/context/vault-context"
 
 interface FileSystemTreeNode {
   name: string
@@ -38,9 +42,10 @@ interface FileSystemTreeNode {
 interface FileTreeNodeProps {
   node: FileSystemTreeNode
   onFileSelect?: (node: FileSystemTreeNode) => void
+  onTreeUpdate?: (root: FileSystemTreeNode) => void
 }
 
-const FileTreeNode: React.FC<FileTreeNodeProps> = ({ node, onFileSelect }) => {
+const FileTreeNode: React.FC<FileTreeNodeProps> = ({ node, onFileSelect, onTreeUpdate }) => {
   const [isOpen, setIsOpen] = useState(node.isOpen ?? false)
 
   const toggleOpen = () => {
@@ -73,7 +78,12 @@ const FileTreeNode: React.FC<FileTreeNodeProps> = ({ node, onFileSelect }) => {
         <CollapsibleContent>
           <SidebarMenuSub>
             {node.children?.map((child, index) => (
-              <FileTreeNode key={index} node={child} onFileSelect={onFileSelect} />
+              <FileTreeNode
+                key={index}
+                node={child}
+                onFileSelect={onFileSelect}
+                onTreeUpdate={onTreeUpdate}
+              />
             ))}
           </SidebarMenuSub>
         </CollapsibleContent>
@@ -82,24 +92,43 @@ const FileTreeNode: React.FC<FileTreeNodeProps> = ({ node, onFileSelect }) => {
   )
 }
 
-interface MorphSidebarProps
-  extends React.ComponentProps<typeof Sidebar>,
-    Omit<UseFileTreeOptions, "ignorePattern"> {
-  onExportMarkdown?: () => void
-  onExportPDF?: () => void
+interface MorphSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  onFileSelect: (node: FileSystemTreeNode) => void
+  onTreeUpdate: (root: FileSystemTreeNode) => void
+  onExportMarkdown: () => void
+  onExportPDF: () => void
 }
 
-export function MorphSidebar({
+export function Explorer({
   onFileSelect,
+  onTreeUpdate,
   onExportMarkdown,
   onExportPDF,
   ...props
 }: MorphSidebarProps) {
+  const router = useRouter()
   const { settings } = usePersistedSettings()
-  const { root, openDirectory, isLoading, handleFileSelect, createNewFile } = useFileTree({
-    ignorePattern: settings.ignorePatterns,
-    onFileSelect,
-  })
+  const { vaults, addVault } = useVaults()
+  const { getActiveVault, setActiveVaultId } = useVaultContext()
+  const activeVault = getActiveVault()
+  console.log(activeVault)
+
+  const handleOpenDirectory = async () => {
+    try {
+      const handle = await window.showDirectoryPicker({ startIn: "documents" })
+      const vault = await addVault(handle)
+      if (vault) {
+        router.push(`/${vault.path}`)
+      }
+    } catch (error) {
+      console.error("Error opening directory:", error)
+    }
+  }
+
+  const handleVaultSelect = (vault: Vault) => {
+    setActiveVaultId(vault.id)
+    router.push(`/${vault.path}`)
+  }
 
   return (
     <Sidebar className="bg-background" {...props}>
@@ -112,35 +141,47 @@ export function MorphSidebar({
                 size="sm"
                 className="h-6 w-6 p-0"
                 title="New File"
-                onClick={createNewFile}
+                disabled={!activeVault}
               >
                 <Plus className="h-3 w-3" width={16} height={16} />
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-6 w-6 p-0"
-                onClick={openDirectory}
-                title="Open Directory"
-              >
-                <FolderSearch className="h-3 w-3" width={16} height={16} />
-              </Button>
             </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-6 gap-1">
+                  <span className="truncate max-w-[100px]">
+                    {activeVault?.name || "Select Vault"}
+                  </span>
+                  <ChevronDown className="h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {Array.from(vaults.entries()).map(([id, vault]) => (
+                  <DropdownMenuItem key={id} onClick={() => handleVaultSelect(vault)}>
+                    {vault.name}
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleOpenDirectory}>Open Vault...</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/">Manage Vaults...</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </SidebarHeader>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {isLoading ? (
-                <div className="p-4 text-sm text-muted-foreground flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Loading directory...
-                </div>
-              ) : root ? (
-                <FileTreeNode node={root} onFileSelect={handleFileSelect} />
+              {activeVault && activeVault.root ? (
+                <FileTreeNode
+                  node={activeVault!.root}
+                  onFileSelect={onFileSelect}
+                  onTreeUpdate={onTreeUpdate}
+                />
               ) : (
                 <div className="p-4 text-sm text-muted-foreground italic">
-                  No directory selected. Click the folder search icon above to choose a directory.
+                  No vault selected. Select a vault from the dropdown above.
                 </div>
               )}
             </SidebarMenu>
@@ -150,7 +191,7 @@ export function MorphSidebar({
       <SidebarFooter className="border-t h-8 p-0">
         <div className="flex items-center justify-between mx-4 h-full">
           <span className="text-sm text-muted-foreground truncate">
-            {root ? root.name : "local"}
+            {activeVault ? activeVault.name : "local"}
           </span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

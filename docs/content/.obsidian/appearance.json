@@ -15,5 +15,6 @@
   ],
   "baseFontSizeAction": false,
   "theme": "moonstone",
-  "nativeMenus": true
+  "nativeMenus": true,
+  "showRibbon": false
 }

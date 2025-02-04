@@ -7,64 +7,64 @@ declare global {
     showDirectoryPicker(options?: any): Promise<FileSystemDirectoryHandle>
   }
   interface FileSystemDirectoryHandle extends FileSystemHandle {
+    id?: string
     values(): AsyncIterableIterator<FileSystemHandle>
   }
 }
 
-interface FileSystemTreeNode {
+export interface FileSystemTreeNode {
   name: string
   kind: "file" | "directory"
   handle: FileSystemHandle
   children?: FileSystemTreeNode[]
-  isLoading?: boolean
   isOpen?: boolean
 }
 
+export type FileSystemTreeNodeSerializable = {
+  name: string
+  kind: "directory" | "file"
+  isOpen?: boolean
+  children?: FileSystemTreeNodeSerializable[]
+}
+
 export interface UseFileTreeOptions {
-  ignorePattern?: string | string[]
+  ignorePatterns?: string[]
   onFileSelect?: (filename: string, content: string) => void
 }
 
-// Much smaller chunk size for better responsiveness
 const CHUNK_SIZE = 5
 const PROCESS_DELAY = 1
-
-// Markdown file patterns
 const MARKDOWN_PATTERNS = ["*.md", "*.mdx"]
 
-export default function useFileTree({ ignorePattern, onFileSelect }: UseFileTreeOptions = {}) {
+export default function useFileTree({ ignorePatterns, onFileSelect }: UseFileTreeOptions = {}) {
+  // NOTE(@aarnphm): We might need to set root as a context variables, given that
+  // for vault we are passing this and mutate this in useVault
   const [root, setRoot] = useState<FileSystemTreeNode | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
 
+  // Open a directory and process the files
   const openDirectory = useCallback(async () => {
     try {
-      setIsLoading(true)
       setRoot(null)
-
-      const dirHandle = await window.showDirectoryPicker({ startIn: "documents" })
+      const handle = await window.showDirectoryPicker()
       const rootNode: FileSystemTreeNode = {
-        name: dirHandle.name,
+        name: handle.name,
         kind: "directory",
-        handle: dirHandle,
+        handle,
         children: [],
-        isLoading: true,
       }
       setRoot(rootNode)
 
       // Only process the root level initially
-      await processDirectoryLevel(dirHandle, ignorePattern, rootNode)
+      await processDirectoryLevel(handle, ignorePatterns, rootNode)
     } catch (error) {
       console.error("Error opening directory:", error)
       setRoot(null)
-    } finally {
-      setIsLoading(false)
     }
-  }, [ignorePattern])
+  }, [ignorePatterns])
 
-  // Process a single directory level
   const processDirectoryLevel = async (
     handle: FileSystemDirectoryHandle,
-    ignorePattern?: string | string[],
+    ignorePatterns?: string[],
     node?: FileSystemTreeNode,
   ) => {
     const currentNode = node || {
@@ -72,12 +72,7 @@ export default function useFileTree({ ignorePattern, onFileSelect }: UseFileTree
       kind: "directory",
       handle: handle,
       children: [],
-      isLoading: true,
     }
-
-    const ignorePatterns = Array.isArray(ignorePattern)
-      ? ignorePattern
-      : [ignorePattern].filter(Boolean)
 
     try {
       const entries: FileSystemHandle[] = []
@@ -86,20 +81,18 @@ export default function useFileTree({ ignorePattern, onFileSelect }: UseFileTree
 
       while (!result.done) {
         const entry = result.value
-        const shouldIgnore = ignorePatterns.some(
+        const shouldIgnore = ignorePatterns?.some(
           (pattern) => pattern && minimatch(entry.name, pattern),
         )
         const isMarkdown =
           entry.kind === "directory" ||
           MARKDOWN_PATTERNS.some((pattern) => minimatch(entry.name, pattern))
 
-        if (!shouldIgnore && isMarkdown) {
-          entries.push(entry)
-        }
+        if (!shouldIgnore && isMarkdown) entries.push(entry)
 
         // Process in very small batches
         if (entries.length === CHUNK_SIZE) {
-          await processEntryBatch(entries, currentNode, ignorePattern)
+          await processEntryBatch(entries, currentNode, ignorePatterns)
           entries.length = 0 // Clear the array
           await new Promise((resolve) => setTimeout(resolve, PROCESS_DELAY))
         }
@@ -109,23 +102,20 @@ export default function useFileTree({ ignorePattern, onFileSelect }: UseFileTree
 
       // Process remaining entries
       if (entries.length > 0) {
-        await processEntryBatch(entries, currentNode, ignorePattern)
+        await processEntryBatch(entries, currentNode, ignorePatterns)
       }
 
-      currentNode.isLoading = false
       updateNode(currentNode)
     } catch (error) {
       console.error("Error processing directory:", error)
-      currentNode.isLoading = false
       updateNode(currentNode)
     }
   }
 
-  // Process a batch of entries
   const processEntryBatch = async (
     entries: FileSystemHandle[],
     parentNode: FileSystemTreeNode,
-    ignorePattern?: string | string[],
+    ignorePatterns?: string[],
   ) => {
     for (const entry of entries) {
       if (entry.kind === "file") {
@@ -140,18 +130,16 @@ export default function useFileTree({ ignorePattern, onFileSelect }: UseFileTree
           kind: "directory",
           handle: entry,
           children: [],
-          isLoading: true,
         }
         parentNode.children?.push(dirNode)
 
         // Schedule directory processing for later
         queueMicrotask(() => {
-          processDirectoryLevel(entry as FileSystemDirectoryHandle, ignorePattern, dirNode)
+          processDirectoryLevel(entry as FileSystemDirectoryHandle, ignorePatterns, dirNode)
         })
       }
     }
 
-    // Sort after each batch
     parentNode.children?.sort((a, b) => {
       if (a.kind === b.kind) return a.name.localeCompare(b.name)
       return a.kind === "directory" ? -1 : 1
@@ -184,19 +172,25 @@ export default function useFileTree({ ignorePattern, onFileSelect }: UseFileTree
   )
 
   // Add new function to create a new file
+  // TODO: Implement this. Should be easy?
   const createNewFile = useCallback(async () => {
     if (!root) return
-
-    // Implementation for creating new file
-    // This is a placeholder - you'll need to implement the actual file creation logic
     console.log("Create new file")
   }, [root])
 
   return {
     root,
     openDirectory,
-    isLoading,
+    processDirectoryLevel,
     handleFileSelect,
     createNewFile,
   }
 }
+
+// Update the serialization format to include full names
+export const serializeNode = (node: FileSystemTreeNode): FileSystemTreeNodeSerializable => ({
+  name: node.name,
+  kind: node.kind,
+  isOpen: node.isOpen,
+  children: node.children?.map(serializeNode),
+})
