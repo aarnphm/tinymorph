@@ -26,6 +26,7 @@ import toJsx from "@/lib/jsx"
 import type { Root } from "hast"
 import { useTheme } from "next-themes"
 
+
 const NOTE_KEYBOARD_SHORTCUT = "i"
 
 interface Note {
@@ -151,6 +152,8 @@ export default function Editor() {
   const [currentFile, setCurrentFile] = React.useState<string>("")
   const [isEditMode, setIsEditMode] = React.useState(true)
   const [previewNode, setPreviewNode] = React.useState<Root | null>(null)
+  const [isLoading, setIsLoading] = React.useState(false)
+
 
   const memoizedExtensions = React.useMemo(() => {
     const tabSize = new Compartment()
@@ -252,23 +255,28 @@ export default function Editor() {
   }
 
   React.useEffect(() => {
+    if (!showNotes) {
+      return
+    }
+  
     if (debounceTimeoutRef.current) {
       clearTimeout(debounceTimeoutRef.current)
     }
+  
+    setIsLoading(true)
     debounceTimeoutRef.current = setTimeout(() => {
       fetchNewNotes(markdownContent).then((newNotes) => {
-        if (newNotes.length > 0) {
-          setNotes(newNotes)
-        }
+        setNotes(newNotes)
+        setIsLoading(false)
       })
     }, 1000)
-
+  
     return () => {
       if (debounceTimeoutRef.current) {
         clearTimeout(debounceTimeoutRef.current)
       }
     }
-  }, [markdownContent])
+  }, [showNotes, markdownContent])
 
   React.useEffect(() => {
     const permissionGranted = localStorage.getItem("fileSystemPermissionGranted")
@@ -391,16 +399,25 @@ export default function Editor() {
             {showNotes && (
               <div className="w-80 overflow-auto border">
                 <div className="p-4">
-                  <div className="grid gap-4">
-                    {notes.map((note, index) => (
-                      <DraggableNoteCard
-                        key={index}
-                        {...note}
-                        editorRef={editorRef}
-                        onDrop={handleNoteDrop}
-                      />
-                    ))}
-                  </div>
+                  {isLoading ? (
+                    <div className="grid gap-4">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <NoteCard key={i} isLoading />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="grid gap-4">
+                      {notes.map((note, index) => (
+                        <DraggableNoteCard
+                          key={index}
+                          title={note.title}
+                          content={note.content}
+                          editorRef={editorRef}
+                          onDrop={handleNoteDrop}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
