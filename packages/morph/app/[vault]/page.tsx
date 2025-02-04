@@ -5,6 +5,8 @@ import Editor from "@/components/editor"
 import { useVaultContext } from "@/context/vault-context"
 import { useRouter } from "next/navigation"
 
+export const runtime = "edge"
+
 export default function VaultPage() {
   const router = useRouter()
   const { activeVaultId, setActiveVaultId } = useVaultContext()
