@@ -179,6 +179,12 @@ The verification of the SRS will follow a systematic approach to ensure complete
    - Identification of potential conflicts or ambiguities
    - Documentation of external feedback and proposed changes
 
+5. **Action Item Tracking**  
+   - Logging action items or required changes as GitHub issues and assigning them to the appropriate team member for resolution  
+   - Maintaining a shared task tracker to list pending and completed action items, ensuring visibility and accountability  
+   - Discussing progress on action items during weekly supervisor meetings and internal reviews, with unresolved items flagged for follow-up  
+   - Updating corresponding sections in project documents upon completion of each action item 
+
 #### 3.3.2 Structured Review Process
 
 1. **Individual Review Phase** (Week 1)
