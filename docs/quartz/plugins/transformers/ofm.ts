@@ -1,6 +1,14 @@
 import { QuartzTransformerPlugin } from "../types"
-import { Root, Html, BlockContent, DefinitionContent, Paragraph, Code } from "mdast"
-import { Element, Literal, Root as HtmlRoot } from "hast"
+import type {
+  Root,
+  Html,
+  BlockContent,
+  DefinitionContent,
+  Paragraph,
+  Code,
+  PhrasingContent,
+} from "mdast"
+import type { Element, Literal, Root as HtmlRoot } from "hast"
 import { ReplaceFunction, findAndReplace as mdastFindReplace } from "mdast-util-find-and-replace"
 import rehypeRaw from "rehype-raw"
 import { SKIP, visit } from "unist-util-visit"
@@ -14,11 +22,9 @@ import checkboxScript from "../../components/scripts/checkbox.inline.ts"
 import { FilePath, pathToRoot, slugTag, slugifyFilePath } from "../../util/path"
 import { toHast } from "mdast-util-to-hast"
 import { toHtml } from "hast-util-to-html"
-import { PhrasingContent } from "mdast-util-find-and-replace/lib"
 import { capitalize } from "../../util/lang"
 import { PluggableList } from "unified"
 import { DEFAULT_MONO, getColor } from "../../util/theme"
-import { headingRank } from "hast-util-heading-rank"
 
 export interface Options {
   comments: boolean
@@ -509,6 +515,59 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
         })
       }
 
+      if (opts.enableAutoCounter) {
+        plugins.push(() => {
+          return (tree: Root, file) => {
+            if (!file.data.frontmatter?.counter) return
+
+            const counters = Array.from([0, 0, 0, 0, 0, 0]) // h1-h6
+            let lastLevel = 1 // Start tracking from h1
+
+            visit(tree, "heading", (node) => {
+              const level = node.depth
+              if (level && level >= 2) {
+                // Only process h2 and below
+                // Reset lower level counters when moving to higher heading
+                if (level > lastLevel) {
+                  // Keep previous level counters, reset subsequent ones
+                  for (let i = lastLevel + 1; i < counters.length; i++) {
+                    counters[i] = 0
+                  }
+                } else if (level < lastLevel) {
+                  // Reset all counters after the current level
+                  for (let i = level + 1; i < counters.length; i++) {
+                    counters[i] = 0
+                  }
+                }
+
+                // Increment counter for current level
+                counters[level]++
+                lastLevel = level
+
+                // Build the counter string (e.g., "1.2.1")
+                const counterParts = []
+                for (let i = 2; i <= level; i++) {
+                  if (counters[i] !== 0) {
+                    counterParts.push(counters[i])
+                  }
+                }
+                const counterStr = counterParts.join(".")
+
+                // Prepend counter to heading text
+                if (node.children[0]?.type === "text") {
+                  node.children[0].value = `${counterStr} ${node.children[0].value}`
+                } else {
+                  node.children.unshift({
+                    type: "text",
+                    value: `${counterStr} `,
+                  })
+                }
+              }
+            })
+          }
+        })
+      }
+
       if (opts.mermaid) {
         plugins.push(() => {
           return (tree: Root, _file) => {
@@ -654,60 +713,6 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
                   disabled: false,
                   checked: isChecked,
                   class: "checkbox-toggle",
-                }
-              }
-            })
-          }
-        })
-      }
-
-      if (opts.enableAutoCounter) {
-        plugins.push(() => {
-          return (tree, file) => {
-            if (!file.data.frontmatter?.counter) return
-
-            const counters = new Array(6).fill(0) // h1-h6
-            let lastLevel = 1 // Start tracking from h1
-
-            visit(tree, "element", (node) => {
-              const level = headingRank(node)
-              if (level) {
-                // Only process h2 and below
-                // Reset lower level counters when moving to higher heading
-                if (level > lastLevel) {
-                  // Keep previous level counters, reset subsequent ones
-                  for (let i = lastLevel + 1; i < counters.length; i++) {
-                    counters[i] = 0
-                  }
-                } else if (level < lastLevel) {
-                  // Reset all counters after the current level
-                  for (let i = level + 1; i < counters.length; i++) {
-                    counters[i] = 0
-                  }
-                }
-
-                // Increment counter for current level
-                counters[level]++
-                lastLevel = level
-
-                // Build the counter string (e.g., "1.2.1")
-                const counterParts = []
-                for (let i = 2; i <= level; i++) {
-                  if (counters[i] !== 0) {
-                    counterParts.push(counters[i])
-                  }
-                }
-                const counterStr = counterParts.join(".")
-
-                // Prepend counter to heading text
-                const firstChild = node.children[0]
-                if (firstChild && firstChild.type === "text") {
-                  firstChild.value = `${counterStr} ${firstChild.value}`
-                } else {
-                  node.children.unshift({
-                    type: "text",
-                    value: `${counterStr} `,
-                  })
                 }
               }
             })
