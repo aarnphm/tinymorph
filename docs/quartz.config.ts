@@ -8,8 +8,8 @@ import * as Plugin from "./quartz/plugins"
  */
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "tinymorph",
-    pageTitleSuffix: " | tinymorph",
+    pageTitle: "morph",
+    pageTitleSuffix: " | documentation",
     enableSPA: true,
     enablePopovers: true,
     analytics: {
