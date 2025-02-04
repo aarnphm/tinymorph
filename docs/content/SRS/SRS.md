@@ -20,7 +20,7 @@ _The following Software Requirements Specification for `tinymorph` is using [Vol
 ### 1.1 Abbreviations and Acronyms
 
 | Acronym   | Definition                                                                                 |
-|:----------|:-------------------------------------------------------------------------------------------|
+| --------- | ------------------------------------------------------------------------------------------|
 | AI        | Artificial Intelligence                                                                    |
 | API       | Application Programming Interface                                                          |
 | BUC       | Business Use Case                                                                          |
@@ -1238,7 +1238,7 @@ Rationale: `tinymorph` will adhere to Hypertext Transfer Protocol (HTTP/1.1) sta
 ## 18. Requirements Traceability Matrix
 
 | Functional Requirement (FR)                                                       | Non-Functional Requirements (NFR)   |
-|:----------------------------------------------------------------------------------|:------------------------------------|
+| -------------------------------------------------------------------------------- | ---------------------------------- |
 | FR-1: Provide suggestions during the planning phase of creative writing.          | LF-S1, UH-EOU1, PR-SLR1             |
 | FR-2: Enable users to manually control text generation (tone, style, creativity). | UH-EOU3, MC-S5, PR-PAR1             |
 | FR-3: Provide a left-to-right feedback panel for text interaction.                | LF-S4, UH-PI1, PR-SLR2              |
