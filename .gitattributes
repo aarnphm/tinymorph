@@ -1,6 +1,8 @@
 * text=auto eol=lf
 docs/content/** linguist-documentation
 docs/ linguist-detectable
+packages/ linguist-detectable
+python/ linguist-detectable
 *.md linguist-detectable=true
 *.md linguist-documentation=false
 *.md linguist-language=Markdown
