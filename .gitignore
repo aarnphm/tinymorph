@@ -169,3 +169,5 @@ target
 node_modules
 .vercel
 *.code-workspace
+docs/public
+docs/quartz/.quartz-cache

@@ -5,6 +5,7 @@ tags:
 author: aarnphm,waleedmalik7,nebrask,lucas-lizhiwei
 date: "2024-09-16"
 title: System Verification and Validation Plan
+counter: true
 ---
 
 ## 1 Introduction
@@ -21,7 +22,7 @@ The V&V activities described in this document cover both the web-based editor (m
 
 ## 2 General Information
 
-### 2.1 Symbols, Abbreviations, and Acronyms
+### Symbols, Abbreviations, and Acronyms
 
 The following data dictionary from [[SRS/SRS]] will be used for the symbols:
 
@@ -37,7 +38,7 @@ Additionally the following abbreviations will be used:
 | SRS     | Software Requirement Specification |
 | CI      | Continuous Integration             |
 
-### 2.2 Purpose
+### Purpose
 
 V&V Plan outlines the testing, validation and verification procedures that are to be implemented
 `tinymorph`.
@@ -46,11 +47,11 @@ V&V Plan outlines the testing, validation and verification procedures that are t
 >
 > Test cases mentioned in this document are subject to change based on the development progress and feedback from the supervisor and peers. The plan will be updated accordingly to ensure that all aspects of the system are thoroughly tested and validated.
 
-### 2.3 Scope
+### Scope
 
 The following entails the scope of the V&V plan for `tinymorph`:
 
-#### 2.3.1 In scope V&V Objectives
+#### In scope V&V Objectives
 
 - Functional verification of the web-based editor (morph), including:
 
@@ -88,7 +89,7 @@ The following entails the scope of the V&V plan for `tinymorph`:
   - File system interactions
   - Feature steering feedback loop
 
-#### 2.3.2 Out of scope V&V Objectives
+#### Out of scope V&V Objectives
 
 - Testing of underlying language models (Gemma 2, Llama 3.1)
 - Validation of third-party libraries and frameworks (React, BentoML, vLLM)
@@ -101,7 +102,7 @@ The following entails the scope of the V&V plan for `tinymorph`:
 
 ![[ProblemStatementAndGoals/ProblemStatement#Challenge Level and Extras]]
 
-### 2.5 Relevant documentation
+### Relevant documentation
 
 See also [[SRS/SRS|Software Requirement Specification]] and [[HazardAnalysis/HazardAnalysis|Hazard Analysis]] documents
 for more information
@@ -110,7 +111,7 @@ for more information
 
 This section provides general information about the plan of testing, including testing team members, milestones and detailed sections of verifications.
 
-### 3.1 Verification and Validation Team
+### Verification and Validation Team
 
 The following project members are responsible for all procedures of the validation process, including writing and executing tests:
 
@@ -132,28 +133,28 @@ The following project members are responsible for all procedures of the validati
 - Verification and validation tasks related to large documents (e.g., the SRS) will be divided among team members based on their expertise. Multiple team members may collaborate on key sections to ensure thorough coverage and efficiency.  
 - Overlapping areas will be coordinated during team meetings to avoid redundancy and ensure clear role allocation.
 
-### 3.2 Milestones
+### Milestones
 
 Following table contains dates relevant to important milestones
 
 | **Testing**                          | **Expected Date of Completion** |
 | ------------------------------------ | ------------------------------- |
-| Look and Feel Testing                |       2025-01-10                |
-| Usability and Humanity Testing       |       2025-01-15                |
-| Performance Testing                  |       2025-01-20                |
-| Security Testing                     |       2025-02-20                |
-| Maintainability and Support Testing  |       2025-02-05                |
-| Compliance Testing                   |       2025-01-20                |
-| Unit Testing                         |       2025-02-05                |
-| Tests for Nonfunctional Requirements |       2025-02-05                |
+| Look and Feel Testing                | 2025-01-10                      |
+| Usability and Humanity Testing       | 2025-01-15                      |
+| Performance Testing                  | 2025-01-20                      |
+| Security Testing                     | 2025-02-20                      |
+| Maintainability and Support Testing  | 2025-02-05                      |
+| Compliance Testing                   | 2025-01-20                      |
+| Unit Testing                         | 2025-02-05                      |
+| Tests for Nonfunctional Requirements | 2025-02-05                      |
 
 _Table 3: Milestones_
 
-### 3.3 SRS Verification Plan
+### SRS Verification Plan
 
 The verification of the SRS will follow a systematic approach to ensure completeness, consistency, and alignment with project goals. This process will occur over a one-month period and involve multiple stakeholders.
 
-#### 3.3.1 Review Approaches
+#### Review Approaches
 
 1. **Supervisor Reviews**
 
@@ -182,7 +183,13 @@ The verification of the SRS will follow a systematic approach to ensure complete
    - Identification of potential conflicts or ambiguities
    - Documentation of external feedback and proposed changes
 
-#### 3.3.2 Structured Review Process
+5. **Action Item Tracking**  
+   - Logging action items or required changes as GitHub issues and assigning them to the appropriate team member for resolution  
+   - Maintaining a shared task tracker to list pending and completed action items, ensuring visibility and accountability  
+   - Discussing progress on action items during weekly supervisor meetings and internal reviews, with unresolved items flagged for follow-up  
+   - Updating corresponding sections in project documents upon completion of each action item 
+
+#### Structured Review Process
 
 1. **Individual Review Phase** (Week 1)
 
@@ -211,7 +218,7 @@ The verification of the SRS will follow a systematic approach to ensure complete
    - Version control and documentation
    - Sign-off on verified requirements
 
-#### 3.3.3 Verification Checklist
+#### Verification Checklist
 
 **Completeness**
 
@@ -255,7 +262,7 @@ The verification of the SRS will follow a systematic approach to ensure complete
 
 The verification process will be coordinated by [Aaron Pham](https://github.com/aarnphm), with specific section ownership assigned to team members based on their areas of expertise. Progress will be tracked through GitHub issues, and final verification results will be documented in the project repository.
 
-### 3.4 Design Verification Plan
+### Design Verification Plan
 
 Design reviews will be conducted with supervisor during the weekly meet-up, performing iterative reviews to cover different parts of the design.
 Each review session will focus on verifying that design choices meet the functionality of performance needs specified in the SRS.
@@ -264,7 +271,7 @@ POC demo session will also be used for design verification. This process will ta
 
 After the SRS review period, design verification will be conducted through iterative reviews with supervisors during weekly meetings. Each review session will focus on verifying that design choices meet the functional and performance requirements specified in the SRS.
 
-#### 3.4.1 Specification Verification
+#### Specification Verification
 
 | Category         | Verification Items                       | Acceptance Criteria                                             | Method                                  |
 | ---------------- | ---------------------------------------- | --------------------------------------------------------------- | --------------------------------------- |
@@ -274,7 +281,7 @@ After the SRS review period, design verification will be conducted through itera
 | Security Design  | Authentication and data protection       | Meets SOC2 requirements; Implements secure communication        | Security design review                  |
 | Deployment       | Infrastructure and scaling strategy      | Supports auto-scaling; Enables zero-downtime updates            | Infrastructure diagram review           |
 
-#### 3.4.2 Functional Verification
+#### Functional Verification
 
 | Component          | Design Aspects                      | Verification Method                      | Success Criteria                           |
 | ------------------ | ----------------------------------- | ---------------------------------------- | ------------------------------------------ |
@@ -284,7 +291,7 @@ After the SRS review period, design verification will be conducted through itera
 | Version Control    | Diff tracking, History management   | Design review, Data structure validation | Reliable version tracking                  |
 | Inference Server   | Request handling, Model integration | API review, Load testing                 | Meets TTFT requirements                    |
 
-#### 3.4.3 Performance Verification
+#### Performance Verification
 
 | Metric            | Target                     | Measurement Method       | Verification Approach                 |
 | ----------------- | -------------------------- | ------------------------ | ------------------------------------- |
@@ -294,7 +301,7 @@ After the SRS review period, design verification will be conducted through itera
 | UI Responsiveness | <50ms input latency        | Input lag measurement    | UI performance testing                |
 | Cache Hit Rate    | >80% for common operations | Cache statistics         | Operation pattern analysis            |
 
-#### 3.4.5 Documentation Validation
+#### Documentation Validation
 
 | Document Type          | Review Focus                  | Validation Method               | Reviewers     |
 | ---------------------- | ----------------------------- | ------------------------------- | ------------- |
@@ -304,7 +311,7 @@ After the SRS review period, design verification will be conducted through itera
 | Deployment Guide       | Accuracy, reproducibility     | Trial deployment                | DevOps team   |
 | Security Documentation | Compliance, comprehensiveness | Security audit                  | Security team |
 
-#### 3.4.6 Review Schedule
+#### Review Schedule
 
 1. **Initial Design Review** (Week 1)
 
@@ -329,7 +336,7 @@ After the SRS review period, design verification will be conducted through itera
    - End-to-end flow
    - System resilience
 
-#### 3.4.7 Validation Tools
+#### Validation Tools
 
 | Category      | Tool          | Purpose             | Usage Phase   |
 | ------------- | ------------- | ------------------- | ------------- |
@@ -339,7 +346,7 @@ After the SRS review period, design verification will be conducted through itera
 | Documentation | Vale          | Style consistency   | Documentation |
 | API Testing   | Postman       | Endpoint validation | Development   |
 
-#### 3.4.8 Design Verification Checklist
+#### Design Verification Checklist
 
 - [ ] Architecture aligns with SRS requirements
 - [ ] Component interfaces are well-defined
@@ -354,19 +361,19 @@ After the SRS review period, design verification will be conducted through itera
 
 This design verification plan will be executed in parallel with the development process, with findings and updates tracked through GitHub issues. Regular reviews will ensure that the implementation stays aligned with the verified design.
 
-### 3.5 Implementation Verification Plan
+### Implementation Verification Plan
 
 In-group code walkthrough inspection is chosen as the main method to complete implementation verification of the project. The coding contents will be reviewed by other team members in exchange asynchronously. Basic grammar error in coding will be caught by linter of each different components. Detailed test cases can be found in system testing.
 
 Final presentation is also expected to be a part of verification of usability, and its feedback will be collected and reflected on the final release.
 
-### 3.6 Automated Testing and Verification Tools
+### Automated Testing and Verification Tools
 
 The following include tools and automated tests that will be used for the verification of the system.
 
 The automated testing strategy for `tinymorph` is divided into two main components: the web-based editor (`morph`) and the ML inference server (`asteraceae`). Each component has specific tooling requirements and testing frameworks to ensure comprehensive coverage.
 
-#### 3.6.1 `morph`
+#### `morph`
 
 | Category        | Tool       | Purpose                      | Configuration                                                                                                                    |
 | --------------- | ---------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
@@ -377,7 +384,7 @@ The automated testing strategy for `tinymorph` is divided into two main componen
 | Static Analysis | ESLint     | Code quality enforcement     | - TypeScript-specific rules<br>- React hooks linting<br>- Import sorting                                                         |
 | Style Checking  | Prettier   | Code formatting              | - 2-space indentation<br>- Single quotes<br>- No semicolons                                                                      |
 
-#### 3.6.2 `asteraceae`
+#### `asteraceae`
 
 | Category        | Tool                         | Purpose                         | Configuration                                                                                   |
 | --------------- | ---------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------- |
@@ -387,7 +394,7 @@ The automated testing strategy for `tinymorph` is divided into two main componen
 | Static Analysis | ruff                         | Code quality checks             | - Type checking<br>- Import sorting<br>- Code complexity limits                                 |
 | Security        | Bandit                       | Security vulnerability scanning | - Known vulnerability checks<br>- Security best practices<br>- Dependency scanning              |
 
-#### 3.6.3 CI Pipeline
+#### CI Pipeline
 
 ```mermaid
 flowchart TD
@@ -400,7 +407,7 @@ flowchart TD
     G --> H[Deploy to Staging]
 ```
 
-#### 3.6.4 Testing Environment Configuration
+#### Testing Environment Configuration
 
 | Environment | Purpose                   | Configuration                                                          | Update Frequency |
 | ----------- | ------------------------- | ---------------------------------------------------------------------- | ---------------- |
@@ -409,7 +416,7 @@ flowchart TD
 | Staging     | Pre-production validation | - Production-like setup<br>- Full monitoring<br>- Load testing enabled | Daily            |
 | Production  | Live deployment           | - High availability<br>- Full security<br>- Performance monitoring     | Weekly           |
 
-#### 3.6.5 Automated Testing Requirements
+#### Automated Testing Requirements
 
 1. **Code Coverage Requirements**
 
@@ -451,7 +458,7 @@ flowchart TD
      - build verification
    ```
 
-#### 3.6.6 Quality Gates
+#### Quality Gates
 
 | Stage        | Criteria                                                                   | Action on Failure |
 | ------------ | -------------------------------------------------------------------------- | ----------------- |
@@ -459,7 +466,7 @@ flowchart TD
 | Integration  | - E2E tests pass<br>- Performance metrics met<br>- API contract tests pass | Notify team       |
 | Deployment   | - Smoke tests pass<br>- No regression<br>- Security scan clean             | Rollback          |
 
-#### 3.6.7 Monitoring and Reporting
+#### Monitoring and Reporting
 
 | Metric Type  | Tools          | Frequency  | Alert Threshold          |
 | ------------ | -------------- | ---------- | ------------------------ |
@@ -468,11 +475,11 @@ flowchart TD
 | Performance  | Grafana        | Real-time  | TTFT > 500ms             |
 | Security     | Snyk           | Daily      | Critical vulnerabilities |
 
-### 3.7 Software Validation Plan
+### Software Validation Plan
 
 The software validation process ensures that `tinymorph` meets user requirements and functions effectively in its intended environment. This plan outlines the systematic approach to validating the system through user testing, performance analysis, and functionality verification.
 
-#### 3.7.1 Validation Approach
+#### Validation Approach
 
 | Phase             | Focus Area            | Methods                                | Success Criteria               |
 | ----------------- | --------------------- | -------------------------------------- | ------------------------------ |
@@ -481,7 +488,7 @@ The software validation process ensures that `tinymorph` meets user requirements
 | Release Candidate | Production readiness  | Full system validation                 | All validation criteria met    |
 | Post-Release      | Production monitoring | User feedback, Performance metrics     | Continuous improvement metrics |
 
-#### 3.7.2 User Validation Groups
+#### User Validation Groups
 
 | Group             | Description                       | Size         | Duration               | Focus Areas                               |
 | ----------------- | --------------------------------- | ------------ | ---------------------- | ----------------------------------------- |
@@ -490,7 +497,7 @@ The software validation process ensures that `tinymorph` meets user requirements
 | Usability Testers | UX researchers and target users   | 10-12 people | 2 weeks                | Interface design, Accessibility           |
 | Production Pilots | Early adopters                    | 30-50 people | 6 weeks                | Real-world usage, Performance             |
 
-#### 3.7.3 Validation Scenarios
+#### Validation Scenarios
 
 | Category            | Scenario                                      | Success Criteria                                                                          | Validation Method                     |
 | ------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------- |
@@ -499,7 +506,7 @@ The software validation process ensures that `tinymorph` meets user requirements
 | Document Management | Create and manage multiple writing projects   | - Reliable file operations<br>- Effective organization<br>- Version control accuracy      | User workflow analysis                |
 | Collaborative Use   | Multiple users working on shared documents    | - Consistent performance<br>- Feature accessibility<br>- Clear user permissions           | Multi-user testing                    |
 
-#### 3.7.4 Validation Metrics
+#### Validation Metrics
 
 | Metric Category    | Key Indicators                                                                        | Target Values                                                    | Collection Method        |
 | ------------------ | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------ |
@@ -508,7 +515,7 @@ The software validation process ensures that `tinymorph` meets user requirements
 | Feature Adoption   | - Feature usage rates<br>- Return user rate<br>- Session duration                     | - >70% feature usage<br>- >60% return rate<br>- >15 min sessions | Analytics tracking       |
 | Writing Efficiency | - Time to complete drafts<br>- Suggestion acceptance rate<br>- Planning feature usage | - 20% time reduction<br>- >50% acceptance<br>- >30% usage        | User metrics, Surveys    |
 
-#### 3.7.5 Validation Process
+#### Validation Process
 
 1. **Pre-validation Setup**
 
@@ -537,7 +544,7 @@ The software validation process ensures that `tinymorph` meets user requirements
    - Issue categorization
    - Improvement recommendations
 
-#### 3.7.6 Validation Schedule
+#### Validation Schedule
 
 | Stage            | Timeline   | Activities                                                                         | Deliverables             |
 | ---------------- | ---------- | ---------------------------------------------------------------------------------- | ------------------------ |
@@ -546,7 +553,7 @@ The software validation process ensures that `tinymorph` meets user requirements
 | Beta Testing     | Week 7-10  | - User group testing<br>- Feature refinement<br>- Performance optimization         | Beta test report         |
 | Final Validation | Week 11-12 | - Full system validation<br>- Documentation review<br>- Release preparation        | Final validation report  |
 
-#### 3.7.7 Acceptance Criteria
+#### Acceptance Criteria
 
 | Component         | Criteria                                                                                        | Validation Method                      |
 | ----------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------- |
@@ -556,7 +563,7 @@ The software validation process ensures that `tinymorph` meets user requirements
 | Performance       | - Response time targets<br>- System stability<br>- Resource utilization                         | Automated monitoring, Load testing     |
 | Security          | - Data privacy<br>- Access control<br>- Secure communication                                    | Security audit, Penetration testing    |
 
-#### 3.7.8 Issue Management
+#### Issue Management
 
 | Priority | Response Time | Resolution Time | Escalation Path                    |
 | -------- | ------------- | --------------- | ---------------------------------- |
@@ -572,15 +579,15 @@ This validation plan ensures that `tinymorph` meets its intended purpose of prov
 This section outlines tests for verifying both functional and non-functional requirements of the software, ensuring it
 meets user expectations and perform reliably.
 
-### 4.1 Tests for Functional Requirements
+### Tests for Functional Requirements
 
 This section outlines test cases for verifying the core functional requirements of tinymorph as specified in the SRS. The tests are organized by major feature areas, with each test designed to validate specific user interactions and system behaviors.
 
-#### 4.1.1 Planning and Suggestion Features
+#### Planning and Suggestion Features
 
 These tests verify requirements FR-1 through FR-3, which specify the system's capability to provide writing assistance through planning suggestions and model-guided steering.
 
-##### 4.1.1.1 Planning Suggestion Validation
+##### Planning Suggestion Validation
 
 1. **Test-FR-P1**
 
@@ -609,11 +616,11 @@ These tests verify requirements FR-1 through FR-3, which specify the system's ca
    - Test Case Derivation: Based on FR-1's requirement for handling varied input lengths
    - How test will be performed: Paste large text block and verify system provides appropriate response.
 
-#### 4.1.2 Text Generation Features
+#### Text Generation Features
 
 These tests verify requirements FR-4 through FR-7, focusing on the system's text generation and style adaptation capabilities.
 
-##### 4.1.2.1 Steering Validation
+##### Steering Validation
 
 1. **Test-FR-S1**
 
@@ -633,11 +640,11 @@ These tests verify requirements FR-4 through FR-7, focusing on the system's text
    - Test Case Derivation: Derived from FR-2's requirement for personalization
    - How test will be performed: Upload writing sample, measure adaptation time.
 
-#### 4.1.3 User Interaction Features
+#### User Interaction Features
 
 These tests verify requirements FR-8 through FR-10, covering the system's user interaction capabilities including feedback panels and preference management.
 
-##### 4.1.3.1 LTR Feedback Panel Validation
+##### LTR Feedback Panel Validation
 
 1. **Test-FR-F1**
 
@@ -648,7 +655,7 @@ These tests verify requirements FR-8 through FR-10, covering the system's user i
    - Test Case Derivation: Based on FR-3's requirement for real-time feedback integration
    - How test will be performed: Generate suggestions, provide feedback, verify real-time updates and clarity.
 
-##### 4.1.3.2 User Preferences Validation
+##### User Preferences Validation
 
 1. **Test-FR-TG1**
 
@@ -659,11 +666,11 @@ These tests verify requirements FR-8 through FR-10, covering the system's user i
    - Test Case Derivation: Derived from FR-4's requirement for persistent preference application
    - How test will be performed: Set preferences, generate multiple outputs, verify consistency.
 
-#### 4.1.4 Profile Management Features
+#### Profile Management Features
 
 These tests verify requirements FR-5 and FR-11, focusing on user profile management and configuration persistence.
 
-##### 4.1.4.1 Profile Configuration Validation
+##### Profile Configuration Validation
 
 1. **Test-FR-UP1**
 
@@ -683,11 +690,11 @@ These tests verify requirements FR-5 and FR-11, focusing on user profile managem
    - Test Case Derivation: Derived from FR-5's requirement for multiple profile support
    - How test will be performed: Create second profile, verify both profiles maintain settings.
 
-#### 4.1.5 Document Management Features
+#### Document Management Features
 
 These tests verify requirements FR-6 and FR-8, covering document navigation and version control capabilities.
 
-##### 4.1.5.1 Revision Management Validation
+##### Revision Management Validation
 
 1. **Test-FR-RM1**
 
@@ -698,7 +705,7 @@ These tests verify requirements FR-6 and FR-8, covering document navigation and 
    - Test Case Derivation: Based on FR-6's requirement for non-linear navigation
    - How test will be performed: Enable tree view, verify section visualization.
 
-##### 4.1.5.2 Version Control Validation
+##### Version Control Validation
 
 1. **Test-FR-VC1**
 
@@ -718,11 +725,11 @@ These tests verify requirements FR-6 and FR-8, covering document navigation and 
    - Test Case Derivation: Based on FR-8's requirement for version restoration
    - How test will be performed: Select revert option, verify state change.
 
-#### 4.1.6 Progress Tracking Features
+#### Progress Tracking Features
 
 These tests verify requirements FR-11 and FR-12, focusing on writing goals and progress monitoring.
 
-##### 4.1.6.1 Writing Goals Validation
+##### Writing Goals Validation
 
 1. **Test-FR-PT1**
 
@@ -742,11 +749,11 @@ These tests verify requirements FR-11 and FR-12, focusing on writing goals and p
    - Test Case Derivation: Based on FR-11's requirement for style consistency
    - How test will be performed: Write with varying tones, verify alerts.
 
-#### 4.1.7 Document Export Features
+#### Document Export Features
 
 These tests verify requirement FR-13, covering document export capabilities.
 
-##### 4.1.7.1 Export Functionality Validation
+##### Export Functionality Validation
 
 1. **Test-FR-E1**
 
@@ -766,11 +773,11 @@ These tests verify requirement FR-13, covering document export capabilities.
    - Test Case Derivation: Based on FR-13's requirement for plain text export
    - How test will be performed: Export document, verify content preservation.
 
-#### 4.1.8 Interface Customization Features
+#### Interface Customization Features
 
 These tests verify requirement FR-14, covering visual theme customization.
 
-##### 4.1.8.1 Theme Customization Validation
+##### Theme Customization Validation
 
 1. **Test-FR-VT1**
 
@@ -781,11 +788,11 @@ These tests verify requirement FR-14, covering visual theme customization.
    - Test Case Derivation: Based on FR-14's requirement for theme switching
    - How test will be performed: Switch theme, verify visual consistency.
 
-### 4.2 Tests for Nonfunctional Requirements
+### Tests for Nonfunctional Requirements
 
-### 4.2.1 Look and Feel
+### Look and Feel
 
-#### 4.2.1.1 Verify Unified, Non-Intrusive, and Uncluttered Visual Design
+#### Verify Unified, Non-Intrusive, and Uncluttered Visual Design
 
 **Test-LF-A1**
 
@@ -803,7 +810,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Verification that standardized typography and color palettes are consistently applied.
 - **How test will be performed**: Conduct a UI audit using design system documentation and automated tools like style linting software. Manually verify font sizes, styles, and color codes across screens to ensure adherence to design standards.
 
-#### 4.2.1.2 Validate Minimalist Design with Monotonic Color Palette
+#### Validate Minimalist Design with Monotonic Color Palette
 
 **Test-LF-S1**
 
@@ -813,7 +820,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Confirmation that the design is minimalist and utilizes a monotonic color palette.
 - **How test will be performed**: Evaluate the design using minimalist design principles. Verify color palette consistency. Gather user feedback through surveys ([[VnVPlan/VnVPlan#Usability Survey Questions]]).
 
-#### 4.2.1.3 Test Responsiveness Across Devices and Orientations
+#### Test Responsiveness Across Devices and Orientations
 
 **Test-LF-S2**
 
@@ -823,7 +830,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: The application adapts seamlessly, maintaining functionality and visual integrity.
 - **How test will be performed**: Test across devices using physical and emulated environments. Verify UI elements adjust appropriately without issues. Document layout or usability problems.
 
-#### 4.2.1.4 Verify Contrast of Interactive Elements
+#### Verify Contrast of Interactive Elements
 
 **Test-LF-S3**
 
@@ -833,7 +840,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: All interactive elements have sufficient contrast to ensure visibility.
 - **How test will be performed**: Use color contrast analyzer tools such as WCAG Contrast Checker. Inspect manually under various lighting conditions to ensure visibility.
 
-#### 4.2.1.5 Assess Smooth Transitions and Animations
+#### Assess Smooth Transitions and Animations
 
 **Test-LF-S4**
 
@@ -843,7 +850,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Transitions are smooth, and animations are intuitive without confusion.
 - **How test will be performed**: Observe transitions and evaluate their performance on different devices. Collect user feedback during usability sessions.
 
-#### 4.2.1.6 Verify Visual Feedback for User Interactions
+#### Verify Visual Feedback for User Interactions
 
 **Test-LF-S5**
 
@@ -853,9 +860,9 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Immediate visual feedback is provided for all user interactions.
 - **How test will be performed**: Verify each interactive element provides feedback like hover effects or click animations. Gather user feedback during usability testing.
 
-### 4.2.2 Usability and Humanity
+### Usability and Humanity
 
-#### 4.2.2.1 Evaluate Session History Feature
+#### Evaluate Session History Feature
 
 **Test-UH-EOU1**
 
@@ -865,7 +872,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: The session history accurately records and displays recent activities.
 - **How test will be performed**: Execute predefined editing tasks and access the session history to verify recorded entries. Collect user feedback on the ease of use and usefulness of the feature through observations and surveys ([[VnVPlan/VnVPlan#Usability Survey Questions]]).
 
-#### 4.2.2.2 Test Interactive Review and Manual Acceptance of Suggestions
+#### Test Interactive Review and Manual Acceptance of Suggestions
 
 **Test-UH-EOU2**
 
@@ -875,7 +882,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Users can interactively review and accept or reject suggestions.
 - **How test will be performed**: Generate suggestions by editing a document and verify their appearance. Test the functionality to accept or reject suggestions. Collect user feedback on managing and interacting with suggestions ([[VnVPlan/VnVPlan#Usability Survey Questions]]).
 
-#### 4.2.2.3 Assess the Planning Interface
+#### Assess the Planning Interface
 
 **Test-UH-EOU3**
 
@@ -885,7 +892,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Users can effectively organize and debug their writing using the interface.
 - **How test will be performed**: Provide users with a writing task that requires planning. Observe their navigation and utilization of features. Collect feedback on effectiveness and usability through surveys and interviews ([[VnVPlan/VnVPlan#Usability Survey Questions]]).
 
-#### 4.2.2.4 Verify Multilingual Support
+#### Verify Multilingual Support
 
 **Test-UH-PI1**
 
@@ -895,7 +902,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: The interface displays correctly in all supported languages.
 - **How test will be performed**: Switch application language to each supported language. Verify UI elements, messages, and prompts for accurate translation. Involve native speakers for linguistic accuracy and cultural appropriateness.
 
-#### 4.2.2.5 Test Theme Customization Options
+#### Test Theme Customization Options
 
 **Test-UH-PI2**
 
@@ -905,7 +912,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: The application correctly applies the selected theme without visual issues.
 - **How test will be performed**: Manually change themes within the application and system settings. Verify visibility and legibility of UI elements in both modes. Collect user preferences and satisfaction through surveys.
 
-#### 4.2.2.6 Measure Onboarding Time for New Users
+#### Measure Onboarding Time for New Users
 
 **Test-UH-L1**
 
@@ -915,7 +922,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Users begin creating or editing content within 10 minutes.
 - **How test will be performed**: Recruit participants unfamiliar with `tinymorph`. Time their process from start to content creation. Note obstacles and gather onboarding feedback.
 
-#### 4.2.2.7 Evaluate Clarity of Language in UI
+#### Evaluate Clarity of Language in UI
 
 **Test-UH-UP1**
 
@@ -925,7 +932,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Confirmation that language is clear, concise, and easily understood.
 - **How test will be performed**: Use readability assessment tools like Flesch-Kincaid Grade Level. Collect user feedback on unclear instructions or messages through usability tests.
 
-#### 4.2.2.8 Test Text Resizing Functionality
+#### Test Text Resizing Functionality
 
 **Test-UH-A1**
 
@@ -935,7 +942,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Text resizes appropriately without loss of content or functionality.
 - **How test will be performed**: Adjust text sizes using browser zoom and application settings. Verify content visibility at different magnification levels. Test compatibility with assistive tools for visual impairments.
 
-#### 4.2.2.9 Verify Keyboard Navigation Accessibility
+#### Verify Keyboard Navigation Accessibility
 
 **Test-UH-A2**
 
@@ -945,7 +952,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: All UI components are accessible via keyboard.
 - **How test will be performed**: Navigate through the application using the "Tab" key. Verify focus indicators and functionality of interactive elements. Perform common tasks without using a mouse to ensure accessibility.
 
-#### 4.2.2.10 Implement and Test ARIA Attributes
+#### Implement and Test ARIA Attributes
 
 **Test-UH-A3**
 
@@ -955,9 +962,9 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: All functionalities are conveyed and usable through assistive technologies.
 - **How test will be performed**: A code review will be conducted to ensure correct implementation of ARIA roles, states, and properties. Screen readers like NVDA and JAWS will be used to navigate the application, verifying that all interactive elements are announced properly and that users can access all functionalities. Feedback from users who rely on assistive technologies will be collected to identify any accessibility issues and make necessary improvements.
 
-### 4.2.3 Performance
+### Performance
 
-#### 4.2.3.1 Measure [[glossary#time-to-first-tokens|Time to First Tokens]] (TTFT)
+#### Measure [[glossary#time-to-first-tokens|Time to First Tokens]] (TTFT)
 
 **Test-PR-SLR1**
 
@@ -967,7 +974,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: TTFT should meet a 95th percentile threshold below 500ms.
 - **How test will be performed**: Performance testing tools will be used to automatically simulate user requests for suggestions and planning features. The time from request submission to the receipt of the first token will be recorded. Tests will be conducted under various network conditions, including different latencies, to assess performance across typical user scenarios. The results will be compiled into a report detailing average TTFT, the 95th percentile, and any deviations to ensure the application’s responsiveness meets the specified flexible requirements.
 
-#### 4.2.3.2 Evaluate Throughput of Inference Server
+#### Evaluate Throughput of Inference Server
 
 **Test-PR-SLR2**
 
@@ -977,7 +984,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Achieve approximately 300 tokens/sec throughput.
 - **How test will be performed**: Load testing tools will automatically send concurrent batched requests to the inference server. The number of tokens processed per second will be measured over multiple test runs. Server resource utilization including CPU, GPU, and memory will be analyzed to identify any bottlenecks. If the throughput is below the desired level, optimizations will be recommended to enhance performance.
 
-#### 4.2.3.3 Validate Non-Harmful Suggestions
+#### Validate Non-Harmful Suggestions
 
 **Test-PR-SCR1**
 
@@ -987,7 +994,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Suggestions are appropriate and free of harmful language.
 - **How test will be performed**: An automated test suite containing inputs that may trigger offensive or inappropriate content will be created. Suggestions generated from these inputs will be automatically scanned using content moderation tools to detect harmful language. Any instances of inappropriate content will be flagged, and adjustments to the SAEs and content filtering mechanisms will be made to prevent future occurrences.
 
-#### 4.2.3.4 Ensure Interface Contains Only Safe Content
+#### Ensure Interface Contains Only Safe Content
 
 **Test-PR-SCR2**
 
@@ -997,7 +1004,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Confirmation that there is no NSFW or harmful content.
 - **How test will be performed**: Automated image analysis tools will be used to scan all graphical assets for inappropriate content. Licenses and sources of third-party assets will be verified automatically where possible. Any content detected as unsuitable will be reviewed manually for confirmation and then replaced or removed to maintain a safe user environment.
 
-#### 4.2.3.5 Test Accuracy of Generated Text Matching User Steering
+#### Test Accuracy of Generated Text Matching User Steering
 
 **Test-PR-PAR1**
 
@@ -1007,7 +1014,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Generated text aligns with user inputs and feedback.
 - **How test will be performed**: Specific steering parameters will be defined, and automated scripts will generate text outputs based on these inputs. Analytical metrics like cosine similarity and stylistic analysis tools will be used to quantitatively assess the alignment between the generated text and the steering inputs. Results will be compiled to evaluate the system's responsiveness and adjustments will be made to improve accuracy where necessary.
 
-#### 4.2.3.6 Verify Notification on Inflight Request Failures
+#### Verify Notification on Inflight Request Failures
 
 **Test-PR-RFR1**
 
@@ -1017,7 +1024,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Users receive a notification toast informing them of the failure.
 - **How test will be performed**: Automated testing tools will simulate network disruptions and monitor the application's response. The appearance of the notification toast will be verified automatically, and the content of the message will be checked for clarity and actionability. The ability of users to resubmit requests or revert steps will be tested to ensure proper error handling.
 
-#### 4.2.3.7 Test Deployment Strategy for Fault Tolerance
+#### Test Deployment Strategy for Fault Tolerance
 
 **Test-PR-RFR2**
 
@@ -1027,7 +1034,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Deployment is recreated automatically, maintaining availability.
 - **How test will be performed**: Automated scripts will intentionally fail pods or nodes within the Kubernetes cluster. Monitoring tools will automatically track the system's response and recovery time, verifying that deployments are recreated as with the fault tolerance strategy. Application availability will be checked continuously to ensure minimal impact on users.
 
-#### 4.2.3.8 Assess Asynchronous Processing of Suggestions
+#### Assess Asynchronous Processing of Suggestions
 
 **Test-PR-CR1**
 
@@ -1037,7 +1044,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Requests are processed without significant delay or errors.
 - **How test will be performed**: Automated performance testing tools will simulate multiple users submitting requests concurrently. The system's queue management and processing times will be monitored automatically to assess its ability to handle asynchronous processing. Any request drops or errors will be logged for analysis and remediation.
 
-#### 4.2.3.9 Verify Input Responsiveness
+#### Verify Input Responsiveness
 
 **Test-PR-CR2**
 
@@ -1047,7 +1054,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: No noticeable delays or lag in input response.
 - **How test will be performed**: Automated scripts will perform rapid text entry and editing operations while performance profiling tools measure input latency. Tests will be run on various hardware configurations and browsers automatically. If latency exceeds acceptable thresholds, code optimizations will be implemented to enhance responsiveness.
 
-#### 4.2.3.10 Test Inference Server Autoscaling
+#### Test Inference Server Autoscaling
 
 **Test-PR-SER1**
 
@@ -1057,7 +1064,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Server scales up during high traffic and scales down to zero during low traffic.
 - **How test will be performed**: Automated load testing tools will apply varying levels of requests to the inference server. Monitoring systems will automatically track server instances and resource utilization to observe scaling actions. Verification will be made to ensure that scaling occurs according to the configured thresholds without impacting performance.
 
-#### 4.2.3.11 Evaluate Integration with Different Model Architectures
+#### Evaluate Integration with Different Model Architectures
 
 **Test-PR-LR1**
 
@@ -1067,7 +1074,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Application functions correctly with different models.
 - **How test will be performed**: Automated integration scripts will replace the existing language model with alternative models like Llama 3 and Gemma 2. The full suite of regression tests will be run automatically to ensure that all features operate as expected. Compatibility issues will be identified and addressed, with documentation updated accordingly.
 
-#### 4.2.3.12 Test Packaging for Different Operating Systems
+#### Test Packaging for Different Operating Systems
 
 **Test-PR-LR2**
 
@@ -1077,9 +1084,9 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Application installs and runs without errors on all supported platforms.
 - **How test will be performed**: Automated build and deployment tools will prepare installation packages for each operating system. Installation and execution tests will be run automatically on virtual machines or containers representing Windows, macOS, and Linux environments. Any OS-specific issues will be logged and resolved to ensure cross-platform compatibility.
 
-### 4.2.4 Security
+### Security
 
-#### 4.2.4.1 Ensure HTTPS Encryption for All Communications
+#### Ensure HTTPS Encryption for All Communications
 
 **Test-SR-INT1**
 
@@ -1089,7 +1096,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: All data transmissions are encrypted using HTTPS.
 - **How test will be performed**: Automated security testing tools will monitor network traffic to verify that all communications use HTTPS. Attempts to access the application via unsecured HTTP will be scripted to ensure automatic redirection to HTTPS. The validity and configuration of SSL certificates will be checked automatically. Any mixed content warnings detected by browsers will be addressed promptly.
 
-#### 4.2.4.2 Implement DNS Security Measures
+#### Implement DNS Security Measures
 
 **Test-SR-INT2**
 
@@ -1099,7 +1106,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: DNS queries and responses are secure from tampering and spoofing.
 - **How test will be performed**: Automated DNSSEC testing tools will verify the implementation of DNS security measures. Simulated DNS spoofing attacks will be conducted automatically to test system resilience. Any vulnerabilities detected will be logged and remediated to protect against DNS-based attacks.
 
-#### 4.2.4.3 Validate Content Security Policies (CSP)
+#### Validate Content Security Policies (CSP)
 
 **Test-SR-INT3**
 
@@ -1109,7 +1116,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: CSP effectively prevents XSS attacks.
 - **How test will be performed**: Automated security testing tools will attempt to inject malicious scripts into the application. The effectiveness of CSP in blocking these scripts will be verified automatically. CSP headers will be analyzed to ensure they are correctly configured. Any violations or weaknesses will be addressed to enhance security.
 
-#### 4.2.4.4 Test Session Security with JWT and Short-Lived Tokens
+#### Test Session Security with JWT and Short-Lived Tokens
 
 **Test-SR-INT4**
 
@@ -1119,7 +1126,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Sessions are secure. Tokens will not be misused or intercepted.
 - **How test will be performed**: Automated scripts will inspect tokens to ensure proper signing and encryption. Attempts to reuse expired tokens or tamper with token data will be conducted automatically to test the system's defenses. Session expiration and re-authentication processes will be verified. Secure storage of tokens on the client side will be validated.
 
-#### 4.2.4.5 Verify Privacy Compliance
+#### Verify Privacy Compliance
 
 **Test-SR-P1**
 
@@ -1129,9 +1136,9 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Confirmation that no personal information is collected or stored.
 - **How test will be performed**: Automated code analysis tools will scan the codebase to identify any components that collect, process, or store personal data. Network traffic will be monitored during simulated user interactions to ensure no personal information is transmitted. Storage mechanisms like databases, local storage, and cookies will be inspected to verify they do not retain personal data. All findings will be documented, and any issues will be resolved to ensure compliance with privacy policies.
 
-### 4.2.5 Maintainability and Support
+### Maintainability and Support
 
-#### 4.2.5.1 Schedule and Verify Security Updates
+#### Schedule and Verify Security Updates
 
 **Test-OER-MR1**
 
@@ -1141,7 +1148,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Regular updates are performed. No outstanding vulnerabilities.
 - **How test will be performed**: Automated tools will check adherence to the update schedule by reviewing logs and schedules. Dependency checking tools like npm audit will be run automatically to identify any vulnerabilities. Continuous integration pipelines will ensure that updates do not introduce new issues. Documentation of updates and patches will be maintained automatically.
 
-#### 4.2.5.2 Ensure Feature Integrations Pass Existing Tests
+#### Ensure Feature Integrations Pass Existing Tests
 
 **Test-OER-MR2**
 
@@ -1151,7 +1158,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: All existing tests pass. No regression issues are introduced.
 - **How test will be performed**: After integrating new features, the full suite of automated tests will be run to detect any regression issues. Test coverage reports will be generated automatically to ensure new features are adequately tested. Any test failures will be addressed before deployment to maintain application stability.
 
-#### 4.2.5.3 Implement User Feedback Loop
+#### Implement User Feedback Loop
 
 **Test-OER-SR1**
 
@@ -1161,9 +1168,9 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Feedback is successfully recorded and retrievable by the development team.
 - **How test will be performed**: Automated tests will simulate feedback submission and verify that the data is stored securely and is accessible for review. Notifications or acknowledgments will be checked automatically. Compliance with privacy requirements will be validated to protect user information.
 
-### 4.2.6 Compliance
+### Compliance
 
-#### 4.2.6.1 Verify Compliance with Canadian Copyright Law
+#### Verify Compliance with Canadian Copyright Law
 
 **Test-CompR-LR1**
 
@@ -1173,7 +1180,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: No generated content violates Canadian copyright laws.
 - **How test will be performed**: Automated plagiarism detection tools like Copyscape will be used to compare the generated content against existing works to detect potential infringements under Canadian copyright law. For example, we'll generate content and check if it unintentionally reproduces passages from popular novels like "The Great Gatsby" by F. Scott Fitzgerald. Content generation filters will be implemented to prevent the reproduction of such copyrighted material. All findings will be documented, and the system will be adjusted to ensure that all generated content is original and fully compliant with Canadian copyright laws.
 
-#### 4.2.6.2 Ensure SOC 2 Compliance
+#### Ensure SOC 2 Compliance
 
 **Test-CompR-LR2**
 
@@ -1183,7 +1190,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Successful SOC 2 attestation for the inference server.
 - **How test will be performed**: All security controls will be reviewed against SOC 2 criteria. Evidence of compliance, such as access logs and security policies will be collected. Any gaps identified during internal reviews will be addressed promptly. The formal audit process will be conducted by an external auditor to obtain SOC 2 certification, ensuring that the inference server meets industry security standards.
 
-#### 4.2.6.3 Obtain User Permission for Inference on Content
+#### Obtain User Permission for Inference on Content
 
 **Test-CompR-LR3**
 
@@ -1193,7 +1200,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Users provide explicit permission before content is used for inference.
 - **How test will be performed**: Automated tests will verify that a consent prompt appears upon initial use of the application, requiring users to accept the terms before proceeding. The process will be tested to ensure users cannot bypass consent. Consent records will be checked automatically to confirm they are stored securely and in compliance with privacy regulations.
 
-#### 4.2.6.4 Verify Adherence to HTTP/1.1 Protocol Standards
+#### Verify Adherence to HTTP/1.1 Protocol Standards
 
 **Test-CompR-SCR1**
 
@@ -1203,7 +1210,7 @@ These tests verify requirement FR-14, covering visual theme customization.
 - **Output/Result**: Confirmation that all client-server communications strictly adhere to HTTP/1.1 standards as defined in RFC 2616, including correct usage of HTTP methods, status codes, headers, message formats, and persistent connections.
 - **How test will be performed**: Using network protocol analyzers like Wireshark, HTTP requests and responses between the client and server will be captured and inspected during typical application usage. The application will be verified to correctly implement HTTP methods (GET, POST, etc.). It will also be checked to ensure that appropriate status codes are returned (e.g., 200 OK, 404 Not Found) and that headers such as Host, Content-Type, and Connection are properly formatted. The HTTP/1.1 protocol version must be used in all communications, and persistent connections should be supported with the connection "keep-alive" header. Any deviations from the HTTP/1.1 standards will be documented, followed by necessary corrections. After remediation, re-testing will be conducted to confirm full compliance with the protocol standards to ensure reliable and standard compliant client-server interactions.
 
-### 4.3 Traceability Between Test Cases and Requirements
+### Traceability Between Test Cases and Requirements
 
 | **Requirement ID**                              | **Requirement Description**                                                                                                                                                      | **Test Case ID(s)**                       |
 | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
@@ -1279,11 +1286,11 @@ These tests verify requirement FR-14, covering visual theme customization.
 This section outlines unit tests for verifying the core modules and components of `tinymorph`.
 The overall philosophy for test case selection is based on achieving maximum coverage of critical functionalities while prioritizing areas of high complexity or risk.
 
-### 5.1 Unit Testing Scope
+### Unit Testing Scope
 
 The unit testing scope focuses on core components of `tinymorph` while excluding certain modules due to priority, ownership, or reliability considerations.
 
-#### 5.1.1 In-Scope Modules
+#### In-Scope Modules
 
 - Text editor core components including buffer management and file operations
 - Planning interface components for user interactions
@@ -1293,7 +1300,7 @@ The unit testing scope focuses on core components of `tinymorph` while excluding
 - User preference and configuration management
 - Security components including authentication and data protection
 
-#### 5.1.2 Out-of-Scope Modules
+#### Out-of-Scope Modules
 
 - Third-party dependencies:
   - Base language models (Gemma 2, Llama 3.1) as they are externally maintained
@@ -1301,7 +1308,7 @@ The unit testing scope focuses on core components of `tinymorph` while excluding
 - Operating system specific functionalities
 - Cloud provider specific implementations
 
-#### 5.1.3 Testing Priority Rationale
+#### Testing Priority Rationale
 
 1. High Priority (P0)
 
@@ -1322,13 +1329,13 @@ The unit testing scope focuses on core components of `tinymorph` while excluding
 - Optional features
 - Cosmetic components
 
-### 5.2 Tests for Functional Requirements
+### Tests for Functional Requirements
 
 _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 
-### 5.3 Tests for Nonfunctional Requirements
+### Tests for Nonfunctional Requirements
 
-#### 5.3.1 Inference Engine
+#### Inference Engine
 
 **Test-IE1**
 
@@ -1354,7 +1361,7 @@ _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 - **Output/Result**: The inference engine outputs are free of harmful or inappropriate content, judged with keyword and phrase blacklists, together with Regular Expressions.
 - **How test will be performed**: The unit test will feed the inference engine with inputs known to potentially trigger harmful content. It will analyze the outputs to ensure that no harmful or inappropriate content is present, confirming that the engine's safety mechanisms effectively filter out undesirable content.
 
-#### 5.3.2 User Interface
+#### User Interface
 
 **Test-UI1**
 
@@ -1372,7 +1379,7 @@ _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 - **Output/Result**: A notification toast is displayed to the user informing about the request failure.
 - **How test will be performed**: The unit test will mock a failure in an inflight request by triggering an error condition in the request handling module. It will then verify that the UI displays a notification toast with the appropriate message, confirming that users are promptly informed of request failures.
 
-#### 5.3.3 Deployment Management
+#### Deployment Management
 
 **Test-DM1**
 
@@ -1382,7 +1389,7 @@ _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 - **Output/Result**: The deployment is automatically recreated, maintaining application availability.
 - **How test will be performed**: The unit test will simulate the failure of a node or pod within the Kubernetes cluster by programmatically deleting or stopping it. It will verify that the deployment controller automatically recreates the failed components and that the application remains available during the process, ensuring robustness and fault tolerance in the deployment strategy.
 
-#### 5.3.4 Suggestion Processing
+#### Suggestion Processing
 
 **Test-SP1**
 
@@ -1392,7 +1399,7 @@ _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 - **Output/Result**: All suggestions are processed correctly without errors or significant delays.
 - **How test will be performed**: The unit test will concurrently submit multiple suggestion requests to the processing module using asynchronous calls. It will monitor the processing of each request to ensure they are handled independently and efficiently. The test will assert that all suggestions are returned correctly and within acceptable time frames, confirming the system's capacity to handle concurrent requests.
 
-#### 5.3.5 Autoscaling Mechanism
+#### Autoscaling Mechanism
 
 **Test-AM1**
 
@@ -1402,7 +1409,7 @@ _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 - **Output/Result**: The inference server scales up during high traffic and scales down to zero during low traffic.
 - **How test will be performed**: The unit test will programmatically generate varying loads on the inference server by simulating user requests at different rates. It will monitor the number of active server instances to verify that the autoscaling mechanism responds appropriately scaling up when the load increases and scaling down when the load decreases. This will confirm that the autoscaling works as intended to optimize resource usage.
 
-#### 5.3.6 Model Integration
+#### Model Integration
 
 **Test-MI1**
 
@@ -1412,7 +1419,7 @@ _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 - **Output/Result**: The application functions correctly with the new language model without errors.
 - **How test will be performed**: The unit test will replace the current language model with an alternative one, such as integrating a new SAE model. It will run the existing unit tests and check for compatibility issues or errors, ensuring that the application remains stable and functional with the new model.
 
-#### 5.3.7 Platform Compatibility
+#### Platform Compatibility
 
 **Test-PC1**
 
@@ -1422,7 +1429,7 @@ _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 - **Output/Result**: The application installs and runs successfully without error on all supported platforms.
 - **How test will be performed**: The unit test will automate the build process for the application on different operating systems using cross-platform build tools. It will then execute automated tests to ensure that the application functions correctly on each platform, ensuring adaptability and support for different distribution platforms.
 
-#### 5.3.8 Security Components
+#### Security Components
 
 **Test-SC1**
 
@@ -1440,7 +1447,7 @@ _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 - **Output/Result**: Access is appropriately granted or denied based on the RBAC policies.
 - **How test will be performed**: The unit test will simulate users with various roles attempting to access sensitive resources like secrets or configuration files. It will verify that only authorized roles have access, and unauthorized attempts are blocked, ensuring that secrets are protected with proper access controls.
 
-#### 5.3.9 Documentation Accessibility
+#### Documentation Accessibility
 
 **Test-DA1**
 
@@ -1450,7 +1457,7 @@ _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 - **Output/Result**: Users can easily find and access relevant documentation from the interface.
 - **How test will be performed**: A manual test will be conducted where the tester navigates the application's UI to locate links to usage manuals and technical documentation. The tester will verify that the links are prominently placed, clearly labeled, and lead to the correct documentation pages. This will facilitate user understanding through accessible documentation.
 
-#### 5.3.10 Release and Deployment
+#### Release and Deployment
 
 **Test-RD1**
 
@@ -1460,7 +1467,7 @@ _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 - **Output/Result**: The continuous deployment pipeline is triggered, and the application is built and deployed automatically without error.
 - **How test will be performed**: The unit test will simulate code changes by committing to a test branch. It will verify that the GitHub CD workflow is triggered, running automated tests and deploying the application if all tests pass. This will ensure that the release cycle utilizes the current CI/CD workflow effectively.
 
-### 5.4 Traceability Between Test Cases and Modules
+### Traceability Between Test Cases and Modules
 
 | **Test Case ID** | **Description**                                                                                              | **Module**                           |
 | ---------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------ |
