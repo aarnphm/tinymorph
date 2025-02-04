@@ -6,13 +6,14 @@ author: aarnphm,waleedmalik7,nebrask,lucas-lizhiwei
 date: "2024-09-16"
 description: "Hazard Analysis for tinymorph: LLM-steering text editor"
 title: Hazard Analysis
+counter: true
 ---
 
-## 1. Introduction
+## Introduction
 
 ![[SRS/SRS#^introduction|intro]]
 
-## 2. Scope and Purpose of Hazard Analysis
+## Scope and Purpose of Hazard Analysis
 
 The purpose of this hazard analysis is to:
 
@@ -26,62 +27,62 @@ This analysis covers the web-based text editor, its LLM inference system, user i
 
 By examining these hazards, the analysis seeks to outline preventive measures to avoid and minimize these losses, ensuring that the system operates reliably and securely while protecting user content and experience.
 
-## 3. System Boundaries
+## System Boundaries
 
 <!-- Dividing the system into components will help you brainstorm the hazards. You shouldn't do a full design of the components, just get a feel for the major ones. For projects that involve hardware,
 the components will typically include each individual piece of hardware. If your software will have a database, or an important library, these are also potential components. -->
 
 The following defines system boundaries for `tinymorph`:
 
-### 3.1 Core Functionalities
+### Core Functionalities
 
-#### 3.1.1 User interface
+#### User interface
 
 - User can compose, modify and refine their writing through spatial interfaces for non-linear exploration.
 - UI of the editor includes components of text editor, steering controller and posted-notes dashboard for suggestion.
 
-#### 3.1.2 Steering control panel
+#### Steering control panel
 
 - Refers to options panels allowing users to adjust and change preferences accordingly based on what they want their
   suggestion to focus on.
 
-#### 3.1.3 Local file storage system
+#### Local file storage system
 
 - maintains file-over-app philosophy, allowing users full control of the artifacts they create
 
-#### 3.1.4 Inference engine (asteraceae)
+#### Inference engine (asteraceae)
 
 - LLM inference engine used for ideas generations and steering.
 - mainly used as backend for interfaces for suggestions.
 
-#### 3.1.5 LLM-based suggestion generations
+#### LLM-based suggestion generations
 
 - suggestion generated from said inference engine to cultivate ideas and thoughts for writing piece.
 
-### 3.2 Interactions
+### Interactions
 
-#### 3.2.1 Infrastructure reliability
+#### Infrastructure reliability
 
 - First iterations of LLM engine will depend on running inference on a remote server, which depends on reliable network
   connection.
 - Uptime and performance of servers must be reliable during high traffic usage.
 
-#### 3.2.2 File system operations
+#### File system operations
 
 - File system operations are critical for `tinymorph` to function properly, where it allows users to include files as
   context or saving their progress.
 
-### 3.3 Components outside the boundary
+### Components outside the boundary
 
-#### 3.3.1 User devices and platforms
+#### User devices and platforms
 
 - `tinymorph` aims to provide support on cross platforms, and supports running on modern browsers.
 
-#### 3.3.2 Networking connections
+#### Networking connections
 
 - The system will rely on networking connections to communicate with the inference engine.
 
-## 4. Definition of Hazard
+## Definition of Hazard
 
 The definition of a hazard in this document is adapted from Nancy Leveson's work[^hazard].
 
@@ -100,20 +101,20 @@ In the context of `tinymorph`, hazard is related to:
 
 [^hazard]: Nancy Leveson, [How to Perform Hazard Analysis on a "System-of-Systems"](http://sunnyday.mit.edu/SOS-hazard-analysis.pdf)
 
-## 5. Critical Assumptions
+## Critical Assumptions
 
 <!--These assumptions that are made about the software or system. You should minimize the number of assumptions that remove potential hazards. For instance, you could assume a part will never fail, but it is generally better to include this potential failure mode.-->
 
 No critical assumptions are being made for `tinymorph` that would limit
 the scope of mitigating or eliminating potential hazards.
 
-## 6. Failure Mode and Effect Analysis
+## Failure Mode and Effect Analysis
 
 <!-- Include your FMEA table here. This is the most important part of this document. -->
 <!-- The safety requirements in the table do not have to have the prefix SR. The most important thing is to show traceability to your SRS. You might trace to requirements you have already written, or you might need to add new requirements. -->
 <!-- If no safety requirement can be devised, other mitigation strategies can be entered in the table, including strategies involving providing additional documentation, and/or test cases. -->
 
-### 6.1 Hazards Out of Scope
+### Hazards Out of Scope
 
 - Physical hardware failures
 - Operating system incompatibilities
@@ -136,7 +137,7 @@ control over the service's availability.
 > These hazards and risks connected the aforementioned assumptions can't be completely solved; instead, they will be
 > mitigated as much as possible.
 
-### 6.2 Failure Modes & Effects Analysis Table
+### Failure Modes & Effects Analysis Table
 
 The following is the FEMA table for `tinymorph`.
 
@@ -154,17 +155,17 @@ The following is the FEMA table for `tinymorph`.
 | User devices support | Unpredictable system behavior or crashes caused by device-level vulnerabilities | Crashes users system                                            | a. out-dated browsers                                                                                                                                                                                   | a. Recommend users to regularly update their browsers and device firmware<br>b. Same as H1.1                                      | SR-IM1                                  | H6.1 |
 | Infrastructure       | Downtime                                                                        | Interruption in users' workflow                                 | a. SLO and third-party service downtimw                                                                                                                                                                 | a. Same as H2.1<br>b. Add rollback and scaling for backup region                                                                  | SR-AU1                                  | H7.1 |
 
-## 7. Safety and Security Requirements
+## Safety and Security Requirements
 
 <!--Newly discovered requirements. These should also be added to the SRS. (A rationale design process how and why to fake it.)-->
 
 Requirements intended for inclusion in Revision 0.2 of the Security Requirements section of the SRS document are highlighted in bold. Bolded items also include notes explaining the absence of specific requirements.
 
-### 7.1 Access Requirements
+### Access Requirements
 
 **Not applicable given the application is open source, and inference server are exposed over a HTTPS endpoints.**
 
-### 7.2 Integrity Requirements
+### Integrity Requirements
 
 ![[SRS/SRS#15.2 Integrity Requirements|SRSIR]]
 
@@ -180,19 +181,19 @@ Rationale: Corrupted file format can lead to loss in data. This applies to both 
 
 Rationale: SAEs must comply to certain features, stay true to trained tonality (for example Raymond Carver's SAEs should depict his writing style), and the system should reject inappropriate suggestions. This is to ensure that the system is not biased towards certain features.
 
-### 7.3 Privacy Requirements
+### Privacy Requirements
 
 ![[SRS/SRS#15.3 Privacy Requirements|SRSPR]]
 
-### 7.4 Audit Requirements
+### Audit Requirements
 
 ![[SRS/SRS#15.4 Audit Requirements|SRSAR]]
 
-### 7.5 Immunity Requirements
+### Immunity Requirements
 
 ![[SRS/SRS#15.5 Immunity Requirements|SRSImR]]
 
-## 8. Roadmap
+## Roadmap
 
 <!-- Which safety requirements will be implemented as part of the capstone timeline? Which requirements will be implemented in the future? -->
 

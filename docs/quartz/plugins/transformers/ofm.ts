@@ -18,6 +18,7 @@ import { PhrasingContent } from "mdast-util-find-and-replace/lib"
 import { capitalize } from "../../util/lang"
 import { PluggableList } from "unified"
 import { DEFAULT_MONO, getColor } from "../../util/theme"
+import { headingRank } from "hast-util-heading-rank"
 
 export interface Options {
   comments: boolean
@@ -32,6 +33,7 @@ export interface Options {
   enableYouTubeEmbed: boolean
   enableVideoEmbed: boolean
   enableCheckbox: boolean
+  enableAutoCounter: boolean
 }
 
 const defaultOptions: Options = {
@@ -47,6 +49,7 @@ const defaultOptions: Options = {
   enableYouTubeEmbed: true,
   enableVideoEmbed: true,
   enableCheckbox: false,
+  enableAutoCounter: true,
 }
 
 const calloutMapping = {
@@ -651,6 +654,60 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
                   disabled: false,
                   checked: isChecked,
                   class: "checkbox-toggle",
+                }
+              }
+            })
+          }
+        })
+      }
+
+      if (opts.enableAutoCounter) {
+        plugins.push(() => {
+          return (tree, file) => {
+            if (!file.data.frontmatter?.counter) return
+
+            const counters = new Array(6).fill(0) // h1-h6
+            let lastLevel = 1 // Start tracking from h1
+
+            visit(tree, "element", (node) => {
+              const level = headingRank(node)
+              if (level) {
+                // Only process h2 and below
+                // Reset lower level counters when moving to higher heading
+                if (level > lastLevel) {
+                  // Keep previous level counters, reset subsequent ones
+                  for (let i = lastLevel + 1; i < counters.length; i++) {
+                    counters[i] = 0
+                  }
+                } else if (level < lastLevel) {
+                  // Reset all counters after the current level
+                  for (let i = level + 1; i < counters.length; i++) {
+                    counters[i] = 0
+                  }
+                }
+
+                // Increment counter for current level
+                counters[level]++
+                lastLevel = level
+
+                // Build the counter string (e.g., "1.2.1")
+                const counterParts = []
+                for (let i = 2; i <= level; i++) {
+                  if (counters[i] !== 0) {
+                    counterParts.push(counters[i])
+                  }
+                }
+                const counterStr = counterParts.join(".")
+
+                // Prepend counter to heading text
+                const firstChild = node.children[0]
+                if (firstChild && firstChild.type === "text") {
+                  firstChild.value = `${counterStr} ${firstChild.value}`
+                } else {
+                  node.children.unshift({
+                    type: "text",
+                    value: `${counterStr} `,
+                  })
                 }
               }
             })
