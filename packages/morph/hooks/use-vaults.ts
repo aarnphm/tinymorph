@@ -6,6 +6,7 @@ import useFileTree, {
   type FileSystemTreeNodeSerializable,
 } from "./use-file-tree"
 import { encodeUriHash } from "@/lib/utils"
+import usePersistedSettings from "./use-persisted-settings"
 
 export interface Vault {
   id: string
@@ -27,11 +28,8 @@ export interface VaultConfig {
 }
 
 const VAULTS_STORAGE_KEY = "morph:vaults"
-const DEFAULT_CONFIG: VaultConfig = {
-  ignorePatterns: ["node_modules", ".git", ".morph"],
-}
 
-// Add IndexedDB storage for directory handles
+// IndexedDB storage for directory handles
 const DB_NAME = "morph-vaults"
 const STORE_NAME = "directory-handles"
 
@@ -81,6 +79,7 @@ export default function useVaults(opts: UseFileTreeOptions = {}) {
   const { processDirectoryLevel } = useFileTree(opts)
   const { toast } = useToast()
   const [isLoadingVaults, setIsLoadingVaults] = useState(true)
+  const { defaultSettings } = usePersistedSettings()
 
   // Load vaults from localStorage and restore file system handles
   useEffect(() => {
@@ -97,44 +96,53 @@ export default function useVaults(opts: UseFileTreeOptions = {}) {
         const entries = await Promise.all(
           Object.entries(parsed).map(async ([id, vault]) => {
             let root: FileSystemTreeNode | null = null
-            let handle: FileSystemDirectoryHandle | null = await getHandle(id)
+            let handle: FileSystemDirectoryHandle | null = null
 
             try {
-              if (handle) {
-                // Verify handle is still valid
-                await verifyHandle(handle)
-
-                // Load tree.json from persisted handle
+              handle = await getHandle(id)
+              if (handle && (await verifyHandle(handle))) {
                 const morphDir = await handle.getDirectoryHandle(".morph")
                 const treeFile = await morphDir.getFileHandle("tree.json")
                 const file = await treeFile.getFile()
                 root = JSON.parse(await file.text())
+                await processDirectoryLevel(
+                  handle,
+                  vault.config?.ignorePatterns || defaultSettings.ignorePatterns,
+                  root!,
+                )
               }
             } catch (error) {
               console.log("Could not restore vault handle or tree:", error)
-              handle = null
+              // Remove invalid vault from storage
+              localStorage.removeItem(VAULTS_STORAGE_KEY)
+              return null
             }
 
-            return [id, { ...vault, handle, root }] as [string, Vault]
+            return handle ? ([id, { ...vault, handle, root }] as [string, Vault]) : null
           }),
         )
 
-        setVaults(new Map(entries))
-        return
+        // Filter out null entries and update state
+        setVaults(new Map(entries.filter(Boolean) as [string, Vault][]))
       } catch (error) {
         console.error("Error loading vaults:", error)
+        toast({
+          title: "Session Expired",
+          description: "Please re-authenticate file system access",
+          variant: "destructive",
+        })
       } finally {
         setIsLoadingVaults(false)
       }
     }
 
     loadVault()
-  }, [])
+  }, [defaultSettings.ignorePatterns, toast])
 
   // Save vaults to localStorage whenever they change
-  // NOTE(@aarnphm): Does this trigger every time? I forgot how useEffect are being called
-  // If we are using useVault, then this should only trigger when the active vault changes?
-  const updateVaults = useCallback(() => {
+  // NOTE(@aarnphm): Should we update it everytime?
+  // THIS IS PRETTY HACKY
+  useEffect(() => {
     if (vaults.size > 0) {
       localStorage.setItem(
         VAULTS_STORAGE_KEY,
@@ -208,7 +216,7 @@ export default function useVaults(opts: UseFileTreeOptions = {}) {
         const morphDir = await handle.getDirectoryHandle(".morph", { create: true })
 
         // Try to load existing config or create new one
-        let config: VaultConfig = DEFAULT_CONFIG
+        let config: VaultConfig = defaultSettings
         try {
           const configFile = await morphDir.getFileHandle("config.json")
           const file = await configFile.getFile()
@@ -217,7 +225,7 @@ export default function useVaults(opts: UseFileTreeOptions = {}) {
           // Create default config file
           const configFile = await morphDir.getFileHandle("config.json", { create: true })
           const writable = await configFile.createWritable()
-          await writable.write(JSON.stringify(DEFAULT_CONFIG, null, 2))
+          await writable.write(JSON.stringify(config, null, 2))
           await writable.close()
         }
 
@@ -267,7 +275,7 @@ export default function useVaults(opts: UseFileTreeOptions = {}) {
         return null
       }
     },
-    [vaults, toast, processDirectoryLevel, updateVaultTree],
+    [vaults, toast, processDirectoryLevel, defaultSettings, updateVaultTree],
   )
 
   const removeVault = useCallback((id: string) => {
@@ -323,7 +331,6 @@ export default function useVaults(opts: UseFileTreeOptions = {}) {
   return {
     vaults,
     addVault,
-    updateVaults,
     removeVault,
     updateVaultConfig,
     updateVaultTree,
@@ -331,12 +338,20 @@ export default function useVaults(opts: UseFileTreeOptions = {}) {
   }
 }
 
-// Add handle verification function
+// Update the verifyHandle function to properly check permissions
 async function verifyHandle(handle: FileSystemDirectoryHandle): Promise<boolean> {
   try {
-    await handle.getDirectoryHandle(".morph")
-    return true
-  } catch {
+    // Check if we already have permission
+    if ((await handle.queryPermission({ mode: "read" })) === "granted") {
+      return true
+    }
+
+    console.log(handle)
+    // Request permission if needed
+    const permission = await handle.requestPermission({ mode: "read" })
+    return permission === "granted"
+  } catch (error) {
+    console.error("Permission verification failed:", error)
     return false
   }
 }

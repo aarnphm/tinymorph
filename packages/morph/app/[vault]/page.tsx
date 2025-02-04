@@ -3,14 +3,19 @@
 import { useEffect } from "react"
 import Editor from "@/components/editor"
 import { useVaultContext } from "@/context/vault-context"
+import { useRouter } from "next/navigation"
 
 export default function VaultPage() {
-  const { activeVaultId, setActiveVaultId, getActiveVault } = useVaultContext()
-  const vault = getActiveVault()
+  const router = useRouter()
+  const { activeVaultId, setActiveVaultId } = useVaultContext()
 
   useEffect(() => {
-    if (activeVaultId) setActiveVaultId(activeVaultId)
-  }, [activeVaultId, setActiveVaultId])
+    if (activeVaultId) {
+      setActiveVaultId(activeVaultId)
+    } else {
+      router.push("/")
+    }
+  }, [router, activeVaultId, setActiveVaultId])
 
   return (
     <main className="min-h-screen bg-background">

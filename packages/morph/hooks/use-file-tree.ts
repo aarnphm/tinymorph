@@ -8,6 +8,8 @@ declare global {
   }
   interface FileSystemDirectoryHandle extends FileSystemHandle {
     id?: string
+    queryPermission(options: { mode: string }): Promise<Readonly<PermissionState>>
+    requestPermission(options: { mode: string }): Promise<Readonly<PermissionState>>
     values(): AsyncIterableIterator<FileSystemHandle>
   }
 }

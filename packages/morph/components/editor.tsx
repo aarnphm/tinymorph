@@ -211,7 +211,7 @@ export default function Editor({ vaultId }: EditorProps) {
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [toggleNotes, settings.editModeShortcut])
+  }, [toggleNotes, settings.editModeShortcut, settings.notePanelShortcut])
 
   // Update file selection handler to work with vault tree
   const handleFileSelect = React.useCallback(

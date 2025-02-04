@@ -1,5 +1,5 @@
 import type * as React from "react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { ChevronRight, Plus, Download, ChevronDown } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -25,8 +25,6 @@ import {
   SidebarFooter,
   SidebarHeader,
 } from "@/components/ui/sidebar"
-import usePersistedSettings from "@/hooks/use-persisted-settings"
-import useFileTree, { UseFileTreeOptions } from "@/hooks/use-file-tree"
 import useVaults, { Vault } from "@/hooks/use-vaults"
 import { useRouter } from "next/navigation"
 import { useVaultContext } from "@/context/vault-context"
@@ -107,11 +105,10 @@ export function Explorer({
   ...props
 }: MorphSidebarProps) {
   const router = useRouter()
-  const { settings } = usePersistedSettings()
   const { vaults, addVault } = useVaults()
   const { getActiveVault, setActiveVaultId } = useVaultContext()
+
   const activeVault = getActiveVault()
-  console.log(activeVault)
 
   const handleOpenDirectory = async () => {
     try {
