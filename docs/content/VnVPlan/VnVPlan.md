@@ -620,7 +620,7 @@ These tests verify requirements FR-4 through FR-7, focusing on the system's text
    - Control: Manual
    - Initial State: Editor opened, steering feature enabled
    - Input: "Didion" tone selection with prompt "reflection on modern life"
-   - Output: Text suggestions matching Didion's writing style
+   - Output: Text suggestions matching Didion's writing style under Lexical Constraints. 
    - Test Case Derivation: Based on FR-2's requirement for style-specific generation
    - How test will be performed: Enable steering, select tone, verify style matching.
 
@@ -1351,7 +1351,7 @@ _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 - **Type**: Functional, Dynamic, Automatic
 - **Initial State**: The Harmful Content Filter within the Inference Engine is implemented.
 - **Input/Condition**: Provide inputs that are likely to generate harmful or inappropriate content.
-- **Output/Result**: The inference engine outputs are free of harmful or inappropriate content.
+- **Output/Result**: The inference engine outputs are free of harmful or inappropriate content, judged with keyword and phrase blacklists, together with Regular Expressions.
 - **How test will be performed**: The unit test will feed the inference engine with inputs known to potentially trigger harmful content. It will analyze the outputs to ensure that no harmful or inappropriate content is present, confirming that the engine's safety mechanisms effectively filter out undesirable content.
 
 #### 5.3.2 User Interface
@@ -1419,7 +1419,7 @@ _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 - **Type**: Functional, Static, Automatic
 - **Initial State**: The application build is configured for different operating systems.
 - **Input/Condition**: Build and run the application on Windows, macOS, and Linux environments.
-- **Output/Result**: The application installs and runs successfully on all supported platforms.
+- **Output/Result**: The application installs and runs successfully without error on all supported platforms.
 - **How test will be performed**: The unit test will automate the build process for the application on different operating systems using cross-platform build tools. It will then execute automated tests to ensure that the application functions correctly on each platform, ensuring adaptability and support for different distribution platforms.
 
 #### 5.3.8 Security Components
@@ -1457,7 +1457,7 @@ _Omitted for now, refer to [[Design/MG|Module Guide]]_ for more information.
 - **Type**: Functional, Dynamic, Automatic
 - **Initial State**: The GitHub CD workflow is set up for the project.
 - **Input/Condition**: Commit new code changes and push to the repository.
-- **Output/Result**: The continuous deployment pipeline is triggered, and the application is built and deployed automatically.
+- **Output/Result**: The continuous deployment pipeline is triggered, and the application is built and deployed automatically without error.
 - **How test will be performed**: The unit test will simulate code changes by committing to a test branch. It will verify that the GitHub CD workflow is triggered, running automated tests and deploying the application if all tests pass. This will ensure that the release cycle utilizes the current CI/CD workflow effectively.
 
 ### 5.4 Traceability Between Test Cases and Modules
@@ -1683,3 +1683,4 @@ Front-End Testing and Accessibility:
 | Date        | Version | Notes       |
 | ----------- | ------- | ----------- |
 | Nov. 4 2024 | 0.0     | initial VnV |
+| Feb. 3 2024 | 0.1     | Rev0        |
