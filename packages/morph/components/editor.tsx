@@ -106,12 +106,12 @@ export default function Editor({ vaultId }: EditorProps) {
   }, [])
 
   // FIXME: increase in memory usage
+  // TODO: update the name based on users imported files.
   const handleExportMarkdown = React.useCallback(() => {
     const blob = new Blob([markdownContent], { type: "text/markdown" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
-    // TODO: update the name based on users imported files.
     a.download = "document.md"
     document.body.appendChild(a)
     a.click()
