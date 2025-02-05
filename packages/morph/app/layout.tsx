@@ -13,12 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <PlausibleProvider
-          domain="morph-editor.app"
-          trackOutboundLinks
-          trackFileDownloads
-          enabled={process.env.CF_PAGES === "1" || process.env.NODE_ENV === "production"}
-        />
+        <PlausibleProvider domain="morph-editor.app" trackOutboundLinks trackFileDownloads />
       </head>
       <body>
         <VaultProvider>

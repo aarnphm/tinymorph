@@ -6,28 +6,29 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import useVaults, { Vault } from "@/hooks/use-vaults"
 import { useVaultContext } from "@/context/vault-context"
-import usePersistedSettings from "@/hooks/use-persisted-settings"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useEffect, useState } from "react"
 
-export default function VaultsPage() {
+export default function Home() {
   const router = useRouter()
-  const { settings } = usePersistedSettings()
-  const { setActiveVaultId } = useVaultContext()
-  const { vaults, addVault, isLoadingVaults } = useVaults({
-    ignorePatterns: settings.ignorePatterns,
-  })
+  const { isLoading, setActiveVaultId } = useVaultContext()
+  const { addVault, getAllVaults } = useVaults()
+  const [sortedVaults, setSortedVaults] = useState<Vault[]>([])
 
-  // Sort vaults by last opened date
-  const sortedVaults = Array.from(vaults.values()).sort(
-    (a, b) => new Date(b.lastOpened).getTime() - new Date(a.lastOpened).getTime(),
-  )
+  useEffect(() => {
+    const loadVaults = async () => {
+      const allVaults = await getAllVaults()
+      setSortedVaults(allVaults.sort((a, b) => b.lastOpened.getTime() - a.lastOpened.getTime()))
+    }
+    loadVaults()
+  }, [getAllVaults])
 
   const handleOpenDirectory = async () => {
     try {
       const handle = await window.showDirectoryPicker({ startIn: "documents" })
       const vault = await addVault(handle)
       if (vault) {
-        router.push(`/${decodeURIComponent(vault.path)}`)
+        router.push(`/${vault.id}`)
         setActiveVaultId(vault.id)
       }
     } catch (error) {
@@ -37,7 +38,7 @@ export default function VaultsPage() {
 
   const handleVaultSelect = (vault: Vault) => {
     setActiveVaultId(vault.id)
-    router.push(`/${decodeURIComponent(vault.path)}`)
+    router.push(`/${vault.id}`)
   }
 
   return (
@@ -57,7 +58,7 @@ export default function VaultsPage() {
           <Clock className="w-4 h-4" />
           Recently Opened
         </div>
-        {isLoadingVaults ? (
+        {isLoading ? (
           <div className="space-y-4">
             <Card>
               <CardContent className="p-6 space-y-4">
@@ -78,7 +79,7 @@ export default function VaultsPage() {
                 <Card key={vault.id} className="group">
                   <Button
                     variant="ghost"
-                    className="w-full h-auto p-0"
+                    className="w-full h-auto p-0 justify-start"
                     onClick={() => handleVaultSelect(vault)}
                   >
                     <CardHeader>

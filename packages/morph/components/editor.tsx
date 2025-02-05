@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useEffect, useCallback, useState, useRef, useMemo } from "react"
 import axios, { AxiosResponse } from "axios"
 import CodeMirror from "@uiw/react-codemirror"
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown"
@@ -19,14 +20,11 @@ import { SettingsPanel } from "./settings-panel"
 import { FileSystemPermissionPrompt } from "./popup/permission"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { setFile, fileField, liveMode, mdToHtml } from "./markdown-inline"
+import { fileField, liveMode, mdToHtml } from "./markdown-inline"
 import toJsx from "@/lib/jsx"
 import type { Root } from "hast"
 import { useTheme } from "next-themes"
-import useVaults from "@/hooks/use-vaults"
 import { WELCOME_MD } from "@/lib/constants"
-import { FileSystemTreeNode } from "@/hooks/use-file-tree"
-import { useVaultContext } from "@/context/vault-context"
 
 interface Suggestion {
   suggestion: string
@@ -43,29 +41,21 @@ interface AsteraceaResponse {
   suggestions: Suggestion[]
 }
 
-interface EditorProps {
-  vaultId: string
-}
-
-export default function Editor({ vaultId }: EditorProps) {
+export default function Editor() {
   const { theme } = useTheme()
-  const editorRef = React.useRef<HTMLDivElement>(null)
-  const debounceTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
-  const [showPopover, setShowPopover] = React.useState(false)
-  const [currentFile, setCurrentFile] = React.useState<string>("")
-  const [isEditMode, setIsEditMode] = React.useState(true)
-  const [previewNode, setPreviewNode] = React.useState<Root | null>(null)
-  const [isLoading, setIsLoading] = React.useState(false)
-  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
+  const editorRef = useRef<HTMLDivElement>(null)
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const [showPopover, setShowPopover] = useState(false)
+  const [currentFile, setCurrentFile] = useState<string>("")
+  const [isEditMode, setIsEditMode] = useState(true)
+  const [previewNode, setPreviewNode] = useState<Root | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   const { settings } = usePersistedSettings()
-  const { getActiveVault } = useVaultContext()
-  const { updateVaultTree } = useVaults()
+  const codeMirrorViewRef = useRef<EditorView | null>(null)
 
-  // TODO: support opening recent vaults and switching states
-  const vault = getActiveVault()
-
-  const memoizedExtensions = React.useMemo(() => {
+  const memoizedExtensions = useMemo(() => {
     const tabSize = new Compartment()
     const extensions = [
       markdown({ base: markdownLanguage, codeLanguages: languages }),
@@ -73,6 +63,12 @@ export default function Editor({ vaultId }: EditorProps) {
       EditorView.lineWrapping,
       tabSize.of(EditorState.tabSize.of(settings.tabSize)),
       fileField.init(() => currentFile),
+      EditorView.updateListener.of((update) => {
+        if (update.docChanged || update.selectionSet) {
+          const newFilename = update.state.field(fileField)
+          setCurrentFile(newFilename)
+        }
+      }),
     ]
     if (settings.vimMode) {
       extensions.push(vim())
@@ -86,18 +82,18 @@ export default function Editor({ vaultId }: EditorProps) {
     return extensions
   }, [settings.vimMode, settings.tabSize, currentFile])
 
-  const [markdownContent, setMarkdownContent] = React.useState(WELCOME_MD)
-  const onContentChange = React.useCallback((value: string) => {
+  const [markdownContent, setMarkdownContent] = useState(WELCOME_MD)
+  const onContentChange = useCallback((value: string) => {
     setMarkdownContent(value)
   }, [])
 
-  const [showNotes, setShowNotes] = React.useState(false)
-  const toggleNotes = React.useCallback(() => {
+  const [showNotes, setShowNotes] = useState(false)
+  const toggleNotes = useCallback(() => {
     setShowNotes((prev) => !prev)
   }, [])
 
-  const [notes, setNotes] = React.useState<Note[]>([])
-  const handleNoteDrop = React.useCallback((note: Note, droppedOverEditor: boolean) => {
+  const [notes, setNotes] = useState<Note[]>([])
+  const handleNoteDrop = useCallback((note: Note, droppedOverEditor: boolean) => {
     if (droppedOverEditor) {
       setNotes((prevNotes) =>
         prevNotes.filter((n) => !(n.title === note.title && n.content === note.content)),
@@ -107,34 +103,31 @@ export default function Editor({ vaultId }: EditorProps) {
 
   // FIXME: increase in memory usage
   // TODO: update the name based on users imported files.
-  const handleExportMarkdown = React.useCallback(() => {
+  const handleExportMarkdown = useCallback(() => {
     const blob = new Blob([markdownContent], { type: "text/markdown" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
-    a.download = "document.md"
+    a.download = currentFile
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
-  }, [markdownContent])
+  }, [markdownContent, currentFile])
 
-  const handleExportPdf = React.useCallback(() => {
+  const handleExportPdf = useCallback(() => {
     const pdf = new jsPDF()
     pdf.setFont("helvetica", "normal")
 
     const lines = pdf.splitTextToSize(markdownContent, 180)
     pdf.text(lines, 10, 10)
 
-    pdf.save("document.pdf")
-  }, [markdownContent])
+    pdf.save(currentFile)
+  }, [markdownContent, currentFile])
 
   const fetchNewNotes = async (content: string) => {
     try {
-      const apiEndpoint =
-        process.env.CF_PAGES === "1"
-          ? process.env.API_ENDPOINT
-          : process.env.NEXT_PUBLIC_API_ENDPOINT
+      const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT
 
       // TODO: should disable or greyed out the notes button
       if (!apiEndpoint) throw new Error("ENDPOINT cannot be found, notes won't be functional")
@@ -166,7 +159,7 @@ export default function Editor({ vaultId }: EditorProps) {
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!showNotes) return
 
     if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current)
@@ -185,17 +178,17 @@ export default function Editor({ vaultId }: EditorProps) {
   }, [showNotes, markdownContent])
 
   // Check for file permission
-  const [fileSystemPermissionGranted, setFileSystemPermissionGranted] = React.useState(false)
-  const handlePermissionGranted = React.useCallback(() => {
+  const [fileSystemPermissionGranted, setFileSystemPermissionGranted] = useState(false)
+  const handlePermissionGranted = useCallback(() => {
     setFileSystemPermissionGranted(true)
   }, [])
-  React.useEffect(() => {
+  useEffect(() => {
     const permissionGranted = localStorage.getItem("fileSystemPermissionGranted")
     if (permissionGranted === "true") setFileSystemPermissionGranted(true)
   }, [])
 
   // Keybind events
-  React.useEffect(() => {
+  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === settings.notePanelShortcut && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
@@ -213,43 +206,7 @@ export default function Editor({ vaultId }: EditorProps) {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [toggleNotes, settings.editModeShortcut, settings.notePanelShortcut])
 
-  // Update file selection handler to work with vault tree
-  const handleFileSelect = React.useCallback(
-    async (node: FileSystemTreeNode) => {
-      if (!vault || node.kind !== "file" || !(node.handle instanceof FileSystemFileHandle)) return
-
-      try {
-        const file = await node.handle.getFile()
-        const content = await file.text()
-        setCurrentFile(file.name)
-        setMarkdownContent(content)
-
-        // Dispatch file change to CodeMirror
-        if (editorRef.current) {
-          const view = EditorView.findFromDOM(editorRef.current)
-          if (view) {
-            view.dispatch({
-              effects: setFile.of(file.name),
-            })
-          }
-        }
-      } catch (error) {
-        console.error("Error reading file:", error)
-      }
-    },
-    [vault],
-  )
-
-  // Update tree when files change
-  const handleTreeUpdate = React.useCallback(
-    async (newRoot: FileSystemTreeNode) => {
-      if (!vault?.handle) return
-      await updateVaultTree(vaultId, vault.handle, newRoot)
-    },
-    [vault, vaultId, updateVaultTree],
-  )
-
-  React.useEffect(() => {
+  useEffect(() => {
     const updatePreview = async () => {
       try {
         const hastNode = await mdToHtml(markdownContent, currentFile, true)
@@ -266,10 +223,9 @@ export default function Editor({ vaultId }: EditorProps) {
       <FileSystemPermissionPrompt onPermissionGranted={handlePermissionGranted} />
       <SidebarProvider defaultOpen={false}>
         <Explorer
-          onFileSelect={handleFileSelect}
-          onTreeUpdate={handleTreeUpdate}
           onExportMarkdown={handleExportMarkdown}
           onExportPDF={handleExportPdf}
+          codeMirrorRef={codeMirrorViewRef}
         />
         <SidebarInset>
           <header className="inline-block h-10 border-b">
@@ -316,6 +272,7 @@ export default function Editor({ vaultId }: EditorProps) {
                   onChange={onContentChange}
                   className="overflow-auto h-full mx-4 pt-4"
                   theme={theme === "dark" ? "dark" : "light"}
+                  onCreateEditor={(view) => (codeMirrorViewRef.current = view)}
                 />
               </div>
               <div

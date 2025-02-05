@@ -1,5 +1,5 @@
 import type * as React from "react"
-import { useState } from "react"
+import { useState, useCallback, useEffect, memo } from "react"
 import { ChevronRight, Plus, Download, ChevronDown } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -22,34 +22,29 @@ import {
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarRail,
-  SidebarFooter,
   SidebarHeader,
 } from "@/components/ui/sidebar"
-import useVaults, { Vault } from "@/hooks/use-vaults"
+import { Vault } from "@/hooks/use-vaults"
 import { useRouter } from "next/navigation"
+import { EditorView } from "@uiw/react-codemirror"
+import { setFile } from "./markdown-inline"
+import useVaults, { FileSystemTreeNode } from "@/hooks/use-vaults"
 import { useVaultContext } from "@/context/vault-context"
-
-interface FileSystemTreeNode {
-  name: string
-  kind: "file" | "directory"
-  handle: FileSystemHandle
-  children?: FileSystemTreeNode[]
-  isOpen?: boolean
-}
 
 interface FileTreeNodeProps {
   node: FileSystemTreeNode
   onFileSelect?: (node: FileSystemTreeNode) => void
-  onTreeUpdate?: (root: FileSystemTreeNode) => void
 }
 
-const FileTreeNode: React.FC<FileTreeNodeProps> = ({ node, onFileSelect, onTreeUpdate }) => {
+const FileTreeNode: React.FC<FileTreeNodeProps> = memo(({ node, onFileSelect }) => {
   const [isOpen, setIsOpen] = useState(node.isOpen ?? false)
 
-  const toggleOpen = () => {
-    setIsOpen(!isOpen)
-    node.isOpen = !isOpen
-  }
+  const toggleOpen = useCallback(() => {
+    setIsOpen((prev) => {
+      node.isOpen = !prev
+      return !prev
+    })
+  }, [node])
 
   if (node.kind === "file") {
     return (
@@ -75,121 +70,101 @@ const FileTreeNode: React.FC<FileTreeNodeProps> = ({ node, onFileSelect, onTreeU
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenuSub>
-            {node.children?.map((child, index) => (
-              <FileTreeNode
-                key={index}
-                node={child}
-                onFileSelect={onFileSelect}
-                onTreeUpdate={onTreeUpdate}
-              />
+            {node.children!.map((child) => (
+              <FileTreeNode key={child.name} node={child} onFileSelect={onFileSelect} />
             ))}
           </SidebarMenuSub>
         </CollapsibleContent>
       </Collapsible>
     </SidebarMenuItem>
   )
-}
+})
+FileTreeNode.displayName = "FileTreeNode"
 
 interface MorphSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  onFileSelect: (node: FileSystemTreeNode) => void
-  onTreeUpdate: (root: FileSystemTreeNode) => void
+  codeMirrorRef: React.RefObject<EditorView | null>
   onExportMarkdown: () => void
   onExportPDF: () => void
 }
 
 export function Explorer({
-  onFileSelect,
-  onTreeUpdate,
+  codeMirrorRef,
   onExportMarkdown,
   onExportPDF,
   ...props
 }: MorphSidebarProps) {
   const router = useRouter()
-  const { vaults, addVault } = useVaults()
-  const { getActiveVault, setActiveVaultId } = useVaultContext()
+  const { getAllVaults } = useVaults()
+  const { getActiveVault, isLoading } = useVaultContext()
+
+  const [sortedVaults, setSortedVaults] = useState<Vault[]>([])
+
+  useEffect(() => {
+    const loadVaults = async () => {
+      const allVaults = await getAllVaults()
+      setSortedVaults(allVaults.sort((a, b) => b.lastOpened.getTime() - a.lastOpened.getTime()))
+    }
+    loadVaults()
+  }, [getAllVaults])
 
   const activeVault = getActiveVault()
 
-  const handleOpenDirectory = async () => {
-    try {
-      const handle = await window.showDirectoryPicker({ startIn: "documents" })
-      const vault = await addVault(handle)
-      if (vault) {
-        router.push(`/${vault.path}`)
-      }
-    } catch (error) {
-      console.error("Error opening directory:", error)
-    }
-  }
+  const handleVaultSelect = (vault: Vault) => router.push(`/${vault.id}`)
 
-  const handleVaultSelect = (vault: Vault) => {
-    setActiveVaultId(vault.id)
-    router.push(`/${vault.path}`)
-  }
+  const onFileSelect = useCallback(
+    async (node: FileSystemTreeNode) => {
+      if (!activeVault || node.kind !== "file" || !codeMirrorRef.current) return
+
+      try {
+        const file = await node.handle.getFile()
+        const content = await file.text()
+
+        codeMirrorRef.current.dispatch({
+          changes: {
+            from: 0,
+            to: codeMirrorRef.current.state.doc.length,
+            insert: content,
+          },
+          effects: setFile.of(file.name),
+        })
+      } catch (error) {
+        console.error("Error reading file:", error)
+      }
+    },
+    [activeVault, codeMirrorRef],
+  )
 
   return (
     <Sidebar className="bg-background" {...props}>
-      <SidebarContent>
-        <SidebarHeader className="border-b h-10 p-0">
-          <div className="h-full flex items-center justify-between mx-4">
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-6 w-6 p-0"
-                title="New File"
-                disabled={!activeVault}
-              >
-                <Plus className="h-3 w-3" width={16} height={16} />
+      <SidebarHeader className="border-b h-10 p-0 min-h-10 sticky">
+        <div className="h-full flex items-center justify-end mx-4 gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 group" title="Manage Vault">
+                <ChevronDown className="h-3 w-3 transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </Button>
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-6 gap-1">
-                  <span className="truncate max-w-[100px]">
-                    {activeVault?.name || "Select Vault"}
-                  </span>
-                  <ChevronDown className="h-3 w-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {Array.from(vaults.entries()).map(([id, vault]) => (
-                  <DropdownMenuItem key={id} onClick={() => handleVaultSelect(vault)}>
-                    {vault.name}
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleOpenDirectory}>Open Vault...</DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/">Manage Vaults...</Link>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" sideOffset={2}>
+              {sortedVaults.map((vault, idx) => (
+                <DropdownMenuItem key={idx} onClick={() => handleVaultSelect(vault)}>
+                  {vault.name}
                 </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </SidebarHeader>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {activeVault && activeVault.root ? (
-                <FileTreeNode
-                  node={activeVault!.root}
-                  onFileSelect={onFileSelect}
-                  onTreeUpdate={onTreeUpdate}
-                />
-              ) : (
-                <div className="p-4 text-sm text-muted-foreground italic">
-                  No vault selected. Select a vault from the dropdown above.
-                </div>
-              )}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter className="border-t h-8 p-0">
-        <div className="flex items-center justify-between mx-4 h-full">
-          <span className="text-sm text-muted-foreground truncate">
-            {activeVault ? activeVault.name : "local"}
-          </span>
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/">Manage Vaults...</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0"
+            title="New File"
+            disabled={!activeVault}
+          >
+            <Plus className="h-3 w-3" width={16} height={16} />
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="h-6 w-6 p-0" title="Export">
@@ -202,7 +177,24 @@ export function Explorer({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </SidebarFooter>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {isLoading ? (
+                <div className="p-4 text-sm text-muted-foreground italic">Loading vault...</div>
+              ) : activeVault ? (
+                <FileTreeNode node={activeVault.tree!} onFileSelect={onFileSelect} />
+              ) : (
+                <div className="p-4 text-sm text-muted-foreground italic">
+                  No vault selected. Select a vault from the dropdown above.
+                </div>
+              )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
       <SidebarRail />
     </Sidebar>
   )
