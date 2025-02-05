@@ -10,40 +10,13 @@ import { RangeSetBuilder, StateEffect, StateField } from "@codemirror/state"
 import type { Root as HtmlRoot } from "hast"
 import type { Root as MdRoot } from "mdast"
 import { VFile } from "vfile"
-import { type Processor, unified } from "unified"
+import { unified } from "unified"
 import remarkParse from "remark-parse"
 import remarkRehype from "remark-rehype"
 import rehypeStringify from "rehype-stringify"
-import remarkGfm from "remark-gfm"
-import smartypants from "remark-smartypants"
-import rehypeSlug from "rehype-slug"
-import rehypePrettyCode from "rehype-pretty-code"
-import rehypeKatex from "rehype-katex"
-import rehypeRaw from "rehype-raw"
+import { markdownPlugins, htmlPlugins } from "./parser"
 
 export type HtmlContent = [HtmlRoot, VFile, string]
-
-function markdownPlugins() {
-  return [remarkGfm, smartypants]
-}
-
-function htmlPlugins() {
-  return [
-    rehypeRaw,
-    rehypeSlug,
-    [
-      rehypePrettyCode,
-      {
-        theme: {
-          light: "github-light",
-          dark: "github-dark",
-        },
-        keepBackground: false,
-      },
-    ],
-    [rehypeKatex, { output: "htmlAndMathml" }],
-  ]
-}
 
 function shouldProcessFile(filename: string): boolean {
   const processableExtensions = [".md", ".mdx", ".markdown", ".txt"]
@@ -55,21 +28,12 @@ function processor(filename?: string) {
     return unified()
   }
 
-  return (
-    unified()
-      .use(remarkParse)
-      .use(markdownPlugins())
-      .use(remarkRehype, { allowDangerousHtml: true })
-      // @ts-expect-error For some reason, ts fails to recognize the correct type for all plugins.
-      .use(htmlPlugins())
-      .use(rehypeStringify, { allowDangerousHtml: true }) as Processor<
-      MdRoot,
-      MdRoot,
-      HtmlRoot,
-      HtmlRoot,
-      string
-    >
-  )
+  return unified()
+    .use(remarkParse)
+    .use(markdownPlugins())
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(htmlPlugins())
+    .use(rehypeStringify, { allowDangerousHtml: true })
 }
 
 let mdProcessor: ReturnType<typeof processor> | null = null

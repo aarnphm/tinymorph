@@ -3,12 +3,20 @@ import { Fragment, jsx, jsxs } from "react/jsx-runtime"
 import { urlAttributes } from "html-url-attributes"
 import { type BuildVisitor, visit } from "unist-util-visit"
 import type { Root, Node } from "hast"
-const components: Components = {
-  table: (props) => (
-    <div className="table-container">
-      <table {...props} />
-    </div>
-  ),
+import { HTMLAttributes, ReactNode } from "react"
+
+interface TableWrapperProps extends HTMLAttributes<HTMLTableElement> {
+  children?: ReactNode
+}
+
+const components: Partial<Components> = {
+  table({ children }: TableWrapperProps) {
+    return (
+      <div className="table-container">
+        <table>{children}</table>
+      </div>
+    )
+  },
 }
 
 const safeProtocol = /^(https?|ircs?|mailto|xmpp)$/i
@@ -39,6 +47,7 @@ export function defaultUrlTransform(value: string): string {
 
 export default function toJsx(node: Node) {
   visit(node as Root, transform)
+
   return toJsxRuntime(node as Root, {
     Fragment,
     jsx,

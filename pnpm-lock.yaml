@@ -239,6 +239,12 @@ importers:
       '@codemirror/lang-markdown':
         specifier: ^6.3.2
         version: 6.3.2
+      '@codemirror/lang-yaml':
+        specifier: ^6.1.2
+        version: 6.1.2
+      '@codemirror/language':
+        specifier: ^6.10.8
+        version: 6.10.8
       '@codemirror/language-data':
         specifier: ^6.5.1
         version: 6.5.1
@@ -248,6 +254,9 @@ importers:
       '@codemirror/view':
         specifier: ^6.36.2
         version: 6.36.2
+      '@lezer/highlight':
+        specifier: ^1.2.1
+        version: 1.2.1
       '@radix-ui/react-avatar':
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.0.3)(@types/react@19.0.8)(react-dom@19.0.0)(react@19.0.0)
@@ -323,21 +332,48 @@ importers:
       d3-selection:
         specifier: ^3.0.0
         version: 3.0.0
+      gray-matter:
+        specifier: ^4.0.3
+        version: 4.0.3
+      hast-util-from-html-isomorphic:
+        specifier: ^2.0.0
+        version: 2.0.0
+      hast-util-heading-rank:
+        specifier: ^3.0.0
+        version: 3.0.0
+      hast-util-to-html:
+        specifier: ^9.0.4
+        version: 9.0.4
       hast-util-to-jsx-runtime:
         specifier: ^2.3.0
         version: 2.3.2
+      hast-util-to-string:
+        specifier: ^3.0.1
+        version: 3.0.1
       hastscript:
         specifier: ^9.0.0
         version: 9.0.0
       html-url-attributes:
         specifier: ^3.0.1
         version: 3.0.1
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
       jspdf:
         specifier: ^2.5.2
         version: 2.5.2
+      katex:
+        specifier: ^0.16.21
+        version: 0.16.21
       lucide-react:
         specifier: ^0.474.0
         version: 0.474.0(react@19.0.0)
+      mdast-util-from-markdown:
+        specifier: ^2.0.2
+        version: 2.0.2
+      mdast-util-to-string:
+        specifier: ^4.0.0
+        version: 4.0.0
       minimatch:
         specifier: ^10.0.1
         version: 10.0.1
@@ -350,12 +386,18 @@ importers:
       next-themes:
         specifier: ^0.4.4
         version: 0.4.4(react-dom@19.0.0)(react@19.0.0)
+      pseudocode:
+        specifier: ^2.4.1
+        version: 2.4.1
       react:
         specifier: ^19.0.0
         version: 19.0.0
       react-dom:
         specifier: ^19.0.0
         version: 19.0.0(react@19.0.0)
+      reading-time:
+        specifier: ^1.5.0
+        version: 1.5.0
       rehype-autolink-headings:
         specifier: ^7.1.0
         version: 7.1.0
@@ -380,6 +422,12 @@ importers:
       rehype-stringify:
         specifier: ^10.0.1
         version: 10.0.1
+      remark-breaks:
+        specifier: ^4.0.0
+        version: 4.0.0
+      remark-frontmatter:
+        specifier: ^5.0.0
+        version: 5.0.0
       remark-gfm:
         specifier: ^4.0.0
         version: 4.0.0
@@ -395,6 +443,12 @@ importers:
       remark-smartypants:
         specifier: ^3.0.2
         version: 3.0.2
+      rfdc:
+        specifier: ^1.4.1
+        version: 1.4.1
+      shiki:
+        specifier: ^1.29.1
+        version: 1.29.2
       tailwind-merge:
         specifier: ^3.0.1
         version: 3.0.1
@@ -429,6 +483,9 @@ importers:
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
+      '@types/js-yaml':
+        specifier: ^4.0.9
+        version: 4.0.9
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
@@ -436,10 +493,10 @@ importers:
         specifier: ^22
         version: 22.13.0
       '@types/react':
-        specifier: ^19
+        specifier: ^19.0.8
         version: 19.0.8
       '@types/react-dom':
-        specifier: ^19
+        specifier: ^19.0.3
         version: 19.0.3(@types/react@19.0.8)
       cross-env:
         specifier: ^7.0.3
@@ -450,8 +507,11 @@ importers:
       eslint-config-next:
         specifier: 15.1.6
         version: 15.1.6(eslint@9.19.0)(typescript@5.7.3)
+      micromark-util-types:
+        specifier: ^2.0.1
+        version: 2.0.1
       postcss:
-        specifier: ^8
+        specifier: ^8.5.1
         version: 8.5.1
       tailwindcss:
         specifier: ^4.0.3
@@ -6586,8 +6646,8 @@ packages:
       object.values: 1.2.1
     dev: true
 
-  /katex@0.16.11:
-    resolution: {integrity: sha512-RQrI8rlHY92OLf3rho/Ts8i/XvjgguEjOkO1BEXcU3N8BqPpSzBNwV/G0Ukr+P/l3ivvJUE/Fa/CwbS6HesGNQ==}
+  /katex@0.16.21:
+    resolution: {integrity: sha512-XvqR7FgOHtWupfMiigNzmh+MgUVmDGU2kXZm899ZkPfcuoPuFxyHmXsgATDpFZDAXCI8tvinaVcDo8PIIJSo4A==}
     hasBin: true
     dependencies:
       commander: 8.3.0
@@ -6779,6 +6839,12 @@ packages:
       mj-context-menu: 0.6.1
       speech-rule-engine: 4.0.7
     dev: false
+
+  /mathjax@3.2.2:
+    resolution: {integrity: sha512-Bt+SSVU8eBG27zChVewOicYs7Xsdt40qm4+UpHyX7k0/O9NliPc+x77k1/FEsPsjKPZGJvtRZM1vO+geW0OhGw==}
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /mdast-util-find-and-replace@3.0.2:
     resolution: {integrity: sha512-Tmd1Vg/m3Xz43afeNxDIhWRtFZgM2VLyaf4vSTYwudTyeuTneoL3qtWMA5jeLyz/O1vDJmmV4QuScFCA2tBPwg==}
@@ -7116,7 +7182,7 @@ packages:
     dependencies:
       '@types/katex': 0.16.7
       devlop: 1.1.0
-      katex: 0.16.11
+      katex: 0.16.21
       micromark-factory-space: 2.0.1
       micromark-util-character: 2.1.1
       micromark-util-symbol: 2.0.1
@@ -7259,7 +7325,6 @@ packages:
 
   /micromark-util-types@2.0.1:
     resolution: {integrity: sha512-534m2WhVTddrcKVepwmVEVnUAmtrx9bfIjNoQHRqfnvdaHQiFytEhJoTgpWJvDEXCO5gLTQh3wYC1PgOJA4NSQ==}
-    dev: false
 
   /micromark@4.0.1:
     resolution: {integrity: sha512-eBPdkcoCNvYcxQOAKAlceo5SNdzZWfF+FcSupREAzdAh9rRmE239CEQAiTwIgblwnoM8zzj35sZ5ZwvSEOF6Kw==}
@@ -7767,6 +7832,14 @@ packages:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
     dev: false
 
+  /pseudocode@2.4.1:
+    resolution: {integrity: sha512-PUslrULyVbqk72+L4D4dvDwD8KPOGazSM9oQhB9a05ab+BPsvwFy6rm/pX6vSFp0IiCa1Isi/lmNE2oHqmr+rw==}
+    dependencies:
+      katex: 0.16.21
+    optionalDependencies:
+      mathjax: 3.2.2
+    dev: false
+
   /psl@1.9.0:
     resolution: {integrity: sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==}
     dev: false
@@ -7994,7 +8067,7 @@ packages:
       '@types/katex': 0.16.7
       hast-util-from-html-isomorphic: 2.0.0
       hast-util-to-text: 4.0.2
-      katex: 0.16.11
+      katex: 0.16.21
       unist-util-visit-parents: 6.0.1
       vfile: 6.0.3
     dev: false

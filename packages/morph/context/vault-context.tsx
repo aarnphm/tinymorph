@@ -20,7 +20,7 @@ const VaultContext = createContext<VaultContextType>({
 export function VaultProvider({ children }: { children: React.ReactNode }) {
   const [activeVaultId, setActiveVaultId] = useState<string | null>(null)
   const { vaults } = useVaults()
-  const [isHydrating, setIsHydrating] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
 
   const getActiveVault = () => {
     return activeVaultId ? vaults.find((v) => v.id === activeVaultId) : undefined
@@ -29,11 +29,16 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
   // Handle initial vault hydration
   useEffect(() => {
     if (vaults.length > 0) {
-      setIsHydrating(false)
       const lastActiveId = localStorage.getItem("morph:active-vault")
       if (lastActiveId && vaults.some((v) => v.id === lastActiveId)) {
         setActiveVaultId(lastActiveId)
       }
+      setIsLoading(false)
+    } else {
+      // If no vaults are present, debounce setting isLoading to false so that
+      // the state is updated once the DB has finished loading, without blocking the main thread
+      const timer = setTimeout(() => setIsLoading(false), 1000)
+      return () => clearTimeout(timer)
     }
   }, [vaults])
 
@@ -42,18 +47,10 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
     if (activeVaultId) {
       localStorage.setItem("morph:active-vault", activeVaultId)
     }
-    setIsHydrating(false)
   }, [activeVaultId])
 
   return (
-    <VaultContext.Provider
-      value={{
-        activeVaultId,
-        setActiveVaultId,
-        getActiveVault,
-        isLoading: isHydrating,
-      }}
-    >
+    <VaultContext.Provider value={{ activeVaultId, setActiveVaultId, getActiveVault, isLoading }}>
       {children}
     </VaultContext.Provider>
   )

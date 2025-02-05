@@ -61,7 +61,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                   className={cn(
                     "w-full text-left px-3 py-2 rounded-md text-sm transition-colors",
                     activeCategory === category.id
-                      ? "bg-rose-200 text-rose-900 dark:bg-rose-900 dark:text-rose-100"
+                      ? "bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100"
                       : "hover:bg-gray-100 dark:hover:bg-gray-800",
                   )}
                 >

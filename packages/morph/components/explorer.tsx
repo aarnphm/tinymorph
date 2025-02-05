@@ -30,6 +30,7 @@ import { EditorView } from "@uiw/react-codemirror"
 import { setFile } from "./markdown-inline"
 import useVaults, { FileSystemTreeNode } from "@/hooks/use-vaults"
 import { useVaultContext } from "@/context/vault-context"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface FileTreeNodeProps {
   node: FileSystemTreeNode
@@ -95,7 +96,7 @@ export function Explorer({
 }: MorphSidebarProps) {
   const router = useRouter()
   const { getAllVaults } = useVaults()
-  const { getActiveVault, isLoading } = useVaultContext()
+  const { getActiveVault } = useVaultContext()
 
   const [sortedVaults, setSortedVaults] = useState<Vault[]>([])
 
@@ -182,13 +183,12 @@ export function Explorer({
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {isLoading ? (
-                <div className="p-4 text-sm text-muted-foreground italic">Loading vault...</div>
-              ) : activeVault ? (
+              {activeVault ? (
                 <FileTreeNode node={activeVault.tree!} onFileSelect={onFileSelect} />
               ) : (
-                <div className="p-4 text-sm text-muted-foreground italic">
-                  No vault selected. Select a vault from the dropdown above.
+                <div className="p-4">
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-3/4" />
                 </div>
               )}
             </SidebarMenu>
