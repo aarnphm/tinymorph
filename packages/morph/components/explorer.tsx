@@ -86,12 +86,16 @@ interface MorphSidebarProps extends React.ComponentProps<typeof Sidebar> {
   codeMirrorRef: React.RefObject<EditorView | null>
   onExportMarkdown: () => void
   onExportPDF: () => void
+  onFileSelect?: (handle: FileSystemFileHandle) => void
+  onNewFile?: () => void
 }
 
 export function Explorer({
   codeMirrorRef,
   onExportMarkdown,
   onExportPDF,
+  onFileSelect,
+  onNewFile,
   ...props
 }: MorphSidebarProps) {
   const router = useRouter()
@@ -112,13 +116,15 @@ export function Explorer({
 
   const handleVaultSelect = (vault: Vault) => router.push(`/${vault.id}`)
 
-  const onFileSelect = useCallback(
+  const handleFileSelect = useCallback(
     async (node: FileSystemTreeNode) => {
       if (!activeVault || node.kind !== "file" || !codeMirrorRef.current) return
 
       try {
         const file = await node.handle.getFile()
         const content = await file.text()
+
+        if (onFileSelect) onFileSelect(node.handle as FileSystemFileHandle)
 
         codeMirrorRef.current.dispatch({
           changes: {
@@ -132,7 +138,7 @@ export function Explorer({
         console.error("Error reading file:", error)
       }
     },
-    [activeVault, codeMirrorRef],
+    [activeVault, codeMirrorRef, onFileSelect],
   )
 
   return (
@@ -163,6 +169,19 @@ export function Explorer({
             className="h-6 w-6 p-0"
             title="New File"
             disabled={!activeVault}
+            onClick={() => {
+              if (codeMirrorRef.current) {
+                codeMirrorRef.current.dispatch({
+                  changes: {
+                    from: 0,
+                    to: codeMirrorRef.current.state.doc.length,
+                    insert: "",
+                  },
+                  effects: setFile.of("Untitled"),
+                })
+              }
+              onNewFile?.()
+            }}
           >
             <Plus className="h-3 w-3" width={16} height={16} />
           </Button>
@@ -184,7 +203,7 @@ export function Explorer({
           <SidebarGroupContent>
             <SidebarMenu>
               {activeVault ? (
-                <FileTreeNode node={activeVault.tree!} onFileSelect={onFileSelect} />
+                <FileTreeNode node={activeVault.tree!} onFileSelect={handleFileSelect} />
               ) : (
                 <div className="p-4">
                   <Skeleton className="h-4 w-full mb-2" />

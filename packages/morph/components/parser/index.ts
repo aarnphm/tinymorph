@@ -1,10 +1,10 @@
-import type { Root as MdRoot } from "mdast"
-import type { Element, Root as HtmlRoot } from "hast"
+import type { Root as MdRoot, Code } from "mdast"
+import type { Root as HtmlRoot, Element, Text } from "hast"
 import { PluggableList } from "unified"
 import remarkFrontmatter from "remark-frontmatter"
 import yaml from "js-yaml"
 import { Data } from "vfile"
-import matter from "gray-matter"
+import matter, { type GrayMatterFile } from "gray-matter"
 import { toString as hastToString } from "hast-util-to-string"
 import { toString as mdastToString } from "mdast-util-to-string"
 import { headingRank } from "hast-util-heading-rank"
@@ -22,7 +22,9 @@ import {
   extractInlineMacros,
   rendererOptions,
 } from "./utils"
-import { toHtml } from "hast-util-to-html"
+import { toHtml as hastToHtml } from "hast-util-to-html"
+import { toHast as mdastToHast } from "mdast-util-to-hast"
+import { fromMarkdown } from "mdast-util-from-markdown"
 import { fromHtmlIsomorphic } from "hast-util-from-html-isomorphic"
 import { EXIT, SKIP, visit } from "unist-util-visit"
 import { h, s, type Child } from "hastscript"
@@ -71,6 +73,20 @@ declare module "vfile" {
   }
 }
 
+export function md(value: string): GrayMatterFile<string>
+export function md(value: Buffer<ArrayBuffer>): GrayMatterFile<Buffer<ArrayBuffer>>
+export function md(
+  content: string | Buffer<ArrayBuffer>,
+): GrayMatterFile<string | Buffer<ArrayBuffer>> {
+  return matter(content, {
+    delimiters: "---",
+    language: "yaml",
+    engines: {
+      yaml: (s) => yaml.load(s, { schema: yaml.JSON_SCHEMA }) as object,
+    },
+  })
+}
+
 // grid two columns
 const gr = (...el: Child[]) =>
   h(
@@ -88,13 +104,7 @@ const Frontmatter = {
   markdownPlugins: () => [
     [remarkFrontmatter, ["yaml", "toml"]],
     () => (_, file) => {
-      const { data } = matter(Buffer.from(file.value), {
-        delimiters: "---",
-        language: "yaml",
-        engines: {
-          yaml: (s) => yaml.load(s, { schema: yaml.JSON_SCHEMA }) as object,
-        },
-      })
+      const { data } = md(Buffer.from(file.value))
 
       if (data.title != null && data.title.toString() !== "") {
         data.title = data.title.toString()
@@ -162,7 +172,7 @@ const Frontmatter = {
                             "li.tag-link",
                             {
                               class:
-                                "border-border rounded box-border border-2 border-gray-400 border-solid my-0 mx-[0.1em] py-[0.1em] px-[0.4em] !text-sm/7 decoration-none",
+                                "border-border rounded box-border border-2 border-gray-300 border-solid my-0 mx-[0.1em] py-[0.1em] px-[0.4em] !text-sm/7 decoration-none",
                             },
                             [{ type: "text", value: el }],
                           ),
@@ -463,14 +473,79 @@ const Pseudocode = {
           rendered.properties["data-inline-macros"] = inlineMacros ?? ""
 
           node.type = "html" as "code"
-          node.value = toHtml(rendered, { allowDangerousHtml: true })
+          node.value = hastToHtml(rendered, { allowDangerousHtml: true })
         }
       })
     },
   ],
-}
+} satisfies MorphParser
 
-const Order = [Frontmatter, ModifiedTime, Pseudocode, SyntaxHighlighting, Gfm, Description, Latex]
+const Markup = {
+  name: "Markup",
+  markdownPlugins: () => [
+    () => (tree: MdRoot, file) => {
+      const lang = file.data.frontmatter?.lang ?? "en"
+
+      const createBaseElement = ({ lang, value }: Code): Element => ({
+        type: "element",
+        tagName: "p",
+        properties: { "data-codeblock": lang },
+        children: [{ type: "text", value }],
+      })
+
+      const transformPoetry = (target: Element, lang: string) => {
+        target.tagName = "pre"
+        target.properties.className = ["poetry"]
+        target.properties["data-language"] = lang
+        return hastToHtml(target, { allowDangerousHtml: true })
+      }
+
+      const transformQuotes = (target: Element) => {
+        const hast = (
+          mdastToHast(fromMarkdown((target.children[0] as Text).value.replace(/--/g, "—")), {
+            allowDangerousHtml: true,
+          }) as HtmlRoot
+        ).children[0] as Element
+        target = {
+          ...target,
+          ...hast,
+          properties: { className: ["quotes"] },
+        }
+        return hastToHtml(target, { allowDangerousHtml: true })
+      }
+
+      const transformSMS = (target: Element) => {
+        target.properties.className = ["text"]
+        return hastToHtml(target, { allowDangerousHtml: true })
+      }
+
+      const transformations: Record<"poetry" | "quotes" | "sms", (node: Code) => string> = {
+        poetry: (node: Code) => transformPoetry(createBaseElement(node), lang),
+        quotes: (node: Code) => transformQuotes(createBaseElement(node)),
+        sms: (node: Code) => transformSMS(createBaseElement(node)),
+      }
+
+      visit(tree, "code", (node) => {
+        const transform = transformations[node.lang as keyof typeof transformations]
+        if (transform) {
+          node.type = "html" as "code"
+          node.value = transform(node)
+        }
+      })
+    },
+  ],
+} satisfies MorphParser
+
+const Order = [
+  Frontmatter,
+  ModifiedTime,
+  Markup,
+  Pseudocode,
+  SyntaxHighlighting,
+  Gfm,
+  Description,
+  Latex,
+]
 
 export function markdownPlugins() {
   // @ts-expect-error type aren't smart enough

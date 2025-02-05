@@ -6,6 +6,7 @@ import { VaultProvider } from "@/context/vault-context"
 import toJsx from "@/lib/jsx"
 import { s } from "hastscript"
 import Script from "next/script"
+import { Toaster } from "@/components/ui/toaster"
 
 export const metadata = {
   title: "morph-editor.app",
@@ -199,6 +200,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             ),
           )}
         </PlausibleProvider>
+        <Toaster />
       </body>
     </html>
   )

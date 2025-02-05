@@ -9,7 +9,7 @@ import { yamlFrontmatter } from "@codemirror/lang-yaml"
 import { languages } from "@codemirror/language-data"
 import { tags } from "@lezer/highlight"
 import { HighlightStyle, syntaxHighlighting } from "@codemirror/language"
-import { EditorView } from "@codemirror/view"
+import { EditorView, placeholder } from "@codemirror/view"
 import { Compartment, EditorState } from "@codemirror/state"
 import { Pencil, Eye } from "lucide-react"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
@@ -27,8 +27,13 @@ import { fileField, mdToHtml } from "./markdown-inline"
 import toJsx from "@/lib/jsx"
 import type { Root } from "hast"
 import { useTheme } from "next-themes"
-import { WELCOME_MD } from "@/lib/constants"
 import { useVaultContext } from "@/context/vault-context"
+import { Skeleton } from "./ui/skeleton"
+import { md } from "./parser"
+import { DotIcon } from "@/components/ui/icons"
+import useVaults from "@/hooks/use-vaults"
+import { useToast } from "@/hooks/use-toast"
+import { ToastAction } from "@/components/ui/toast"
 
 interface Suggestion {
   suggestion: string
@@ -111,20 +116,34 @@ const syntaxHighlighter = HighlightStyle.define([
 
 export default function Editor({ vaultId }: EditorProps) {
   const { theme } = useTheme()
-  const { setActiveVaultId } = useVaultContext()
+  const { refreshVault } = useVaults()
+  const { getActiveVault, setActiveVaultId } = useVaultContext()
   const editorRef = useRef<HTMLDivElement>(null)
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [showPopover, setShowPopover] = useState(false)
   const [currentFile, setCurrentFile] = useState<string>("")
   const [isEditMode, setIsEditMode] = useState(true)
   const [previewNode, setPreviewNode] = useState<Root | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isEditorReady, setIsEditorReady] = useState(false)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  const [currentFileHandle, setCurrentFileHandle] = useState<FileSystemFileHandle | null>(null)
 
   const { settings } = usePersistedSettings()
   const codeMirrorViewRef = useRef<EditorView | null>(null)
   const editorScrollRef = useRef<HTMLDivElement>(null)
   const readingModeRef = useRef<HTMLDivElement>(null)
+  const { toast } = useToast()
+  const placeholderRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!placeholderRef.current) {
+      const placeholder = document.createElement("div")
+      placeholder.textContent = "Start writing... (or drag notes here)"
+      placeholder.className = "cm-empty-placeholder"
+      placeholderRef.current = placeholder
+    }
+  }, [])
 
   // Set active vault when component mounts or vaultId changes
   useEffect(() => {
@@ -133,43 +152,33 @@ export default function Editor({ vaultId }: EditorProps) {
     }
   }, [vaultId, setActiveVaultId])
 
-  const memoizedExtensions = useMemo(() => {
-    Vim.defineEx("yank", "y", () => {
-      const text = Vim.getRegister('"')
-      if (text) {
-        navigator.clipboard.writeText(text).catch(console.error)
-      }
-    })
+  const [markdownContent, setMarkdownContent] = useState("")
+  const onContentChange = useCallback(
+    (value: string) => {
+      setMarkdownContent(value)
 
-    const tabSize = new Compartment()
-    return [
-      yamlFrontmatter({
-        content: markdown({ base: markdownLanguage, codeLanguages: languages }),
-      }),
-      frontmatterExtension(),
-      vim(),
-      EditorView.lineWrapping,
-      tabSize.of(EditorState.tabSize.of(settings.tabSize)),
-      fileField.init(() => currentFile),
-      EditorView.updateListener.of((update) => {
-        if (update.docChanged || update.selectionSet) {
-          const newFilename = update.state.field(fileField)
-          setCurrentFile(newFilename)
+      // Only update preview if there are unsaved changes
+      if (!hasUnsavedChanges) {
+        setHasUnsavedChanges(true)
+        const updatePreview = async () => {
+          try {
+            const tree = await mdToHtml(value, currentFile, true)
+            setPreviewNode(tree)
+          } catch (error) {
+            console.error("Error converting markdown to JSX:", error)
+          }
         }
-      }),
-      syntaxHighlighting(syntaxHighlighter),
-    ]
-  }, [settings.tabSize, currentFile])
-
-  const [markdownContent, setMarkdownContent] = useState(WELCOME_MD)
-  const onContentChange = useCallback((value: string) => {
-    setMarkdownContent(value)
-  }, [])
+        updatePreview()
+      } else {
+        // Just mark as unsaved without updating preview
+        setHasUnsavedChanges(true)
+      }
+    },
+    [currentFile, hasUnsavedChanges],
+  )
 
   const [showNotes, setShowNotes] = useState(false)
-  const toggleNotes = useCallback(() => {
-    setShowNotes((prev) => !prev)
-  }, [])
+  const toggleNotes = useCallback(() => setShowNotes((prev) => !prev), [])
 
   const [notes, setNotes] = useState<Note[]>([])
   const handleNoteDrop = useCallback((note: Note, droppedOverEditor: boolean) => {
@@ -204,12 +213,82 @@ export default function Editor({ vaultId }: EditorProps) {
     pdf.save(currentFile)
   }, [markdownContent, currentFile])
 
+  //TODO: Add a toast?
+  const handleSave = useCallback(async () => {
+    try {
+      let targetHandle = currentFileHandle
+
+      // If new file, show save dialog
+      if (!targetHandle) {
+        targetHandle = await window.showSaveFilePicker({
+          id: vaultId,
+          suggestedName: currentFile.endsWith(".md") ? currentFile : `${currentFile}.md`,
+          types: [
+            {
+              description: "Markdown Files",
+              accept: { "text/markdown": [".md"] },
+            },
+          ],
+        })
+      }
+
+      const writable = await targetHandle.createWritable()
+      await writable.write(markdownContent)
+      await writable.close()
+
+      // Update state only if it's a new file
+      if (!currentFileHandle) {
+        setCurrentFileHandle(targetHandle)
+        setCurrentFile(targetHandle.name)
+
+        // Refresh vault tree
+        const activeVault = getActiveVault()
+        if (activeVault) {
+          await refreshVault(activeVault.id)
+        }
+      }
+
+      setHasUnsavedChanges(false)
+      
+      // Only fetch notes if panel is open
+      if (showNotes) {
+        try {
+          const newNotes = await fetchNewNotes(markdownContent)
+          setNotes(newNotes)
+        } catch (error) {
+          toast({
+            title: "Note generation failed",
+            description: error instanceof Error ? error.message : "Please try again later",
+            variant: "destructive",
+          })
+        }
+      }
+    } catch (error) {
+      console.error("Error saving file:", error)
+      toast({
+        title: "Save failed",
+        description: error instanceof Error ? error.message : "Unknown error occurred",
+        variant: "destructive",
+        action: <ToastAction altText="Retry" onClick={handleSave}>Retry</ToastAction>,
+      })
+    }
+  }, [
+    currentFileHandle,
+    markdownContent,
+    hasUnsavedChanges,
+    currentFile,
+    getActiveVault,
+    refreshVault,
+    vaultId,
+    showNotes,
+  ])
+
   const fetchNewNotes = async (content: string) => {
     try {
       const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT
-      
-      // TODO: should disable or greyed out the notes button
-      if (!apiEndpoint) throw new Error("ENDPOINT cannot be found, notes won't be functional")
+      if (!apiEndpoint) {
+        throw new Error('Notes functionality is currently unavailable')
+      }
 
       const resp = await axios.post<
         AsteraceaResponse,
@@ -218,7 +297,7 @@ export default function Editor({ vaultId }: EditorProps) {
       >(
         `${apiEndpoint}/suggests`,
         {
-          essay: content,
+          essay: md(content).content,
           num_suggestions: 8,
           max_tokens: 8192,
         },
@@ -236,26 +315,56 @@ export default function Editor({ vaultId }: EditorProps) {
       }))
     } catch (error) {
       console.error("Error fetching suggestions:", error)
-      return []
+      throw new Error('Failed to generate notes. Please try again.')
     }
   }
 
   useEffect(() => {
     if (!showNotes) return
-  
+
     setIsLoading(true)
-  
+
     const timerId = setTimeout(async () => {
       const newNotes = await fetchNewNotes(markdownContent)
       setNotes(newNotes)
       setIsLoading(false)
     }, 1000)
-  
+
     return () => {
       clearTimeout(timerId)
     }
   }, [showNotes])
-  
+
+  // CodeMirror extensions
+  const memoizedExtensions = useMemo(() => {
+    Vim.defineEx("yank", "y", () => {
+      const text = Vim.getRegister('"')
+      if (text) {
+        navigator.clipboard.writeText(text).catch(console.error)
+      }
+    })
+    Vim.defineEx("w", "w", handleSave)
+    const tabSize = new Compartment()
+
+    return [
+      yamlFrontmatter({
+        content: markdown({ base: markdownLanguage, codeLanguages: languages }),
+      }),
+      frontmatterExtension(),
+      vim(),
+      EditorView.lineWrapping,
+      tabSize.of(EditorState.tabSize.of(settings.tabSize)),
+      fileField.init(() => currentFile),
+      EditorView.updateListener.of((update) => {
+        if (update.docChanged || update.selectionSet) {
+          const newFilename = update.state.field(fileField)
+          setCurrentFile(newFilename)
+        }
+      }),
+      syntaxHighlighting(syntaxHighlighter),
+      placeholder(() => placeholderRef.current!),
+    ]
+  }, [settings.tabSize, currentFile, handleSave])
 
   // Check for file permission
   const [fileSystemPermissionGranted, setFileSystemPermissionGranted] = useState(false)
@@ -279,24 +388,15 @@ export default function Editor({ vaultId }: EditorProps) {
       } else if (event.key === settings.editModeShortcut && (event.metaKey || event.altKey)) {
         event.preventDefault()
         setIsEditMode((prev) => !prev)
+      } else if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+        event.preventDefault()
+        handleSave()
       }
     }
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [toggleNotes, settings.editModeShortcut, settings.notePanelShortcut])
-
-  useEffect(() => {
-    const updatePreview = async () => {
-      try {
-        const tree = await mdToHtml(markdownContent, currentFile, true)
-        setPreviewNode(tree)
-      } catch (error) {
-        console.error("Error converting markdown to JSX:", error)
-      }
-    }
-    updatePreview()
-  }, [markdownContent, currentFile])
+  }, [toggleNotes, settings.editModeShortcut, settings.notePanelShortcut, handleSave])
 
   return (
     <div>
@@ -306,6 +406,11 @@ export default function Editor({ vaultId }: EditorProps) {
           onExportMarkdown={handleExportMarkdown}
           onExportPDF={handleExportPdf}
           codeMirrorRef={codeMirrorViewRef}
+          onFileSelect={(handle: FileSystemFileHandle) => setCurrentFileHandle(handle)}
+          onNewFile={() => {
+            setCurrentFileHandle(null)
+            setCurrentFile("Untitled")
+          }}
         />
         <SidebarInset>
           <header className="inline-block h-10 border-b">
@@ -343,16 +448,35 @@ export default function Editor({ vaultId }: EditorProps) {
                 className={`editor-mode absolute inset-0 ${isEditMode ? "block" : "hidden"}`}
                 ref={editorRef}
               >
-                <div ref={editorScrollRef} className="h-full scrollbar-hidden">
-                  <CodeMirror
-                    value={markdownContent}
-                    height="100%"
-                    extensions={memoizedExtensions}
-                    onChange={onContentChange}
-                    className="overflow-auto h-full mx-12 pt-4 scrollbar-hidden"
-                    theme={theme === "dark" ? "dark" : "light"}
-                    onCreateEditor={(view) => (codeMirrorViewRef.current = view)}
-                  />
+                <div ref={editorScrollRef} className="h-full scrollbar-hidden relative">
+                  <div
+                    className={`h-full transition-opacity duration-100 ${isEditorReady ? "opacity-100" : "opacity-0"}`}
+                  >
+                    {!isEditorReady && (
+                      <div className="flex flex-col max-w-5xl mx-auto pt-4">
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (
+                          <Skeleton key={idx} className="h-12 w-full mb-4" />
+                        ))}
+                      </div>
+                    )}
+                    {hasUnsavedChanges && (
+                      <div className="absolute top-4 left-4 text-sm/7 z-10 text-yellow-200">
+                        <DotIcon />
+                      </div>
+                    )}
+                    <CodeMirror
+                      value={markdownContent}
+                      height="100%"
+                      extensions={memoizedExtensions}
+                      onChange={onContentChange}
+                      className="overflow-auto h-full mx-12 pt-4 scrollbar-hidden"
+                      theme={theme === "dark" ? "dark" : "light"}
+                      onCreateEditor={(view) => {
+                        codeMirrorViewRef.current = view
+                        setIsEditorReady(true)
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
               <div

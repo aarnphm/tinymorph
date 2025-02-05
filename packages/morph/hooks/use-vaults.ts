@@ -3,9 +3,38 @@ import { useToast } from "./use-toast"
 import usePersistedSettings from "./use-persisted-settings"
 import { minimatch } from "minimatch"
 
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker
+type StartIn =
+  | FileSystemHandle
+  | "desktop"
+  | "documents"
+  | "downloads"
+  | "music"
+  | "pictures"
+  | "videos"
+interface SaveFilePickerOptions {
+  excludeAcceptAllOptions?: boolean
+  id?: string
+  startIn?: StartIn
+  suggestedName?: string
+  types?: Array<{
+    description?: string
+    accept?: Record<string, string[]>
+  }>
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker
+interface DirectoryPickerOptions {
+  id?: string
+  mode?: "read" | "readwrite"
+  startIn?: StartIn
+}
+
+// NOTE: This are currently considered experimental API from Chrome
 declare global {
   interface Window {
-    showDirectoryPicker(options?: any): Promise<FileSystemDirectoryHandle>
+    showDirectoryPicker(options?: DirectoryPickerOptions): Promise<FileSystemDirectoryHandle>
+    showSaveFilePicker(options?: SaveFilePickerOptions): Promise<FileSystemFileHandle>
   }
   interface FileSystemDirectoryHandle extends FileSystemHandle {
     id?: string
@@ -245,6 +274,24 @@ export default function useVaults() {
     return currentNode
   }
 
+  const refreshVault = useCallback(
+    async (vaultId: string) => {
+      const vault = vaults.find((v) => v.id === vaultId)
+      if (!vault) return
+
+      try {
+        const newTree = await processDirectory(vault.handle!, vault.config.ignorePatterns)
+        const updatedVault = { ...vault, tree: newTree }
+
+        await saveVaultToDB(updatedVault)
+        setVaults((prev) => prev.map((v) => (v.id === vaultId ? updatedVault : v)))
+      } catch (error) {
+        console.error("Error refreshing vault:", error)
+      }
+    },
+    [vaults],
+  )
+
   return {
     vaults,
     addVault,
@@ -258,6 +305,7 @@ export default function useVaults() {
         return []
       }
     }, [toast]),
+    refreshVault,
   }
 }
 

@@ -342,6 +342,19 @@
   --flexoki-ma-2: var(--flexoki-magenta-600);
 }
 
+@utility scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility color-inherit {
+  color: inherit;
+}
+
 @theme {
   --font-parclo-serif: "Parclo Serif", serif;
   --font-berkeley-mono: "Berkeley Mono", monospace;
@@ -627,10 +640,10 @@
   --flexoki-ma: var(--flexoki-magenta-600);
   --flexoki-ma-2: var(--flexoki-magenta-400);
 
-  --shiki-light: var(--flexoki-bg);
-  --shiki-light-bg: var(--flexoki-tx);
-  --shiki-dark: var(--flexoki-bg);
-  --shiki-dark-bg: var(--flexoki-tx);
+  --shiki-light: var(--flexoki-150);
+  --shiki-light-bg: var(--flexoki-paper);
+  --shiki-dark: var(--flexoki-black);
+  --shiki-dark-bg: var(--flexoki-800);
 
   --background: var(--flexoki-bg);
   --foreground: var(--flexoki-tx);
@@ -862,6 +875,10 @@ body {
   }
 }
 
+.cm-empty-placeholder {
+  @apply italic pointer-events-none select-none text-gray-400 dark:text-slate-300;
+}
+
 .cm-content {
   @apply !p-0;
 }
@@ -1029,19 +1046,6 @@ body {
 .tooltip-content {
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
-}
-
-@utility scrollbar-hidden {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-@utility color-inherit {
-  color: inherit;
 }
 
 .dark {
@@ -1507,4 +1511,69 @@ ul.tags > li {
   white-space: nowrap;
   margin: 0;
   overflow-wrap: normal;
+}
+
+p.quotes {
+  padding-top: 1rem;
+  padding-left: 3rem;
+
+  &:before,
+  &:after {
+    font-size: 2em;
+    line-height: 0.1em;
+    vertical-align: -0.4em;
+  }
+
+  &:before {
+    content: "“";
+    margin-right: 0.25em;
+  }
+
+  &:after {
+    content: "”";
+    margin-left: 0.25em;
+  }
+}
+
+img.inline-icons {
+  margin: 0;
+  border-radius: 0;
+}
+
+hr {
+  width: 100%;
+  height: 1px;
+  margin: 2rem auto;
+  margin-top: calc(2em + 2vh);
+  margin-bottom: calc(2em + 2vh);
+  display: block;
+  border: 0;
+  background: none;
+  text-align: center;
+  overflow: visible;
+
+  &::before {
+    content: "\2022\2022\2022";
+    display: inline-block;
+    font-size: calc(0.8em + 0.2vw);
+    letter-spacing: 1.25em;
+    color: var(--gray);
+    position: relative;
+    top: -0.75em;
+  }
+}
+
+p.text {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  padding-left: 1rem;
+
+  font-style: italic;
+  border: 0px solid var(--lightgray);
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+}
+
+section {
+  background-color: inherit;
 }

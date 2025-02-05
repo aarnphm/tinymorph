@@ -8,35 +8,32 @@ interface NoteCardProps {
   content?: string
   style?: React.CSSProperties
   isLoading?: boolean
+  ref?: React.RefObject<HTMLDivElement|null>
 }
 
-export const NoteCard = forwardRef<HTMLDivElement, NoteCardProps>(
-  ({ title, content, style, isLoading = false }, ref) => {
-    if (isLoading) {
-      return (
-        <div ref={ref} className="p-4 bg-card border border-border rounded" style={style}>
-          <Skeleton className="h-4 w-1/2 mb-2" />
-          <Skeleton className="h-3 w-full mb-1" />
-          <Skeleton className="h-3 w-full mb-1" />
-          <Skeleton className="h-3 w-2/3" />
-        </div>
-      )
-    }
-
+export function NoteCard({ title, content, style, isLoading = false, ref }: NoteCardProps) {
+  if (isLoading) {
     return (
-      <div
-        ref={ref}
-        className="p-4 bg-card border border-border transition-all duration-200 hover:shadow-lg hover:bg-gradient-to-br from-background to-muted"
-        style={style}
-      >
-        <h3 className="mb-2 text-sm font-medium text-foreground">{title}</h3>
-        <p className="text-xs text-muted-foreground leading-relaxed">{content}</p>
+      <div ref={ref} className="p-4 bg-card border border-border rounded" style={style}>
+        <Skeleton className="h-4 w-1/2 mb-2" />
+        <Skeleton className="h-3 w-full mb-1" />
+        <Skeleton className="h-3 w-full mb-1" />
+        <Skeleton className="h-3 w-2/3" />
       </div>
     )
-  },
-)
+  }
 
-NoteCard.displayName = "NoteCard"
+  return (
+    <div
+      ref={ref}
+      className="p-4 bg-card border border-border transition-all duration-200 hover:shadow-lg hover:bg-gradient-to-br from-background to-muted"
+      style={style}
+    >
+      <h3 className="mb-2 text-sm font-medium text-foreground">{title}</h3>
+      <p className="text-xs text-muted-foreground leading-relaxed">{content}</p>
+    </div>
+  )
+}
 
 export interface Note {
   title: string
@@ -102,6 +99,7 @@ export function DraggableNoteCard({ title, content, onDrop, editorRef }: Draggab
     <>
       {dragging && (
         <NoteCard
+          ref={noteRef}
           title={title}
           content={content}
           style={{
