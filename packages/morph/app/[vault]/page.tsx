@@ -30,7 +30,7 @@ export default function VaultPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <Editor />
+      <Editor vaultId={params.vault as string} />
     </main>
   )
 }

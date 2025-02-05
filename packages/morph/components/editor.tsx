@@ -25,6 +25,7 @@ import toJsx from "@/lib/jsx"
 import type { Root } from "hast"
 import { useTheme } from "next-themes"
 import { WELCOME_MD } from "@/lib/constants"
+import { useVaultContext } from "@/context/vault-context"
 
 interface Suggestion {
   suggestion: string
@@ -41,8 +42,13 @@ interface AsteraceaResponse {
   suggestions: Suggestion[]
 }
 
-export default function Editor() {
+interface EditorProps {
+  vaultId: string
+}
+
+export default function Editor({ vaultId }: EditorProps) {
   const { theme } = useTheme()
+  const { setActiveVaultId } = useVaultContext()
   const editorRef = useRef<HTMLDivElement>(null)
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [showPopover, setShowPopover] = useState(false)
@@ -55,11 +61,26 @@ export default function Editor() {
   const { settings } = usePersistedSettings()
   const codeMirrorViewRef = useRef<EditorView | null>(null)
 
+  // Set active vault when component mounts or vaultId changes
+  useEffect(() => {
+    if (vaultId) {
+      setActiveVaultId(vaultId)
+    }
+  }, [vaultId, setActiveVaultId])
+
   const memoizedExtensions = useMemo(() => {
+    Vim.defineEx("yank", "y", () => {
+      const text = Vim.getRegister('"')
+      if (text) {
+        navigator.clipboard.writeText(text).catch(console.error)
+      }
+    })
+
     const tabSize = new Compartment()
-    const extensions = [
+    return [
       markdown({ base: markdownLanguage, codeLanguages: languages }),
       liveMode,
+      vim(),
       EditorView.lineWrapping,
       tabSize.of(EditorState.tabSize.of(settings.tabSize)),
       fileField.init(() => currentFile),
@@ -70,17 +91,7 @@ export default function Editor() {
         }
       }),
     ]
-    if (settings.vimMode) {
-      extensions.push(vim())
-      Vim.defineEx("yank", "y", () => {
-        const text = Vim.getRegister('"')
-        if (text) {
-          navigator.clipboard.writeText(text).catch(console.error)
-        }
-      })
-    }
-    return extensions
-  }, [settings.vimMode, settings.tabSize, currentFile])
+  }, [settings.tabSize, currentFile])
 
   const [markdownContent, setMarkdownContent] = useState(WELCOME_MD)
   const onContentChange = useCallback((value: string) => {

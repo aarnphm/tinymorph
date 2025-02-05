@@ -194,6 +194,9 @@ export default function useVaults() {
       isOpen: false,
     }
 
+    // If rehydrating an existing tree, clear children to avoid duplicates
+    if (parentNode) currentNode.children = []
+
     let processedCount = 0
 
     for await (const entry of handle.values()) {
@@ -231,6 +234,11 @@ export default function useVaults() {
     currentNode.children?.sort((a, b) =>
       a.kind === b.kind ? a.name.localeCompare(b.name) : a.kind === "directory" ? -1 : 1,
     )
+
+    // Filter out directory nodes with empty children
+    if (currentNode.children) {
+      currentNode.children = currentNode.children.filter(child => child.kind !== "directory" || (child.children && child.children.length > 0));
+    }
 
     return currentNode
   }
