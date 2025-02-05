@@ -3,7 +3,7 @@ import { withPlausibleProxy } from "next-plausible"
 
 const nextConfig: NextConfig = withPlausibleProxy()({
   assetPrefix: process.env.NODE_ENV === "production" ? undefined : "",
-  transpilePackages: ["next-plausible", "katex", "pseudocode"],
+  transpilePackages: ["next-plausible", "katex"],
   devIndicators: { appIsrStatus: false },
   webpack(config) {
     config.module.rules.push({
