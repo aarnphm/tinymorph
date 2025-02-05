@@ -26,7 +26,7 @@ export default function VaultPage() {
         router.push("/")
       }
     }
-  }, [params.vault, activeVaultId, isLoading, getActiveVault, setActiveVaultId, router])
+  }, [params.vault, activeVaultId, isLoading, getActiveVault, setActiveVaultId, router, vaultId])
 
   return (
     <main className="min-h-screen bg-background">

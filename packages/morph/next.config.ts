@@ -1,8 +1,9 @@
 import type { NextConfig } from "next"
+import { withPlausibleProxy } from "next-plausible"
 
-const nextConfig: NextConfig = {
+const nextConfig: NextConfig = withPlausibleProxy()({
   assetPrefix: process.env.NODE_ENV === "production" ? undefined : "",
-  transpilePackages: ["next-plausible", "katex"],
+  transpilePackages: ["next-plausible", "katex", "pseudocode"],
   devIndicators: { appIsrStatus: false },
   webpack(config) {
     config.module.rules.push({
@@ -14,6 +15,6 @@ const nextConfig: NextConfig = {
     })
     return config
   },
-}
+})
 
 export default nextConfig

@@ -2,7 +2,7 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@media screen and (min-width: 1500px) {
+@media all and (min-width: 1500px) {
   :root {
     --fluid-screen: calc(var(--fluid-max-width) * 1px);
   }
@@ -627,6 +627,11 @@
   --flexoki-ma: var(--flexoki-magenta-600);
   --flexoki-ma-2: var(--flexoki-magenta-400);
 
+  --shiki-light: var(--flexoki-bg);
+  --shiki-light-bg: var(--flexoki-tx);
+  --shiki-dark: var(--flexoki-bg);
+  --shiki-dark-bg: var(--flexoki-tx);
+
   --background: var(--flexoki-bg);
   --foreground: var(--flexoki-tx);
   --card: var(--flexoki-bg);
@@ -807,19 +812,6 @@
 
   --color-black: var(--flexoki-black);
   --color-white: var(--flexoki-paper);
-}
-
-@utility scrollbar-hidden {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-@utility color-inherit {
-  color: inherit;
 }
 
 ::selection {
@@ -1039,10 +1031,24 @@ body {
   padding: 0.25rem 0.5rem;
 }
 
-html[class="dark"] {
-  code[data-theme*=" "] {
+@utility scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility color-inherit {
+  color: inherit;
+}
+
+.dark {
+  code[data-theme] {
     color: var(--shiki-dark);
     background-color: var(--shiki-dark-bg);
+
     span {
       color: var(--shiki-dark);
     }
@@ -1167,7 +1173,7 @@ html[class="dark"] {
   code {
     @apply p-0 font-mono;
 
-    &[data-theme*=" "] {
+    &[data-theme] {
       color: var(--shiki-light);
       background-color: var(--shiki-light-bg);
 
