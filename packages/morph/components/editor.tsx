@@ -207,31 +207,33 @@ export default function Editor({ vaultId }: EditorProps) {
   const fetchNewNotes = async (content: string) => {
     try {
       const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT
-
+      
       // TODO: should disable or greyed out the notes button
       if (!apiEndpoint) throw new Error("ENDPOINT cannot be found, notes won't be functional")
 
-      return await axios
-        .post<AsteraceaResponse, AxiosResponse<AsteraceaResponse>, AsteraceaRequest>(
-          `${apiEndpoint}/suggests`,
-          {
-            essay: content,
-            num_suggestions: 8,
-            max_tokens: 8192,
+      const resp = await axios.post<
+        AsteraceaResponse,
+        AxiosResponse<AsteraceaResponse>,
+        AsteraceaRequest
+      >(
+        `${apiEndpoint}/suggests`,
+        {
+          essay: content,
+          num_suggestions: 8,
+          max_tokens: 8192,
+        },
+        {
+          headers: {
+            Accept: "text/event-stream",
+            "Content-Type": "application/json",
           },
-          {
-            headers: {
-              Accept: "text/event-stream",
-              "Content-Type": "application/json",
-            },
-          },
-        )
-        .then((resp) => {
-          return resp.data.suggestions.map((item, index) => ({
-            title: `Note ${index + 1}`,
-            content: item.suggestion,
-          }))
-        })
+        },
+      )
+
+      return resp.data.suggestions.map((item, index) => ({
+        title: `Note ${index + 1}`,
+        content: item.suggestion,
+      }))
     } catch (error) {
       console.error("Error fetching suggestions:", error)
       return []
@@ -240,21 +242,20 @@ export default function Editor({ vaultId }: EditorProps) {
 
   useEffect(() => {
     if (!showNotes) return
-
-    if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current)
-
+  
     setIsLoading(true)
-    debounceTimeoutRef.current = setTimeout(() => {
-      fetchNewNotes(markdownContent).then((newNotes) => {
-        setNotes(newNotes)
-        setIsLoading(false)
-      })
+  
+    const timerId = setTimeout(async () => {
+      const newNotes = await fetchNewNotes(markdownContent)
+      setNotes(newNotes)
+      setIsLoading(false)
     }, 1000)
-
+  
     return () => {
-      if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current)
+      clearTimeout(timerId)
     }
-  }, [showNotes, markdownContent])
+  }, [showNotes])
+  
 
   // Check for file permission
   const [fileSystemPermissionGranted, setFileSystemPermissionGranted] = useState(false)
