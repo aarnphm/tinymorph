@@ -3,8 +3,9 @@
   "private": true,
   "homepage": "https://tinymorph.aarnphm.xyz",
   "scripts": {
-    "docs:serve": "pnpm --filter ./docs run quartz build --serve -v",
-    "docs:build": "pnpm --filter ./docs run quartz build -v",
+    "morph:docs": "pnpm --filter ./docs run quartz build --serve -v",
+    "morph:docs:build": "pnpm --filter ./docs run quartz build -v",
+    "morph:inference": "cd ./python/asteraceae/ && uv run bentoml serve --debug",
     "morph:dev": "pnpm --filter morph run dev",
     "morph:build": "pnpm --filter morph run build"
   },
