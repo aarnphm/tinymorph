@@ -8,10 +8,10 @@ import { useRouter, useParams } from "next/navigation"
 export default function VaultPage() {
   const router = useRouter()
   const params = useParams()
+  const vaultId = params.vault as string
   const { activeVaultId, setActiveVaultId, getActiveVault, isLoading } = useVaultContext()
 
   useEffect(() => {
-    const vaultId = params.vault as string
     const activeVault = getActiveVault()
 
     if (!isLoading) {
@@ -30,7 +30,7 @@ export default function VaultPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <Editor vaultId={params.vault as string} />
+      <Editor vaultId={vaultId} />
     </main>
   )
 }

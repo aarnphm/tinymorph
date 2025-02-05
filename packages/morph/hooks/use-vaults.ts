@@ -43,7 +43,7 @@ const DB_NAME = "morph-vaults"
 const STORE_NAME = "vaults"
 const CHUNK_SIZE = 5
 const PROCESS_DELAY = 1
-const MARKDOWN_PATTERNS = ["*.md", "*.mdx"]
+const ACCEPT_PATTERNS = ["*.md", "*.mdx", "*.bib"]
 
 async function getDB() {
   return new Promise<IDBDatabase>((resolve, reject) => {
@@ -201,10 +201,10 @@ export default function useVaults() {
 
     for await (const entry of handle.values()) {
       const shouldIgnore = ignorePatterns.some((p) => minimatch(entry.name, p))
-      const isMarkdown =
-        entry.kind === "directory" || MARKDOWN_PATTERNS.some((p) => minimatch(entry.name, p))
+      const allowPatterns =
+        entry.kind === "directory" || ACCEPT_PATTERNS.some((p) => minimatch(entry.name, p))
 
-      if (shouldIgnore || !isMarkdown) continue
+      if (shouldIgnore || !allowPatterns) continue
 
       if (entry.kind === "file") {
         currentNode.children?.push({
@@ -237,7 +237,9 @@ export default function useVaults() {
 
     // Filter out directory nodes with empty children
     if (currentNode.children) {
-      currentNode.children = currentNode.children.filter(child => child.kind !== "directory" || (child.children && child.children.length > 0));
+      currentNode.children = currentNode.children.filter(
+        (child) => child.kind !== "directory" || (child.children && child.children.length > 0),
+      )
     }
 
     return currentNode

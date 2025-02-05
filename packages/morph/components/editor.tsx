@@ -5,7 +5,10 @@ import { useEffect, useCallback, useState, useRef, useMemo } from "react"
 import axios, { AxiosResponse } from "axios"
 import CodeMirror from "@uiw/react-codemirror"
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown"
+import { yamlFrontmatter } from "@codemirror/lang-yaml"
 import { languages } from "@codemirror/language-data"
+import { tags } from "@lezer/highlight"
+import { HighlightStyle, syntaxHighlighting } from "@codemirror/language"
 import { EditorView } from "@codemirror/view"
 import { Compartment, EditorState } from "@codemirror/state"
 import { Pencil, Eye } from "lucide-react"
@@ -20,7 +23,7 @@ import { SettingsPanel } from "./settings-panel"
 import { FileSystemPermissionPrompt } from "./popup/permission"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { fileField, liveMode, mdToHtml } from "./markdown-inline"
+import { fileField, mdToHtml } from "./markdown-inline"
 import toJsx from "@/lib/jsx"
 import type { Root } from "hast"
 import { useTheme } from "next-themes"
@@ -46,6 +49,66 @@ interface EditorProps {
   vaultId: string
 }
 
+function frontmatterExtension() {
+  return EditorView.inputHandler.of((view: EditorView, from: number, to: number, text: string) => {
+    // If you're inserting a `-` at index 2 and all previous characters are also `-`,
+    // insert a matching `---` below the line
+    if (
+      (text === "-" && from === 2 && view.state.sliceDoc(0, 2) === "--") ||
+      // Sometimes the mobile Safari replaces `--` with `—` so we need to handle that case too
+      (text === "-" && from === 1 && view.state.sliceDoc(0, 1) === "—")
+    ) {
+      view.dispatch({
+        changes: {
+          from: 0,
+          to,
+          insert: "---\n\n---",
+        },
+        selection: {
+          anchor: 4,
+        },
+      })
+
+      return true
+    }
+
+    return false
+  })
+}
+
+const syntaxHighlighter = HighlightStyle.define([
+  {
+    tag: tags.heading1,
+    fontSize: "var(--font-size-xl)",
+    fontWeight: 550,
+  },
+  {
+    tag: tags.heading2,
+    fontSize: "var(--font-size-lg)",
+    fontWeight: 550,
+  },
+  {
+    tag: [tags.heading3, tags.heading4, tags.heading5, tags.heading6],
+    fontWeight: 550,
+  },
+  {
+    tag: [tags.comment, tags.contentSeparator],
+    color: "var(--color-text-secondary)",
+  },
+  {
+    tag: tags.emphasis,
+    fontStyle: "italic",
+  },
+  {
+    tag: tags.strong,
+    fontWeight: 650,
+  },
+  {
+    tag: tags.strikethrough,
+    textDecoration: "line-through",
+  },
+])
+
 export default function Editor({ vaultId }: EditorProps) {
   const { theme } = useTheme()
   const { setActiveVaultId } = useVaultContext()
@@ -60,6 +123,8 @@ export default function Editor({ vaultId }: EditorProps) {
 
   const { settings } = usePersistedSettings()
   const codeMirrorViewRef = useRef<EditorView | null>(null)
+  const editorScrollRef = useRef<HTMLDivElement>(null)
+  const readingModeRef = useRef<HTMLDivElement>(null)
 
   // Set active vault when component mounts or vaultId changes
   useEffect(() => {
@@ -78,8 +143,10 @@ export default function Editor({ vaultId }: EditorProps) {
 
     const tabSize = new Compartment()
     return [
-      markdown({ base: markdownLanguage, codeLanguages: languages }),
-      liveMode,
+      yamlFrontmatter({
+        content: markdown({ base: markdownLanguage, codeLanguages: languages }),
+      }),
+      frontmatterExtension(),
       vim(),
       EditorView.lineWrapping,
       tabSize.of(EditorState.tabSize.of(settings.tabSize)),
@@ -90,6 +157,7 @@ export default function Editor({ vaultId }: EditorProps) {
           setCurrentFile(newFilename)
         }
       }),
+      syntaxHighlighting(syntaxHighlighter),
     ]
   }, [settings.tabSize, currentFile])
 
@@ -207,7 +275,7 @@ export default function Editor({ vaultId }: EditorProps) {
       } else if (event.key === "," && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
         setIsSettingsOpen((prev) => !prev)
-      } else if (event.key === settings.editModeShortcut && (event.metaKey || event.ctrlKey)) {
+      } else if (event.key === settings.editModeShortcut && (event.metaKey || event.altKey)) {
         event.preventDefault()
         setIsEditMode((prev) => !prev)
       }
@@ -220,8 +288,8 @@ export default function Editor({ vaultId }: EditorProps) {
   useEffect(() => {
     const updatePreview = async () => {
       try {
-        const hastNode = await mdToHtml(markdownContent, currentFile, true)
-        setPreviewNode(hastNode)
+        const tree = await mdToHtml(markdownContent, currentFile, true)
+        setPreviewNode(tree)
       } catch (error) {
         console.error("Error converting markdown to JSX:", error)
       }
@@ -232,7 +300,7 @@ export default function Editor({ vaultId }: EditorProps) {
   return (
     <div>
       <FileSystemPermissionPrompt onPermissionGranted={handlePermissionGranted} />
-      <SidebarProvider defaultOpen={false}>
+      <SidebarProvider defaultOpen={true}>
         <Explorer
           onExportMarkdown={handleExportMarkdown}
           onExportPDF={handleExportPdf}
@@ -271,33 +339,34 @@ export default function Editor({ vaultId }: EditorProps) {
           <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
             <div className="flex-1 relative border">
               <div
-                className={`editor-mode absolute inset-0 ${
-                  isEditMode ? "block h-full pointer-events-auto" : "hidden h-0 pointer-events-none"
-                }`}
+                className={`editor-mode absolute inset-0 ${isEditMode ? "block" : "hidden"}`}
                 ref={editorRef}
               >
-                <CodeMirror
-                  value={markdownContent}
-                  height="100%"
-                  extensions={memoizedExtensions}
-                  onChange={onContentChange}
-                  className="overflow-auto h-full mx-4 pt-4"
-                  theme={theme === "dark" ? "dark" : "light"}
-                  onCreateEditor={(view) => (codeMirrorViewRef.current = view)}
-                />
+                <div ref={editorScrollRef} className="h-full scrollbar-hidden">
+                  <CodeMirror
+                    value={markdownContent}
+                    height="100%"
+                    extensions={memoizedExtensions}
+                    onChange={onContentChange}
+                    className="overflow-auto h-full mx-12 pt-4 scrollbar-hidden"
+                    theme={theme === "dark" ? "dark" : "light"}
+                    onCreateEditor={(view) => (codeMirrorViewRef.current = view)}
+                  />
+                </div>
               </div>
               <div
-                className={`reading-mode absolute inset-0 ${
-                  isEditMode ? "hidden h-0 pointer-events-auto" : "block h-full pointer-events-none"
-                }`}
+                className={`reading-mode absolute inset-0 ${isEditMode ? "hidden" : "block overflow-hidden"}`}
+                ref={readingModeRef}
               >
-                <div className="prose dark:prose-invert max-w-none mx-4 pt-4 overflow-auto h-full">
-                  {previewNode && toJsx(previewNode)}
+                <div className="prose dark:prose-invert h-full mx-4 pt-4 overflow-auto scrollbar-hidden">
+                  <article className="@container h-full max-w-5xl mx-auto scrollbar-hidden">
+                    {previewNode && toJsx(previewNode)}
+                  </article>
                 </div>
               </div>
             </div>
             {showNotes && (
-              <div className="w-80 overflow-auto border">
+              <div className="w-80 overflow-auto border scrollbar-hidden">
                 <div className="p-4">
                   {isLoading ? (
                     <div className="grid gap-4">
