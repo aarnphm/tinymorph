@@ -1,36 +1,443 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
+
+@media screen and (min-width: 1500px) {
+  :root {
+    --fluid-screen: calc(var(--fluid-max-width) * 1px);
+  }
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-Thin.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-ThinItalic.woff2") format("woff2");
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-LightItalic.woff2") format("woff2");
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-MediumItalic.woff2") format("woff2");
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-SemiBoldItalic.woff2") format("woff2");
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-BoldItalic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-Black.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-BlackItalic.woff2") format("woff2");
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-Ultra.woff2") format("woff2");
+  font-weight: 950;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-UltraItalic.woff2") format("woff2");
+  font-weight: 950;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Parclo Serif";
+  src: url("/fonts/ParcloSerifStudent-ExtraBlack.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+}
+
+/* Berkeley Mono Font Family */
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Thin.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Thin-Oblique.woff2") format("woff2");
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-ExtraLight.woff2") format("woff2");
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-ExtraLight-Oblique.woff2") format("woff2");
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Light-Oblique.woff2") format("woff2");
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-SemiLight.woff2") format("woff2");
+  font-weight: 350;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-SemiLight-Oblique.woff2") format("woff2");
+  font-weight: 350;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Retina.woff2") format("woff2");
+  font-weight: 350;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Retina-Oblique.woff2") format("woff2");
+  font-weight: 350;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Regular-Oblique.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Regular-Book.woff2") format("woff2");
+  font-weight: 425;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Regular-Book-Oblique.woff2") format("woff2");
+  font-weight: 425;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Medium-Oblique.woff2") format("woff2");
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-SemiBold-Oblique.woff2") format("woff2");
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Bold-Oblique.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-ExtraBold.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-ExtraBold-Oblique.woff2") format("woff2");
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("/fonts/BerkeleyMono-Black-Oblique.woff2") format("woff2");
+  font-weight: 900;
+  font-style: italic;
+}
+
+.dark {
+  --flexoki-bg: var(--flexoki-black);
+  --flexoki-bg-2: var(--flexoki-950);
+  --flexoki-ui: var(--flexoki-900);
+  --flexoki-ui-2: var(--flexoki-850);
+  --flexoki-ui-3: var(--flexoki-800);
+  --flexoki-tx: var(--flexoki-200);
+  --flexoki-tx-2: var(--flexoki-500);
+  --flexoki-tx-3: var(--flexoki-700);
+  --flexoki-re: var(--flexoki-red-400);
+  --flexoki-re-2: var(--flexoki-red-600);
+  --flexoki-or: var(--flexoki-orange-400);
+  --flexoki-or-2: var(--flexoki-orange-600);
+  --flexoki-ye: var(--flexoki-yellow-400);
+  --flexoki-ye-2: var(--flexoki-yellow-600);
+  --flexoki-gr: var(--flexoki-green-400);
+  --flexoki-gr-2: var(--flexoki-green-600);
+  --flexoki-cy: var(--flexoki-cyan-400);
+  --flexoki-cy-2: var(--flexoki-cyan-600);
+  --flexoki-bl: var(--flexoki-blue-400);
+  --flexoki-bl-2: var(--flexoki-blue-600);
+  --flexoki-pu: var(--flexoki-purple-400);
+  --flexoki-pu-2: var(--flexoki-purple-600);
+  --flexoki-ma: var(--flexoki-magenta-400);
+  --flexoki-ma-2: var(--flexoki-magenta-600);
+}
 
 @theme {
+  --font-parclo-serif: "Parclo Serif", serif;
+  --font-berkeley-mono: "Berkeley Mono", monospace;
+  --font-live-editor: var(--font-parclo-serif);
   --font-sans: var(--font-parclo-serif);
   --font-serif: var(--font-parclo-serif);
   --font-mono: var(--font-berkeley-mono);
 
+  /* reference: https://utopia.fyi/blog/css-modular-scales/ */
+  --fluid-min-width: 320;
+  --fluid-max-width: 1500;
+  --fluid-min-size: 17;
+  --fluid-max-size: 20;
+  --fluid-min-ratio: 1.2;
+  --fluid-max-ratio: 1.33;
+  --fluid-screen: 100vw;
+  --fluid-bp: calc(
+    (var(--fluid-screen) - ((var(--fluid-min-width) / 16) * 1rem)) /
+      ((var(--fluid-max-width) / 16) - (var(--fluid-min-width) / 16))
+  );
+  --fluid-min-scale-0: var(--fluid-min-ratio);
+  --fluid-min-scale-1: var(--fluid-min-scale-0) * var(--fluid-min-ratio);
+  --fluid-min-scale-2: var(--fluid-min-scale-1) * var(--fluid-min-ratio);
+
+  --fluid-max-scale-0: var(--fluid-max-ratio);
+  --fluid-max-scale-1: var(--fluid-max-scale-0) * var(--fluid-max-ratio);
+  --fluid-max-scale-2: var(--fluid-max-scale-1) * var(--fluid-max-ratio);
+
+  --fluid-min-size-0: (var(--fluid-min-size)) / 16;
+  --fluid-min-size-1: (var(--fluid-min-size) * var(--fluid-min-scale-0)) / 16;
+  --fluid-min-size-2: (var(--fluid-min-size) * var(--fluid-min-scale-1)) / 16;
+
+  --fluid-max-size-0: (var(--fluid-max-size)) / 16;
+  --fluid-max-size-1: (var(--fluid-max-size) * var(--fluid-max-scale-0)) / 16;
+  --fluid-max-size-2: (var(--fluid-max-size) * var(--fluid-max-scale-1)) / 16;
+
+  --fluid-0: calc(
+    (
+      (var(--fluid-min-size-0) * 1rem) + (var(--fluid-max-size-0) - var(--fluid-min-size-0)) *
+        var(--fluid-bp)
+    )
+  );
+  --fluid-1: calc(
+    (
+      (var(--fluid-min-size-1) * 1rem) + (var(--fluid-max-size-1) - var(--fluid-min-size-1)) *
+        var(--fluid-bp)
+    )
+  );
+  --fluid-2: calc(
+    (
+      (var(--fluid-min-size-2) * 1rem) + (var(--fluid-max-size-2) - var(--fluid-min-size-2)) *
+        var(--fluid-bp)
+    )
+  );
+
+  --h1-size: var(--fluid-2);
+  --h2-size: var(--fluid-1);
+  --h3-size: var(--fluid-0);
+  --h4-size: 0.9em;
+  --h5-size: 0.85em;
+  --h6-size: 0.85em;
+  --h1-weight: 600;
+  --h2-weight: 600;
+  --h3-weight: 500;
+  --h4-weight: 500;
+  --h5-weight: 500;
+  --h6-weight: 400;
+  --h1-variant: normal;
+  --h2-variant: normal;
+  --h3-variant: normal;
+  --h4-variant: normal;
+  --h5-variant: small-caps;
+  --h6-variant: small-caps;
+  --h1-style: normal;
+  --h2-style: normal;
+  --h3-style: normal;
+  --h4-style: normal;
+  --h5-style: normal;
+  --h6-style: normal;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
-
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
-
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
-
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -48,8 +455,200 @@
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
-  /* violet, fuchsia, rose, sky, indigo, emerald, teal, lime, amber missing */
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
 
+  /* reference: https://stephango.com/flexoki */
+  --flexoki-black: #100f0f;
+  --flexoki-paper: #fffcf0;
+
+  --flexoki-50: #f2f0e5;
+  --flexoki-100: #e6e4d9;
+  --flexoki-150: #dad8ce;
+  --flexoki-200: #cecdc3;
+  --flexoki-300: #b7b5ac;
+  --flexoki-400: #9f9d96;
+  --flexoki-500: #878580;
+  --flexoki-600: #6f6e69;
+  --flexoki-700: #575653;
+  --flexoki-800: #403e3c;
+  --flexoki-850: #343331;
+  --flexoki-900: #282726;
+  --flexoki-950: #1c1b1a;
+
+  --flexoki-red-50: #ffe1d5;
+  --flexoki-red-100: #ffcabb;
+  --flexoki-red-150: #fdb2a2;
+  --flexoki-red-200: #f89a8a;
+  --flexoki-red-300: #e8705f;
+  --flexoki-red-400: #d14d41;
+  --flexoki-red-500: #c03e35;
+  --flexoki-red-600: #af3029;
+  --flexoki-red-700: #942822;
+  --flexoki-red-800: #6c201c;
+  --flexoki-red-850: #551b18;
+  --flexoki-red-900: #3e1715;
+  --flexoki-red-950: #261312;
+
+  --flexoki-orange-50: #ffe7ce;
+  --flexoki-orange-100: #fed3af;
+  --flexoki-orange-150: #fcc192;
+  --flexoki-orange-200: #f9ae77;
+  --flexoki-orange-300: #ec8b49;
+  --flexoki-orange-400: #da702c;
+  --flexoki-orange-500: #cb6120;
+  --flexoki-orange-600: #bc5215;
+  --flexoki-orange-700: #9d4310;
+  --flexoki-orange-800: #71320d;
+  --flexoki-orange-850: #59290d;
+  --flexoki-orange-900: #40200d;
+  --flexoki-orange-950: #27180e;
+
+  --flexoki-yellow-50: #faeec6;
+  --flexoki-yellow-100: #f6e2a0;
+  --flexoki-yellow-150: #f1d67e;
+  --flexoki-yellow-200: #eccb60;
+  --flexoki-yellow-300: #dfb431;
+  --flexoki-yellow-400: #d0a215;
+  --flexoki-yellow-500: #be9207;
+  --flexoki-yellow-600: #ad8301;
+  --flexoki-yellow-700: #8e6b01;
+  --flexoki-yellow-800: #664d01;
+  --flexoki-yellow-850: #503d02;
+  --flexoki-yellow-900: #3a2d04;
+  --flexoki-yellow-950: #241e08;
+
+  --flexoki-green-50: #edeecf;
+  --flexoki-green-100: #dde2b2;
+  --flexoki-green-150: #cdd597;
+  --flexoki-green-200: #bec97e;
+  --flexoki-green-300: #a0af54;
+  --flexoki-green-400: #879a39;
+  --flexoki-green-500: #768d21;
+  --flexoki-green-600: #66800b;
+  --flexoki-green-700: #536907;
+  --flexoki-green-800: #3d4c07;
+  --flexoki-green-850: #313d07;
+  --flexoki-green-900: #252d09;
+  --flexoki-green-950: #1a1e0c;
+
+  --flexoki-cyan-50: #ddf1e4;
+  --flexoki-cyan-100: #bfe8d9;
+  --flexoki-cyan-150: #a2dece;
+  --flexoki-cyan-200: #87d3c3;
+  --flexoki-cyan-300: #5abdac;
+  --flexoki-cyan-400: #3aa99f;
+  --flexoki-cyan-500: #2f968d;
+  --flexoki-cyan-600: #24837b;
+  --flexoki-cyan-700: #1c6c66;
+  --flexoki-cyan-800: #164f4a;
+  --flexoki-cyan-850: #143f3c;
+  --flexoki-cyan-900: #122f2c;
+  --flexoki-cyan-950: #101f1d;
+
+  --flexoki-blue-50: #e1eceb;
+  --flexoki-blue-100: #c6dde8;
+  --flexoki-blue-150: #abcfe2;
+  --flexoki-blue-200: #92bfdb;
+  --flexoki-blue-300: #66a0c8;
+  --flexoki-blue-400: #4385be;
+  --flexoki-blue-500: #3171b2;
+  --flexoki-blue-600: #205ea6;
+  --flexoki-blue-700: #1a4f8c;
+  --flexoki-blue-800: #163b66;
+  --flexoki-blue-850: #133051;
+  --flexoki-blue-900: #12253b;
+  --flexoki-blue-950: #101a24;
+
+  --flexoki-purple-50: #f0eaec;
+  --flexoki-purple-100: #e2d9e9;
+  --flexoki-purple-150: #d3cae6;
+  --flexoki-purple-200: #c4b9e0;
+  --flexoki-purple-300: #a699d0;
+  --flexoki-purple-400: #8b7ec8;
+  --flexoki-purple-500: #735eb5;
+  --flexoki-purple-600: #5e409d;
+  --flexoki-purple-700: #4f3685;
+  --flexoki-purple-800: #3c2a62;
+  --flexoki-purple-850: #31234e;
+  --flexoki-purple-900: #261c39;
+  --flexoki-purple-950: #1a1623;
+
+  --flexoki-magenta-50: #fee4e5;
+  --flexoki-magenta-100: #fccfda;
+  --flexoki-magenta-150: #f9b9cf;
+  --flexoki-magenta-200: #f4a4c2;
+  --flexoki-magenta-300: #e47da8;
+  --flexoki-magenta-400: #ce5d97;
+  --flexoki-magenta-500: #b74583;
+  --flexoki-magenta-600: #a02f6f;
+  --flexoki-magenta-700: #87285e;
+  --flexoki-magenta-800: #641f46;
+  --flexoki-magenta-850: #4f1b39;
+  --flexoki-magenta-900: #39172b;
+  --flexoki-magenta-950: #24131d;
+
+  --flexoki-bg: var(--flexoki-paper);
+  --flexoki-bg-2: var(--flexoki-50);
+  --flexoki-ui: var(--flexoki-100);
+  --flexoki-ui-2: var(--flexoki-150);
+  --flexoki-ui-3: var(--flexoki-200);
+  --flexoki-tx: var(--flexoki-black);
+  --flexoki-tx-2: var(--flexoki-600);
+  --flexoki-tx-3: var(--flexoki-300);
+  --flexoki-re: var(--flexoki-red-600);
+  --flexoki-re-2: var(--fleoki-red-400);
+  --flexoki-or: var(--flexoki-orange-600);
+  --flexoki-or-2: var(--flexoki-orange-400);
+  --flexoki-ye: var(--flexoki-yellow-600);
+  --flexoki-ye-2: var(--flexoki-yellow-400);
+  --flexoki-gr: var(--flexoki-green-600);
+  --flexoki-gr-2: var(--flexoki-green-400);
+  --flexoki-cy: var(--flexoki-cyan-600);
+  --flexoki-cy-2: var(--flexoki-cyan-400);
+  --flexoki-bl: var(--flexoki-blue-600);
+  --flexoki-bl-2: var(--flexoki-blue-400);
+  --flexoki-pu: var(--flexoki-purple-600);
+  --flexoki-pu-2: var(--flexoki-purple-400);
+  --flexoki-ma: var(--flexoki-magenta-600);
+  --flexoki-ma-2: var(--flexoki-magenta-400);
+
+  --background: var(--flexoki-bg);
+  --foreground: var(--flexoki-tx);
+  --card: var(--flexoki-bg);
+  --card-foreground: var(--flexoki-tx);
+  --popover: var(--flexoki-bg);
+  --popover-foreground: var(--flexoki-tx);
+  --primary: var(--flexoki-tx);
+  --primary-foreground: var(--flexoki-bg);
+  --secondary: var(--flexoki-ui-2);
+  --secondary-foreground: var(--flexoki-tx-2);
+  --muted: var(--flexoki-bg-2);
+  --muted-foreground: var(--flexoki-tx-3);
+  --accent: var(--flexoki-ui);
+  --accent-foreground: var(--flexoki-tx-2);
+  --destructive: var(--flexoki-re);
+  --destructive-foreground: var(--flexoki-bg);
+  --border: var(--flexoki-ui-2);
+  --input: var(--flexoki-ui-2);
+  --ring: var(--flexoki-ui-3);
+  --radius: 0.5rem;
+
+  /* violet, fuchsia, rose, sky, indigo, emerald, teal, lime, amber missing */
   --color-red-50: var(--flexoki-red-50);
   --color-red-100: var(--flexoki-red-100);
   --color-red-200: var(--flexoki-red-200);
@@ -208,626 +807,6 @@
 
   --color-black: var(--flexoki-black);
   --color-white: var(--flexoki-paper);
-
-  @keyframes accordion-down {
-    from {
-      height: 0;
-    }
-    to {
-      height: var(--radix-accordion-content-height);
-    }
-  }
-  @keyframes accordion-up {
-    from {
-      height: var(--radix-accordion-content-height);
-    }
-    to {
-      height: 0;
-    }
-  }
-}
-
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
-}
-
-@layer utilities {
-  :root {
-    --font-parclo-serif: "Parclo Serif", serif;
-    --font-berkeley-mono: "Berkeley Mono", monospace;
-    --font-live-editor: var(--font-parclo-serif);
-  }
-
-  @media screen and (min-width: 1500px) {
-    :root {
-      --fluid-screen: calc(var(--fluid-max-width) * 1px);
-    }
-  }
-
-  :root {
-    /* reference: https://utopia.fyi/blog/css-modular-scales/ */
-    --fluid-min-width: 320;
-    --fluid-max-width: 1500;
-    --fluid-min-size: 17;
-    --fluid-max-size: 20;
-    --fluid-min-ratio: 1.2;
-    --fluid-max-ratio: 1.33;
-    --fluid-screen: 100vw;
-    --fluid-bp: calc(
-      (var(--fluid-screen) - ((var(--fluid-min-width) / 16) * 1rem)) /
-        ((var(--fluid-max-width) / 16) - (var(--fluid-min-width) / 16))
-    );
-    --fluid-min-scale-0: var(--fluid-min-ratio);
-    --fluid-min-scale-1: var(--fluid-min-scale-0) * var(--fluid-min-ratio);
-    --fluid-min-scale-2: var(--fluid-min-scale-1) * var(--fluid-min-ratio);
-
-    --fluid-max-scale-0: var(--fluid-max-ratio);
-    --fluid-max-scale-1: var(--fluid-max-scale-0) * var(--fluid-max-ratio);
-    --fluid-max-scale-2: var(--fluid-max-scale-1) * var(--fluid-max-ratio);
-
-    --fluid-min-size-0: (var(--fluid-min-size)) / 16;
-    --fluid-min-size-1: (var(--fluid-min-size) * var(--fluid-min-scale-0)) / 16;
-    --fluid-min-size-2: (var(--fluid-min-size) * var(--fluid-min-scale-1)) / 16;
-
-    --fluid-max-size-0: (var(--fluid-max-size)) / 16;
-    --fluid-max-size-1: (var(--fluid-max-size) * var(--fluid-max-scale-0)) / 16;
-    --fluid-max-size-2: (var(--fluid-max-size) * var(--fluid-max-scale-1)) / 16;
-
-    --fluid-0: calc(
-      (
-        (var(--fluid-min-size-0) * 1rem) + (var(--fluid-max-size-0) - var(--fluid-min-size-0)) *
-          var(--fluid-bp)
-      )
-    );
-    --fluid-1: calc(
-      (
-        (var(--fluid-min-size-1) * 1rem) + (var(--fluid-max-size-1) - var(--fluid-min-size-1)) *
-          var(--fluid-bp)
-      )
-    );
-    --fluid-2: calc(
-      (
-        (var(--fluid-min-size-2) * 1rem) + (var(--fluid-max-size-2) - var(--fluid-min-size-2)) *
-          var(--fluid-bp)
-      )
-    );
-
-    --h1-size: 1.125em;
-    --h2-size: 1.05em;
-    --h3-size: 1em;
-    --h4-size: 0.9em;
-    --h5-size: 0.85em;
-    --h6-size: 0.85em;
-    --h1-weight: 600;
-    --h2-weight: 600;
-    --h3-weight: 500;
-    --h4-weight: 500;
-    --h5-weight: 500;
-    --h6-weight: 400;
-    --h1-variant: normal;
-    --h2-variant: normal;
-    --h3-variant: normal;
-    --h4-variant: normal;
-    --h5-variant: small-caps;
-    --h6-variant: small-caps;
-    --h1-style: normal;
-    --h2-style: normal;
-    --h3-style: normal;
-    --h4-style: normal;
-    --h5-style: normal;
-    --h6-style: normal;
-  }
-  :root {
-    /* reference: https://stephango.com/flexoki */
-    --flexoki-black: #100f0f;
-    --flexoki-paper: #fffcf0;
-
-    --flexoki-50: #f2f0e5;
-    --flexoki-100: #e6e4d9;
-    --flexoki-150: #dad8ce;
-    --flexoki-200: #cecdc3;
-    --flexoki-300: #b7b5ac;
-    --flexoki-400: #9f9d96;
-    --flexoki-500: #878580;
-    --flexoki-600: #6f6e69;
-    --flexoki-700: #575653;
-    --flexoki-800: #403e3c;
-    --flexoki-850: #343331;
-    --flexoki-900: #282726;
-    --flexoki-950: #1c1b1a;
-
-    --flexoki-red-50: #ffe1d5;
-    --flexoki-red-100: #ffcabb;
-    --flexoki-red-150: #fdb2a2;
-    --flexoki-red-200: #f89a8a;
-    --flexoki-red-300: #e8705f;
-    --flexoki-red-400: #d14d41;
-    --flexoki-red-500: #c03e35;
-    --flexoki-red-600: #af3029;
-    --flexoki-red-700: #942822;
-    --flexoki-red-800: #6c201c;
-    --flexoki-red-850: #551b18;
-    --flexoki-red-900: #3e1715;
-    --flexoki-red-950: #261312;
-
-    --flexoki-orange-50: #ffe7ce;
-    --flexoki-orange-100: #fed3af;
-    --flexoki-orange-150: #fcc192;
-    --flexoki-orange-200: #f9ae77;
-    --flexoki-orange-300: #ec8b49;
-    --flexoki-orange-400: #da702c;
-    --flexoki-orange-500: #cb6120;
-    --flexoki-orange-600: #bc5215;
-    --flexoki-orange-700: #9d4310;
-    --flexoki-orange-800: #71320d;
-    --flexoki-orange-850: #59290d;
-    --flexoki-orange-900: #40200d;
-    --flexoki-orange-950: #27180e;
-
-    --flexoki-yellow-50: #faeec6;
-    --flexoki-yellow-100: #f6e2a0;
-    --flexoki-yellow-150: #f1d67e;
-    --flexoki-yellow-200: #eccb60;
-    --flexoki-yellow-300: #dfb431;
-    --flexoki-yellow-400: #d0a215;
-    --flexoki-yellow-500: #be9207;
-    --flexoki-yellow-600: #ad8301;
-    --flexoki-yellow-700: #8e6b01;
-    --flexoki-yellow-800: #664d01;
-    --flexoki-yellow-850: #503d02;
-    --flexoki-yellow-900: #3a2d04;
-    --flexoki-yellow-950: #241e08;
-
-    --flexoki-green-50: #edeecf;
-    --flexoki-green-100: #dde2b2;
-    --flexoki-green-150: #cdd597;
-    --flexoki-green-200: #bec97e;
-    --flexoki-green-300: #a0af54;
-    --flexoki-green-400: #879a39;
-    --flexoki-green-500: #768d21;
-    --flexoki-green-600: #66800b;
-    --flexoki-green-700: #536907;
-    --flexoki-green-800: #3d4c07;
-    --flexoki-green-850: #313d07;
-    --flexoki-green-900: #252d09;
-    --flexoki-green-950: #1a1e0c;
-
-    --flexoki-cyan-50: #ddf1e4;
-    --flexoki-cyan-100: #bfe8d9;
-    --flexoki-cyan-150: #a2dece;
-    --flexoki-cyan-200: #87d3c3;
-    --flexoki-cyan-300: #5abdac;
-    --flexoki-cyan-400: #3aa99f;
-    --flexoki-cyan-500: #2f968d;
-    --flexoki-cyan-600: #24837b;
-    --flexoki-cyan-700: #1c6c66;
-    --flexoki-cyan-800: #164f4a;
-    --flexoki-cyan-850: #143f3c;
-    --flexoki-cyan-900: #122f2c;
-    --flexoki-cyan-950: #101f1d;
-
-    --flexoki-blue-50: #e1eceb;
-    --flexoki-blue-100: #c6dde8;
-    --flexoki-blue-150: #abcfe2;
-    --flexoki-blue-200: #92bfdb;
-    --flexoki-blue-300: #66a0c8;
-    --flexoki-blue-400: #4385be;
-    --flexoki-blue-500: #3171b2;
-    --flexoki-blue-600: #205ea6;
-    --flexoki-blue-700: #1a4f8c;
-    --flexoki-blue-800: #163b66;
-    --flexoki-blue-850: #133051;
-    --flexoki-blue-900: #12253b;
-    --flexoki-blue-950: #101a24;
-
-    --flexoki-purple-50: #f0eaec;
-    --flexoki-purple-100: #e2d9e9;
-    --flexoki-purple-150: #d3cae6;
-    --flexoki-purple-200: #c4b9e0;
-    --flexoki-purple-300: #a699d0;
-    --flexoki-purple-400: #8b7ec8;
-    --flexoki-purple-500: #735eb5;
-    --flexoki-purple-600: #5e409d;
-    --flexoki-purple-700: #4f3685;
-    --flexoki-purple-800: #3c2a62;
-    --flexoki-purple-850: #31234e;
-    --flexoki-purple-900: #261c39;
-    --flexoki-purple-950: #1a1623;
-
-    --flexoki-magenta-50: #fee4e5;
-    --flexoki-magenta-100: #fccfda;
-    --flexoki-magenta-150: #f9b9cf;
-    --flexoki-magenta-200: #f4a4c2;
-    --flexoki-magenta-300: #e47da8;
-    --flexoki-magenta-400: #ce5d97;
-    --flexoki-magenta-500: #b74583;
-    --flexoki-magenta-600: #a02f6f;
-    --flexoki-magenta-700: #87285e;
-    --flexoki-magenta-800: #641f46;
-    --flexoki-magenta-850: #4f1b39;
-    --flexoki-magenta-900: #39172b;
-    --flexoki-magenta-950: #24131d;
-
-    --flexoki-bg: var(--flexoki-paper);
-    --flexoki-bg-2: var(--flexoki-50);
-    --flexoki-ui: var(--flexoki-100);
-    --flexoki-ui-2: var(--flexoki-150);
-    --flexoki-ui-3: var(--flexoki-200);
-    --flexoki-tx: var(--flexoki-black);
-    --flexoki-tx-2: var(--flexoki-600);
-    --flexoki-tx-3: var(--flexoki-300);
-    --flexoki-re: var(--flexoki-red-600);
-    --flexoki-re-2: var(--fleoki-red-400);
-    --flexoki-or: var(--flexoki-orange-600);
-    --flexoki-or-2: var(--flexoki-orange-400);
-    --flexoki-ye: var(--flexoki-yellow-600);
-    --flexoki-ye-2: var(--flexoki-yellow-400);
-    --flexoki-gr: var(--flexoki-green-600);
-    --flexoki-gr-2: var(--flexoki-green-400);
-    --flexoki-cy: var(--flexoki-cyan-600);
-    --flexoki-cy-2: var(--flexoki-cyan-400);
-    --flexoki-bl: var(--flexoki-blue-600);
-    --flexoki-bl-2: var(--flexoki-blue-400);
-    --flexoki-pu: var(--flexoki-purple-600);
-    --flexoki-pu-2: var(--flexoki-purple-400);
-    --flexoki-ma: var(--flexoki-magenta-600);
-    --flexoki-ma-2: var(--flexoki-magenta-400);
-  }
-
-  :root {
-    --background: var(--flexoki-bg);
-    --foreground: var(--flexoki-tx);
-    --card: var(--flexoki-bg);
-    --card-foreground: var(--flexoki-tx);
-    --popover: var(--flexoki-bg);
-    --popover-foreground: var(--flexoki-tx);
-    --primary: var(--flexoki-tx);
-    --primary-foreground: var(--flexoki-bg);
-    --secondary: var(--flexoki-ui-2);
-    --secondary-foreground: var(--flexoki-tx-2);
-    --muted: var(--flexoki-bg-2);
-    --muted-foreground: var(--flexoki-tx-3);
-    --accent: var(--flexoki-ui);
-    --accent-foreground: var(--flexoki-tx-2);
-    --destructive: var(--flexoki-re);
-    --destructive-foreground: var(--flexoki-bg);
-    --border: var(--flexoki-ui-2);
-    --input: var(--flexoki-ui-2);
-    --ring: var(--flexoki-ui-3);
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --flexoki-bg: var(--flexoki-black);
-    --flexoki-bg-2: var(--flexoki-950);
-    --flexoki-ui: var(--flexoki-900);
-    --flexoki-ui-2: var(--flexoki-850);
-    --flexoki-ui-3: var(--flexoki-800);
-    --flexoki-tx: var(--flexoki-200);
-    --flexoki-tx-2: var(--flexoki-500);
-    --flexoki-tx-3: var(--flexoki-700);
-    --flexoki-re: var(--flexoki-red-400);
-    --flexoki-re-2: var(--flexoki-red-600);
-    --flexoki-or: var(--flexoki-orange-400);
-    --flexoki-or-2: var(--flexoki-orange-600);
-    --flexoki-ye: var(--flexoki-yellow-400);
-    --flexoki-ye-2: var(--flexoki-yellow-600);
-    --flexoki-gr: var(--flexoki-green-400);
-    --flexoki-gr-2: var(--flexoki-green-600);
-    --flexoki-cy: var(--flexoki-cyan-400);
-    --flexoki-cy-2: var(--flexoki-cyan-600);
-    --flexoki-bl: var(--flexoki-blue-400);
-    --flexoki-bl-2: var(--flexoki-blue-600);
-    --flexoki-pu: var(--flexoki-purple-400);
-    --flexoki-pu-2: var(--flexoki-purple-600);
-    --flexoki-ma: var(--flexoki-magenta-400);
-    --flexoki-ma-2: var(--flexoki-magenta-600);
-  }
-}
-
-@layer utilities {
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-Thin.woff2") format("woff2");
-    font-weight: 100;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-ThinItalic.woff2") format("woff2");
-    font-weight: 100;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-Light.woff2") format("woff2");
-    font-weight: 300;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-LightItalic.woff2") format("woff2");
-    font-weight: 300;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-Regular.woff2") format("woff2");
-    font-weight: 400;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-Italic.woff2") format("woff2");
-    font-weight: 400;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-Medium.woff2") format("woff2");
-    font-weight: 500;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-MediumItalic.woff2") format("woff2");
-    font-weight: 500;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-SemiBold.woff2") format("woff2");
-    font-weight: 600;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-SemiBoldItalic.woff2") format("woff2");
-    font-weight: 600;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-Bold.woff2") format("woff2");
-    font-weight: 700;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-BoldItalic.woff2") format("woff2");
-    font-weight: 700;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-Black.woff2") format("woff2");
-    font-weight: 800;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-BlackItalic.woff2") format("woff2");
-    font-weight: 800;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-Ultra.woff2") format("woff2");
-    font-weight: 950;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-UltraItalic.woff2") format("woff2");
-    font-weight: 950;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Parclo Serif";
-    src: url("/fonts/ParcloSerifStudent-ExtraBlack.woff2") format("woff2");
-    font-weight: 900;
-    font-style: normal;
-  }
-
-  /* Berkeley Mono Font Family */
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Thin.woff2") format("woff2");
-    font-weight: 100;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Thin-Oblique.woff2") format("woff2");
-    font-weight: 100;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-ExtraLight.woff2") format("woff2");
-    font-weight: 200;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-ExtraLight-Oblique.woff2") format("woff2");
-    font-weight: 200;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Light.woff2") format("woff2");
-    font-weight: 300;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Light-Oblique.woff2") format("woff2");
-    font-weight: 300;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-SemiLight.woff2") format("woff2");
-    font-weight: 350;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-SemiLight-Oblique.woff2") format("woff2");
-    font-weight: 350;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Retina.woff2") format("woff2");
-    font-weight: 350;
-    font-style: normal;
-    font-display: swap;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Retina-Oblique.woff2") format("woff2");
-    font-weight: 350;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Regular.woff2") format("woff2");
-    font-weight: 400;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Regular-Oblique.woff2") format("woff2");
-    font-weight: 400;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Regular-Book.woff2") format("woff2");
-    font-weight: 425;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Regular-Book-Oblique.woff2") format("woff2");
-    font-weight: 425;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Medium.woff2") format("woff2");
-    font-weight: 500;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Medium-Oblique.woff2") format("woff2");
-    font-weight: 500;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-SemiBold.woff2") format("woff2");
-    font-weight: 600;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-SemiBold-Oblique.woff2") format("woff2");
-    font-weight: 600;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Bold.woff2") format("woff2");
-    font-weight: 700;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Bold-Oblique.woff2") format("woff2");
-    font-weight: 700;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-ExtraBold.woff2") format("woff2");
-    font-weight: 800;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-ExtraBold-Oblique.woff2") format("woff2");
-    font-weight: 800;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Black.woff2") format("woff2");
-    font-weight: 900;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Berkeley Mono";
-    src: url("/fonts/BerkeleyMono-Black-Oblique.woff2") format("woff2");
-    font-weight: 900;
-    font-style: italic;
-  }
 }
 
 @utility scrollbar-hidden {
@@ -922,7 +901,6 @@ body {
   background-color: rgba(175, 48, 41, 0.3) !important;
 }
 
-.cm-reading-mode,
 .cm-live-mode {
   font-family: var(--font-live-editor), serif;
   margin: 0;
@@ -1031,39 +1009,29 @@ body {
   overflow-x: auto;
 }
 
-.border-r,
-.border-l,
-.border-b {
-  border-color: #e6e4d9;
-}
-
-.dark .border-r,
-.dark .border-l,
-.dark .border-b {
-  border-color: #1c1b1a;
-}
-
 .note-card {
-  background-color: #fffcf0;
+  background-color: var(--flexoki-paper);
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
-}
 
-.dark .note-card {
-  background-color: #1c1b1a;
-}
+  @variant dark {
+    background-color: var(--flexoki-black);
+  }
 
-.note-card:hover {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  &:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .tooltip-arrow {
-  fill: #fffcf0;
-}
+  fill: var(--flexoki-paper);
+  width: 0.5rem;
+  height: 0.25rem;
 
-.dark .tooltip-arrow {
-  fill: #100f0f;
+  @variant dark {
+    fill: var(--flexoki-black);
+  }
 }
 
 .tooltip-content {
@@ -1071,139 +1039,14 @@ body {
   padding: 0.25rem 0.5rem;
 }
 
-.tooltip-arrow {
-  width: 0.5rem;
-  height: 0.25rem;
-}
-
-.cm-reading-mode .cm-line {
-  white-space: normal !important;
-  padding: 0.25rem 0;
-}
-
-.cm-reading-mode .cm-content {
-  padding: 1rem !important;
-}
-
-.cm-reading-mode .cm-gutters {
-  display: none !important;
-}
-
-.cm-reading-mode .cm-activeLine {
-  background: transparent !important;
-}
-
-.cm-reading-mode .cm-activeLineGutter {
-  background: transparent !important;
-}
-
-.cm-reading-mode .cm-selectionBackground {
-  display: none !important;
-}
-
-.cm-reading-mode .cm-cursor {
-  display: none !important;
-}
-
-.cm-reading-mode .cm-line {
-  cursor: default !important;
-}
-
-.cm-reading-mode .cm-scroller {
-  overflow-x: hidden !important;
-}
-
-.cm-reading-mode h1 {
-  font-size: 2em;
-  margin: 0.67em 0;
-  font-weight: bold;
-}
-
-.cm-reading-mode h2 {
-  font-size: 1.5em;
-  margin: 0.83em 0;
-  font-weight: bold;
-}
-
-.cm-reading-mode h3 {
-  font-size: 1.17em;
-  margin: 1em 0;
-  font-weight: bold;
-}
-
-.cm-reading-mode h4 {
-  font-size: 1em;
-  margin: 1.33em 0;
-  font-weight: bold;
-}
-
-.cm-reading-mode h5 {
-  font-size: 0.83em;
-  margin: 1.67em 0;
-  font-weight: bold;
-}
-
-.cm-reading-mode h6 {
-  font-size: 0.67em;
-  margin: 2.33em 0;
-  font-weight: bold;
-}
-
-.cm-reading-mode p {
-  margin: 1em 0;
-}
-
-.cm-reading-mode blockquote {
-  margin: 1em 40px;
-  padding-left: 1rem;
-  border-left: 3px solid #878580;
-  color: #6f6e69;
-}
-
-.cm-reading-mode ul,
-.cm-reading-mode ol {
-  margin: 1em 0;
-  padding-left: 40px;
-}
-
-.cm-reading-mode pre {
-  margin: 1em 0;
-  padding: 1em;
-  background: #f5f5f5;
-  border-radius: 4px;
-  overflow-x: auto;
-}
-
-.dark .cm-reading-mode pre {
-  background: #1c1b1a;
-}
-
-.cm-reading-mode code {
-  font-family: var(--font-berkeley-mono), monospace;
-  background: #f5f5f5;
-  padding: 0.2em 0.4em;
-  border-radius: 3px;
-  font-size: 0.9em;
-}
-
-.dark .cm-reading-mode code {
-  background: #1c1b1a;
-}
-
-.cm-reading-mode img {
-  max-width: 100%;
-  height: auto;
-  margin: 1em 0;
-}
-
-.cm-reading-mode hr {
-  margin: 1em 0;
-  border: 0;
-  border-top: 1px solid #e6e4d9;
-}
-
-.dark .cm-reading-mode hr {
-  border-top-color: #1c1b1a;
+html[class="dark"] {
+  code[data-theme*=" "] {
+    color: var(--shiki-dark);
+    background-color: var(--shiki-dark-bg);
+    span {
+      color: var(--shiki-dark);
+    }
+  }
 }
 
 /* Reading mode */
@@ -1314,7 +1157,6 @@ body {
     border: 1px solid var(--border);
 
     code {
-      font-size: 12px;
       counter-reset: line;
       counter-increment: line 0;
       display: grid;
@@ -1323,26 +1165,14 @@ body {
   }
 
   code {
-    font-family: var(--font-mono);
-    padding: 0.2em 0.4em;
+    @apply p-0 font-mono;
 
     &[data-theme*=" "] {
       color: var(--shiki-light);
       background-color: var(--shiki-light-bg);
-    }
 
-    &[data-theme*=" "] > span {
-      color: var(--shiki-light);
-    }
-
-    html[class="dark"] & {
-      &[data-theme*=" "] {
-        color: var(--shiki-dark);
-        background-color: var(--shiki-dark-bg);
-      }
-
-      &[data-theme*=" "] > span {
-        color: var(--shiki-dark);
+      span {
+        color: var(--shiki-light);
       }
     }
 
@@ -1384,13 +1214,6 @@ body {
     &[data-line-numbers-max-digits="3"] > [data-line]::before {
       width: 3rem;
     }
-  }
-
-  code {
-    font-size: 15px;
-    color: var(--flexoki-tx-3);
-    font-family: var(--font-mono);
-    padding: 0.1rem 0.2rem;
   }
 
   blockquote {
