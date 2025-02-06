@@ -434,6 +434,7 @@
   --h4-style: normal;
   --h5-style: normal;
   --h6-style: normal;
+  --text-tiny: 0.9rem;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);

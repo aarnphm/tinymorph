@@ -88,6 +88,7 @@ interface MorphSidebarProps extends React.ComponentProps<typeof Sidebar> {
   onExportPDF: () => void
   onFileSelect?: (handle: FileSystemFileHandle) => void
   onNewFile?: () => void
+  onContentUpdate?: (content: string) => void
 }
 
 export function Explorer({
@@ -96,6 +97,7 @@ export function Explorer({
   onExportPDF,
   onFileSelect,
   onNewFile,
+  onContentUpdate,
   ...props
 }: MorphSidebarProps) {
   const router = useRouter()
@@ -134,11 +136,15 @@ export function Explorer({
           },
           effects: setFile.of(file.name),
         })
+
+        if (onContentUpdate) {
+          onContentUpdate(content)
+        }
       } catch (error) {
         console.error("Error reading file:", error)
       }
     },
-    [activeVault, codeMirrorRef, onFileSelect],
+    [activeVault, codeMirrorRef, onFileSelect, onContentUpdate]
   )
 
   return (

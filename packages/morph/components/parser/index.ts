@@ -92,12 +92,14 @@ const gr = (...el: Child[]) =>
   h(
     "div",
     {
-      class: `grid gap-1 first:pt-0 last:pb-0 mb-4 min-[24rem]:grid-cols-[10rem_1fr] ${el.length === 0 ? "empty-content" : ""}`,
+      class: `grid gap-1 py-2 [&>*]:pl-1 min-[24rem]:grid-cols-[10rem_1fr] border border-transparent hover:border-gray-400 hover:border-solid ${el.length === 0 ? "empty-content" : ""}`,
     },
     ...(el.length > 0 ? el : []),
   )
 const t = (value: string) =>
-  h("div", { class: "color-inherit !text-sm/7 font-mono muted" }, [{ type: "text", value }])
+  h("div", { class: "color-inherit !text-sm/7 muted text-gray-300 dark:text-gray-500" }, [
+    { type: "text", value },
+  ])
 
 const Frontmatter = {
   name: "Frontmatter",
@@ -157,10 +159,12 @@ const Frontmatter = {
               {
                 class: "flex flex-col gap-4 empty-content mb-8 border-b border-b-solid",
               },
-              h("h1.metadata-title", [{ type: "text", value: frontmatter.title }]),
+              h("h1.metadata-title", { class: "mb-0" }, [
+                { type: "text", value: frontmatter.title },
+              ]),
               h(
                 "div",
-                { class: "flex flex-col my-2 border-border" },
+                { class: "flex flex-col my-2 border-border [&>*:last-child]:mb-4" },
                 [
                   frontmatter.tags &&
                     gr(
@@ -172,7 +176,7 @@ const Frontmatter = {
                             "li.tag-link",
                             {
                               class:
-                                "border-border rounded box-border border-2 border-gray-300 border-solid my-0 mx-[0.1em] py-[0.1em] px-[0.4em] !text-sm/7 decoration-none",
+                                "rounded-[0px] border-[1px] border-gray-400 border-solid my-0 mx-[0.1em] py-[0.1rem] px-[0.4rem] text-tiny decoration-none cursor-pointer",
                             },
                             [{ type: "text", value: el }],
                           ),

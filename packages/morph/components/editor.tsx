@@ -153,29 +153,26 @@ export default function Editor({ vaultId }: EditorProps) {
   }, [vaultId, setActiveVaultId])
 
   const [markdownContent, setMarkdownContent] = useState("")
-  const onContentChange = useCallback(
-    (value: string) => {
-      setMarkdownContent(value)
+  const updatePreview = useCallback(async (content: string) => {
+    try {
+      const tree = await mdToHtml(content, currentFile, true)
+      setPreviewNode(tree)
+    } catch (error) {
+      console.error("Error converting markdown to JSX:", error)
+    }
+  }, [currentFile])
 
-      // Only update preview if there are unsaved changes
-      if (!hasUnsavedChanges) {
-        setHasUnsavedChanges(true)
-        const updatePreview = async () => {
-          try {
-            const tree = await mdToHtml(value, currentFile, true)
-            setPreviewNode(tree)
-          } catch (error) {
-            console.error("Error converting markdown to JSX:", error)
-          }
-        }
-        updatePreview()
-      } else {
-        // Just mark as unsaved without updating preview
-        setHasUnsavedChanges(true)
-      }
-    },
-    [currentFile, hasUnsavedChanges],
-  )
+  const onContentChange = useCallback((value: string) => {
+    setMarkdownContent(value)
+    setHasUnsavedChanges(true)
+    updatePreview(value)
+  }, [updatePreview])
+
+  useEffect(() => {
+    if (markdownContent) {
+      updatePreview(markdownContent)
+    }
+  }, [currentFile, updatePreview])
 
   const [showNotes, setShowNotes] = useState(false)
   const toggleNotes = useCallback(() => setShowNotes((prev) => !prev), [])
@@ -249,7 +246,7 @@ export default function Editor({ vaultId }: EditorProps) {
       }
 
       setHasUnsavedChanges(false)
-      
+
       // Only fetch notes if panel is open
       if (showNotes) {
         try {
@@ -263,13 +260,16 @@ export default function Editor({ vaultId }: EditorProps) {
           })
         }
       }
-    } catch (error) {
-      console.error("Error saving file:", error)
+    } catch {
       toast({
         title: "Save failed",
-        description: error instanceof Error ? error.message : "Unknown error occurred",
+        description: "Aborted",
         variant: "destructive",
-        action: <ToastAction altText="Retry" onClick={handleSave}>Retry</ToastAction>,
+        action: (
+          <ToastAction altText="Retry" onClick={handleSave}>
+            Retry
+          </ToastAction>
+        ),
       })
     }
   }, [
@@ -287,7 +287,7 @@ export default function Editor({ vaultId }: EditorProps) {
     try {
       const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT
       if (!apiEndpoint) {
-        throw new Error('Notes functionality is currently unavailable')
+        throw new Error("Notes functionality is currently unavailable")
       }
 
       const resp = await axios.post<
@@ -314,8 +314,7 @@ export default function Editor({ vaultId }: EditorProps) {
         content: item.suggestion,
       }))
     } catch (error) {
-      console.error("Error fetching suggestions:", error)
-      throw new Error('Failed to generate notes. Please try again.')
+      throw error
     }
   }
 
@@ -325,9 +324,17 @@ export default function Editor({ vaultId }: EditorProps) {
     setIsLoading(true)
 
     const timerId = setTimeout(async () => {
-      const newNotes = await fetchNewNotes(markdownContent)
-      setNotes(newNotes)
-      setIsLoading(false)
+      try {
+        const newNotes = await fetchNewNotes(markdownContent)
+        setNotes(newNotes)
+      } catch (error) {
+        toast({
+          title: "Note generation failed",
+          description: error instanceof Error ? error.message : "Please try again later",
+        })
+      } finally {
+        setIsLoading(false)
+      }
     }, 1000)
 
     return () => {
@@ -411,6 +418,7 @@ export default function Editor({ vaultId }: EditorProps) {
             setCurrentFileHandle(null)
             setCurrentFile("Untitled")
           }}
+          onContentUpdate={updatePreview}
         />
         <SidebarInset>
           <header className="inline-block h-10 border-b">
