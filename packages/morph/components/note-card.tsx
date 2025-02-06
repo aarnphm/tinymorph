@@ -1,6 +1,6 @@
 import { drag } from "d3-drag"
 import { select } from "d3-selection"
-import { forwardRef, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 
 interface NoteCardProps {
@@ -8,7 +8,7 @@ interface NoteCardProps {
   content?: string
   style?: React.CSSProperties
   isLoading?: boolean
-  ref?: React.RefObject<HTMLDivElement|null>
+  ref?: React.RefObject<HTMLDivElement | null>
 }
 
 export function NoteCard({ title, content, style, isLoading = false, ref }: NoteCardProps) {

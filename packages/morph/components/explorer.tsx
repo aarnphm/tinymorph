@@ -50,7 +50,7 @@ const FileTreeNode: React.FC<FileTreeNodeProps> = memo(({ node, onFileSelect }) 
   if (node.kind === "file") {
     return (
       <SidebarMenuButton
-        className="data-[active=true]:bg-transparent hover:bg-accent/50 transition-colors"
+        className="data-[active=true]:bg-transparent hover:bg-accent/50 transition-colors p-0"
         onClick={() => onFileSelect?.(node)}
       >
         <span className="truncate">{node.name}</span>
@@ -70,7 +70,7 @@ const FileTreeNode: React.FC<FileTreeNodeProps> = memo(({ node, onFileSelect }) 
           </SidebarMenuButton>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <SidebarMenuSub>
+          <SidebarMenuSub className="mr-0">
             {node.children!.map((child) => (
               <FileTreeNode key={child.name} node={child} onFileSelect={onFileSelect} />
             ))}
@@ -144,7 +144,7 @@ export function Explorer({
         console.error("Error reading file:", error)
       }
     },
-    [activeVault, codeMirrorRef, onFileSelect, onContentUpdate]
+    [activeVault, codeMirrorRef, onFileSelect, onContentUpdate],
   )
 
   return (

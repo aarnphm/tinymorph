@@ -842,7 +842,7 @@ body {
   @apply h-full font-serif text-sm/7 mx-auto my-0 border-none border-r-0 bg-background;
 
   .cm-scroller {
-    @apply w-full min-h-[80vh] max-w-full !font-serif scrollbar-hidden;
+    @apply min-h-[80vh] !font-serif scrollbar-hidden !p-0 !w-5xl !mx-auto relative whitespace-pre-wrap;
     font-size: var(--fluid-0);
   }
 
@@ -860,11 +860,7 @@ body {
   }
 
   .cm-line {
-    @apply max-w-5xl mx-auto scrollbar-hidden p-0 relative whitespace-pre-wrap;
-  }
-
-  .cm-content {
-    caret-color: var(--flexoki-black);
+    @apply w-full;
   }
 
   .cm-selectionBackground {
@@ -878,10 +874,6 @@ body {
 
 .cm-empty-placeholder {
   @apply italic pointer-events-none select-none text-gray-400 dark:text-slate-300;
-}
-
-.cm-content {
-  @apply !p-0;
 }
 
 .cm-panels-bottom {
@@ -907,8 +899,8 @@ body {
   border-left-color: #fffcf0;
 }
 
-.dark .cm-editor .cm-selectionBackground {
-  background-color: rgba(175, 48, 41, 0.3) !important;
+.cm-selectionBackground {
+  @apply !color-yellow-150;
 }
 
 .cm-live-mode {

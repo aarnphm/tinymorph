@@ -120,7 +120,9 @@ export default function Editor({ vaultId }: EditorProps) {
   const { getActiveVault, setActiveVaultId } = useVaultContext()
   const editorRef = useRef<HTMLDivElement>(null)
   const [showPopover, setShowPopover] = useState(false)
-  const [currentFile, setCurrentFile] = useState<string>("")
+  const [currentFile, setCurrentFile] = useState<string>(() => {
+    return localStorage.getItem("persistedCurrentFile") || ""
+  })
   const [isEditMode, setIsEditMode] = useState(true)
   const [previewNode, setPreviewNode] = useState<Root | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -135,6 +137,19 @@ export default function Editor({ vaultId }: EditorProps) {
   const readingModeRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
   const placeholderRef = useRef<HTMLDivElement | null>(null)
+
+  const [notes, setNotes] = useState<Note[]>(() => {
+    const savedNotes = localStorage.getItem("persistedNotes")
+    return savedNotes ? JSON.parse(savedNotes) : []
+  })
+
+  useEffect(() => {
+    localStorage.setItem("persistedCurrentFile", currentFile)
+  }, [currentFile])
+
+  useEffect(() => {
+    localStorage.setItem("persistedNotes", JSON.stringify(notes))
+  }, [notes])
 
   useEffect(() => {
     if (!placeholderRef.current) {
@@ -153,20 +168,26 @@ export default function Editor({ vaultId }: EditorProps) {
   }, [vaultId, setActiveVaultId])
 
   const [markdownContent, setMarkdownContent] = useState("")
-  const updatePreview = useCallback(async (content: string) => {
-    try {
-      const tree = await mdToHtml(content, currentFile, true)
-      setPreviewNode(tree)
-    } catch (error) {
-      console.error("Error converting markdown to JSX:", error)
-    }
-  }, [currentFile])
+  const updatePreview = useCallback(
+    async (content: string) => {
+      try {
+        const tree = await mdToHtml(content, currentFile, true)
+        setPreviewNode(tree)
+      } catch (error) {
+        console.error("Error converting markdown to JSX:", error)
+      }
+    },
+    [currentFile],
+  )
 
-  const onContentChange = useCallback((value: string) => {
-    setMarkdownContent(value)
-    setHasUnsavedChanges(true)
-    updatePreview(value)
-  }, [updatePreview])
+  const onContentChange = useCallback(
+    (value: string) => {
+      setMarkdownContent(value)
+      setHasUnsavedChanges(true)
+      updatePreview(value)
+    },
+    [updatePreview],
+  )
 
   useEffect(() => {
     if (markdownContent) {
@@ -177,13 +198,14 @@ export default function Editor({ vaultId }: EditorProps) {
   const [showNotes, setShowNotes] = useState(false)
   const toggleNotes = useCallback(() => setShowNotes((prev) => !prev), [])
 
-  const [notes, setNotes] = useState<Note[]>([])
   const handleNoteDrop = useCallback((note: Note, droppedOverEditor: boolean) => {
-    if (droppedOverEditor) {
-      setNotes((prevNotes) =>
-        prevNotes.filter((n) => !(n.title === note.title && n.content === note.content)),
+    setNotes((prevNotes) => {
+      const newNotes = prevNotes.filter(
+        (n) => !(n.title === note.title && n.content === note.content),
       )
-    }
+      localStorage.setItem("persistedNotes", JSON.stringify(newNotes))
+      return newNotes
+    })
   }, [])
 
   // FIXME: increase in memory usage
@@ -290,6 +312,7 @@ export default function Editor({ vaultId }: EditorProps) {
         throw new Error("Notes functionality is currently unavailable")
       }
 
+      console.log(md(content).content)
       const resp = await axios.post<
         AsteraceaResponse,
         AxiosResponse<AsteraceaResponse>,
@@ -408,7 +431,7 @@ export default function Editor({ vaultId }: EditorProps) {
   return (
     <div>
       <FileSystemPermissionPrompt onPermissionGranted={handlePermissionGranted} />
-      <SidebarProvider defaultOpen={true}>
+      <SidebarProvider defaultOpen={false}>
         <Explorer
           onExportMarkdown={handleExportMarkdown}
           onExportPDF={handleExportPdf}
