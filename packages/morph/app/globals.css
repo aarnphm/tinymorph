@@ -899,10 +899,6 @@ body {
   border-left-color: #fffcf0;
 }
 
-.cm-selectionBackground {
-  @apply !color-yellow-150;
-}
-
 .cm-live-mode {
   font-family: var(--font-live-editor), serif;
   margin: 0;
