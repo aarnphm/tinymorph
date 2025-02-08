@@ -3,51 +3,10 @@ import { useToast } from "./use-toast"
 import usePersistedSettings from "./use-persisted-settings"
 import { minimatch } from "minimatch"
 
-// https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker
-type StartIn =
-  | FileSystemHandle
-  | "desktop"
-  | "documents"
-  | "downloads"
-  | "music"
-  | "pictures"
-  | "videos"
-interface SaveFilePickerOptions {
-  excludeAcceptAllOptions?: boolean
-  id?: string
-  startIn?: StartIn
-  suggestedName?: string
-  types?: Array<{
-    description?: string
-    accept?: Record<string, string[]>
-  }>
-}
-
-// https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker
-interface DirectoryPickerOptions {
-  id?: string
-  mode?: "read" | "readwrite"
-  startIn?: StartIn
-}
-
-// NOTE: This are currently considered experimental API from Chrome
-declare global {
-  interface Window {
-    showDirectoryPicker(options?: DirectoryPickerOptions): Promise<FileSystemDirectoryHandle>
-    showSaveFilePicker(options?: SaveFilePickerOptions): Promise<FileSystemFileHandle>
-  }
-  interface FileSystemDirectoryHandle extends FileSystemHandle {
-    id?: string
-    getFile(): Promise<File>
-    queryPermission(options: { mode: string }): Promise<Readonly<PermissionState>>
-    requestPermission(options: { mode: string }): Promise<Readonly<PermissionState>>
-    values(): AsyncIterableIterator<FileSystemHandle>
-  }
-}
-
 export interface FileSystemTreeNode {
   name: string
   kind: "file" | "directory"
+  id: string
   handle: FileSystemFileHandle | FileSystemDirectoryHandle
   children?: FileSystemTreeNode[]
   isOpen?: boolean
@@ -68,7 +27,8 @@ export interface VaultConfig {
 }
 
 const VAULT_IDS_KEY = "morph:vault-ids"
-const DB_NAME = "morph-vaults"
+const DB_NAME = "morph"
+const DB_VERSION = 1
 const STORE_NAME = "vaults"
 const CHUNK_SIZE = 5
 const PROCESS_DELAY = 1
@@ -76,14 +36,22 @@ const ACCEPT_PATTERNS = ["*.md", "*.mdx", "*.bib"]
 
 async function getDB() {
   return new Promise<IDBDatabase>((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 1)
+    const request = indexedDB.open(DB_NAME, DB_VERSION)
 
     request.onupgradeneeded = () => {
       const db = request.result
+
+      // Create vaults store if needed
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         const store = db.createObjectStore(STORE_NAME, { keyPath: "id" })
-        // TODO: There are chances to collapse here
         store.createIndex("name", "name", { unique: false })
+      }
+
+      // Create notes store if needed
+      if (!db.objectStoreNames.contains("notes")) {
+        const notesStore = db.createObjectStore("notes", { keyPath: "id", autoIncrement: true })
+        notesStore.createIndex("vault_file", ["vaultId", "fileId"], { unique: true })
+        notesStore.createIndex("updatedAt", "updatedAt", { unique: false })
       }
     }
 
@@ -139,19 +107,89 @@ export default function useVaults() {
   const { toast } = useToast()
   const { defaultSettings } = usePersistedSettings()
 
-  async function hydrateTree(vault: Vault): Promise<FileSystemTreeNode> {
-    if (!vault.tree) throw new Error("No tree data available")
+  const processDirectory = useCallback(
+    async (
+      handle: FileSystemDirectoryHandle,
+      ignorePatterns: string[],
+      parentNode?: FileSystemTreeNode,
+    ): Promise<FileSystemTreeNode> => {
+      const currentNode = parentNode || {
+        name: handle.name,
+        id: crypto.randomUUID().slice(0, 32),
+        kind: "directory",
+        handle,
+        children: [],
+        isOpen: false,
+      }
 
-    // Reattach handles from the vault's root directory
-    const rootHandle = vault.handle!
-    return processDirectory(rootHandle, vault.config.ignorePatterns, {
-      ...vault.tree,
-      handle: rootHandle,
-    })
-  }
+      // If rehydrating an existing tree, clear children to avoid duplicates
+      if (parentNode) currentNode.children = []
+
+      let processedCount = 0
+
+      for await (const entry of handle.values()) {
+        const shouldIgnore = ignorePatterns.some((p) => minimatch(entry.name, p))
+        const allowPatterns =
+          entry.kind === "directory" || ACCEPT_PATTERNS.some((p) => minimatch(entry.name, p))
+
+        if (shouldIgnore || !allowPatterns) continue
+
+        if (entry.kind === "file") {
+          currentNode.children?.push({
+            name: entry.name.replace(/\.[^/.]+$/, ""),
+            id: crypto.randomUUID().slice(0, 32),
+            kind: "file",
+            handle: entry as FileSystemFileHandle,
+          })
+        } else if (entry.kind === "directory") {
+          const dirNode: FileSystemTreeNode = {
+            name: entry.name,
+            id: crypto.randomUUID().slice(0, 32),
+            kind: "directory",
+            handle: entry as FileSystemDirectoryHandle,
+            children: [],
+            isOpen: false,
+          }
+          currentNode.children?.push(dirNode)
+          await processDirectory(entry as FileSystemDirectoryHandle, ignorePatterns, dirNode)
+        }
+
+        // Batch processing with delay
+        if (++processedCount % CHUNK_SIZE === 0) {
+          await new Promise((resolve) => setTimeout(resolve, PROCESS_DELAY))
+        }
+      }
+
+      // Sort once after processing all entries
+      currentNode.children?.sort((a, b) =>
+        a.kind === b.kind ? a.name.localeCompare(b.name) : a.kind === "directory" ? -1 : 1,
+      )
+
+      // Filter out directory nodes with empty children
+      if (currentNode.children) {
+        currentNode.children = currentNode.children.filter(
+          (child) => child.kind !== "directory" || (child.children && child.children.length > 0),
+        )
+      }
+
+      return currentNode
+    },
+    [],
+  )
 
   // Load vault IDs from localStorage and hydrate from IndexedDB
   useEffect(() => {
+    async function hydrateTree(vault: Vault): Promise<FileSystemTreeNode> {
+      if (!vault.tree) throw new Error("No tree data available")
+
+      // Reattach handles from the vault's root directory
+      const rootHandle = vault.handle!
+      return processDirectory(rootHandle, vault.config.ignorePatterns, {
+        ...vault.tree,
+        handle: rootHandle,
+      })
+    }
+
     const loadVaults = async () => {
       try {
         const vaultIds = JSON.parse(localStorage.getItem(VAULT_IDS_KEY) || "[]")
@@ -172,8 +210,7 @@ export default function useVaults() {
       }
     }
     loadVaults()
-  }, [toast])
-
+  }, [toast, processDirectory])
   const addVault = useCallback(
     async (handle: FileSystemDirectoryHandle) => {
       try {
@@ -198,8 +235,6 @@ export default function useVaults() {
           VAULT_IDS_KEY,
           JSON.stringify([...vaults.map((v) => v.id), newVault.id]),
         )
-
-        toast({ title: "Vault Added", description: `Added ${newVault.name}` })
         return newVault
       } catch (error) {
         console.error("Error adding vault:", error)
@@ -207,72 +242,8 @@ export default function useVaults() {
         return null
       }
     },
-    [vaults, toast, defaultSettings],
+    [vaults, toast, defaultSettings, processDirectory],
   )
-
-  const processDirectory = async (
-    handle: FileSystemDirectoryHandle,
-    ignorePatterns: string[],
-    parentNode?: FileSystemTreeNode,
-  ): Promise<FileSystemTreeNode> => {
-    const currentNode = parentNode || {
-      name: handle.name,
-      kind: "directory",
-      handle,
-      children: [],
-      isOpen: false,
-    }
-
-    // If rehydrating an existing tree, clear children to avoid duplicates
-    if (parentNode) currentNode.children = []
-
-    let processedCount = 0
-
-    for await (const entry of handle.values()) {
-      const shouldIgnore = ignorePatterns.some((p) => minimatch(entry.name, p))
-      const allowPatterns =
-        entry.kind === "directory" || ACCEPT_PATTERNS.some((p) => minimatch(entry.name, p))
-
-      if (shouldIgnore || !allowPatterns) continue
-
-      if (entry.kind === "file") {
-        currentNode.children?.push({
-          name: entry.name.replace(/\.[^/.]+$/, ""),
-          kind: "file",
-          handle: entry as FileSystemFileHandle,
-        })
-      } else if (entry.kind === "directory") {
-        const dirNode: FileSystemTreeNode = {
-          name: entry.name,
-          kind: "directory",
-          handle: entry as FileSystemDirectoryHandle,
-          children: [],
-          isOpen: false,
-        }
-        currentNode.children?.push(dirNode)
-        await processDirectory(entry as FileSystemDirectoryHandle, ignorePatterns, dirNode)
-      }
-
-      // Batch processing with delay
-      if (++processedCount % CHUNK_SIZE === 0) {
-        await new Promise((resolve) => setTimeout(resolve, PROCESS_DELAY))
-      }
-    }
-
-    // Sort once after processing all entries
-    currentNode.children?.sort((a, b) =>
-      a.kind === b.kind ? a.name.localeCompare(b.name) : a.kind === "directory" ? -1 : 1,
-    )
-
-    // Filter out directory nodes with empty children
-    if (currentNode.children) {
-      currentNode.children = currentNode.children.filter(
-        (child) => child.kind !== "directory" || (child.children && child.children.length > 0),
-      )
-    }
-
-    return currentNode
-  }
 
   const refreshVault = useCallback(
     async (vaultId: string) => {
@@ -289,7 +260,7 @@ export default function useVaults() {
         console.error("Error refreshing vault:", error)
       }
     },
-    [vaults],
+    [vaults, processDirectory],
   )
 
   return {

@@ -891,12 +891,29 @@ body {
   background-color: hsl(var(--background));
 }
 
-.dark .cm-editor .cm-content {
-  caret-color: #fffcf0;
+.cm-content {
+  caret-color: var(--primary);
+  cursor: text;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  padding: 0;
 }
 
-.dark .cm-editor .cm-cursor {
-  border-left-color: #fffcf0;
+.cm-cursor,
+.cm-cursor-primary {
+  border-left-width: 2px;
+  border-left-style: solid;
+  margin-left: -1px;
+}
+
+.cm-focused .cm-cursor {
+  border-left: 3px solid var(--primary) !important;
+  margin-left: -1.5px;
+}
+
+.dark .cm-focused .cm-cursor {
+  border-left-color: var(--flexoki-tx) !important;
 }
 
 .cm-live-mode {

@@ -20,20 +20,19 @@ import { Explorer } from "./explorer"
 import { Toolbar } from "./toolbar"
 import jsPDF from "jspdf"
 import { SettingsPanel } from "./settings-panel"
-import { FileSystemPermissionPrompt } from "./popup/permission"
 import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { fileField, mdToHtml } from "./markdown-inline"
+import { fileField, mdToHtml } from "@/components/markdown-inline"
 import toJsx from "@/lib/jsx"
 import type { Root } from "hast"
 import { useTheme } from "next-themes"
 import { useVaultContext } from "@/context/vault-context"
 import { Skeleton } from "./ui/skeleton"
-import { md } from "./parser"
+import { md } from "@/components/parser"
 import { DotIcon } from "@/components/ui/icons"
 import useVaults from "@/hooks/use-vaults"
 import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface Suggestion {
   suggestion: string
@@ -52,6 +51,7 @@ interface AsteraceaResponse {
 
 interface EditorProps {
   vaultId: string
+  disableSidebar: boolean
 }
 
 function frontmatterExtension() {
@@ -114,15 +114,12 @@ const syntaxHighlighter = HighlightStyle.define([
   },
 ])
 
-export default function Editor({ vaultId }: EditorProps) {
+export default function Editor({ vaultId, disableSidebar = false }: EditorProps) {
   const { theme } = useTheme()
   const { refreshVault } = useVaults()
   const { getActiveVault, setActiveVaultId } = useVaultContext()
   const editorRef = useRef<HTMLDivElement>(null)
-  const [showPopover, setShowPopover] = useState(false)
-  const [currentFile, setCurrentFile] = useState<string>(() => {
-    return localStorage.getItem("persistedCurrentFile") || ""
-  })
+  const [currentFile, setCurrentFile] = useState<string>("")
   const [isEditMode, setIsEditMode] = useState(true)
   const [previewNode, setPreviewNode] = useState<Root | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -138,18 +135,7 @@ export default function Editor({ vaultId }: EditorProps) {
   const { toast } = useToast()
   const placeholderRef = useRef<HTMLDivElement | null>(null)
 
-  const [notes, setNotes] = useState<Note[]>(() => {
-    const savedNotes = localStorage.getItem("persistedNotes")
-    return savedNotes ? JSON.parse(savedNotes) : []
-  })
-
-  useEffect(() => {
-    localStorage.setItem("persistedCurrentFile", currentFile)
-  }, [currentFile])
-
-  useEffect(() => {
-    localStorage.setItem("persistedNotes", JSON.stringify(notes))
-  }, [notes])
+  const [markdownContent, setMarkdownContent] = useState<string>("")
 
   useEffect(() => {
     if (!placeholderRef.current) {
@@ -167,7 +153,6 @@ export default function Editor({ vaultId }: EditorProps) {
     }
   }, [vaultId, setActiveVaultId])
 
-  const [markdownContent, setMarkdownContent] = useState("")
   const updatePreview = useCallback(
     async (content: string) => {
       try {
@@ -181,7 +166,7 @@ export default function Editor({ vaultId }: EditorProps) {
   )
 
   const onContentChange = useCallback(
-    (value: string) => {
+    async (value: string) => {
       setMarkdownContent(value)
       setHasUnsavedChanges(true)
       updatePreview(value)
@@ -193,19 +178,18 @@ export default function Editor({ vaultId }: EditorProps) {
     if (markdownContent) {
       updatePreview(markdownContent)
     }
-  }, [currentFile, updatePreview])
+  }, [markdownContent, updatePreview])
 
   const [showNotes, setShowNotes] = useState(false)
   const toggleNotes = useCallback(() => setShowNotes((prev) => !prev), [])
 
+  const [notes, setNotes] = useState<Note[]>([])
   const handleNoteDrop = useCallback((note: Note, droppedOverEditor: boolean) => {
-    setNotes((prevNotes) => {
-      const newNotes = prevNotes.filter(
-        (n) => !(n.title === note.title && n.content === note.content),
+    if (droppedOverEditor) {
+      setNotes((prevNotes) =>
+        prevNotes.filter((n) => !(n.title === note.title && n.content === note.content)),
       )
-      localStorage.setItem("persistedNotes", JSON.stringify(newNotes))
-      return newNotes
-    })
+    }
   }, [])
 
   // FIXME: increase in memory usage
@@ -297,12 +281,12 @@ export default function Editor({ vaultId }: EditorProps) {
   }, [
     currentFileHandle,
     markdownContent,
-    hasUnsavedChanges,
     currentFile,
     getActiveVault,
     refreshVault,
     vaultId,
     showNotes,
+    toast,
   ])
 
   const fetchNewNotes = async (content: string) => {
@@ -312,7 +296,6 @@ export default function Editor({ vaultId }: EditorProps) {
         throw new Error("Notes functionality is currently unavailable")
       }
 
-      console.log(md(content).content)
       const resp = await axios.post<
         AsteraceaResponse,
         AxiosResponse<AsteraceaResponse>,
@@ -363,7 +346,7 @@ export default function Editor({ vaultId }: EditorProps) {
     return () => {
       clearTimeout(timerId)
     }
-  }, [showNotes])
+  }, [showNotes, markdownContent, toast])
 
   // CodeMirror extensions
   const memoizedExtensions = useMemo(() => {
@@ -375,13 +358,13 @@ export default function Editor({ vaultId }: EditorProps) {
     })
     Vim.defineEx("w", "w", handleSave)
     const tabSize = new Compartment()
+    const vimCompartment = new Compartment()
 
-    return [
+    const base = [
       yamlFrontmatter({
         content: markdown({ base: markdownLanguage, codeLanguages: languages }),
       }),
       frontmatterExtension(),
-      vim(),
       EditorView.lineWrapping,
       tabSize.of(EditorState.tabSize.of(settings.tabSize)),
       fileField.init(() => currentFile),
@@ -393,18 +376,20 @@ export default function Editor({ vaultId }: EditorProps) {
       }),
       syntaxHighlighting(syntaxHighlighter),
       placeholder(() => placeholderRef.current!),
+      vimCompartment.of([]),
     ]
+
+    return { base, vimCompartment }
   }, [settings.tabSize, currentFile, handleSave])
 
-  // Check for file permission
-  const [fileSystemPermissionGranted, setFileSystemPermissionGranted] = useState(false)
-  const handlePermissionGranted = useCallback(() => {
-    setFileSystemPermissionGranted(true)
-  }, [])
+  // Effect to update vim mode when settings change
   useEffect(() => {
-    const permissionGranted = localStorage.getItem("fileSystemPermissionGranted")
-    if (permissionGranted === "true") setFileSystemPermissionGranted(true)
-  }, [])
+    if (!codeMirrorViewRef.current) return
+
+    codeMirrorViewRef.current.dispatch({
+      effects: memoizedExtensions.vimCompartment.reconfigure(settings.vimMode ? [vim()] : []),
+    })
+  }, [settings.vimMode, memoizedExtensions.vimCompartment])
 
   // Keybind events
   useEffect(() => {
@@ -430,8 +415,7 @@ export default function Editor({ vaultId }: EditorProps) {
 
   return (
     <div>
-      <FileSystemPermissionPrompt onPermissionGranted={handlePermissionGranted} />
-      <SidebarProvider defaultOpen={false}>
+      <SidebarProvider defaultOpen={!disableSidebar}>
         <Explorer
           onExportMarkdown={handleExportMarkdown}
           onExportPDF={handleExportPdf}
@@ -446,31 +430,24 @@ export default function Editor({ vaultId }: EditorProps) {
         <SidebarInset>
           <header className="inline-block h-10 border-b">
             <div className="h-full flex shrink-0 items-center justify-between mx-4">
-              <Popover open={!fileSystemPermissionGranted && showPopover}>
-                <PopoverTrigger asChild>
-                  <div
-                    className="relative"
-                    onMouseEnter={() => !fileSystemPermissionGranted && setShowPopover(true)}
-                    onMouseLeave={() => !fileSystemPermissionGranted && setShowPopover(false)}
-                  >
-                    <SidebarTrigger className="-ml-1" disabled={!fileSystemPermissionGranted} />
-                  </div>
-                </PopoverTrigger>
-                {!fileSystemPermissionGranted && (
-                  <PopoverContent
-                    side="right"
-                    className="w-80 transition-opacity duration-200"
-                    sideOffset={8}
-                  >
-                    <div className="text-sm">
-                      <p className="text-muted-foreground mt-1">
-                        File system access is required to use FileSystem API.
-                      </p>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <SidebarTrigger
+                        className={`-ml-1 ${disableSidebar ? "opacity-50 cursor-not-allowed" : ""}`}
+                        disabled={disableSidebar}
+                      />
                     </div>
-                  </PopoverContent>
-                )}
-              </Popover>
-              <Toolbar toggleNotes={toggleNotes} />
+                  </TooltipTrigger>
+                  {disableSidebar && (
+                    <TooltipContent>
+                      <p>File system access is required</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+              <Toolbar toggleNotes={toggleNotes} disableSidebar={disableSidebar} />
             </div>
           </header>
           <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
@@ -498,7 +475,7 @@ export default function Editor({ vaultId }: EditorProps) {
                     <CodeMirror
                       value={markdownContent}
                       height="100%"
-                      extensions={memoizedExtensions}
+                      extensions={memoizedExtensions.base}
                       onChange={onContentChange}
                       className="overflow-auto h-full mx-12 pt-4 scrollbar-hidden"
                       theme={theme === "dark" ? "dark" : "light"}

@@ -50,7 +50,7 @@ const FileTreeNode: React.FC<FileTreeNodeProps> = memo(({ node, onFileSelect }) 
   if (node.kind === "file") {
     return (
       <SidebarMenuButton
-        className="data-[active=true]:bg-transparent hover:bg-accent/50 transition-colors p-0"
+        className="data-[active=true]:bg-transparent hover:bg-accent/50 transition-colors"
         onClick={() => onFileSelect?.(node)}
       >
         <span className="truncate">{node.name}</span>
@@ -209,7 +209,9 @@ export function Explorer({
           <SidebarGroupContent>
             <SidebarMenu>
               {activeVault ? (
-                <FileTreeNode node={activeVault.tree!} onFileSelect={handleFileSelect} />
+                activeVault.tree!.children!.map((node, idx) => (
+                  <FileTreeNode key={idx} node={node} onFileSelect={handleFileSelect} />
+                ))
               ) : (
                 <div className="p-4">
                   <Skeleton className="h-4 w-full mb-2" />

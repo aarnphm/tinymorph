@@ -8,12 +8,16 @@ import useVaults, { Vault } from "@/hooks/use-vaults"
 import { useVaultContext } from "@/context/vault-context"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useEffect, useState } from "react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useToast } from "@/hooks/use-toast"
 
 export default function Home() {
   const router = useRouter()
   const { isLoading, setActiveVaultId } = useVaultContext()
   const { addVault, getAllVaults } = useVaults()
   const [sortedVaults, setSortedVaults] = useState<Vault[]>([])
+  const [hasFileAccess, setHasFileAccess] = useState(false)
+  const { toast } = useToast()
 
   useEffect(() => {
     const loadVaults = async () => {
@@ -21,6 +25,10 @@ export default function Home() {
       setSortedVaults(allVaults.sort((a, b) => b.lastOpened.getTime() - a.lastOpened.getTime()))
     }
     loadVaults()
+
+    // TODO: Permission changes and file system access
+    // Check file system access on mount
+    setHasFileAccess(true)
   }, [getAllVaults])
 
   const handleOpenDirectory = async () => {
@@ -31,8 +39,12 @@ export default function Home() {
         router.push(`/${vault.id}`)
         setActiveVaultId(vault.id)
       }
-    } catch (error) {
-      console.error("Error opening directory:", error)
+    } catch {
+      toast({
+        title: "Vault picker aborted",
+        description: "User aborted picker request.",
+        duration: 500,
+      })
     }
   }
 
@@ -49,28 +61,47 @@ export default function Home() {
             <h1 className="text-3xl font-bold tracking-tight">Vaults</h1>
             <p className="text-muted-foreground mt-2 italic">Manage recently opened vaults</p>
           </hgroup>
-          <Button onClick={handleOpenDirectory} className="gap-2">
-            <FolderSearch className="w-4 h-4" />
-            Open New Vault
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <Button
+                    onClick={handleOpenDirectory}
+                    className={`gap-2 ${!hasFileAccess ? "opacity-50 cursor-not-allowed" : ""}`}
+                    disabled={!hasFileAccess}
+                  >
+                    <FolderSearch className="w-4 h-4" />
+                    Open New Vault
+                  </Button>
+                </div>
+              </TooltipTrigger>
+              {!hasFileAccess && (
+                <TooltipContent>
+                  <p>File system access is required</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
         </section>
         <div className="flex items-center gap-2 text-sm text-muted-foreground my-4">
           <Clock className="w-4 h-4" />
           Recently Opened
         </div>
-        {isLoading ? (
+        {isLoading || !hasFileAccess ? (
           <div className="space-y-4">
-            <Card>
-              <CardContent className="p-6 space-y-4">
-                <div className="flex items-center space-x-4">
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                  <div className="space-y-2 flex-1">
-                    <Skeleton className="h-4 w-[200px]" />
-                    <Skeleton className="h-3 w-[160px]" />
+            {[1, 2, 3].map((el) => (
+              <Card key={el}>
+                <CardContent className="p-6 space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <Skeleton className="h-12 w-12 rounded-full" />
+                    <div className="space-y-2 flex-1">
+                      <Skeleton className="h-4 w-[200px]" />
+                      <Skeleton className="h-3 w-[160px]" />
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         ) : sortedVaults.length > 0 ? (
           <section className="grid gap-4">
