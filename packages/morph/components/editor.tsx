@@ -7,27 +7,23 @@ import CodeMirror from "@uiw/react-codemirror"
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown"
 import { yamlFrontmatter } from "@codemirror/lang-yaml"
 import { languages } from "@codemirror/language-data"
-import { tags } from "@lezer/highlight"
-import { HighlightStyle, syntaxHighlighting } from "@codemirror/language"
 import { EditorView, placeholder } from "@codemirror/view"
 import { Compartment, EditorState } from "@codemirror/state"
 import { Pencil, Eye } from "lucide-react"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { vim, Vim } from "@replit/codemirror-vim"
-import { NoteCard, DraggableNoteCard, Note } from "./note-card"
-import { Explorer } from "./explorer"
-import { Toolbar } from "./toolbar"
-import jsPDF from "jspdf"
-import { SettingsPanel } from "./settings-panel"
+import { Vim, vim } from "@replit/codemirror-vim"
+import { NoteCard, DraggableNoteCard, Note } from "@/components/note-card"
+import { Explorer } from "@/components/explorer"
+import { Toolbar } from "@/components/toolbar"
+import { SettingsPanel } from "@/components/settings-panel"
 import { Button } from "@/components/ui/button"
 import { fileField, mdToHtml } from "@/components/markdown-inline"
 import toJsx from "@/lib/jsx"
 import type { Root } from "hast"
 import { useTheme } from "next-themes"
 import { useVaultContext } from "@/context/vault-context"
-import { Skeleton } from "./ui/skeleton"
-import { md } from "@/components/parser"
+import { md, frontmatter, syntaxHighlighting, theme as editorTheme } from "@/components/parser"
 import { DotIcon } from "@/components/ui/icons"
 import useVaults from "@/hooks/use-vaults"
 import { useToast } from "@/hooks/use-toast"
@@ -54,66 +50,6 @@ interface EditorProps {
   disableSidebar: boolean
 }
 
-function frontmatterExtension() {
-  return EditorView.inputHandler.of((view: EditorView, from: number, to: number, text: string) => {
-    // If you're inserting a `-` at index 2 and all previous characters are also `-`,
-    // insert a matching `---` below the line
-    if (
-      (text === "-" && from === 2 && view.state.sliceDoc(0, 2) === "--") ||
-      // Sometimes the mobile Safari replaces `--` with `—` so we need to handle that case too
-      (text === "-" && from === 1 && view.state.sliceDoc(0, 1) === "—")
-    ) {
-      view.dispatch({
-        changes: {
-          from: 0,
-          to,
-          insert: "---\n\n---",
-        },
-        selection: {
-          anchor: 4,
-        },
-      })
-
-      return true
-    }
-
-    return false
-  })
-}
-
-const syntaxHighlighter = HighlightStyle.define([
-  {
-    tag: tags.heading1,
-    fontSize: "var(--font-size-xl)",
-    fontWeight: 550,
-  },
-  {
-    tag: tags.heading2,
-    fontSize: "var(--font-size-lg)",
-    fontWeight: 550,
-  },
-  {
-    tag: [tags.heading3, tags.heading4, tags.heading5, tags.heading6],
-    fontWeight: 550,
-  },
-  {
-    tag: [tags.comment, tags.contentSeparator],
-    color: "var(--color-text-secondary)",
-  },
-  {
-    tag: tags.emphasis,
-    fontStyle: "italic",
-  },
-  {
-    tag: tags.strong,
-    fontWeight: 650,
-  },
-  {
-    tag: tags.strikethrough,
-    textDecoration: "line-through",
-  },
-])
-
 export default function Editor({ vaultId, disableSidebar = false }: EditorProps) {
   const { theme } = useTheme()
   const { refreshVault } = useVaults()
@@ -124,7 +60,6 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
   const [previewNode, setPreviewNode] = useState<Root | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-  const [isEditorReady, setIsEditorReady] = useState(false)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [currentFileHandle, setCurrentFileHandle] = useState<FileSystemFileHandle | null>(null)
 
@@ -159,10 +94,13 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
         const tree = await mdToHtml(content, currentFile, true)
         setPreviewNode(tree)
       } catch (error) {
-        console.error("Error converting markdown to JSX:", error)
+        toast({
+          title: "Conversion failed",
+          description: error instanceof Error ? error.message : "Failed to convert markdown",
+        })
       }
     },
-    [currentFile],
+    [currentFile, toast],
   )
 
   const onContentChange = useCallback(
@@ -191,30 +129,6 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
       )
     }
   }, [])
-
-  // FIXME: increase in memory usage
-  // TODO: update the name based on users imported files.
-  const handleExportMarkdown = useCallback(() => {
-    const blob = new Blob([markdownContent], { type: "text/markdown" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = currentFile
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }, [markdownContent, currentFile])
-
-  const handleExportPdf = useCallback(() => {
-    const pdf = new jsPDF()
-    pdf.setFont("helvetica", "normal")
-
-    const lines = pdf.splitTextToSize(markdownContent, 180)
-    pdf.text(lines, 10, 10)
-
-    pdf.save(currentFile)
-  }, [markdownContent, currentFile])
 
   //TODO: Add a toast?
   const handleSave = useCallback(async () => {
@@ -350,21 +264,14 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
 
   // CodeMirror extensions
   const memoizedExtensions = useMemo(() => {
-    Vim.defineEx("yank", "y", () => {
-      const text = Vim.getRegister('"')
-      if (text) {
-        navigator.clipboard.writeText(text).catch(console.error)
-      }
-    })
-    Vim.defineEx("w", "w", handleSave)
     const tabSize = new Compartment()
-    const vimCompartment = new Compartment()
 
-    const base = [
+    // base extensions
+    return [
       yamlFrontmatter({
         content: markdown({ base: markdownLanguage, codeLanguages: languages }),
       }),
-      frontmatterExtension(),
+      frontmatter(),
       EditorView.lineWrapping,
       tabSize.of(EditorState.tabSize.of(settings.tabSize)),
       fileField.init(() => currentFile),
@@ -374,22 +281,19 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
           setCurrentFile(newFilename)
         }
       }),
-      syntaxHighlighting(syntaxHighlighter),
+      syntaxHighlighting(),
       placeholder(() => placeholderRef.current!),
-      vimCompartment.of([]),
+      vim(),
     ]
-
-    return { base, vimCompartment }
-  }, [settings.tabSize, currentFile, handleSave])
+  }, [settings.tabSize, currentFile])
 
   // Effect to update vim mode when settings change
   useEffect(() => {
-    if (!codeMirrorViewRef.current) return
-
-    codeMirrorViewRef.current.dispatch({
-      effects: memoizedExtensions.vimCompartment.reconfigure(settings.vimMode ? [vim()] : []),
-    })
-  }, [settings.vimMode, memoizedExtensions.vimCompartment])
+    Vim.defineEx("w", "w", handleSave)
+    Vim.defineEx("wa", "w", handleSave)
+    Vim.map(";", ":", "normal")
+    Vim.map("jj", "<Esc>", "insert")
+  }, [handleSave, toast])
 
   // Keybind events
   useEffect(() => {
@@ -417,9 +321,9 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
     <div>
       <SidebarProvider defaultOpen={!disableSidebar}>
         <Explorer
-          onExportMarkdown={handleExportMarkdown}
-          onExportPDF={handleExportPdf}
-          codeMirrorRef={codeMirrorViewRef}
+          currentFile={currentFile}
+          markdownContent={markdownContent}
+          editorViewRef={codeMirrorViewRef}
           onFileSelect={(handle: FileSystemFileHandle) => setCurrentFileHandle(handle)}
           onNewFile={() => {
             setCurrentFileHandle(null)
@@ -457,16 +361,7 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
                 ref={editorRef}
               >
                 <div ref={editorScrollRef} className="h-full scrollbar-hidden relative">
-                  <div
-                    className={`h-full transition-opacity duration-100 ${isEditorReady ? "opacity-100" : "opacity-0"}`}
-                  >
-                    {!isEditorReady && (
-                      <div className="flex flex-col max-w-5xl mx-auto pt-4">
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (
-                          <Skeleton key={idx} className="h-12 w-full mb-4" />
-                        ))}
-                      </div>
-                    )}
+                  <div className="h-full">
                     {hasUnsavedChanges && (
                       <div className="absolute top-4 left-4 text-sm/7 z-10 text-yellow-200">
                         <DotIcon />
@@ -475,13 +370,18 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
                     <CodeMirror
                       value={markdownContent}
                       height="100%"
-                      extensions={memoizedExtensions.base}
+                      basicSetup={{
+                        rectangularSelection: true,
+                        indentOnInput: true,
+                        syntaxHighlighting: true,
+                        searchKeymap: true,
+                      }}
+                      extensions={memoizedExtensions}
                       onChange={onContentChange}
                       className="overflow-auto h-full mx-12 pt-4 scrollbar-hidden"
-                      theme={theme === "dark" ? "dark" : "light"}
+                      theme={theme === "dark" ? "dark" : editorTheme}
                       onCreateEditor={(view) => {
                         codeMirrorViewRef.current = view
-                        setIsEditorReady(true)
                       }}
                     />
                   </div>
@@ -540,12 +440,9 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
               </Button>
             </div>
           </footer>
+          <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
         </SidebarInset>
       </SidebarProvider>
-
-      {isSettingsOpen && (
-        <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
-      )}
     </div>
   )
 }

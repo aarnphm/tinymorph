@@ -434,7 +434,7 @@
   --h4-style: normal;
   --h5-style: normal;
   --h6-style: normal;
-  --text-tiny: 0.9rem;
+  --text-tiny: 10px;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -841,6 +841,21 @@ body {
 .cm-editor {
   @apply h-full font-serif text-sm/7 mx-auto my-0 border-none border-r-0 bg-background;
 
+  /* CodeMirror rectangular selection styles */
+  .cm-selectionBackground {
+    background: var(--flexoki-tx-3);
+  }
+
+  &.cm-focused .cm-selectionBackground {
+    background: var(--flexoki-tx);
+  }
+
+  /* For rectangular selection specifically */
+  .cm-selectionLayer .cm-selectionBackground {
+    background: var(--flexoki-tx-3);
+    opacity: 0.3;
+  }
+
   .cm-scroller {
     @apply min-h-[80vh] !font-serif scrollbar-hidden !p-0 !w-5xl !mx-auto relative whitespace-pre-wrap;
     font-size: var(--fluid-0);
@@ -894,7 +909,6 @@ body {
 .cm-content {
   caret-color: var(--primary);
   cursor: text;
-  font-family: var(--font-mono);
   font-size: var(--font-size-base);
   line-height: 1.5;
   padding: 0;
@@ -1155,8 +1169,6 @@ body {
   ul,
   menu {
     list-style: disc;
-    padding-left: 1.5em;
-    margin-bottom: 1.25rem;
   }
 
   ul.contains-task-list {
@@ -1350,7 +1362,7 @@ body {
     }
 
     ol {
-      @apply mb-2 list-decimal;
+      @apply mb-6 list-decimal relative left-8;
     }
   }
 
@@ -1495,9 +1507,6 @@ menu.tags,
 menu.tags > li > ul {
   list-style: none;
   display: flex;
-  padding-left: 0;
-  gap: 0.4rem;
-  margin: 0;
   flex-wrap: wrap;
   flex-direction: row;
 }
@@ -1582,4 +1591,10 @@ p.text {
 
 section {
   background-color: inherit;
+}
+
+pre.poetry {
+  border: none;
+  padding: 0;
+  position: unset;
 }

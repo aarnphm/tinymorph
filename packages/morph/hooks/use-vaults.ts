@@ -1,10 +1,11 @@
 import { useState, useCallback, useEffect } from "react"
-import { useToast } from "./use-toast"
-import usePersistedSettings from "./use-persisted-settings"
+import { useToast } from "@/hooks/use-toast"
+import usePersistedSettings from "@/hooks/use-persisted-settings"
 import { minimatch } from "minimatch"
 
 export interface FileSystemTreeNode {
   name: string
+  extension: string
   kind: "file" | "directory"
   id: string
   handle: FileSystemFileHandle | FileSystemDirectoryHandle
@@ -32,7 +33,6 @@ const DB_VERSION = 1
 const STORE_NAME = "vaults"
 const CHUNK_SIZE = 5
 const PROCESS_DELAY = 1
-const ACCEPT_PATTERNS = ["*.md", "*.mdx", "*.bib"]
 
 async function getDB() {
   return new Promise<IDBDatabase>((resolve, reject) => {
@@ -115,6 +115,7 @@ export default function useVaults() {
     ): Promise<FileSystemTreeNode> => {
       const currentNode = parentNode || {
         name: handle.name,
+        extension: "",
         id: crypto.randomUUID().slice(0, 32),
         kind: "directory",
         handle,
@@ -123,20 +124,24 @@ export default function useVaults() {
       }
 
       // If rehydrating an existing tree, clear children to avoid duplicates
+      // HACK: this is a hack to avoid duplicates, but we are rerendering this twice
       if (parentNode) currentNode.children = []
 
       let processedCount = 0
 
       for await (const entry of handle.values()) {
         const shouldIgnore = ignorePatterns.some((p) => minimatch(entry.name, p))
-        const allowPatterns =
-          entry.kind === "directory" || ACCEPT_PATTERNS.some((p) => minimatch(entry.name, p))
 
-        if (shouldIgnore || !allowPatterns) continue
+        if (shouldIgnore) continue
 
         if (entry.kind === "file") {
+          const match = entry.name.match(/^(.+?)(\.[^.]*)?$/)
+          const baseName = match?.[1] || entry.name
+          const extension = match?.[2] || ""
+
           currentNode.children?.push({
-            name: entry.name.replace(/\.[^/.]+$/, ""),
+            name: baseName,
+            extension: extension.replace(/^\./, ""),
             id: crypto.randomUUID().slice(0, 32),
             kind: "file",
             handle: entry as FileSystemFileHandle,
@@ -144,6 +149,7 @@ export default function useVaults() {
         } else if (entry.kind === "directory") {
           const dirNode: FileSystemTreeNode = {
             name: entry.name,
+            extension: "",
             id: crypto.randomUUID().slice(0, 32),
             kind: "directory",
             handle: entry as FileSystemDirectoryHandle,
@@ -204,9 +210,12 @@ export default function useVaults() {
           }),
         )
         setVaults(loadedVaults.filter(Boolean) as Vault[])
-      } catch (error) {
-        console.error("Error loading vaults:", error)
-        toast({ title: "Error Loading Vaults", variant: "destructive" })
+      } catch {
+        toast({
+          title: "Error Loading Vaults",
+          description: "Failed to load vaults",
+          variant: "destructive",
+        })
       }
     }
     loadVaults()

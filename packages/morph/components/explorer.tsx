@@ -1,7 +1,9 @@
 import type * as React from "react"
 import { useState, useCallback, useEffect, memo } from "react"
 import { ChevronRight, Plus, Download, ChevronDown } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
+import { md } from "@/components/parser"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -24,6 +26,7 @@ import {
   SidebarRail,
   SidebarHeader,
 } from "@/components/ui/sidebar"
+import jsPDF from "jspdf"
 import { Vault } from "@/hooks/use-vaults"
 import { useRouter } from "next/navigation"
 import { EditorView } from "@uiw/react-codemirror"
@@ -50,10 +53,15 @@ const FileTreeNode: React.FC<FileTreeNodeProps> = memo(({ node, onFileSelect }) 
   if (node.kind === "file") {
     return (
       <SidebarMenuButton
-        className="data-[active=true]:bg-transparent hover:bg-accent/50 transition-colors"
+        className="data-[active=true]:bg-transparent hover:bg-accent/50 transition-colors flex items-center"
         onClick={() => onFileSelect?.(node)}
       >
         <span className="truncate">{node.name}</span>
+        {node.extension && node.extension != "md" && (
+          <span className="text-muted-foreground uppercase text-tiny flex-shrink-0 border rounded px-1 ml-2">
+            {node.extension}
+          </span>
+        )}
       </SidebarMenuButton>
     )
   }
@@ -83,24 +91,25 @@ const FileTreeNode: React.FC<FileTreeNodeProps> = memo(({ node, onFileSelect }) 
 FileTreeNode.displayName = "FileTreeNode"
 
 interface MorphSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  codeMirrorRef: React.RefObject<EditorView | null>
-  onExportMarkdown: () => void
-  onExportPDF: () => void
+  editorViewRef: React.RefObject<EditorView | null>
   onFileSelect?: (handle: FileSystemFileHandle) => void
   onNewFile?: () => void
   onContentUpdate?: (content: string) => void
+  currentFile: string
+  markdownContent: string
 }
 
 export function Explorer({
-  codeMirrorRef,
-  onExportMarkdown,
-  onExportPDF,
+  editorViewRef,
   onFileSelect,
   onNewFile,
   onContentUpdate,
+  currentFile,
+  markdownContent,
   ...props
 }: MorphSidebarProps) {
   const router = useRouter()
+  const { toast } = useToast()
   const { getAllVaults } = useVaults()
   const { getActiveVault } = useVaultContext()
 
@@ -120,7 +129,11 @@ export function Explorer({
 
   const handleFileSelect = useCallback(
     async (node: FileSystemTreeNode) => {
-      if (!activeVault || node.kind !== "file" || !codeMirrorRef.current) return
+      if (!activeVault || node.kind !== "file" || !editorViewRef.current) return
+      if (node.extension !== "md") {
+        toast({ title: "opening file", description: "Can only open markdown files" })
+        return
+      }
 
       try {
         const file = await node.handle.getFile()
@@ -128,10 +141,10 @@ export function Explorer({
 
         if (onFileSelect) onFileSelect(node.handle as FileSystemFileHandle)
 
-        codeMirrorRef.current.dispatch({
+        editorViewRef.current.dispatch({
           changes: {
             from: 0,
-            to: codeMirrorRef.current.state.doc.length,
+            to: editorViewRef.current.state.doc.length,
             insert: content,
           },
           effects: setFile.of(file.name),
@@ -144,8 +157,40 @@ export function Explorer({
         console.error("Error reading file:", error)
       }
     },
-    [activeVault, codeMirrorRef, onFileSelect, onContentUpdate],
+    [activeVault, editorViewRef, onFileSelect, onContentUpdate, toast],
   )
+
+  const handleExportMarkdown = useCallback(() => {
+    const blob = new Blob([md(markdownContent).content], { type: "text/markdown" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = currentFile
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }, [markdownContent, currentFile])
+
+  const handleExportPdf = useCallback(() => {
+    const pdf = new jsPDF({ unit: "pt", format: "a4" })
+
+    // Get styles from reading mode preview
+    const preview = document.querySelector(".prose") as HTMLElement
+    const styles = preview ? getComputedStyle(preview) : null
+
+    // Set up font metrics based on actual rendered styles
+    const fontSize = styles?.fontSize || "16px"
+    const fontFamily = "Parclo Serif"
+
+    const lines = pdf.splitTextToSize(md(markdownContent).content, 180)
+    pdf.text(lines, 10, 10)
+
+    pdf.setFont(fontFamily)
+    pdf.setFontSize(parseFloat(fontSize))
+
+    pdf.save(currentFile.endsWith(".md") ? currentFile.slice(0, -3) + ".pdf" : `${currentFile}.pdf`)
+  }, [markdownContent, currentFile])
 
   return (
     <Sidebar className="bg-background" {...props}>
@@ -176,11 +221,11 @@ export function Explorer({
             title="New File"
             disabled={!activeVault}
             onClick={() => {
-              if (codeMirrorRef.current) {
-                codeMirrorRef.current.dispatch({
+              if (editorViewRef.current) {
+                editorViewRef.current.dispatch({
                   changes: {
                     from: 0,
-                    to: codeMirrorRef.current.state.doc.length,
+                    to: editorViewRef.current.state.doc.length,
                     insert: "",
                   },
                   effects: setFile.of("Untitled"),
@@ -198,8 +243,8 @@ export function Explorer({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="top" align="center" sideOffset={5} alignOffset={2}>
-              <DropdownMenuItem onClick={onExportMarkdown}>Markdown</DropdownMenuItem>
-              <DropdownMenuItem onClick={onExportPDF}>PDF</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleExportMarkdown}>Markdown</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleExportPdf}>PDF</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

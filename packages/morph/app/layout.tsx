@@ -40,10 +40,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Toaster />
         <SvgProvider />
         {process.env.NODE_ENV === "production" && (
-          <script
+          <Script
             defer
             src="https://static.cloudflareinsights.com/beacon.min.js"
-            data-cf-beacon='{"token": "79bda9a021e14500b90f2e12a664d4f1"}'
+            data-cf-beacon='{"token": "79bda9a021e14500b90f2e12a664d4f1", "spa": true}'
+            strategy="afterInteractive"
           />
         )}
       </body>

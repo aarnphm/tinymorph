@@ -69,6 +69,7 @@ declare module "vfile" {
         lang: string
         cssclasses: string[]
         socialImage: string
+        socials: Record<string, string>
       }>
   }
 }
@@ -92,7 +93,7 @@ const gr = (...el: Child[]) =>
   h(
     "div",
     {
-      class: `grid gap-1 py-2 [&>*]:pl-1 min-[24rem]:grid-cols-[10rem_1fr] border border-transparent hover:border-gray-400 hover:border-solid ${el.length === 0 ? "empty-content" : ""}`,
+      class: `grid gap-1 [&>*]:pl-2 [&>*]:py-2 min-[24rem]:grid-cols-[10rem_1fr] border border-transparent hover:border-gray-400 hover:border-solid ${el.length === 0 ? "empty-content" : ""}`,
     },
     ...(el.length > 0 ? el : []),
   )
@@ -164,21 +165,22 @@ const Frontmatter = {
               ]),
               h(
                 "div",
-                { class: "flex flex-col my-2 border-border [&>*:last-child]:mb-4" },
+                { class: "flex flex-col border-border [&>*:last-child]:mb-4 text-sm/7" },
                 [
                   frontmatter.tags &&
                     gr(
                       t("tag"),
                       h(
-                        "menu.tags",
+                        "div.metadata-content",
+                        { class: "gap-2 m-0 flex list-style-none" },
                         frontmatter.tags.map((el) =>
                           h(
-                            "li.tag-link",
+                            "div",
                             {
                               class:
-                                "rounded-[0px] border-[1px] border-gray-400 border-solid my-0 mx-[0.1em] py-[0.1rem] px-[0.4rem] text-tiny decoration-none cursor-pointer",
+                                "border-gray-400 border-solid flex-shrink-0 border rounded px-1 text-tiny items-center flex cursor-pointer leading-none max-w-[calc(100% - 6px - 1ch)] relative",
                             },
-                            [{ type: "text", value: el }],
+                            h("span", [{ type: "text", value: el }]),
                           ),
                         ),
                       ),
@@ -186,12 +188,40 @@ const Frontmatter = {
                   frontmatter.description &&
                     gr(
                       t("description"),
+                      h("div.metadata-content", { class: "italic muted" }, [
+                        { type: "text", value: frontmatter.description },
+                      ]),
+                    ),
+                  frontmatter.created &&
+                    gr(
+                      t("date"),
+                      h("div.metadata-content", [{ type: "text", value: frontmatter.created }]),
+                    ),
+                  frontmatter.socials &&
+                    gr(
+                      t("socials"),
                       h(
                         "div.metadata-content",
-                        {
-                          class: "!text-sm/7 decoration-none italic muted",
-                        },
-                        [{ type: "text", value: frontmatter.description }],
+                        { class: "gap-2 m-0 flex list-style-none text-m" },
+                        Object.entries(frontmatter.socials).map(([social, link]) =>
+                          h(
+                            "address",
+                            {
+                              class:
+                                "flex-shrink-0 text-tiny items-center flex cursor-pointer leading-none relative",
+                            },
+                            h(
+                              "a",
+                              {
+                                href: link,
+                                target: "_blank",
+                                rel: "noopener noreferrer",
+                                class: "external",
+                              },
+                              [{ type: "text", value: social }],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                 ].filter(Boolean),
@@ -559,3 +589,5 @@ export function htmlPlugins() {
   // @ts-expect-error type aren't smart enough
   return Order.flatMap((plugin) => plugin.htmlPlugins?.() ?? [])
 }
+
+export * from "@/components/parser/codemirror"

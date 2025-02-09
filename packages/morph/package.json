@@ -36,6 +36,7 @@
     "@radix-ui/react-tooltip": "^1.1.7",
     "@replit/codemirror-vim": "^6.2.1",
     "@tailwindcss/typography": "^0.5.16",
+    "@uiw/codemirror-themes": "^4.23.8",
     "@uiw/react-codemirror": "^4.23.7",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
