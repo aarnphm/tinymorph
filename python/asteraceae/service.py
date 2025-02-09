@@ -2,17 +2,23 @@
 # requires-python = ">=3.11"
 # dependencies = [
 #     "bentoml",
+#     "openai",
 #     "vllm>=0.7.0",
 # ]
 # ///
+
 from __future__ import annotations
-import uuid, logging
+import logging, traceback, asyncio
 import bentoml, fastapi, pydantic
 
-from argparse import Namespace
-from typing import AsyncGenerator
+from typing import AsyncGenerator, List, Literal, Optional
 from annotated_types import Ge, Le
 from typing_extensions import Annotated
+
+with bentoml.importing():
+  from vllm import AsyncEngineArgs, AsyncLLMEngine
+  import vllm.entrypoints.openai.api_server as vllm_api_server
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -64,9 +70,32 @@ class Suggestion(pydantic.BaseModel):
   suggestion: str
 
 
+class ServerArgs(pydantic.BaseModel):
+  model: str
+  disable_log_requests: bool = True
+  disable_log_stats: bool = True
+  max_log_len: int = 1000
+  response_role: str = 'assistant'
+  served_model_name: Optional[str] = None
+  chat_template: Optional[str] = None
+  chat_template_content_format: Literal['auto'] = 'auto'
+  lora_modules: Optional[List[str]] = None
+  prompt_adapters: Optional[List[str]] = None
+  request_logger: Optional[str] = None
+  return_tokens_as_token_ids: bool = False
+  enable_tool_call_parser: bool = True
+  enable_auto_tool_choice: bool = True
+  enable_prompt_tokens_details: bool = False
+  enable_reasoning: bool = False
+  tool_call_parser: str = 'llama3_json'
+  guided_decoding_backend: Literal['xgrammar', 'outlines'] = 'xgrammar'
+  reasoning_parser: str = 'deepseek_r1'
+  task: str = 'generate'
+
+
 @bentoml.asgi_app(openai_api_app, path='/v1')
 @bentoml.service(
-  name='asteraceae-service',
+  name='asteraceae-inference-service',
   traffic={'timeout': 300, 'concurrency': 128},
   resources={'gpu': 1, 'gpu_type': 'nvidia-a100-80gb'},
   http={
@@ -81,47 +110,34 @@ class Suggestion(pydantic.BaseModel):
     }
   },
   envs=[{'name': 'HF_TOKEN'}],
-  image=bentoml.images.PythonImage(python_version='3.11'),
+  image=bentoml.images.PythonImage(python_version='3.11')
+  .python_packages('bentoml>=1.3.21\n')
+  .python_packages('flashinfer-python>=0.2.0.post2\n')
+  .python_packages('kantoku>=0.18.1\n')
+  .python_packages('openai>=1.61.0\n')
+  .python_packages('vllm==0.7.2\n'),
 )
 class Engine:
-  model_ref = bentoml.models.HuggingFaceModel(MODEL_ID, exclude=['*.pth'])
+  ref = bentoml.models.HuggingFaceModel(MODEL_ID, exclude=['*.pth'])
 
   def __init__(self):
-    from transformers import AutoTokenizer
-    from vllm import AsyncEngineArgs, AsyncLLMEngine
-    import vllm.entrypoints.openai.api_server as vllm_api_server
-
-    ENGINE_ARGS = AsyncEngineArgs(model=self.model_ref, max_model_len=MAX_TOKENS, enable_prefix_caching=True)
+    ENGINE_ARGS = AsyncEngineArgs(model=self.ref, enable_prefix_caching=True, enable_chunked_prefill=True)
     self.engine = AsyncLLMEngine.from_engine_args(ENGINE_ARGS)
-    self.tokenizer = AutoTokenizer.from_pretrained(self.model_ref)
+
     OPENAI_ENDPOINTS = [
       ['/chat/completions', vllm_api_server.create_chat_completion, ['POST']],
       ['/completions', vllm_api_server.create_completion, ['POST']],
+      ['/embeddings', vllm_api_server.create_embedding, ['POST']],
       ['/models', vllm_api_server.show_available_models, ['GET']],
     ]
     for route, endpoint, methods in OPENAI_ENDPOINTS:
-      openai_api_app.add_api_route(path=route, endpoint=endpoint, methods=methods)
+      openai_api_app.add_api_route(path=route, endpoint=endpoint, methods=methods, include_in_schema=True)
 
     model_config = self.engine.engine.get_model_config()
-    args = Namespace()
-    args.model = MODEL_ID
-    args.disable_log_requests = True
-    args.max_log_len = 1000
-    args.response_role = 'assistant'
-    args.served_model_name = None
-    args.chat_template = None
-    args.lora_modules = None
-    args.prompt_adapters = None
-    args.request_logger = None
-    args.disable_log_stats = True
-    args.return_tokens_as_token_ids = False
-    args.enable_tool_call_parser = True
-    args.enable_auto_tool_choice = True
-    args.tool_call_parser = 'llama3_json'
-    args.enable_prompt_tokens_details = False
-    args.guided_decoding_backend = 'xgrammar'
-
-    vllm_api_server.init_app_state(self.engine, model_config, openai_api_app.state, args)
+    # NOTE: This is ok, given that all bentoml service is running within a event loop.
+    asyncio.create_task(  # noqa: RUF006
+      vllm_api_server.init_app_state(self.engine, model_config, openai_api_app.state, ServerArgs(model=MODEL_ID))
+    )
 
   @bentoml.api
   async def suggests(
@@ -130,33 +146,39 @@ class Engine:
     num_suggestions: Annotated[int, Ge(1), Le(10)] = 5,
     temperature: Annotated[float, Ge(0.5), Le(0.7)] = 0.6,
     max_tokens: Annotated[int, Ge(128), Le(MAX_TOKENS)] = MAX_TOKENS,
+    min_suggestions: Annotated[int, Ge(1), Le(10)] = 3,
   ) -> AsyncGenerator[str, None]:
-    from vllm.sampling_params import GuidedDecodingParams, SamplingParams
+    if min_suggestions >= num_suggestions:
+      raise ValueError(f'min_suggestions ({min_suggestions}) must be less than num_suggestions ({num_suggestions})')
 
-    # NOTE: we set delta=2 for now to simulate "randomness"
+    from openai import AsyncOpenAI
+    from openai.types.chat import ChatCompletionSystemMessageParam, ChatCompletionUserMessageParam
+
+    client = AsyncOpenAI(base_url='http://127.0.0.1:3000/v1', api_key='dummy')
+
     Output = pydantic.create_model(
       'Output',
       __module__=Suggestion.__module__,
       __base__=pydantic.BaseModel,
-      suggestions=(pydantic.conlist(Suggestion, min_length=num_suggestions-2, max_length=num_suggestions), ...),
+      suggestions=(pydantic.conlist(Suggestion, min_length=min_suggestions, max_length=num_suggestions), ...),
     )
-    SAMPLING_PARAM = SamplingParams(
-      max_tokens=max_tokens,
-      skip_special_tokens=True,
-      temperature=temperature,
-      guided_decoding=GuidedDecodingParams(json=Output.model_json_schema(), backend='xgrammar'),
-    )
-    messages = [{'role': 'system', 'content': SYSTEM_PROMPT}, {'role': 'user', 'content': essay}]
+    params = dict(guided_json=Output.model_json_schema())
 
-    prompt = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-    stream = await self.engine.add_request(uuid.uuid4().hex, prompt, SAMPLING_PARAM)
+    try:
+      completions = await client.chat.completions.create(
+        model=MODEL_ID,
+        temperature=temperature,
+        max_tokens=max_tokens,
+        messages=[
+          ChatCompletionSystemMessageParam(role='system', content=SYSTEM_PROMPT),
+          ChatCompletionUserMessageParam(role='user', content=essay),
+        ],
+        stream=True,
+        extra_body=params,
+      )
+      async for chunk in completions:
+        yield chunk.choices[0].delta.content or ''
+    except Exception:
+      yield traceback.format_exc()
 
-    cursor = 0
-    async for request_output in stream:
-      text = request_output.outputs[0].text
-      yield text[cursor:]
-      cursor = len(text)
-
-
-if __name__ == '__main__':
-  Engine.serve_http(port=3000)
+if __name__ == '__main__': Engine.serve_http(port=3000)

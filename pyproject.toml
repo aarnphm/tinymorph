@@ -37,6 +37,7 @@ ignore = [
   "RUF012",
   "ANN",    # Mypy is better at this
   "E722",
+  "D",
 ]
 select = [
   "F",
