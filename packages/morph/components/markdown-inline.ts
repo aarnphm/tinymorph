@@ -15,6 +15,7 @@ import remarkParse from "remark-parse"
 import remarkRehype from "remark-rehype"
 import rehypeStringify from "rehype-stringify"
 import { markdownPlugins, htmlPlugins } from "./parser"
+import { Settings } from "@/hooks/use-persisted-settings"
 
 export type HtmlContent = [HtmlRoot, VFile, string]
 
@@ -23,16 +24,16 @@ function shouldProcessFile(filename: string): boolean {
   return processableExtensions.some((ext) => filename.toLowerCase().endsWith(ext))
 }
 
-function processor(filename?: string) {
-  if (filename?.endsWith(".mdx")) {
+function processor(filename: string, settings: Settings) {
+  if (filename.endsWith(".mdx")) {
     return unified()
   }
 
   return unified()
     .use(remarkParse)
-    .use(markdownPlugins())
+    .use(markdownPlugins(settings))
     .use(remarkRehype, { allowDangerousHtml: true })
-    .use(htmlPlugins())
+    .use(htmlPlugins(settings))
     .use(rehypeStringify, { allowDangerousHtml: true })
 }
 
@@ -40,22 +41,21 @@ let mdProcessor: ReturnType<typeof processor> | null = null
 
 const cached = new Map<string, HtmlContent>()
 
-function getProcessor(filename?: string) {
-  if (!mdProcessor) mdProcessor = processor(filename)
-  return mdProcessor
+interface ConverterOptions {
+  value: string
+  settings: Settings
+  filename: string
+  returnHast?: boolean
 }
 
-export async function mdToHtml(value: string, filename?: string): Promise<string>
-export async function mdToHtml(
-  value: string,
-  filename: string | undefined,
-  returnHast: true,
-): Promise<HtmlRoot>
-export async function mdToHtml(
-  value: string,
-  filename?: string,
-  returnHast?: boolean,
-): Promise<HtmlRoot | string> {
+export async function mdToHtml(opts: Omit<ConverterOptions, "returnHast">): Promise<string>
+export async function mdToHtml(opts: ConverterOptions): Promise<HtmlRoot>
+export async function mdToHtml({
+  value,
+  filename,
+  settings,
+  returnHast,
+}: ConverterOptions): Promise<HtmlRoot | string> {
   returnHast = returnHast ?? false
   if (!value.trim()) return returnHast ? { type: "root", children: [] } : ""
   if (filename && !shouldProcessFile(filename))
@@ -80,10 +80,10 @@ export async function mdToHtml(
   if (filename) file.path = filename
 
   try {
-    const proc = getProcessor(filename)
-    const ast = proc.parse(file) as MdRoot
-    const newAst = (await proc.run(ast, file)) as HtmlRoot
-    const result = proc.stringify(newAst, file)
+    if (!mdProcessor) mdProcessor = processor(filename, settings)
+    const ast = mdProcessor.parse(file) as MdRoot
+    const newAst = (await mdProcessor.run(ast, file)) as HtmlRoot
+    const result = mdProcessor.stringify(newAst, file)
     // save ast for parsing reading mode
     cached.set(cacheKey, [newAst, file, result.toString()])
     return returnHast ? newAst : result.toString()

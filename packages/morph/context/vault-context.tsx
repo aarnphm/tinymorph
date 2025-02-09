@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect } from "react"
+import { createContext, useContext, useState, useEffect, useCallback } from "react"
 import useVaults, { Vault } from "@/hooks/use-vaults"
 
 type VaultContextType = {
@@ -22,9 +22,9 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
   const { vaults } = useVaults()
   const [isLoading, setIsLoading] = useState(true)
 
-  const getActiveVault = () => {
+  const getActiveVault = useCallback(() => {
     return activeVaultId ? vaults.find((v) => v.id === activeVaultId) : undefined
-  }
+  }, [activeVaultId, vaults])
 
   // Handle initial vault hydration
   useEffect(() => {
@@ -35,8 +35,6 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
       }
       setIsLoading(false)
     } else {
-      // If no vaults are present, debounce setting isLoading to false so that
-      // the state is updated once the DB has finished loading, without blocking the main thread
       const timer = setTimeout(() => setIsLoading(false), 1000)
       return () => clearTimeout(timer)
     }
@@ -44,9 +42,7 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
 
   // Persist active vault changes
   useEffect(() => {
-    if (activeVaultId) {
-      localStorage.setItem("morph:active-vault", activeVaultId)
-    }
+    if (activeVaultId) localStorage.setItem("morph:active-vault", activeVaultId)
   }, [activeVaultId])
 
   return (

@@ -18,6 +18,30 @@ export const SVGOptions = {
   strokelinejoin: "round",
 }
 
+export function extractArxivId(url: string): string | null {
+  try {
+    const urlObj = new URL(url)
+    if (!urlObj.hostname.includes("arxiv.org")) return null
+
+    // Match different arXiv URL patterns
+    const patterns = [
+      /arxiv.org\/abs\/(\d+\.\d+)/,
+      /arxiv.org\/html\/(\d+\.\d+)/,
+      /arxiv.org\/pdf\/(\d+\.\d+)(\.pdf)?/,
+      /arxiv.org\/\w+\/(\d+\.\d+)/,
+    ]
+
+    for (const pattern of patterns) {
+      const match = url.match(pattern)
+      if (match) return match[1]
+    }
+
+    return null
+  } catch {
+    return null
+  }
+}
+
 export const escapeHTML = (unsafe: string) => {
   return unsafe
     .replaceAll("&", "&amp;")

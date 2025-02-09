@@ -21,6 +21,7 @@ import {
   parsePseudoMeta,
   extractInlineMacros,
   rendererOptions,
+  extractArxivId,
 } from "./utils"
 import { toHtml as hastToHtml } from "hast-util-to-html"
 import { toHast as mdastToHast } from "mdast-util-to-hast"
@@ -36,12 +37,14 @@ import rehypePrettyCode, { Theme } from "rehype-pretty-code"
 import rehypeKatex from "rehype-katex"
 import rehypeRaw from "rehype-raw"
 import rehypeGithubEmoji from "rehype-github-emoji"
+import { Cite } from "rehype-citation"
+import { type Settings } from "@/hooks/use-persisted-settings"
 
 export type MorphPluginData = Data
 export type MorphParser = {
   name: string
-  markdownPlugins?: () => PluggableList
-  htmlPlugins?: () => PluggableList
+  markdownPlugins?: (settings: Settings) => PluggableList
+  htmlPlugins?: (settings: Settings) => PluggableList
 }
 
 declare module "vfile" {
@@ -570,6 +573,195 @@ const Markup = {
   ],
 } satisfies MorphParser
 
+const URL_PATTERN = /https?:\/\/[^\s<>)"]+/g
+
+interface LinkType {
+  type: string
+  pattern: (url: string) => boolean | string | null
+  label: string
+}
+
+const LINK_TYPES: LinkType[] = [
+  {
+    type: "arxiv",
+    pattern: extractArxivId,
+    label: "[arXiv]",
+  },
+  {
+    type: "lesswrong",
+    pattern: (url: string) => url.toLowerCase().includes("lesswrong.com"),
+    label: "[lesswrong]",
+  },
+  {
+    type: "github",
+    pattern: (url: string) => url.toLowerCase().includes("github.com"),
+    label: "[GitHub]",
+  },
+  {
+    type: "transformer",
+    pattern: (url: string) => url.toLowerCase().includes("transformer-circuits.pub"),
+    label: "[transformer circuit]",
+  },
+  {
+    type: "alignment",
+    pattern: (url: string) => url.toLowerCase().includes("alignmentforum.org"),
+    label: "[alignment forum]",
+  },
+]
+
+function createTextNode(value: string): Text {
+  return { type: "text", value }
+}
+
+function getLinkType(url: string): LinkType | undefined {
+  return LINK_TYPES.find((type) => type.pattern(url))
+}
+
+function createLinkElement(href: string): Element {
+  const linkType = getLinkType(href)
+  const displayText = linkType ? linkType.label : href
+
+  return h(
+    "a.csl-external-link",
+    { href, target: "_blank", rel: "noopener noreferrer" },
+    createTextNode(displayText),
+  )
+}
+
+function processTextNode(node: Text): (Element | Text)[] {
+  const text = node.value
+  const matches = Array.from(text.matchAll(URL_PATTERN))
+
+  if (matches.length === 0) {
+    return [node]
+  }
+
+  const result: (Element | Text)[] = []
+  let lastIndex = 0
+
+  matches.forEach((match) => {
+    const href = match[0]
+    const startIndex = match.index!
+
+    // Add text before URL if exists
+    if (startIndex > lastIndex) {
+      result.push(createTextNode(text.slice(lastIndex, startIndex)))
+    }
+
+    // Add arXiv prefix if applicable
+    const arxivId = extractArxivId(href)
+    if (arxivId) {
+      result.push(createTextNode(`arXiv preprint arXiv:${arxivId} `))
+    }
+
+    // Add link element
+    result.push(createLinkElement(href))
+    lastIndex = startIndex + href.length
+  })
+
+  // Add remaining text after last URL if exists
+  if (lastIndex < text.length) {
+    result.push(createTextNode(text.slice(lastIndex)))
+  }
+
+  return result
+}
+
+// Function to process a list of nodes
+function processNodes(nodes: (Element | Text)[]): (Element | Text)[] {
+  return nodes.flatMap((node) => {
+    if (node.type === "text") {
+      return processTextNode(node)
+    }
+    if (node.type === "element") {
+      return {
+        ...node,
+        children: processNodes(node.children as (Element | Text)[]),
+      }
+    }
+    return [node]
+  })
+}
+
+export const checkBib = ({ tagName, properties }: Element) =>
+  tagName === "a" &&
+  Boolean(properties.href) &&
+  typeof properties.href === "string" &&
+  properties.href.startsWith("#bib")
+
+export const checkBibSection = ({ type, tagName, properties }: Element) =>
+  type === "element" && tagName === "section" && properties.dataReferences == ""
+
+const Citations = {
+  name: "Citations",
+  htmlPlugins: ({ citation }) => {
+    return [
+      () => async (tree, file) => {
+        const opts = {
+          suppressBibliography: false,
+          linkCitations: true,
+          csl: "apa",
+        }
+        const inputLang = "en-US"
+        // TODO: add more format support
+        const config = Cite.plugins.config.get("@csl")
+        const bibTex = []
+      },
+      // Transform the HTML of the citattions; add data-no-popover property to the citation links
+      // using https://github.com/syntax-tree/unist-util-visit as they're just anochor links
+      () => (tree) => {
+        visit(
+          tree,
+          (node) => checkBib(node as Element),
+          (node, _index, parent) => {
+            node.properties["data-bib"] = true
+            // update citation to be semantically correct
+            parent.tagName = "cite"
+          },
+        )
+      },
+      // Format external links correctly
+      () => (tree) => {
+        const checkReferences = ({ properties }: Element): boolean => {
+          const className = properties?.className
+          return Array.isArray(className) && className.includes("references")
+        }
+        const checkEntries = ({ properties }: Element): boolean => {
+          const className = properties?.className
+          return Array.isArray(className) && className.includes("csl-entry")
+        }
+
+        visit(
+          tree,
+          (node) => checkReferences(node as Element),
+          (node, index, parent) => {
+            const entries: Element[] = []
+            visit(
+              node,
+              (node) => checkEntries(node as Element),
+              (node) => {
+                const { properties, children } = node as Element
+                entries.push(h("li", properties, processNodes(children as Element[])))
+              },
+            )
+
+            parent!.children.splice(
+              index!,
+              1,
+              h(
+                "section.bibliography",
+                { dataReferences: true },
+                h("h2#reference-label", [{ type: "text", value: "Bibliographie" }]),
+                h("ul", ...entries),
+              ),
+            )
+          },
+        )
+      },
+    ]
+  },
+} satisfies MorphParser
+
 const Order = [
   Frontmatter,
   ModifiedTime,
@@ -581,13 +773,13 @@ const Order = [
   Latex,
 ]
 
-export function markdownPlugins() {
+export function markdownPlugins(settings: Settings) {
   // @ts-expect-error type aren't smart enough
-  return Order.flatMap((plugin) => plugin.markdownPlugins?.() ?? [])
+  return Order.flatMap((plugin) => plugin.markdownPlugins?.(settings) ?? [])
 }
-export function htmlPlugins() {
+export function htmlPlugins(settings: Settings) {
   // @ts-expect-error type aren't smart enough
-  return Order.flatMap((plugin) => plugin.htmlPlugins?.() ?? [])
+  return Order.flatMap((plugin) => plugin.htmlPlugins?.(settings) ?? [])
 }
 
 export * from "@/components/parser/codemirror"

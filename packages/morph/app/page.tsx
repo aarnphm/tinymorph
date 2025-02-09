@@ -8,7 +8,6 @@ import useVaults, { Vault } from "@/hooks/use-vaults"
 import { useVaultContext } from "@/context/vault-context"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useEffect, useState } from "react"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useToast } from "@/hooks/use-toast"
 
 export default function Home() {
@@ -16,7 +15,6 @@ export default function Home() {
   const { isLoading, setActiveVaultId } = useVaultContext()
   const { addVault, getAllVaults } = useVaults()
   const [sortedVaults, setSortedVaults] = useState<Vault[]>([])
-  const [hasFileAccess, setHasFileAccess] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -28,7 +26,6 @@ export default function Home() {
 
     // TODO: Permission changes and file system access
     // Check file system access on mount
-    setHasFileAccess(true)
   }, [getAllVaults])
 
   const handleOpenDirectory = async () => {
@@ -61,47 +58,28 @@ export default function Home() {
             <h1 className="text-3xl font-bold tracking-tight">Vaults</h1>
             <p className="text-muted-foreground mt-2 italic">Manage recently opened vaults</p>
           </hgroup>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div>
-                  <Button
-                    onClick={handleOpenDirectory}
-                    className={`gap-2 ${!hasFileAccess ? "opacity-50 cursor-not-allowed" : ""}`}
-                    disabled={!hasFileAccess}
-                  >
-                    <FolderSearch className="w-4 h-4" />
-                    Open New Vault
-                  </Button>
-                </div>
-              </TooltipTrigger>
-              {!hasFileAccess && (
-                <TooltipContent>
-                  <p>File system access is required</p>
-                </TooltipContent>
-              )}
-            </Tooltip>
-          </TooltipProvider>
+          <Button onClick={handleOpenDirectory} className="gap-2 cursor-pointer">
+            <FolderSearch className="w-4 h-4" />
+            Open New Vault
+          </Button>
         </section>
         <div className="flex items-center gap-2 text-sm text-muted-foreground my-4">
           <Clock className="w-4 h-4" />
           Recently Opened
         </div>
-        {isLoading || !hasFileAccess ? (
+        {isLoading ? (
           <div className="space-y-4">
-            {[1, 2, 3].map((el) => (
-              <Card key={el}>
-                <CardContent className="p-6 space-y-4">
-                  <div className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2 flex-1">
-                      <Skeleton className="h-4 w-[200px]" />
-                      <Skeleton className="h-3 w-[160px]" />
-                    </div>
+            <Card>
+              <CardContent className="p-6 space-y-4">
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2 flex-1">
+                    <Skeleton className="h-4 w-[200px]" />
+                    <Skeleton className="h-3 w-[160px]" />
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         ) : sortedVaults.length > 0 ? (
           <section className="grid gap-4">

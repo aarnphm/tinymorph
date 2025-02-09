@@ -47,7 +47,7 @@ interface AsteraceaResponse {
 
 interface EditorProps {
   vaultId: string
-  disableSidebar: boolean
+  disableSidebar?: boolean
 }
 
 export default function Editor({ vaultId, disableSidebar = false }: EditorProps) {
@@ -71,6 +71,7 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
   const placeholderRef = useRef<HTMLDivElement | null>(null)
 
   const [markdownContent, setMarkdownContent] = useState<string>("")
+  const [notesError, setNotesError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!placeholderRef.current) {
@@ -89,9 +90,9 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
   }, [vaultId, setActiveVaultId])
 
   const updatePreview = useCallback(
-    async (content: string) => {
+    async (value: string) => {
       try {
-        const tree = await mdToHtml(content, currentFile, true)
+        const tree = await mdToHtml({ value, settings, filename: currentFile, returnHast: true })
         setPreviewNode(tree)
       } catch (error) {
         toast({
@@ -100,7 +101,7 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
         })
       }
     },
-    [currentFile, toast],
+    [currentFile, toast, settings],
   )
 
   const onContentChange = useCallback(
@@ -229,11 +230,13 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
         },
       )
 
+      setNotesError(null)
       return resp.data.suggestions.map((item, index) => ({
         title: `Note ${index + 1}`,
         content: item.suggestion,
       }))
     } catch (error) {
+      setNotesError("Notes not available, try again later")
       throw error
     }
   }
@@ -401,7 +404,11 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
             {showNotes && (
               <div className="w-80 overflow-auto border scrollbar-hidden">
                 <div className="p-4">
-                  {isLoading ? (
+                  {notesError ? (
+                    <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">
+                      {notesError}
+                    </div>
+                  ) : isLoading ? (
                     <div className="grid gap-4">
                       {[1, 2, 3, 4, 5].map((i) => (
                         <NoteCard key={i} isLoading />

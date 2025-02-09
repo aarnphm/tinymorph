@@ -226,21 +226,21 @@
 
 @font-face {
   font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Regular-Oblique.woff2") format("woff2");
+  src: url("/fonts/BerkeleyMono-Oblique.woff2") format("woff2");
   font-weight: 400;
   font-style: italic;
 }
 
 @font-face {
   font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Regular-Book.woff2") format("woff2");
+  src: url("/fonts/BerkeleyMono-Book.woff2") format("woff2");
   font-weight: 425;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Berkeley Mono";
-  src: url("/fonts/BerkeleyMono-Regular-Book-Oblique.woff2") format("woff2");
+  src: url("/fonts/BerkeleyMono-Book-Oblique.woff2") format("woff2");
   font-weight: 425;
   font-style: italic;
 }
@@ -353,6 +353,41 @@
 
 @utility color-inherit {
   color: inherit;
+}
+
+@utility setting-item {
+  @apply flex items-center py-3 px-0 border-t border-gray-400;
+
+  &:first-child {
+    @apply py-0 border-t-0 pb-[0.75rem];
+  }
+  & > *:first-child {
+    margin-inline-end: 16px;
+  }
+  & > *:last-child {
+    margin-inline-end: 0;
+  }
+
+  & + div > .setting-item-heading,
+  & + .setting-item-heading {
+    margin-top: 0.75em;
+  }
+}
+
+@utility setting-item-info {
+  @apply grow-1 shrink-1 basis-auto;
+}
+
+@utility setting-item-heading {
+  @apply font-semibold border-t-0;
+}
+
+@utility setting-item-control {
+  @apply grow-1 shrink-1 basis-auto text-end flex justify-end items-center gap-4;
+}
+
+@utility setting-item-description {
+  @apply text-tiny;
 }
 
 @theme {
@@ -930,114 +965,6 @@ body {
   border-left-color: var(--flexoki-tx) !important;
 }
 
-.cm-live-mode {
-  font-family: var(--font-live-editor), serif;
-  margin: 0;
-  padding: 0;
-  display: inline-block;
-  vertical-align: baseline;
-  width: 100%;
-  pointer-events: none;
-  line-height: inherit;
-}
-
-.cm-live-mode h1,
-.cm-live-mode h2,
-.cm-live-mode h3,
-.cm-live-mode h4,
-.cm-live-mode h5,
-.cm-live-mode h6 {
-  font-family: var(--font-parclo-serif), sans-serif;
-  margin: 0;
-  padding: 0;
-  gap: 0.3rem;
-  display: inline-flex;
-  vertical-align: baseline;
-}
-
-.cm-live-mode blockquote {
-  margin: 0;
-  padding-left: 1rem;
-  border-left: 3px solid #878580;
-  color: #6f6e69;
-  position: relative;
-  white-space: normal;
-}
-
-.cm-live-mode blockquote p {
-  margin: 0;
-  display: inline;
-}
-
-.cm-live-mode ul,
-.cm-live-mode ol {
-  margin: 0;
-  padding: 0 0 0 2rem;
-  display: block;
-  list-style-position: outside;
-  white-space: normal;
-}
-
-.cm-live-mode ul {
-  list-style-type: disc;
-}
-.cm-live-mode ul ul {
-  list-style-type: circle;
-}
-.cm-live-mode ol {
-  list-style-type: decimal;
-}
-.cm-live-mode ol ol {
-  list-style-type: lower-alpha;
-}
-
-.cm-live-mode li {
-  margin: 0;
-  padding: 0;
-  display: list-item;
-}
-
-.cm-live-mode p {
-  margin: 0;
-  padding: 0;
-  display: inline;
-}
-
-.cm-live-mode img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 1em 0;
-}
-
-.cm-live-mode hr {
-  border: none;
-  border-top: 1px solid #e6e4d9;
-  margin: 0.5rem 0;
-  width: 100%;
-}
-
-.cm-live-mode code {
-  font-family: var(--font-berkeley-mono), serif;
-  font-weight: 350;
-  background: #f2f0e5;
-  padding: 2px 4px;
-  border-radius: 4px;
-  font-size: 0.9em;
-  color: #100f0f;
-}
-
-.dark .cm-live-mode code {
-  background: #1c1b1a;
-  color: #fffcf0;
-}
-
-.cm-live-mode pre > code {
-  display: block;
-  padding: 1em;
-  overflow-x: auto;
-}
-
 .note-card {
   background-color: var(--flexoki-paper);
   border-radius: 6px;
@@ -1080,7 +1007,6 @@ body {
 }
 
 /* Reading mode */
-.cm-live-mode,
 .reading-mode {
   article {
     display: flex;
@@ -1169,6 +1095,7 @@ body {
   ul,
   menu {
     list-style: disc;
+    padding-inline-start: 40px;
   }
 
   ul.contains-task-list {
@@ -1350,19 +1277,6 @@ body {
     & > .clipboard-button {
       opacity: 1;
       transition: 0.2s;
-    }
-  }
-
-  section[data-footnotes] {
-    @apply my-6;
-    border-top: 1px solid var(--flexoki-400);
-
-    & > #footnote-label {
-      @apply my-2;
-    }
-
-    ol {
-      @apply mb-6 list-decimal relative left-8;
     }
   }
 
@@ -1597,4 +1511,33 @@ pre.poetry {
   border: none;
   padding: 0;
   position: unset;
+}
+
+section[data-footnotes] {
+  @apply my-6;
+  border-top: 1px solid var(--flexoki-400);
+
+  & > #footnote-label {
+    @apply my-2;
+  }
+
+  ol {
+    @apply mb-6 list-decimal;
+  }
+}
+
+section[data-references] {
+  ul,
+  ol {
+    list-style-type: none;
+  }
+
+  & > #reference-label {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  & > ul {
+    margin-bottom: 2rem;
+  }
 }

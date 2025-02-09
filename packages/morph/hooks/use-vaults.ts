@@ -27,10 +27,20 @@ export interface VaultConfig {
   theme?: "light" | "dark" | "system"
 }
 
+export interface ReferenceItem {
+  id: string
+  vaultId: string
+  handle: FileSystemFileHandle
+  format: "biblatex" | "csl-json"
+  path: string
+  lastModified: Date
+}
+
 const VAULT_IDS_KEY = "morph:vault-ids"
 const DB_NAME = "morph"
 const DB_VERSION = 1
 const STORE_NAME = "vaults"
+const REFERENCES_STORE = "references"
 const CHUNK_SIZE = 5
 const PROCESS_DELAY = 1
 
@@ -41,18 +51,15 @@ async function getDB() {
     request.onupgradeneeded = () => {
       const db = request.result
 
-      // Create vaults store if needed
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         const store = db.createObjectStore(STORE_NAME, { keyPath: "id" })
         store.createIndex("name", "name", { unique: false })
       }
 
-      // Create notes store if needed
-      if (!db.objectStoreNames.contains("notes")) {
-        const notesStore = db.createObjectStore("notes", { keyPath: "id", autoIncrement: true })
-        notesStore.createIndex("vault_file", ["vaultId", "fileId"], { unique: true })
-        notesStore.createIndex("updatedAt", "updatedAt", { unique: false })
-      }
+      // Create references store if needed (new in v2)
+      const referencesStore = db.createObjectStore(REFERENCES_STORE, { keyPath: "id" })
+      referencesStore.createIndex("vaultId", "vaultId", { unique: false })
+      referencesStore.createIndex("path", "path", { unique: false })
     }
 
     request.onsuccess = () => resolve(request.result)
@@ -102,8 +109,32 @@ async function getAllVaultsFromDB(): Promise<Vault[]> {
   })
 }
 
+// Add helper functions for references store
+async function saveReferenceItem(item: ReferenceItem) {
+  const db = await getDB()
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(REFERENCES_STORE, "readwrite")
+    tx.objectStore(REFERENCES_STORE).put(item)
+    tx.oncomplete = resolve
+    tx.onerror = () => reject(tx.error)
+  })
+}
+
+async function getReferencesByVaultId(vaultId: string): Promise<ReferenceItem[]> {
+  const db = await getDB()
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(REFERENCES_STORE, "readonly")
+    const store = tx.objectStore(REFERENCES_STORE)
+    const index = store.index("vaultId")
+    const request = index.getAll(vaultId)
+    request.onsuccess = () => resolve(request.result)
+    request.onerror = () => reject(request.error)
+  })
+}
+
 export default function useVaults() {
   const [vaults, setVaults] = useState<Vault[]>([])
+  const [references, setReferences] = useState<Map<string, ReferenceItem[]>>(new Map())
   const { toast } = useToast()
   const { defaultSettings } = usePersistedSettings()
 
@@ -183,7 +214,17 @@ export default function useVaults() {
     [],
   )
 
-  // Load vault IDs from localStorage and hydrate from IndexedDB
+  // Add function to manage references
+  const updateVaultReferences = useCallback(async (vault: Vault) => {
+    try {
+      const refs = await getReferencesByVaultId(vault.id)
+      setReferences((prev) => new Map(prev).set(vault.id, refs))
+    } catch (error) {
+      console.error("Error loading references for vault:", error)
+    }
+  }, [])
+
+  // Update loadVaults to also load references
   useEffect(() => {
     async function hydrateTree(vault: Vault): Promise<FileSystemTreeNode> {
       if (!vault.tree) throw new Error("No tree data available")
@@ -196,7 +237,7 @@ export default function useVaults() {
       })
     }
 
-    const loadVaults = async () => {
+    async function loadVaults() {
       try {
         const vaultIds = JSON.parse(localStorage.getItem(VAULT_IDS_KEY) || "[]")
         const loadedVaults = await Promise.all(
@@ -204,7 +245,9 @@ export default function useVaults() {
             const vault = await getVaultFromDB(id)
             if (vault && vault.handle) {
               await verifyHandle(vault.handle)
-              return { ...vault, tree: await hydrateTree(vault) }
+              const tree = await hydrateTree(vault)
+              await updateVaultReferences(vault)
+              return { ...vault, tree }
             }
             return null
           }),
@@ -219,12 +262,19 @@ export default function useVaults() {
       }
     }
     loadVaults()
-  }, [toast, processDirectory])
+  }, [toast, processDirectory, updateVaultReferences])
+
   const addVault = useCallback(
     async (handle: FileSystemDirectoryHandle) => {
       try {
         const existing = vaults.find((v) => v.name === handle.name)
-        if (existing) return existing
+        if (existing) {
+          // Update lastOpened for existing vault
+          const updatedVault = { ...existing, lastOpened: new Date() }
+          await saveVaultToDB(updatedVault)
+          setVaults((prev) => prev.map((v) => (v.id === existing.id ? updatedVault : v)))
+          return updatedVault
+        }
 
         const config = await initializeVaultConfig(handle, defaultSettings)
         const tree = await processDirectory(handle, config.ignorePatterns)
@@ -272,8 +322,36 @@ export default function useVaults() {
     [vaults, processDirectory],
   )
 
+  // Add function to add/update reference
+  const updateReference = useCallback(
+    async (
+      vault: Vault,
+      handle: FileSystemFileHandle,
+      format: "biblatex" | "csl-json",
+      path: string,
+    ) => {
+      try {
+        const referenceItem: ReferenceItem = {
+          id: crypto.randomUUID().slice(0, 32),
+          vaultId: vault.id,
+          handle,
+          format,
+          path,
+          lastModified: new Date(),
+        }
+        await saveReferenceItem(referenceItem)
+        await updateVaultReferences(vault)
+      } catch (error) {
+        console.error("Error updating reference:", error)
+        throw error
+      }
+    },
+    [updateVaultReferences],
+  )
+
   return {
     vaults,
+    references,
     addVault,
     processDirectory,
     getAllVaults: useCallback(async () => {
@@ -286,6 +364,7 @@ export default function useVaults() {
       }
     }, [toast]),
     refreshVault,
+    updateReference,
   }
 }
 
