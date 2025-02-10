@@ -6,7 +6,6 @@
 #     "vllm>=0.7.0",
 # ]
 # ///
-
 from __future__ import annotations
 import logging, traceback, asyncio
 import bentoml, fastapi, pydantic
@@ -14,11 +13,6 @@ import bentoml, fastapi, pydantic
 from typing import AsyncGenerator, List, Literal, Optional
 from annotated_types import Ge, Le
 from typing_extensions import Annotated
-
-with bentoml.importing():
-  from vllm import AsyncEngineArgs, AsyncLLMEngine
-  import vllm.entrypoints.openai.api_server as vllm_api_server
-
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -65,10 +59,8 @@ Example output structure:
 
 Please proceed with your analysis and suggestion for the given essay excerpt."""
 
-
 class Suggestion(pydantic.BaseModel):
   suggestion: str
-
 
 class ServerArgs(pydantic.BaseModel):
   model: str
@@ -121,6 +113,9 @@ class Engine:
   ref = bentoml.models.HuggingFaceModel(MODEL_ID, exclude=['*.pth'])
 
   def __init__(self):
+    from vllm import AsyncEngineArgs, AsyncLLMEngine
+    import vllm.entrypoints.openai.api_server as vllm_api_server
+
     ENGINE_ARGS = AsyncEngineArgs(model=self.ref, enable_prefix_caching=True, enable_chunked_prefill=True)
     self.engine = AsyncLLMEngine.from_engine_args(ENGINE_ARGS)
 
