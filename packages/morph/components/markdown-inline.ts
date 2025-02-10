@@ -24,16 +24,16 @@ function shouldProcessFile(filename: string): boolean {
   return processableExtensions.some((ext) => filename.toLowerCase().endsWith(ext))
 }
 
-function processor(filename: string, settings: Settings) {
+function processor(filename: string, settings: Settings, vaultId: string) {
   if (filename.endsWith(".mdx")) {
     return unified()
   }
 
   return unified()
     .use(remarkParse)
-    .use(markdownPlugins(settings))
+    .use(markdownPlugins(settings, vaultId))
     .use(remarkRehype, { allowDangerousHtml: true })
-    .use(htmlPlugins(settings))
+    .use(htmlPlugins(settings, vaultId))
     .use(rehypeStringify, { allowDangerousHtml: true })
 }
 
@@ -43,6 +43,7 @@ const cached = new Map<string, HtmlContent>()
 
 interface ConverterOptions {
   value: string
+  vaultId: string
   settings: Settings
   filename: string
   returnHast?: boolean
@@ -52,6 +53,7 @@ export async function mdToHtml(opts: Omit<ConverterOptions, "returnHast">): Prom
 export async function mdToHtml(opts: ConverterOptions): Promise<HtmlRoot>
 export async function mdToHtml({
   value,
+  vaultId,
   filename,
   settings,
   returnHast,
@@ -80,7 +82,7 @@ export async function mdToHtml({
   if (filename) file.path = filename
 
   try {
-    if (!mdProcessor) mdProcessor = processor(filename, settings)
+    if (!mdProcessor) mdProcessor = processor(filename, settings, vaultId)
     const ast = mdProcessor.parse(file) as MdRoot
     const newAst = (await mdProcessor.run(ast, file)) as HtmlRoot
     const result = mdProcessor.stringify(newAst, file)

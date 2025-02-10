@@ -6,17 +6,37 @@ import { VaultProvider } from "@/context/vault-context"
 import Script from "next/script"
 import { Toaster } from "@/components/ui/toaster"
 import { SvgProvider } from "@/components/svg"
+import { type Viewport, type Metadata } from "next"
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "morph-editor.app",
-  description: "A simple markdown editor with live preview",
+  description: "WYSIWYG text editor with LLM-driven suggestions",
+  abstract: "WYSIWYG text editor with LLM-driven suggestions",
+  applicationName: "morph",
+  authors: [{ name: "Aaron Pham", url: "https://aarnphm.xyz" }],
+  keywords: ["sae", "bentoml", "wysiwyg", "nextjs", "remark", "rehype", "mech interp"],
+  creator: "Aaron Pham",
+  publisher: "Hinterland",
+  alternates: {
+    canonical: "https://morph-editor.app",
+  },
+  icons: [{ rel: "icon", url: "https://morph-editor.app/icon.png" }],
+  // TODO: OG and Twitter card
+}
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
-        <Script src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/copy-tex.min.js" />
+        <Script
+          defer
+          src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/copy-tex.min.js"
+        />
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css"

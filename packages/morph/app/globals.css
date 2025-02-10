@@ -1087,7 +1087,7 @@ body {
     text-decoration: underline;
 
     &:hover {
-      color: var(--flexoki-tx-3);
+      color: var(--flexoki-orange-300);
     }
   }
 
@@ -1111,7 +1111,11 @@ body {
     overflow-x: auto;
     border: 1px solid var(--border);
 
-    code {
+    &:has(> code.mermaid) {
+      border: none;
+    }
+
+    & > code {
       counter-reset: line;
       counter-increment: line 0;
       display: grid;
@@ -1228,11 +1232,13 @@ body {
     background-color: var(--background);
   }
 
+  .expand-button,
   .clipboard-button {
     position: absolute;
     display: flex;
     float: right;
     right: 0;
+    outline: none;
     margin: 0.3rem;
     color: var(--muted);
     background-color: transparent;
@@ -1270,6 +1276,11 @@ body {
     &:focus {
       outline: 0;
     }
+  }
+
+  .expand-button {
+    /* (margin from copy * 2 + spacing) */
+    right: 1.6rem;
   }
 
   pre:hover {
@@ -1493,18 +1504,11 @@ hr {
 }
 
 p.text {
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
-  padding-left: 1rem;
+  @apply pt-[1.5rem] pb-[1.5rem] my-2 pl-[1rem] italic border-solid border-accent;
 
-  font-style: italic;
-  border: 0px solid var(--lightgray);
+  border-width: 0px;
   border-top-width: 1px;
   border-bottom-width: 1px;
-}
-
-section {
-  background-color: inherit;
 }
 
 pre.poetry {
@@ -1513,10 +1517,13 @@ pre.poetry {
   position: unset;
 }
 
+section[data-references],
 section[data-footnotes] {
-  @apply my-6;
-  border-top: 1px solid var(--flexoki-400);
+  @apply my-6 border-solid border-accent;
+  border-top-width: 1px;
+}
 
+section[data-footnotes] {
   & > #footnote-label {
     @apply my-2;
   }
@@ -1527,6 +1534,8 @@ section[data-footnotes] {
 }
 
 section[data-references] {
+  @apply mb-0;
+
   ul,
   ol {
     list-style-type: none;
@@ -1539,5 +1548,125 @@ section[data-references] {
 
   & > ul {
     margin-bottom: 2rem;
+  }
+}
+
+.mermaid-viewer {
+  @apply fixed z-1000 left-0 top-0 w-screen h-screen hidden;
+
+  &.active {
+    display: flex;
+  }
+
+  & > .mermaid-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(4px);
+  }
+
+  & > #mermaid-space {
+    display: grid;
+    margin-top: 7vh;
+    margin-left: auto;
+    margin-right: auto;
+    max-height: 80vh;
+    max-width: 80vw;
+    width: 75%;
+    z-index: 1001;
+    background: var(--flexoki-paper);
+    border-radius: 12px;
+    box-shadow:
+      0 14px 50px rgba(27, 33, 48, 0.12),
+      0 10px 30px rgba(27, 33, 48, 0.16);
+    overflow: hidden;
+    position: relative;
+
+    & > .mermaid-header {
+      display: flex;
+      justify-content: flex-end;
+      padding: 1rem;
+      border-bottom: 1px solid var(--color-accent);
+      background: var(--flexoki-paper);
+      z-index: 2;
+      max-height: 32px;
+
+      & > .close-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+      }
+    }
+
+    & > .mermaid-content {
+      padding: 2rem;
+      position: relative;
+      transform-origin: 0 0;
+      overflow: visible;
+      min-height: 200px;
+      min-width: 200px;
+
+      pre {
+        margin: 0;
+        border: none;
+      }
+
+      svg {
+        max-width: none;
+        height: auto;
+
+        p {
+          margin: 0;
+        }
+      }
+    }
+
+    & > .mermaid-controls {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 8px;
+      padding: 8px;
+      background: var(--flexoki-paper);
+      border: 1px solid var(--color-accent);
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      z-index: 2;
+
+      .mermaid-control-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid var(--color-accent);
+        background: var(--flexoki-paper);
+        color: var(--dark);
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-family: var(--bodyFont);
+
+        & > svg {
+          fill: var(--flexoki-paper);
+          filter: contrast(0.3);
+        }
+
+        &:hover {
+          background: var(--color-accent);
+        }
+
+        &:active {
+          transform: translateY(1px);
+        }
+      }
+    }
   }
 }

@@ -29,6 +29,7 @@ import useVaults from "@/hooks/use-vaults"
 import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { MermaidViewer } from "@/components/mermaid-viewer"
 
 interface Suggestion {
   suggestion: string
@@ -53,7 +54,7 @@ interface EditorProps {
 export default function Editor({ vaultId, disableSidebar = false }: EditorProps) {
   const { theme } = useTheme()
   const { refreshVault } = useVaults()
-  const { getActiveVault, setActiveVaultId } = useVaultContext()
+  const { getActiveVault } = useVaultContext()
   const editorRef = useRef<HTMLDivElement>(null)
   const [currentFile, setCurrentFile] = useState<string>("")
   const [isEditMode, setIsEditMode] = useState(true)
@@ -68,26 +69,16 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
   const editorScrollRef = useRef<HTMLDivElement>(null)
   const readingModeRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
-  const placeholderRef = useRef<HTMLDivElement | null>(null)
+  const [showNotes, setShowNotes] = useState(false)
+  const toggleNotes = useCallback(() => setShowNotes((prev) => !prev), [])
+
+  const [notes, setNotes] = useState<Note[]>([])
 
   const [markdownContent, setMarkdownContent] = useState<string>("")
   const [notesError, setNotesError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (!placeholderRef.current) {
-      const placeholder = document.createElement("div")
-      placeholder.textContent = "Start writing... (or drag notes here)"
-      placeholder.className = "cm-empty-placeholder"
-      placeholderRef.current = placeholder
-    }
-  }, [])
-
-  // Set active vault when component mounts or vaultId changes
-  useEffect(() => {
-    if (vaultId) {
-      setActiveVaultId(vaultId)
-    }
-  }, [vaultId, setActiveVaultId])
+  const [mermaidViewerVisible, setMermaidViewerVisible] = useState(false)
+  const [selectedMermaidBlock, setSelectedMermaidBlock] = useState<HTMLDivElement | null>(null)
 
   const updatePreview = useCallback(
     async (value: string) => {
@@ -113,16 +104,6 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
     [updatePreview],
   )
 
-  useEffect(() => {
-    if (markdownContent) {
-      updatePreview(markdownContent)
-    }
-  }, [markdownContent, updatePreview])
-
-  const [showNotes, setShowNotes] = useState(false)
-  const toggleNotes = useCallback(() => setShowNotes((prev) => !prev), [])
-
-  const [notes, setNotes] = useState<Note[]>([])
   const handleNoteDrop = useCallback((note: Note, droppedOverEditor: boolean) => {
     if (droppedOverEditor) {
       setNotes((prevNotes) =>
@@ -131,7 +112,6 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
     }
   }, [])
 
-  //TODO: Add a toast?
   const handleSave = useCallback(async () => {
     try {
       let targetHandle = currentFileHandle
@@ -241,6 +221,43 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
     }
   }
 
+  // CodeMirror extensions
+  const memoizedExtensions = useMemo(() => {
+    const tabSize = new Compartment()
+
+    // base extensions
+    return [
+      yamlFrontmatter({
+        content: markdown({ base: markdownLanguage, codeLanguages: languages }),
+      }),
+      frontmatter(),
+      EditorView.lineWrapping,
+      tabSize.of(EditorState.tabSize.of(settings.tabSize)),
+      fileField.init(() => currentFile),
+      EditorView.updateListener.of((update) => {
+        if (update.docChanged || update.selectionSet) {
+          const newFilename = update.state.field(fileField)
+          setCurrentFile(newFilename)
+        }
+      }),
+      syntaxHighlighting(),
+      placeholder(() => {
+        const placeholder = document.createElement("div")
+        placeholder.textContent = "Start writing... (or drag notes here)"
+        placeholder.className = "cm-empty-placeholder"
+        return placeholder
+      }),
+      vim(),
+    ]
+  }, [settings.tabSize, currentFile])
+
+  useEffect(() => {
+    if (markdownContent) {
+      updatePreview(markdownContent)
+      window.dispatchEvent(new CustomEvent("mermaid-content", { detail: true }))
+    }
+  }, [markdownContent, updatePreview])
+
   useEffect(() => {
     if (!showNotes) return
 
@@ -265,41 +282,21 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
     }
   }, [showNotes, markdownContent, toast])
 
-  // CodeMirror extensions
-  const memoizedExtensions = useMemo(() => {
-    const tabSize = new Compartment()
+  const handleEditMode = async () => {
+    setIsEditMode((prev) => !prev)
+    const nodes = document.querySelectorAll<HTMLDivElement>("pre > code.mermaid")
+    await window.mermaid.run({ nodes }).then(() => {
+      if (nodes.length > 0) setSelectedMermaidBlock(nodes[0])
+    })
+  }
 
-    // base extensions
-    return [
-      yamlFrontmatter({
-        content: markdown({ base: markdownLanguage, codeLanguages: languages }),
-      }),
-      frontmatter(),
-      EditorView.lineWrapping,
-      tabSize.of(EditorState.tabSize.of(settings.tabSize)),
-      fileField.init(() => currentFile),
-      EditorView.updateListener.of((update) => {
-        if (update.docChanged || update.selectionSet) {
-          const newFilename = update.state.field(fileField)
-          setCurrentFile(newFilename)
-        }
-      }),
-      syntaxHighlighting(),
-      placeholder(() => placeholderRef.current!),
-      vim(),
-    ]
-  }, [settings.tabSize, currentFile])
-
-  // Effect to update vim mode when settings change
+  // Effect to update vim mode when settings change, with keybinds
   useEffect(() => {
     Vim.defineEx("w", "w", handleSave)
     Vim.defineEx("wa", "w", handleSave)
     Vim.map(";", ":", "normal")
     Vim.map("jj", "<Esc>", "insert")
-  }, [handleSave, toast])
 
-  // Keybind events
-  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === settings.notePanelShortcut && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
@@ -309,7 +306,7 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
         setIsSettingsOpen((prev) => !prev)
       } else if (event.key === settings.editModeShortcut && (event.metaKey || event.altKey)) {
         event.preventDefault()
-        setIsEditMode((prev) => !prev)
+        handleEditMode()
       } else if ((event.ctrlKey || event.metaKey) && event.key === "s") {
         event.preventDefault()
         handleSave()
@@ -318,138 +315,142 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [toggleNotes, settings.editModeShortcut, settings.notePanelShortcut, handleSave])
+  }, [handleSave, toast, toggleNotes, settings])
 
   return (
-    <div>
-      <SidebarProvider defaultOpen={!disableSidebar}>
-        <Explorer
-          currentFile={currentFile}
-          markdownContent={markdownContent}
-          editorViewRef={codeMirrorViewRef}
-          onFileSelect={(handle: FileSystemFileHandle) => setCurrentFileHandle(handle)}
-          onNewFile={() => {
-            setCurrentFileHandle(null)
-            setCurrentFile("Untitled")
-          }}
-          onContentUpdate={updatePreview}
-        />
-        <SidebarInset>
-          <header className="inline-block h-10 border-b">
-            <div className="h-full flex shrink-0 items-center justify-between mx-4">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div>
-                      <SidebarTrigger
-                        className={`-ml-1 ${disableSidebar ? "opacity-50 cursor-not-allowed" : ""}`}
-                        disabled={disableSidebar}
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  {disableSidebar && (
-                    <TooltipContent>
-                      <p>File system access is required</p>
-                    </TooltipContent>
-                  )}
-                </Tooltip>
-              </TooltipProvider>
-              <Toolbar toggleNotes={toggleNotes} disableSidebar={disableSidebar} />
-            </div>
-          </header>
-          <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
-            <div className="flex-1 relative border">
-              <div
-                className={`editor-mode absolute inset-0 ${isEditMode ? "block" : "hidden"}`}
-                ref={editorRef}
-              >
-                <div ref={editorScrollRef} className="h-full scrollbar-hidden relative">
-                  <div className="h-full">
-                    {hasUnsavedChanges && (
-                      <div className="absolute top-4 left-4 text-sm/7 z-10 text-yellow-200">
-                        <DotIcon />
-                      </div>
-                    )}
-                    <CodeMirror
-                      value={markdownContent}
-                      height="100%"
-                      basicSetup={{
-                        rectangularSelection: true,
-                        indentOnInput: true,
-                        syntaxHighlighting: true,
-                        searchKeymap: true,
-                      }}
-                      extensions={memoizedExtensions}
-                      onChange={onContentChange}
-                      className="overflow-auto h-full mx-12 pt-4 scrollbar-hidden"
-                      theme={theme === "dark" ? "dark" : editorTheme}
-                      onCreateEditor={(view) => {
-                        codeMirrorViewRef.current = view
-                      }}
+    <SidebarProvider defaultOpen={!disableSidebar}>
+      <Explorer
+        currentFile={currentFile}
+        markdownContent={markdownContent}
+        editorViewRef={codeMirrorViewRef}
+        onFileSelect={(handle: FileSystemFileHandle) => setCurrentFileHandle(handle)}
+        onNewFile={() => {
+          setCurrentFileHandle(null)
+          setCurrentFile("Untitled")
+        }}
+        onContentUpdate={updatePreview}
+      />
+      <SidebarInset>
+        <header className="inline-block h-10 border-b">
+          <div className="h-full flex shrink-0 items-center justify-between mx-4">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <SidebarTrigger
+                      className={`-ml-1 ${disableSidebar ? "opacity-50 cursor-not-allowed" : ""}`}
+                      disabled={disableSidebar}
                     />
                   </div>
-                </div>
-              </div>
-              <div
-                className={`reading-mode absolute inset-0 ${isEditMode ? "hidden" : "block overflow-hidden"}`}
-                ref={readingModeRef}
-              >
-                <div className="prose dark:prose-invert h-full mx-4 pt-4 overflow-auto scrollbar-hidden">
-                  <article className="@container h-full max-w-5xl mx-auto scrollbar-hidden">
-                    {previewNode && toJsx(previewNode)}
-                  </article>
-                </div>
-              </div>
-            </div>
-            {showNotes && (
-              <div className="w-80 overflow-auto border scrollbar-hidden">
-                <div className="p-4">
-                  {notesError ? (
-                    <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">
-                      {notesError}
-                    </div>
-                  ) : isLoading ? (
-                    <div className="grid gap-4">
-                      {[1, 2, 3, 4, 5].map((i) => (
-                        <NoteCard key={i} isLoading />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="grid gap-4">
-                      {notes.map((note, index) => (
-                        <DraggableNoteCard
-                          key={index}
-                          title={note.title}
-                          content={note.content}
-                          editorRef={editorRef}
-                          onDrop={handleNoteDrop}
-                        />
-                      ))}
+                </TooltipTrigger>
+                {disableSidebar && (
+                  <TooltipContent>
+                    <p>File system access is required</p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
+            <Toolbar toggleNotes={toggleNotes} disableSidebar={disableSidebar} />
+          </div>
+        </header>
+        <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
+          <div className="flex-1 relative border">
+            <div
+              className={`editor-mode absolute inset-0 ${isEditMode ? "block" : "hidden"}`}
+              ref={editorRef}
+            >
+              <div ref={editorScrollRef} className="h-full scrollbar-hidden relative">
+                <div className="h-full">
+                  {hasUnsavedChanges && (
+                    <div className="absolute top-4 left-4 text-sm/7 z-10 text-yellow-200">
+                      <DotIcon />
                     </div>
                   )}
+                  <CodeMirror
+                    value={markdownContent}
+                    height="100%"
+                    basicSetup={{
+                      rectangularSelection: true,
+                      indentOnInput: true,
+                      syntaxHighlighting: true,
+                      searchKeymap: true,
+                    }}
+                    extensions={memoizedExtensions}
+                    onChange={onContentChange}
+                    className="overflow-auto h-full mx-12 pt-4 scrollbar-hidden"
+                    theme={theme === "dark" ? "dark" : editorTheme}
+                    onCreateEditor={(view) => {
+                      codeMirrorViewRef.current = view
+                    }}
+                  />
                 </div>
               </div>
-            )}
-          </section>
-          <footer className="inline-block h-8 border-t text-xs">
-            <div className="h-full flex shrink-0 items-center align-middle font-mono justify-end mx-4">
-              <Button
-                onClick={() => setIsEditMode((prev) => !prev)}
-                variant="ghost"
-                size="sm"
-                className="h-6 w-6 p-0"
-              >
-                {isEditMode ? (
-                  <Eye className="h-3 w-3" widths={16} height={16} />
-                ) : (
-                  <Pencil className="h-3 w-3" widths={16} height={16} />
-                )}
-              </Button>
             </div>
-          </footer>
-          <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
-        </SidebarInset>
-      </SidebarProvider>
-    </div>
+            <div
+              className={`reading-mode absolute inset-0 ${isEditMode ? "hidden" : "block overflow-hidden"}`}
+              ref={readingModeRef}
+            >
+              <div className="prose dark:prose-invert h-full mx-4 pt-4 overflow-auto scrollbar-hidden">
+                <article className="@container h-full max-w-5xl mx-auto scrollbar-hidden">
+                  {previewNode && toJsx(previewNode)}
+                </article>
+              </div>
+            </div>
+          </div>
+          {showNotes && (
+            <div className="w-80 overflow-auto border scrollbar-hidden">
+              <div className="p-4">
+                {notesError ? (
+                  <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">
+                    {notesError}
+                  </div>
+                ) : isLoading ? (
+                  <div className="grid gap-4">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <NoteCard key={i} isLoading />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {notes.map((note, index) => (
+                      <DraggableNoteCard
+                        key={index}
+                        title={note.title}
+                        content={note.content}
+                        editorRef={editorRef}
+                        onDrop={handleNoteDrop}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </section>
+        <footer className="inline-block h-8 border-t text-xs">
+          <div className="h-full flex shrink-0 items-center align-middle font-mono justify-end mx-4">
+            <Button
+              onClick={() => handleEditMode()}
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 p-0"
+            >
+              {isEditMode ? (
+                <Eye className="h-3 w-3" widths={16} height={16} />
+              ) : (
+                <Pencil className="h-3 w-3" widths={16} height={16} />
+              )}
+            </Button>
+          </div>
+        </footer>
+        <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+        {!isEditMode && selectedMermaidBlock && (
+          <MermaidViewer
+            codeBlock={selectedMermaidBlock}
+            onClose={() => setMermaidViewerVisible(false)}
+          />
+        )}
+      </SidebarInset>
+    </SidebarProvider>
   )
 }

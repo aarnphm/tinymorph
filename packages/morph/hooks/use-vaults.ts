@@ -120,7 +120,7 @@ async function saveReferenceItem(item: ReferenceItem) {
   })
 }
 
-async function getReferencesByVaultId(vaultId: string): Promise<ReferenceItem[]> {
+export async function getReferenceByVaultId(vaultId: string): Promise<ReferenceItem[]> {
   const db = await getDB()
   return new Promise((resolve, reject) => {
     const tx = db.transaction(REFERENCES_STORE, "readonly")
@@ -217,7 +217,7 @@ export default function useVaults() {
   // Add function to manage references
   const updateVaultReferences = useCallback(async (vault: Vault) => {
     try {
-      const refs = await getReferencesByVaultId(vault.id)
+      const refs = await getReferenceByVaultId(vault.id)
       setReferences((prev) => new Map(prev).set(vault.id, refs))
     } catch (error) {
       console.error("Error loading references for vault:", error)
@@ -331,6 +331,9 @@ export default function useVaults() {
       path: string,
     ) => {
       try {
+        const existingRefs = await getReferenceByVaultId(vault.id)
+        if (existingRefs.some((ref) => ref.vaultId === vault.id && ref.format === format)) return
+
         const referenceItem: ReferenceItem = {
           id: crypto.randomUUID().slice(0, 32),
           vaultId: vault.id,
@@ -365,6 +368,7 @@ export default function useVaults() {
     }, [toast]),
     refreshVault,
     updateReference,
+    getReferenceByVaultId,
   }
 }
 

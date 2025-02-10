@@ -15,14 +15,17 @@ import {
   coerceToArray,
   slugTag,
   unescapeHTML,
-  SVGOptions,
+  SvgOptions,
   escapeHTML,
   renderPseudoToString,
   parsePseudoMeta,
   extractInlineMacros,
   rendererOptions,
   extractArxivId,
-} from "./utils"
+  checkMermaidCode,
+  getCitationFormat,
+  genCitation,
+} from "@/components/parser/utils"
 import { toHtml as hastToHtml } from "hast-util-to-html"
 import { toHast as mdastToHast } from "mdast-util-to-hast"
 import { fromMarkdown } from "mdast-util-from-markdown"
@@ -38,13 +41,17 @@ import rehypeKatex from "rehype-katex"
 import rehypeRaw from "rehype-raw"
 import rehypeGithubEmoji from "rehype-github-emoji"
 import { Cite } from "rehype-citation"
+import { parseCitation } from "rehype-citation/node/src/parse-citation.js"
+import { genBiblioNode } from "rehype-citation/node/src/gen-biblio.js"
+import { genFootnoteSection } from "rehype-citation/node/src/gen-footnote.js"
 import { type Settings } from "@/hooks/use-persisted-settings"
+import { getReferenceByVaultId } from "@/hooks/use-vaults"
 
 export type MorphPluginData = Data
 export type MorphParser = {
   name: string
-  markdownPlugins?: (settings: Settings) => PluggableList
-  htmlPlugins?: (settings: Settings) => PluggableList
+  markdownPlugins?: (settings: Settings, vaultId: string) => PluggableList
+  htmlPlugins?: (settings: Settings, vaultId: string) => PluggableList
 }
 
 declare module "vfile" {
@@ -283,10 +290,10 @@ const SyntaxHighlighting = {
         if (!isCodeblockTranspiled(node as Element)) return false
         node.children = [
           h("span.clipboard-button", { type: "button", ariaLabel: "copy source" }, [
-            s("svg", { ...SVGOptions, viewbox: "0 -8 24 24", class: "copy-icon" }, [
+            s("svg", { ...SvgOptions, viewbox: "0 -8 24 24", class: "copy-icon" }, [
               s("use", { href: "#github-copy" }),
             ]),
-            s("svg", { ...SVGOptions, viewbox: "0 -8 24 24", class: "check-icon" }, [
+            s("svg", { ...SvgOptions, viewbox: "0 -8 24 24", class: "check-icon" }, [
               s("use", { href: "#github-check" }),
             ]),
           ]),
@@ -573,6 +580,89 @@ const Markup = {
   ],
 } satisfies MorphParser
 
+const Mermaid = {
+  name: "Mermaid",
+  markdownPlugins: () => [
+    () => {
+      return (tree) => {
+        visit(tree, "code", (node: Code) => {
+          if (node.lang === "mermaid") {
+            node.data = {
+              hProperties: {
+                className: ["mermaid"],
+                "data-clipboard": mdastToString(node),
+              },
+            }
+          }
+        })
+      }
+    },
+  ],
+  htmlPlugins: () => [
+    () => {
+      return (tree) => {
+        visit(
+          tree,
+          (node) => checkMermaidCode(node as Element),
+          (node: Element, _, parent: Element) => {
+            const className = Array.isArray(parent.properties.className)
+              ? parent.properties.className
+              : (parent.properties.className = [])
+            if (!new Set(className).has("min-h-fit")) className.push("min-h-fit")
+
+            parent.children = [
+              h("button.expand-button", { ariaLabel: "Expand mermaid diagram", tabindex: -1 }, [
+                s("svg", { ...SvgOptions, viewbox: "0 -8 24 24", tabindex: -1 }, [
+                  s("use", { href: "#expand-e-w" }),
+                ]),
+              ]),
+              h("button.clipboard-button", { ariaLabel: "copy source", tabindex: -1 }, [
+                s("svg", { ...SvgOptions, viewbox: "0 -8 24 24", class: "copy-icon" }, [
+                  s("use", { href: "#github-copy" }),
+                ]),
+                s("svg", { ...SvgOptions, viewbox: "0 -8 24 24", class: "check-icon" }, [
+                  s("use", { href: "#github-check" }),
+                ]),
+              ]),
+              node,
+              h(
+                ".mermaid-viewer",
+                h(".mermaid-backdrop"),
+                h(
+                  "#mermaid-space",
+                  h(
+                    ".mermaid-header",
+                    h(
+                      "button.close-button",
+                      { ariaLabel: "close button", title: "close button", type: "button" },
+                      [
+                        s(
+                          "svg",
+                          {
+                            ...SvgOptions,
+                            ariaHidden: true,
+                            width: 24,
+                            height: 24,
+                            fill: "none",
+                            stroke: "currentColor",
+                            strokewidth: 2,
+                          },
+                          [s("use", { href: "#close-button" })],
+                        ),
+                      ],
+                    ),
+                  ),
+                  h(".mermaid-content"),
+                ),
+              ),
+            ]
+          },
+        )
+      }
+    },
+  ],
+} satisfies MorphParser
+
 const URL_PATTERN = /https?:\/\/[^\s<>)"]+/g
 
 interface LinkType {
@@ -692,33 +782,196 @@ export const checkBib = ({ tagName, properties }: Element) =>
 export const checkBibSection = ({ type, tagName, properties }: Element) =>
   type === "element" && tagName === "section" && properties.dataReferences == ""
 
+/**
+ * Regex adapted from https://github.com/Zettlr/Zettlr/blob/develop/source/common/util/extract-citations.ts
+ *
+ * Citation detection: The first alternative matches "full" citations surrounded
+ * by square brackets, whereas the second one matches in-text citations,
+ * optionally with suffixes.
+ *
+ * * Group 1 matches regular "full" citations
+ * * Group 2 matches in-text citations (not surrounded by brackets)
+ * * Group 3 matches optional square-brackets suffixes to group 2 matches
+ *
+ * For more information, see https://pandoc.org/MANUAL.html#extension-citations
+ */
+export const citationRE: RegExp =
+  /(?:\[([^[\]]*@[^[\]]+)\])|(?<=\s|^|(-))(?:@([\p{L}\d_][^\s]*[\p{L}\d_]|\{.+\})(?:\s+\[(.*?)\])?)/u
+const permittedTags = ["div", "p", "span", "li", "td", "th"]
+const idRoot = "CITATION"
 const Citations = {
   name: "Citations",
-  htmlPlugins: ({ citation }) => {
+  htmlPlugins: (_, vaultId) => {
     return [
-      () => async (tree, file) => {
+      () => async (tree) => {
+        //The following is vendorred from rehype-citation, given that we don't access to 'path' within the browser
         const opts = {
           suppressBibliography: false,
           linkCitations: true,
           csl: "apa",
+          lang: "en-US",
         }
-        const inputLang = "en-US"
+        const files = await getReferenceByVaultId(vaultId)
         // TODO: add more format support
-        const config = Cite.plugins.config.get("@csl")
-        const bibTex = []
+        const config = (Cite.plugins as { config: any }).config.get("@csl")
+        const bibliography: string[] = await Promise.all(
+          files.map(async (el) => {
+            const file = await el.handle.getFile()
+            return await file.text()
+          }),
+        )
+
+        if (bibliography.length === 0) return
+
+        const citations = new Cite(bibliography, { generateGraph: false })
+        const citationIds = citations.data.map((x) => x.id)
+        const citationPre: [string, number][] = []
+        const citationDict: Record<string, string> = {}
+        let citationId = 1
+        const citeproc = config.engine(citations.data, opts.csl, opts.lang, "html")
+
+        const mode = citeproc.opt.xclass
+        const citationFormat = getCitationFormat(citeproc)
+
+        visit(tree, "text", (node, idx, parent) => {
+          const match = node.value.match(citationRE)
+          if (!match || ("tagName" in parent && !permittedTags.includes(parent.tagName))) return
+          let citeStartIdx = match.index
+          const citeEndIdx = match.index + match[0].length
+          // If we have an in-text citation and we should suppress the author, the
+          // match.index does NOT include the positive lookbehind, so we have to manually
+          // shift "from" to one before.
+          if (match[2] !== undefined) {
+            citeStartIdx--
+          }
+          const newChildren = []
+          // if preceding string
+          if (citeStartIdx !== 0) {
+            // create a new child node
+            newChildren.push({
+              type: "text",
+              value: node.value.slice(0, citeStartIdx),
+            })
+          }
+          const [entries, isComposite] = parseCitation(match)
+          // If id is not in citation file (e.g. route alias or js package), abort process
+          for (const citeItem of entries) {
+            if (!citationIds.includes(citeItem.id)) return
+          }
+          const [citedText, citedTextNode] = genCitation(
+            citeproc,
+            mode,
+            entries,
+            idRoot,
+            citationId,
+            citationPre,
+            opts,
+            isComposite,
+            citationFormat,
+          )
+          citationDict[citationId] = citedText
+          // Prepare citationPre and citationId for the next cite instance
+          citationPre.push([`${idRoot}-${citationId}`, 0])
+          citationId = citationId + 1
+          newChildren.push(citedTextNode)
+          // if trailing string
+          if (citeEndIdx < node.value.length) {
+            newChildren.push({
+              type: "text",
+              value: node.value.slice(citeEndIdx),
+            })
+          }
+          // insert into the parent
+          parent.children = [
+            ...parent.children.slice(0, idx),
+            ...newChildren,
+            ...parent.children.slice(idx! + 1),
+          ]
+        })
+        // NOTE: Remove noCite features
+        if (citeproc.registry.mylist.length >= 1 && !opts.suppressBibliography) {
+          const biblioNode: Element = genBiblioNode(citeproc)
+          let bilioInserted = false
+          const biblioMap: Record<string, Element> = {}
+          biblioNode.children
+            .filter((node) =>
+              ((node as Element).properties?.className as string[])?.includes("csl-entry"),
+            )
+            .forEach((node) => {
+              const citekey = ((node as Element).properties.id as string)!
+                .split("-")
+                .slice(1)
+                .join("-")
+              biblioMap[citekey] = { ...node } as Element
+              biblioMap[citekey].properties = { id: "inlinebib-" + citekey }
+            })
+          // Insert it at ^ref, if not found insert it as the last element of the tree
+          visit(tree, "element", (node, idx, parent) => {
+            // TODO: Add inline bibliography
+            // Add bibliography
+            if (
+              !opts.suppressBibliography &&
+              (node.tagName === "p" || node.tagName === "div") &&
+              node.children.length >= 1 &&
+              node.children[0].type === "text" &&
+              node.children[0].value === "[^ref]" &&
+              idx
+            ) {
+              parent.children[idx] = biblioNode
+              bilioInserted = true
+            }
+          })
+          if (!opts.suppressBibliography && !bilioInserted) {
+            tree.children.push(biblioNode)
+          }
+        }
+        let footnoteSection
+        visit(tree, "element", (node, index, parent) => {
+          if (node.tagName === "section" && node.properties.dataFootnotes) {
+            footnoteSection = node
+            parent.children.splice(index, 1)
+          }
+        })
+        // Need to adjust footnote numbering based on existing ones already assigned
+        // And insert them into the footnote section (if exists)
+        // Footnote comes after bibliography
+        if (mode === "note" && Object.keys(citationDict).length > 0) {
+          const fnArray: { type: "citation" | "existing"; oldId: string }[] = []
+          let index = 1
+          visit(tree, "element", (node) => {
+            if (node.tagName === "sup" && node.children[0].type === "element") {
+              const nextNode = node.children[0]
+              if (nextNode.tagName === "a") {
+                const { href, id } = nextNode.properties
+                if (href.includes("fn") && id.includes("fnref")) {
+                  const oldId = href.split("-").pop()
+                  fnArray.push({
+                    type: href.includes("cite") ? "citation" : "existing",
+                    oldId,
+                  })
+                  // Update ref number
+                  nextNode.properties.href = `#user-content-fn-${index}`
+                  nextNode.properties.id = `user-content-fnref-${index}`
+                  nextNode.children[0].value = index.toString()
+                  index += 1
+                }
+              }
+            }
+          })
+          // @ts-expect-error some type mismatch, it is ok
+          const newFootnoteSection = genFootnoteSection(citationDict, fnArray, footnoteSection)
+          tree.children.push(newFootnoteSection)
+        } else {
+          if (footnoteSection) tree.children.push(footnoteSection)
+        }
       },
-      // Transform the HTML of the citattions; add data-no-popover property to the citation links
       // using https://github.com/syntax-tree/unist-util-visit as they're just anochor links
       () => (tree) => {
-        visit(
-          tree,
-          (node) => checkBib(node as Element),
-          (node, _index, parent) => {
+        visit(tree, (node) => {
+          if (checkBib(node as Element)) {
             node.properties["data-bib"] = true
-            // update citation to be semantically correct
-            parent.tagName = "cite"
-          },
-        )
+          }
+        })
       },
       // Format external links correctly
       () => (tree) => {
@@ -768,18 +1021,20 @@ const Order = [
   Markup,
   Pseudocode,
   SyntaxHighlighting,
+  Citations,
+  Mermaid,
   Gfm,
   Description,
   Latex,
 ]
 
-export function markdownPlugins(settings: Settings) {
+export function markdownPlugins(settings: Settings, vaultId: string) {
   // @ts-expect-error type aren't smart enough
-  return Order.flatMap((plugin) => plugin.markdownPlugins?.(settings) ?? [])
+  return Order.flatMap((plugin) => plugin.markdownPlugins?.(settings, vaultId) ?? [])
 }
-export function htmlPlugins(settings: Settings) {
+export function htmlPlugins(settings: Settings, vaultId: string) {
   // @ts-expect-error type aren't smart enough
-  return Order.flatMap((plugin) => plugin.htmlPlugins?.(settings) ?? [])
+  return Order.flatMap((plugin) => plugin.htmlPlugins?.(settings, vaultId) ?? [])
 }
 
 export * from "@/components/parser/codemirror"

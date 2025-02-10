@@ -365,7 +365,7 @@ function CorePluginsSettings({ setActiveCategory }: { setActiveCategory: (id: st
         >
           <Switch
             id={plugin.id}
-            checked={plugin.id === "citation" ? settings.citation.enabled : false}
+            checked={plugin.id === "citation" ? settings.citation.enabled ?? false : false}
             onCheckedChange={(checked) => {
               if (plugin.id === "citation") {
                 updateSettings({

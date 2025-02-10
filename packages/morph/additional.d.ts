@@ -1,3 +1,5 @@
+import { Mermaid } from "mermaid"
+
 declare module "*.css" {
   const content: { [className: string]: string }
   export default content
@@ -36,13 +38,15 @@ interface DirectoryPickerOptions {
 }
 
 // dom custom event
-interface CustomEventMap {
-  permissionchange: CustomEvent<{ granted: boolean }>
+export interface CustomEventMap {
+  "permission-change": CustomEvent<{ granted: boolean }>
+  "mermaid-content": CustomEvent<boolean>
 }
 
 // NOTE: This are currently considered experimental API from Chrome
 export declare global {
   interface Window {
+    mermaid: Mermaid
     showDirectoryPicker(options?: DirectoryPickerOptions): Promise<FileSystemDirectoryHandle>
     showSaveFilePicker(options?: SaveFilePickerOptions): Promise<FileSystemFileHandle>
 
@@ -56,6 +60,7 @@ export declare global {
     ): void
     dispatchEvent<K extends keyof CustomEventMap>(ev: CustomEventMap[K] | UIEvent): void
   }
+
   interface FileSystemDirectoryHandle extends FileSystemHandle {
     id?: string
     getFile(): Promise<File>
