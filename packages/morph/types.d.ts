@@ -1,10 +1,3 @@
-import { Mermaid } from "mermaid"
-
-declare module "*.css" {
-  const content: { [className: string]: string }
-  export default content
-}
-
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker
 type StartIn =
   | FileSystemHandle
@@ -41,7 +34,7 @@ export declare global {
   }
 
   interface Window {
-    mermaid: Mermaid
+    mermaid: typeof import("mermaid").Mermaid
     showDirectoryPicker(options?: DirectoryPickerOptions): Promise<FileSystemDirectoryHandle>
     showSaveFilePicker(options?: SaveFilePickerOptions): Promise<FileSystemFileHandle>
 
