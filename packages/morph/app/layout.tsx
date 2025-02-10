@@ -1,3 +1,4 @@
+import "./globals.css"
 import type React from "react"
 import PlausibleProvider from "next-plausible"
 import { ThemeProvider } from "@/components/theme-provider"
