@@ -29,7 +29,6 @@ import useVaults from "@/hooks/use-vaults"
 import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { MermaidViewer } from "@/components/mermaid-viewer"
 
 interface Suggestion {
   suggestion: string
@@ -77,13 +76,16 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
   const [markdownContent, setMarkdownContent] = useState<string>("")
   const [notesError, setNotesError] = useState<string | null>(null)
 
-  const [mermaidViewerVisible, setMermaidViewerVisible] = useState(false)
-  const [selectedMermaidBlock, setSelectedMermaidBlock] = useState<HTMLDivElement | null>(null)
-
   const updatePreview = useCallback(
     async (value: string) => {
       try {
-        const tree = await mdToHtml({ value, settings, filename: currentFile, returnHast: true })
+        const tree = await mdToHtml({
+          value,
+          settings,
+          vaultId,
+          filename: currentFile,
+          returnHast: true,
+        })
         setPreviewNode(tree)
       } catch (error) {
         toast({
@@ -92,7 +94,7 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
         })
       }
     },
-    [currentFile, toast, settings],
+    [currentFile, toast, settings, vaultId],
   )
 
   const onContentChange = useCallback(
@@ -285,9 +287,8 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
   const handleEditMode = async () => {
     setIsEditMode((prev) => !prev)
     const nodes = document.querySelectorAll<HTMLDivElement>("pre > code.mermaid")
-    await window.mermaid.run({ nodes }).then(() => {
-      if (nodes.length > 0) setSelectedMermaidBlock(nodes[0])
-    })
+    // TODO: update MermaidViewer
+    await window.mermaid.run({ nodes })
   }
 
   // Effect to update vim mode when settings change, with keybinds
@@ -444,12 +445,6 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
           </div>
         </footer>
         <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
-        {!isEditMode && selectedMermaidBlock && (
-          <MermaidViewer
-            codeBlock={selectedMermaidBlock}
-            onClose={() => setMermaidViewerVisible(false)}
-          />
-        )}
       </SidebarInset>
     </SidebarProvider>
   )

@@ -5,7 +5,6 @@ import Editor from "@/components/editor"
 import { useVaultContext } from "@/context/vault-context"
 import { useRouter, useParams } from "next/navigation"
 import mermaid from "mermaid"
-import type { CustomEventMap } from "@/additional"
 
 export default function VaultPage() {
   const router = useRouter()

@@ -5,11 +5,6 @@ declare module "*.css" {
   export default content
 }
 
-declare module "*.scss" {
-  const content: { [className: string]: string }
-  export default content
-}
-
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker
 type StartIn =
   | FileSystemHandle
@@ -37,14 +32,14 @@ interface DirectoryPickerOptions {
   startIn?: StartIn
 }
 
-// dom custom event
-export interface CustomEventMap {
-  "permission-change": CustomEvent<{ granted: boolean }>
-  "mermaid-content": CustomEvent<boolean>
-}
-
 // NOTE: This are currently considered experimental API from Chrome
 export declare global {
+  // dom custom event
+  interface CustomEventMap {
+    "permission-change": CustomEvent<{ granted: boolean }>
+    "mermaid-content": CustomEvent<boolean>
+  }
+
   interface Window {
     mermaid: Mermaid
     showDirectoryPicker(options?: DirectoryPickerOptions): Promise<FileSystemDirectoryHandle>

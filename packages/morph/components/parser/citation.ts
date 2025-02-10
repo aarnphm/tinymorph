@@ -5,7 +5,7 @@ import { type Element } from "hast"
 import type { CiteItem, CitationFormat, Mode } from "rehype-citation/node/src/types.js"
 import { fromHtmlIsomorphic } from "hast-util-from-html-isomorphic"
 
-export const getCitationFormat = (citeproc: any): string => {
+export const getCitationFormat = (citeproc: any): CitationFormat => {
   const info = citeproc.cslXml.dataObj.children[0]
   const node = info.children.find((x: any) => x["attrs"] && x["attrs"]["citation-format"])
   // citation-format takes 5 possible values

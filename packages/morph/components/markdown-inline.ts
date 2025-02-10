@@ -1,12 +1,12 @@
-import {
-  Decoration,
-  type DecorationSet,
-  ViewPlugin,
-  type ViewUpdate,
-  WidgetType,
-  EditorView,
-} from "@codemirror/view"
-import { RangeSetBuilder, StateEffect, StateField } from "@codemirror/state"
+// import {
+//   Decoration,
+//   type DecorationSet,
+//   ViewPlugin,
+//   type ViewUpdate,
+//   WidgetType,
+//   EditorView,
+// } from "@codemirror/view"
+import { StateEffect, StateField } from "@codemirror/state"
 import type { Root as HtmlRoot } from "hast"
 import type { Root as MdRoot } from "mdast"
 import { VFile } from "vfile"
@@ -100,30 +100,6 @@ export async function mdToHtml({
   }
 }
 
-const updateDecorations = StateEffect.define<DecorationSet>()
-
-const markdownDecorations = StateField.define<DecorationSet>({
-  create() {
-    return Decoration.none
-  },
-  update(decorations, tr) {
-    decorations = decorations.map(tr.changes)
-    for (const e of tr.effects) {
-      if (e.is(updateDecorations)) {
-        decorations = e.value
-      }
-    }
-    return decorations
-  },
-  provide: (f) => EditorView.decorations.from(f),
-})
-
-interface PendingDecoration {
-  from: number
-  to: number
-  html: string
-}
-
 export const setFile = StateEffect.define<string>()
 
 export const fileField = StateField.define<string>({
@@ -136,100 +112,124 @@ export const fileField = StateField.define<string>({
   },
 })
 
-export const liveMode = ViewPlugin.fromClass(
-  class {
-    decorations: DecorationSet
-    pending: Map<number, boolean>
-    currentView: EditorView
-    filename?: string
-
-    constructor(view: EditorView) {
-      this.decorations = Decoration.none
-      this.pending = new Map()
-      this.currentView = view
-      this.filename = view.state.field(fileField, false)
-      this.computeDecorations(view)
-    }
-
-    update(update: ViewUpdate) {
-      if (update.docChanged || update.selectionSet) {
-        this.computeDecorations(update.view)
-      }
-    }
-
-    async computeDecorations(view: EditorView) {
-      if (!view.dom.isConnected) return
-
-      const { state } = view
-      const cursorPos = state.selection.main.head
-      const cursorLine = state.doc.lineAt(cursorPos).number
-      const pendingDecorations: PendingDecoration[] = []
-
-      const processLine = async (lineNum: number) => {
-        if (this.pending.get(lineNum)) return
-
-        const line = state.doc.line(lineNum)
-        const lineText = line.text
-
-        this.pending.set(lineNum, true)
-
-        try {
-          const renderedHTML = await mdToHtml(lineText, this.filename)
-          if (view.dom.isConnected) {
-            pendingDecorations.push({
-              from: line.from,
-              to: line.to,
-              html: renderedHTML,
-            })
-          }
-        } finally {
-          this.pending.delete(lineNum)
-        }
-      }
-
-      const linePromises = []
-      for (let lineNum = 1; lineNum <= state.doc.lines; lineNum++) {
-        if (lineNum !== cursorLine) {
-          linePromises.push(processLine(lineNum))
-        }
-      }
-
-      await Promise.all(linePromises)
-
-      if (view.dom.isConnected) {
-        const builder = new RangeSetBuilder<Decoration>()
-
-        pendingDecorations.sort((a, b) => a.from - b.from)
-
-        for (const { from, to, html } of pendingDecorations) {
-          builder.add(
-            from,
-            to,
-            Decoration.replace({
-              widget: new (class extends WidgetType {
-                toDOM(): HTMLElement {
-                  const wrapper = document.createElement("div")
-                  wrapper.className = "cm-live-mode"
-                  wrapper.innerHTML = html
-                  return wrapper
-                }
-              })(),
-            }),
-          )
-        }
-
-        view.dispatch({
-          effects: updateDecorations.of(builder.finish()),
-        })
-      }
-    }
-
-    destroy() {
-      this.pending.clear()
-    }
-  },
-  {
-    decorations: (v) => v.decorations,
-    provide: () => [markdownDecorations],
-  },
-)
+// const updateDecorations = StateEffect.define<DecorationSet>()
+//
+// const markdownDecorations = StateField.define<DecorationSet>({
+//   create() {
+//     return Decoration.none
+//   },
+//   update(decorations, tr) {
+//     decorations = decorations.map(tr.changes)
+//     for (const e of tr.effects) {
+//       if (e.is(updateDecorations)) {
+//         decorations = e.value
+//       }
+//     }
+//     return decorations
+//   },
+//   provide: (f) => EditorView.decorations.from(f),
+// })
+//
+// interface PendingDecoration {
+//   from: number
+//   to: number
+//   html: string
+// }
+//
+// export const liveMode = ViewPlugin.fromClass(
+//   class {
+//     decorations: DecorationSet
+//     pending: Map<number, boolean>
+//     currentView: EditorView
+//     filename?: string
+//
+//     constructor(view: EditorView) {
+//       this.decorations = Decoration.none
+//       this.pending = new Map()
+//       this.currentView = view
+//       this.filename = view.state.field(fileField, false)
+//       this.computeDecorations(view)
+//     }
+//
+//     update(update: ViewUpdate) {
+//       if (update.docChanged || update.selectionSet) {
+//         this.computeDecorations(update.view)
+//       }
+//     }
+//
+//     async computeDecorations(view: EditorView) {
+//       if (!view.dom.isConnected) return
+//
+//       const { state } = view
+//       const cursorPos = state.selection.main.head
+//       const cursorLine = state.doc.lineAt(cursorPos).number
+//       const pendingDecorations: PendingDecoration[] = []
+//
+//       const processLine = async (lineNum: number) => {
+//         if (this.pending.get(lineNum)) return
+//
+//         const line = state.doc.line(lineNum)
+//         const lineText = line.text
+//
+//         this.pending.set(lineNum, true)
+//
+//         try {
+//           const renderedHTML = await mdToHtml(lineText, this.filename)
+//           if (view.dom.isConnected) {
+//             pendingDecorations.push({
+//               from: line.from,
+//               to: line.to,
+//               html: renderedHTML,
+//             })
+//           }
+//         } finally {
+//           this.pending.delete(lineNum)
+//         }
+//       }
+//
+//       const linePromises = []
+//       for (let lineNum = 1; lineNum <= state.doc.lines; lineNum++) {
+//         if (lineNum !== cursorLine) {
+//           linePromises.push(processLine(lineNum))
+//         }
+//       }
+//
+//       await Promise.all(linePromises)
+//
+//       if (view.dom.isConnected) {
+//         const builder = new RangeSetBuilder<Decoration>()
+//
+//         pendingDecorations.sort((a, b) => a.from - b.from)
+//
+//         for (const { from, to, html } of pendingDecorations) {
+//           builder.add(
+//             from,
+//             to,
+//             Decoration.replace({
+//               widget: new (class extends WidgetType {
+//                 toDOM(): HTMLElement {
+//                   const wrapper = document.createElement("div")
+//                   wrapper.className = "cm-live-mode"
+//                   wrapper.innerHTML = html
+//                   return wrapper
+//                 }
+//               })(),
+//             }),
+//           )
+//         }
+//
+//         view.dispatch({
+//           effects: updateDecorations.of(builder.finish()),
+//         })
+//       }
+//     }
+//
+//     destroy() {
+//       this.pending.clear()
+//     }
+//   },
+//   {
+//     decorations: (v) => v.decorations,
+//     provide: () => [markdownDecorations],
+//   },
+// )
