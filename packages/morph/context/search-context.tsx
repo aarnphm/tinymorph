@@ -1,9 +1,10 @@
 "use client"
 
-import { createContext, useContext, useMemo } from "react"
+import { createContext, useEffect, useContext, useMemo, useCallback } from "react"
 import FlexSearch from "flexsearch"
 import type { FileSystemTreeNode, Vault } from "@/hooks/use-vaults"
 import { encode } from "@/lib/utils"
+import { debounce } from "lodash"
 
 export interface UserDocument {
   id: string
@@ -19,8 +20,9 @@ type SearchContextType = {
 const SearchContext = createContext<SearchContextType>({ index: null })
 
 export function SearchProvider({ children, vault }: { children: React.ReactNode; vault: Vault }) {
+  // Memoize the FlexSearch index
   const index = useMemo(() => {
-    const index = new FlexSearch.Document<UserDocument>({
+    return new FlexSearch.Document<UserDocument>({
       charset: "latin:extra",
       encode: encode,
       document: {
@@ -38,9 +40,12 @@ export function SearchProvider({ children, vault }: { children: React.ReactNode;
         ],
       },
     })
+  }, []) // No dependencies since the index configuration is static
 
-    const indexNode = async (node: FileSystemTreeNode) => {
-      const promises = []
+  // Memoize the indexNode function to ensure stable reference
+  const indexNode = useCallback(
+    async (node: FileSystemTreeNode) => {
+      const promises: Promise<FlexSearch.Document<UserDocument>>[] = []
       if (node.kind === "file" && node.extension === "md") {
         promises.push(
           index.addAsync(node.id, {
@@ -50,16 +55,44 @@ export function SearchProvider({ children, vault }: { children: React.ReactNode;
           }),
         )
       }
-      node.children?.forEach(indexNode)
-      return await Promise.all(promises)
+      if (node.children) {
+        for (const child of node.children) {
+          indexNode(child)
+        }
+      }
+      await Promise.all(promises)
+    },
+    [index],
+  )
+
+  // Debounce the indexing to prevent frequent re-executions
+  const debouncedIndexNodes = useMemo(
+    () =>
+      debounce(async (nodes: FileSystemTreeNode[]) => {
+        const promises = nodes.map((node) => indexNode(node))
+        await Promise.all(promises)
+      }, 300),
+    [indexNode],
+  )
+
+  // Initialize indexing when vault.tree changes
+  useEffect(() => {
+    if (vault && vault.tree && vault.tree.children) {
+      debouncedIndexNodes(vault.tree.children)
     }
+    // Cleanup debounced function on unmount or when dependencies change
+    return () => {
+      debouncedIndexNodes.cancel()
+    }
+  }, [vault, debouncedIndexNodes])
 
-    if (vault && vault.tree) vault.tree.children?.forEach(indexNode)
+  // Memoize the context value to prevent unnecessary rerenders
+  const value = useMemo(() => ({ index }), [index])
 
-    return index
-  }, [vault])
-
-  return <SearchContext.Provider value={{ index }}>{children}</SearchContext.Provider>
+  return useMemo(
+    () => <SearchContext.Provider value={value}>{children}</SearchContext.Provider>,
+    [value, children]
+  )
 }
 
 export const useSearch = () => useContext(SearchContext)

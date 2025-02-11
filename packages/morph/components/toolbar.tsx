@@ -22,31 +22,36 @@ export function Toolbar({ toggleNotes }: ToolbarProps) {
     setIsSettingsOpen(false)
   }, [])
 
-  const MemoizedSettingsButton = useMemo(() => (
-    <Button
-      variant="ghost"
-      size="sm"
-      className="h-6 w-6 p-0"
-      onClick={handleOpenSettings}
-    >
-      <Settings className="h-3 w-3" width={16} height={16} />
-    </Button>
-  ), [handleOpenSettings])
+  const MemoizedSettingsButton = useMemo(
+    () => (
+      <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={handleOpenSettings}>
+        <Settings className="h-3 w-3" width={16} height={16} />
+      </Button>
+    ),
+    [handleOpenSettings],
+  )
 
-  const MemoizedCopyIcon = useMemo(() => (
-    <Copy className="h-3 w-3" width={16} height={16} />
-  ), [])
+  const MemoizedCopyIcon = useMemo(() => <Copy className="h-3 w-3" width={16} height={16} />, [])
 
-  const MemoizedCopyButton = useMemo(() => (
-    <Button
-      variant="ghost"
-      size="sm"
-      className="h-6 w-6 p-0"
-      onClick={handleToggleNotes}
-    >
-      {MemoizedCopyIcon}
-    </Button>
-  ), [handleToggleNotes, MemoizedCopyIcon])
+  const MemoizedCopyButton = useMemo(
+    () => (
+      <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={handleToggleNotes}>
+        {MemoizedCopyIcon}
+      </Button>
+    ),
+    [handleToggleNotes, MemoizedCopyIcon],
+  )
+
+  const MemoizedSettingsPanel = useMemo(
+    () => (
+      <SettingsPanel
+        isOpen={isSettingsOpen}
+        onClose={handleCloseSettings}
+        setIsOpen={setIsSettingsOpen}
+      />
+    ),
+    [isSettingsOpen, handleCloseSettings, setIsSettingsOpen],
+  )
 
   return (
     <>
@@ -56,7 +61,7 @@ export function Toolbar({ toggleNotes }: ToolbarProps) {
           {MemoizedCopyButton}
         </div>
       </div>
-      <SettingsPanel isOpen={isSettingsOpen} onClose={handleCloseSettings} />
+      {MemoizedSettingsPanel}
     </>
   )
 }

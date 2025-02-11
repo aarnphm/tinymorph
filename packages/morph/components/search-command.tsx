@@ -110,6 +110,8 @@ export function SearchCommand({ maps, vault, onFileSelect }: SearchCommandProps)
   const handleItemSelect = useCallback(
     (id: string) => {
       handleSelect(id)
+      setQuery("")
+      setDebouncedQuery("")
       setOpen(false)
     },
     [handleSelect],
@@ -136,7 +138,6 @@ export function SearchCommand({ maps, vault, onFileSelect }: SearchCommandProps)
   )
 
   // Memoize CommandDialog to prevent unnecessary re-renders
-
   return useMemo(
     () => (
       <CommandDialog open={open} onOpenChange={setOpen} modal>

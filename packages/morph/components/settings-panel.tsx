@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input"
 interface SettingsPanelProps {
   isOpen: boolean
   onClose: () => void
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 type SettingsCategory = {
@@ -408,7 +409,7 @@ const CorePluginsSettings = React.memo(function CorePluginsSettings({
           />
         </SettingItem>
       )),
-    [corePlugins, settings.citation, updateSettings, setActiveCategory, CogMemo],
+    [settings.citation, updateSettings, setActiveCategory, CogMemo],
   )
 
   return (
@@ -462,6 +463,7 @@ function SidebarSettingGroup({ title, children }: { title: string; children: Rea
 export const SettingsPanel = React.memo(function SettingsPanel({
   isOpen,
   onClose,
+  setIsOpen,
 }: SettingsPanelProps) {
   const [activeCategory, setActiveCategory] = React.useState("general")
   const { isLoaded } = usePersistedSettings()
@@ -470,9 +472,12 @@ export const SettingsPanel = React.memo(function SettingsPanel({
     (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
         onClose()
+      } else if (event.key === "," && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault()
+        setIsOpen((prev) => !prev)
       }
     },
-    [isOpen, onClose],
+    [isOpen, onClose, setIsOpen],
   )
 
   React.useEffect(() => {

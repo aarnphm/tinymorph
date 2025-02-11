@@ -16,7 +16,6 @@ import { Vim, vim } from "@replit/codemirror-vim"
 import { NoteCard, DraggableNoteCard, Note } from "@/components/note-card"
 import Explorer from "@/components/explorer"
 import { Toolbar } from "@/components/toolbar"
-import { SettingsPanel } from "@/components/settings-panel"
 import { Button } from "@/components/ui/button"
 import { fileField, mdToHtml } from "@/components/markdown-inline"
 import toJsx from "@/lib/jsx"
@@ -61,7 +60,6 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
   const [isEditMode, setIsEditMode] = useState(true)
   const [previewNode, setPreviewNode] = useState<Root | null>(null)
   const [isNotesLoading, setIsNotesLoading] = useState(false)
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [currentFileHandle, setCurrentFileHandle] = useState<FileSystemFileHandle | null>(null)
 
@@ -311,9 +309,6 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
       if (event.key === settings.notePanelShortcut && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
         toggleNotes()
-      } else if (event.key === "," && (event.metaKey || event.ctrlKey)) {
-        event.preventDefault()
-        setIsSettingsOpen((prev) => !prev)
       } else if (event.key === settings.editModeShortcut && (event.metaKey || event.altKey)) {
         event.preventDefault()
         handleEditMode()
@@ -466,7 +461,6 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
               </Button>
             </div>
           </footer>
-          <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
           <SearchCommand maps={flattenedFileIds} vault={vault!} onFileSelect={handleFileSelect} />
         </SidebarInset>
       </SidebarProvider>
