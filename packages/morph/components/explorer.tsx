@@ -64,7 +64,11 @@ const FileTreeNode = memo(function FileTreeNode({ node, onFileSelect }: FileTree
           <SidebarMenuSub className="mr-0">
             {node.children &&
               node.children.map((child) => (
-                <FileTreeNode key={child.name} node={child} onFileSelect={onFileSelect} />
+                <FileTreeNode
+                  key={`${child.name}.${child.extension}`}
+                  node={child}
+                  onFileSelect={onFileSelect}
+                />
               ))}
           </SidebarMenuSub>
         </CollapsibleContent>

@@ -10,6 +10,11 @@ import { type UserDocument, useSearch } from "@/context/search-context"
 import { useEffect, useState, useCallback, useMemo } from "react"
 import type { Vault, FileSystemTreeNode } from "@/hooks/use-vaults"
 import { type FlattenedFileMapping } from "@/context/vault-context"
+import { CommandGroup } from "cmdk"
+import { highlight, slugifyFilePath } from "@/lib"
+import toJsx from "@/lib/jsx"
+import { fromHtmlIsomorphic } from "hast-util-from-html-isomorphic"
+import { useToast } from "@/hooks/use-toast"
 
 type SearchCommandProps = {
   maps: FlattenedFileMapping
@@ -22,7 +27,9 @@ export function SearchCommand({ maps, vault, onFileSelect }: SearchCommandProps)
   const [query, setQuery] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
   const [results, setResults] = useState<Array<UserDocument>>([])
+  const [searchKey, setSearchKey] = useState(0)
   const { index } = useSearch()
+  const { toast } = useToast()
 
   // Debounce the query input to reduce the number of search operations
   useEffect(() => {
@@ -35,11 +42,14 @@ export function SearchCommand({ maps, vault, onFileSelect }: SearchCommandProps)
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
         setOpen((prev) => !prev)
+      } else if (e.key === "Escape" && open) {
+        e.preventDefault()
+        setOpen(false)
       }
     }
     document.addEventListener("keydown", down)
     return () => document.removeEventListener("keydown", down)
-  }, [])
+  }, [open])
 
   useEffect(() => {
     if (!index || !open) return
@@ -72,14 +82,21 @@ export function SearchCommand({ maps, vault, onFileSelect }: SearchCommandProps)
             .filter((el) => el !== null),
         )
         setResults(docs)
-      } catch (error) {
-        console.error("Search failed:", error)
+      } catch {
+        toast({ title: "Cmd-K", description: "Failed to search query" })
         setResults([])
       }
     }
 
     search()
-  }, [debouncedQuery, open, index, maps])
+  }, [debouncedQuery, open, index, maps, toast])
+
+  // Update the search key when the dialog opens
+  useEffect(() => {
+    if (open) {
+      setSearchKey((prev) => prev + 1)
+    }
+  }, [open])
 
   const handleSelect = useCallback(
     (id: string) => {
@@ -116,18 +133,32 @@ export function SearchCommand({ maps, vault, onFileSelect }: SearchCommandProps)
   )
 
   const MemoizedCommandItems = useMemo(() => {
-    return results.map((file) => (
-      <CommandItem
-        key={file.id}
-        value={file.title}
-        onSelect={() => handleItemSelect(file.id)}
-        className="flex whitespace-pre-wrap gap-0 px-3 py-1.5 text-sm/7 flex-col items-start"
-      >
-        <span>{file.title}</span>
-        <span className="italic">{file.path}</span>
-      </CommandItem>
-    ))
-  }, [results, handleItemSelect])
+    return (
+      <CommandGroup className="flex flex-col gap-1 mt-1">
+        {results.map((file) => {
+          const links = slugifyFilePath(file.path)
+          return (
+            <CommandItem
+              key={file.id}
+              value={file.path}
+              onSelect={() => handleItemSelect(file.id)}
+              className="flex whitespace-pre-wrap gap-0 px-3 py-1.5 text-sm/7 flex-col items-start"
+            >
+              <span className="italic">
+                {query
+                  ? toJsx(
+                      fromHtmlIsomorphic(highlight(query, file.path.substring(2)), {
+                        fragment: true,
+                      }),
+                    )
+                  : links}
+              </span>
+            </CommandItem>
+          )
+        })}
+      </CommandGroup>
+    )
+  }, [results, handleItemSelect, query])
 
   // Memoize CommandInput to prevent unnecessary re-renders
   const MemoizedCommandInput = useMemo(
@@ -141,14 +172,19 @@ export function SearchCommand({ maps, vault, onFileSelect }: SearchCommandProps)
   return useMemo(
     () => (
       <CommandDialog
+        key={searchKey}
         open={open}
-        onOpenChange={setOpen}
-        modal
-        title="Search Files"
-        description="Search for a file in the vault"
+        onOpenChange={(isOpen) => {
+          setOpen(!isOpen)
+          setQuery("")
+          setDebouncedQuery("")
+        }}
+        title="Rechercher quelque chose"
+        description="Rechercher un fichier dans le répertoire"
       >
         {MemoizedCommandInput}
         <CommandList
+          className="min-h-[20rem] relative overflow-y-auto"
           onKeyDown={(e) => {
             if (e.ctrlKey && e.key === "p") {
               e.preventDefault()
@@ -194,6 +230,6 @@ export function SearchCommand({ maps, vault, onFileSelect }: SearchCommandProps)
         </ul>
       </CommandDialog>
     ),
-    [open, setOpen, MemoizedCommandInput, MemoizedCommandItems],
+    [open, setOpen, MemoizedCommandInput, MemoizedCommandItems, searchKey],
   )
 }

@@ -6,7 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { X, Cog } from "lucide-react"
-import usePersistedSettings from "@/hooks/use-persisted-settings"
+import usePersistedSettings, { Settings } from "@/hooks/use-persisted-settings"
 import { useTheme } from "next-themes"
 import { Textarea } from "@/components/ui/textarea"
 import { useVaultContext } from "@/context/vault-context"
@@ -34,7 +34,8 @@ type PluginsCategory = {
   name: string
   description: string
   hasSettings: boolean
-} & SettingsCategory
+  id: keyof Settings
+} & Omit<SettingsCategory, "id">
 
 // Add core plugins configuration
 const corePlugins: PluginsCategory[] = [
@@ -393,7 +394,7 @@ const CorePluginsSettings = React.memo(function CorePluginsSettings({
             onCheckedChange={(checked) => {
               updateSettings({
                 [plugin.id]: {
-                  ...settings[plugin.id],
+                  ...(settings[plugin.id] as Record<string, any>),
                   enabled: checked,
                 },
               })
@@ -401,7 +402,7 @@ const CorePluginsSettings = React.memo(function CorePluginsSettings({
           />
         </SettingItem>
       )),
-    [settings.citation, updateSettings, setActiveCategory, CogMemo],
+    [settings, updateSettings, setActiveCategory, CogMemo],
   )
 
   return (

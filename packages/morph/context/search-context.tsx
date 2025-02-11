@@ -3,7 +3,7 @@
 import { createContext, useEffect, useContext, useMemo, useCallback } from "react"
 import FlexSearch from "flexsearch"
 import type { FileSystemTreeNode, Vault } from "@/hooks/use-vaults"
-import { encode } from "@/lib/utils"
+import { encode } from "@/lib"
 import { debounce } from "lodash"
 
 export interface UserDocument {

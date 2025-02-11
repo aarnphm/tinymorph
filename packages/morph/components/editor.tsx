@@ -100,12 +100,30 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
   )
 
   const onContentChange = useCallback(
-    async (value: string) => {
+    async (value: string, viewUpdate: any) => {
+      // Preserve cursor position
+      const cursorPos = viewUpdate.state.selection.main.head
+
       setMarkdownContent(value)
-      setHasUnsavedChanges(true)
-      updatePreview(value)
+      if (value !== markdownContent) {
+        setHasUnsavedChanges(true)
+      }
+      
+      // Only update preview after a short delay to avoid unnecessary renders
+      const timeoutId = setTimeout(() => {
+        updatePreview(value)
+        
+        // Restore cursor position if editor ref exists
+        if (codeMirrorViewRef.current) {
+          codeMirrorViewRef.current.dispatch({
+            selection: { anchor: cursorPos }
+          })
+        }
+      }, 100)
+
+      return () => clearTimeout(timeoutId)
     },
-    [updatePreview],
+    [updatePreview, markdownContent, codeMirrorViewRef]
   )
 
   const handleNoteDrop = useCallback((note: Note, droppedOverEditor: boolean) => {
@@ -342,6 +360,7 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
         setCurrentFileHandle(node.handle as FileSystemFileHandle)
         setCurrentFile(file.name)
         setMarkdownContent(content)
+        setHasUnsavedChanges(false)
         updatePreview(content)
       } catch (error) {
         toast({
@@ -350,7 +369,7 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
         })
       }
     },
-    [vault, codeMirrorViewRef, updatePreview, toast],
+    [vault, codeMirrorViewRef, updatePreview, toast, setHasUnsavedChanges]
   )
 
   return (
@@ -380,11 +399,12 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
               >
                 <div ref={editorScrollRef} className="h-full scrollbar-hidden relative">
                   <div className="h-full">
-                    {hasUnsavedChanges && (
-                      <div className="absolute top-4 left-4 text-sm/7 z-10 text-yellow-200">
-                        <DotIcon />
-                      </div>
-                    )}
+                      <div className="absolute top-4 left-4 text-sm/7 z-10 flex items-center gap-2">
+                      {hasUnsavedChanges && <DotIcon className="text-yellow-200" />}
+                      <span className="text-muted-foreground italic">
+                        {currentFile.replace(".md", "")}
+                      </span>
+                    </div>
                     <CodeMirror
                       value={markdownContent}
                       height="100%"

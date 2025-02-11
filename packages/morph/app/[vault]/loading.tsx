@@ -1,5 +1,4 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { ChevronRight } from "lucide-react"
 import {
   SidebarInset,
   SidebarProvider,
@@ -32,13 +31,12 @@ export default function Loading() {
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {[1, 2].map((i) => (
+                  {[1, 2, 3].map((i) => (
                     <SidebarMenuItem key={i} className="group/collapsible">
                       <Collapsible open={false} className="group/collapsible">
                         <CollapsibleTrigger asChild>
                           <SidebarMenuButton className="hover:bg-accent/50 transition-colors">
-                            <ChevronRight className="transition-transform w-4 h-4 mr-1 shrink-0" />
-                            <Skeleton className="h-4 w-[16rem] p-2 mt-2" />
+                            <Skeleton className="h-4 w-[18rem] p-2 mt-2" />
                           </SidebarMenuButton>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
@@ -49,12 +47,11 @@ export default function Loading() {
                       </Collapsible>
                     </SidebarMenuItem>
                   ))}
-                  <SidebarMenuButton className="hover:bg-accent/50 transition-colors">
-                    <Skeleton className="h-4 w-[18rem] p-2 mt-2" />
-                  </SidebarMenuButton>
-                  <SidebarMenuButton className="hover:bg-accent/50 transition-colors">
-                    <Skeleton className="h-4 w-[18rem] p-2 mt-2" />
-                  </SidebarMenuButton>
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <SidebarMenuButton key={i} className="hover:bg-accent/50 transition-colors">
+                      <Skeleton className="h-4 w-[16rem] p-2 mt-2" />
+                    </SidebarMenuButton>
+                  ))}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
