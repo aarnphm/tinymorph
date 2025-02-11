@@ -11,7 +11,7 @@ interface NoteCardProps {
   ref?: React.RefObject<HTMLDivElement | null>
 }
 
-export function NoteCard({ title, content, style, isLoading = false, ref }: NoteCardProps) {
+export function NoteCard({ content, style, isLoading = false, ref }: NoteCardProps) {
   if (isLoading) {
     return (
       <div ref={ref} className="p-4 bg-card border border-border rounded" style={style}>
@@ -29,14 +29,12 @@ export function NoteCard({ title, content, style, isLoading = false, ref }: Note
       className="p-4 bg-card border border-border transition-all duration-200 hover:shadow-lg hover:bg-gradient-to-br from-background to-muted"
       style={style}
     >
-      <h3 className="mb-2 text-sm font-medium text-foreground">{title}</h3>
-      <p className="text-xs text-muted-foreground leading-relaxed">{content}</p>
+      <p className="text-md text-muted-foreground leading-relaxed">{content}</p>
     </div>
   )
 }
 
 export interface Note {
-  title: string
   content: string
 }
 
@@ -45,7 +43,7 @@ interface DraggableNoteProps extends Note {
   editorRef: React.RefObject<HTMLDivElement | null>
 }
 
-export function DraggableNoteCard({ title, content, onDrop, editorRef }: DraggableNoteProps) {
+export function DraggableNoteCard({ content, onDrop, editorRef }: DraggableNoteProps) {
   const noteRef = useRef<HTMLDivElement>(null)
   const [dragging, setDragging] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
@@ -89,18 +87,17 @@ export function DraggableNoteCard({ title, content, onDrop, editorRef }: Draggab
             finalY <= editorRect.bottom
         }
 
-        onDrop({ title, content }, droppedOverEditor)
+        onDrop({ content }, droppedOverEditor)
       })
 
     select(noteRef.current).call(dragBehavior)
-  }, [title, content, onDrop, editorRef])
+  }, [content, onDrop, editorRef])
 
   return (
     <>
       {dragging && (
         <NoteCard
           ref={noteRef}
-          title={title}
           content={content}
           style={{
             width: fixedWidth || "auto",
@@ -112,7 +109,6 @@ export function DraggableNoteCard({ title, content, onDrop, editorRef }: Draggab
 
       <NoteCard
         ref={noteRef}
-        title={title}
         content={content}
         style={{
           cursor: "grab",

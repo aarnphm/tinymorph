@@ -11,7 +11,6 @@ import { useTheme } from "next-themes"
 import { Textarea } from "@/components/ui/textarea"
 import { useVaultContext } from "@/context/vault-context"
 import { Input } from "@/components/ui/input"
-import useVaults from "@/hooks/use-vaults"
 
 interface SettingsPanelProps {
   isOpen: boolean
@@ -182,8 +181,7 @@ function HotkeySettings() {
 
 function CitationSettings() {
   const { settings, updateSettings } = usePersistedSettings()
-  const { getActiveVault } = useVaultContext()
-  const { updateReference } = useVaults()
+  const { getActiveVault, updateReference } = useVaultContext()
   const [referencesPath, setReferencesPath] = React.useState<string | undefined>(
     settings.citation.databasePath,
   )
@@ -365,7 +363,7 @@ function CorePluginsSettings({ setActiveCategory }: { setActiveCategory: (id: st
         >
           <Switch
             id={plugin.id}
-            checked={plugin.id === "citation" ? settings.citation.enabled ?? false : false}
+            checked={plugin.id === "citation" ? (settings.citation.enabled ?? false) : false}
             onCheckedChange={(checked) => {
               if (plugin.id === "citation") {
                 updateSettings({

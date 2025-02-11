@@ -4,38 +4,25 @@ import { useRouter } from "next/navigation"
 import { FolderSearch, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import useVaults, { Vault } from "@/hooks/use-vaults"
+import { type Vault } from "@/hooks/use-vaults"
 import { useVaultContext } from "@/context/vault-context"
-import { Skeleton } from "@/components/ui/skeleton"
-import { useEffect, useState } from "react"
 import { useToast } from "@/hooks/use-toast"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function Home() {
   const router = useRouter()
-  const { isLoading, setActiveVaultId } = useVaultContext()
-  const { addVault, getAllVaults } = useVaults()
-  const [sortedVaults, setSortedVaults] = useState<Vault[]>([])
+  const { setActiveVaultId, vaults, addVault, isLoading } = useVaultContext()
   const { toast } = useToast()
-
-  useEffect(() => {
-    const loadVaults = async () => {
-      const allVaults = await getAllVaults()
-      setSortedVaults(allVaults.sort((a, b) => b.lastOpened.getTime() - a.lastOpened.getTime()))
-    }
-    loadVaults()
-
-    // TODO: Permission changes and file system access
-    // Check file system access on mount
-  }, [getAllVaults])
 
   const handleOpenDirectory = async () => {
     try {
       const handle = await window.showDirectoryPicker({ startIn: "documents" })
-      const vault = await addVault(handle)
-      if (vault) {
-        router.push(`/${vault.id}`)
-        setActiveVaultId(vault.id)
-      }
+      await addVault(handle).then((el) => {
+        if (el) {
+          setActiveVaultId(el.id)
+          router.push(`/${el.id}`)
+        }
+      })
     } catch {
       toast({
         title: "Vault picker aborted",
@@ -67,7 +54,7 @@ export default function Home() {
           <Clock className="w-4 h-4" />
           Recently Opened
         </div>
-        {isLoading ? (
+        {isLoading || vaults.length === 0 ? (
           <div className="space-y-4">
             <Card>
               <CardContent className="p-6 space-y-4">
@@ -81,10 +68,10 @@ export default function Home() {
               </CardContent>
             </Card>
           </div>
-        ) : sortedVaults.length > 0 ? (
+        ) : vaults.length > 0 ? (
           <section className="grid gap-4">
             <div className="grid gap-4">
-              {sortedVaults.map((vault) => (
+              {vaults.map((vault) => (
                 <Card key={vault.id} className="group">
                   <Button
                     variant="ghost"

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { useToast } from "@/hooks/use-toast"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
 import { minimatch } from "minimatch"
@@ -224,46 +224,6 @@ export default function useVaults() {
     }
   }, [])
 
-  // Update loadVaults to also load references
-  useEffect(() => {
-    async function hydrateTree(vault: Vault): Promise<FileSystemTreeNode> {
-      if (!vault.tree) throw new Error("No tree data available")
-
-      // Reattach handles from the vault's root directory
-      const rootHandle = vault.handle!
-      return processDirectory(rootHandle, vault.config.ignorePatterns, {
-        ...vault.tree,
-        handle: rootHandle,
-      })
-    }
-
-    async function loadVaults() {
-      try {
-        const vaultIds = JSON.parse(localStorage.getItem(VAULT_IDS_KEY) || "[]")
-        const loadedVaults = await Promise.all(
-          vaultIds.map(async (id: string) => {
-            const vault = await getVaultFromDB(id)
-            if (vault && vault.handle) {
-              await verifyHandle(vault.handle)
-              const tree = await hydrateTree(vault)
-              await updateVaultReferences(vault)
-              return { ...vault, tree }
-            }
-            return null
-          }),
-        )
-        setVaults(loadedVaults.filter(Boolean) as Vault[])
-      } catch {
-        toast({
-          title: "Error Loading Vaults",
-          description: "Failed to load vaults",
-          variant: "destructive",
-        })
-      }
-    }
-    loadVaults()
-  }, [toast, processDirectory, updateVaultReferences])
-
   const addVault = useCallback(
     async (handle: FileSystemDirectoryHandle) => {
       try {
@@ -352,11 +312,54 @@ export default function useVaults() {
     [updateVaultReferences],
   )
 
+  // Update loadVaults to also load references
+  // NOTE: We shan't call this function directly, but rather access it via useVaultContext
+  const loadVaults = useCallback(async () => {
+    async function hydrateTree(vault: Vault): Promise<FileSystemTreeNode> {
+      if (!vault.tree) throw new Error("No tree data available")
+
+      // Reattach handles from the vault's root directory
+      const rootHandle = vault.handle!
+      return processDirectory(rootHandle, vault.config.ignorePatterns, {
+        ...vault.tree,
+        handle: rootHandle,
+      })
+    }
+
+    async function loadVaults() {
+      try {
+        const vaultIds = JSON.parse(localStorage.getItem(VAULT_IDS_KEY) || "[]")
+        const loadedVaults = await Promise.all(
+          vaultIds.map(async (id: string) => {
+            const vault = await getVaultFromDB(id)
+            if (vault && vault.handle) {
+              await verifyHandle(vault.handle)
+              const tree = await hydrateTree(vault)
+              await updateVaultReferences(vault)
+              return { ...vault, tree }
+            }
+            return null
+          }),
+        )
+        setVaults(loadedVaults.filter(Boolean) as Vault[])
+      } catch {
+        toast({
+          title: "Error Loading Vaults",
+          description: "Failed to load vaults",
+          variant: "destructive",
+        })
+      }
+    }
+    await loadVaults()
+  }, [toast, processDirectory, updateVaultReferences])
+
   return {
     vaults,
     references,
     addVault,
     processDirectory,
+    refreshVault,
+    loadVaults,
     getAllVaults: useCallback(async () => {
       try {
         return await getAllVaultsFromDB()
@@ -366,7 +369,6 @@ export default function useVaults() {
         return []
       }
     }, [toast]),
-    refreshVault,
     updateReference,
     getReferenceByVaultId,
   }

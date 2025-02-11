@@ -1,5 +1,5 @@
 import type * as React from "react"
-import { useState, useCallback, useEffect, memo } from "react"
+import { useState, useCallback, memo } from "react"
 import { ChevronRight, Plus, Download, ChevronDown } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
@@ -10,7 +10,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -28,11 +27,9 @@ import {
 } from "@/components/ui/sidebar"
 import jsPDF from "jspdf"
 import { Vault } from "@/hooks/use-vaults"
-import { useRouter } from "next/navigation"
 import { EditorView } from "@uiw/react-codemirror"
 import { setFile } from "./markdown-inline"
-import useVaults, { FileSystemTreeNode } from "@/hooks/use-vaults"
-import { useVaultContext } from "@/context/vault-context"
+import { FileSystemTreeNode } from "@/hooks/use-vaults"
 import { Skeleton } from "@/components/ui/skeleton"
 
 interface FileTreeNodeProps {
@@ -91,6 +88,7 @@ const FileTreeNode: React.FC<FileTreeNodeProps> = memo(({ node, onFileSelect }) 
 FileTreeNode.displayName = "FileTreeNode"
 
 interface MorphSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  vault: Vault
   editorViewRef: React.RefObject<EditorView | null>
   onFileSelect?: (handle: FileSystemFileHandle) => void
   onNewFile?: () => void
@@ -100,6 +98,7 @@ interface MorphSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function Explorer({
+  vault,
   editorViewRef,
   onFileSelect,
   onNewFile,
@@ -108,28 +107,11 @@ export function Explorer({
   markdownContent,
   ...props
 }: MorphSidebarProps) {
-  const router = useRouter()
   const { toast } = useToast()
-  const { getAllVaults } = useVaults()
-  const { getActiveVault } = useVaultContext()
-
-  const [sortedVaults, setSortedVaults] = useState<Vault[]>([])
-
-  useEffect(() => {
-    const loadVaults = async () => {
-      const allVaults = await getAllVaults()
-      setSortedVaults(allVaults.sort((a, b) => b.lastOpened.getTime() - a.lastOpened.getTime()))
-    }
-    loadVaults()
-  }, [getAllVaults])
-
-  const activeVault = getActiveVault()
-
-  const handleVaultSelect = (vault: Vault) => router.push(`/${vault.id}`)
 
   const handleFileSelect = useCallback(
     async (node: FileSystemTreeNode) => {
-      if (!activeVault || node.kind !== "file" || !editorViewRef.current) return
+      if (!vault || node.kind !== "file" || !editorViewRef.current) return
       if (node.extension !== "md") {
         toast({ title: "opening file", description: "Can only open markdown files" })
         return
@@ -157,7 +139,7 @@ export function Explorer({
         console.error("Error reading file:", error)
       }
     },
-    [activeVault, editorViewRef, onFileSelect, onContentUpdate, toast],
+    [vault, editorViewRef, onFileSelect, onContentUpdate, toast],
   )
 
   const handleExportMarkdown = useCallback(() => {
@@ -203,12 +185,6 @@ export function Explorer({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" sideOffset={2}>
-              {sortedVaults.map((vault, idx) => (
-                <DropdownMenuItem key={idx} onClick={() => handleVaultSelect(vault)}>
-                  {vault.name}
-                </DropdownMenuItem>
-              ))}
-              <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/">Manage Vaults...</Link>
               </DropdownMenuItem>
@@ -219,7 +195,7 @@ export function Explorer({
             size="sm"
             className="h-6 w-6 p-0"
             title="New File"
-            disabled={!activeVault}
+            disabled={!vault}
             onClick={() => {
               if (editorViewRef.current) {
                 editorViewRef.current.dispatch({
@@ -253,8 +229,8 @@ export function Explorer({
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {activeVault ? (
-                activeVault.tree!.children!.map((node, idx) => (
+              {vault ? (
+                vault.tree!.children!.map((node, idx) => (
                   <FileTreeNode key={idx} node={node} onFileSelect={handleFileSelect} />
                 ))
               ) : (

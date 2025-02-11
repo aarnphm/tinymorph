@@ -25,10 +25,10 @@ import { useTheme } from "next-themes"
 import { useVaultContext } from "@/context/vault-context"
 import { md, frontmatter, syntaxHighlighting, theme as editorTheme } from "@/components/parser"
 import { DotIcon } from "@/components/ui/icons"
-import useVaults from "@/hooks/use-vaults"
+import { Vault } from "@/hooks/use-vaults"
 import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Tooltip, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface Suggestion {
   suggestion: string
@@ -47,13 +47,13 @@ interface AsteraceaResponse {
 
 interface EditorProps {
   vaultId: string
-  disableSidebar?: boolean
+  vault: Vault
 }
 
-export default function Editor({ vaultId, disableSidebar = false }: EditorProps) {
+export default function Editor({ vaultId, vault }: EditorProps) {
   const { theme } = useTheme()
-  const { refreshVault } = useVaults()
-  const { getActiveVault } = useVaultContext()
+  // PERF: should not call it here, or figure out a way not to calculate the vault twice
+  const { refreshVault } = useVaultContext()
   const editorRef = useRef<HTMLDivElement>(null)
   const [currentFile, setCurrentFile] = useState<string>("")
   const [isEditMode, setIsEditMode] = useState(true)
@@ -108,9 +108,7 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
 
   const handleNoteDrop = useCallback((note: Note, droppedOverEditor: boolean) => {
     if (droppedOverEditor) {
-      setNotes((prevNotes) =>
-        prevNotes.filter((n) => !(n.title === note.title && n.content === note.content)),
-      )
+      setNotes((prevNotes) => prevNotes.filter((n) => !(n.content === note.content)))
     }
   }, [])
 
@@ -142,10 +140,7 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
         setCurrentFile(targetHandle.name)
 
         // Refresh vault tree
-        const activeVault = getActiveVault()
-        if (activeVault) {
-          await refreshVault(activeVault.id)
-        }
+        await refreshVault(vault.id)
       }
 
       setHasUnsavedChanges(false)
@@ -179,7 +174,7 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
     currentFileHandle,
     markdownContent,
     currentFile,
-    getActiveVault,
+    vault,
     refreshVault,
     vaultId,
     showNotes,
@@ -319,8 +314,9 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
   }, [handleSave, toast, toggleNotes, settings])
 
   return (
-    <SidebarProvider defaultOpen={!disableSidebar}>
+    <SidebarProvider defaultOpen={true}>
       <Explorer
+        vault={vault}
         currentFile={currentFile}
         markdownContent={markdownContent}
         editorViewRef={codeMirrorViewRef}
@@ -338,20 +334,12 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div>
-                    <SidebarTrigger
-                      className={`-ml-1 ${disableSidebar ? "opacity-50 cursor-not-allowed" : ""}`}
-                      disabled={disableSidebar}
-                    />
+                    <SidebarTrigger className="-ml-1" />
                   </div>
                 </TooltipTrigger>
-                {disableSidebar && (
-                  <TooltipContent>
-                    <p>File system access is required</p>
-                  </TooltipContent>
-                )}
               </Tooltip>
             </TooltipProvider>
-            <Toolbar toggleNotes={toggleNotes} disableSidebar={disableSidebar} />
+            <Toolbar toggleNotes={toggleNotes} />
           </div>
         </header>
         <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
@@ -416,7 +404,6 @@ export default function Editor({ vaultId, disableSidebar = false }: EditorProps)
                     {notes.map((note, index) => (
                       <DraggableNoteCard
                         key={index}
-                        title={note.title}
                         content={note.content}
                         editorRef={editorRef}
                         onDrop={handleNoteDrop}

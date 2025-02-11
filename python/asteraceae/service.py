@@ -138,9 +138,9 @@ class Engine:
   async def suggests(
     self,
     essay: str,
-    num_suggestions: Annotated[int, Ge(1), Le(10)] = 5,
     temperature: Annotated[float, Ge(0.5), Le(0.7)] = 0.6,
     max_tokens: Annotated[int, Ge(128), Le(MAX_TOKENS)] = MAX_TOKENS,
+    num_suggestions: Annotated[int, Ge(1), Le(10)] = 5,
     min_suggestions: Annotated[int, Ge(1), Le(10)] = 3,
   ) -> AsyncGenerator[str, None]:
     if min_suggestions >= num_suggestions:
