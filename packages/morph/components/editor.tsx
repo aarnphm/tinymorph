@@ -58,7 +58,7 @@ export default function Editor({ vaultId, vault }: EditorProps) {
   const [currentFile, setCurrentFile] = useState<string>("")
   const [isEditMode, setIsEditMode] = useState(true)
   const [previewNode, setPreviewNode] = useState<Root | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isNotesLoading, setIsNotesLoading] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [currentFileHandle, setCurrentFileHandle] = useState<FileSystemFileHandle | null>(null)
@@ -258,7 +258,7 @@ export default function Editor({ vaultId, vault }: EditorProps) {
   useEffect(() => {
     if (!showNotes) return
 
-    setIsLoading(true)
+    setIsNotesLoading(true)
 
     const timerId = setTimeout(async () => {
       try {
@@ -270,7 +270,7 @@ export default function Editor({ vaultId, vault }: EditorProps) {
           description: error instanceof Error ? error.message : "Please try again later",
         })
       } finally {
-        setIsLoading(false)
+        setIsNotesLoading(false)
       }
     }, 1000)
 
@@ -393,7 +393,7 @@ export default function Editor({ vaultId, vault }: EditorProps) {
                   <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">
                     {notesError}
                   </div>
-                ) : isLoading ? (
+                ) : isNotesLoading ? (
                   <div className="grid gap-4">
                     {[1, 2, 3, 4, 5].map((i) => (
                       <NoteCard key={i} isLoading />
