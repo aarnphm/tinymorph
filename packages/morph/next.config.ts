@@ -4,7 +4,7 @@ import { withPlausibleProxy } from "next-plausible"
 export default MillionLint.next({
   enabled: true,
   rsc: true,
-  skipTransform: false,
+  skipTransform: process.env.NODE_ENV === "production",
   react: "19",
   filter: {
     exclude: "**/components/ui/*.{mtsx,mjsx,tsx,jsx}",
