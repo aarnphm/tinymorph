@@ -417,7 +417,10 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
               </div>
             </div>
             {showNotes && (
-              <div className="w-80 overflow-auto border scrollbar-hidden">
+              <div
+                className="w-80 overflow-auto border scrollbar-hidden transition-[right,left,width] duration-200  ease-in-out translate-x-[-100%] data-[show=true]:translate-x-0"
+                data-show={showNotes}
+              >
                 <div className="p-4">
                   {notesError ? (
                     <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">

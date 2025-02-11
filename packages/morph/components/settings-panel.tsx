@@ -120,7 +120,7 @@ function GeneralSettings() {
 }
 
 const EditorSettings = React.memo(function EditorSettings() {
-  const { settings, updateSettings } = usePersistedSettings()
+  const { updateSettings } = usePersistedSettings()
   const { theme, setTheme } = useTheme()
 
   return (
@@ -128,19 +128,20 @@ const EditorSettings = React.memo(function EditorSettings() {
       <SettingItem name="Appearance" isHeading />
 
       <SettingItem name="Theme" description="Choose your preferred color theme">
-        <RadioGroup value={theme} onValueChange={setTheme} className="flex gap-4">
-          <div className="flex items-center gap-2">
-            <RadioGroupItem value="light" id="light" />
-            <Label htmlFor="light">Light</Label>
-          </div>
-          <div className="flex items-center gap-2">
-            <RadioGroupItem value="dark" id="dark" />
-            <Label htmlFor="dark">Dark</Label>
-          </div>
-          <div className="flex items-center gap-2">
-            <RadioGroupItem value="system" id="system" />
-            <Label htmlFor="system">System</Label>
-          </div>
+        <RadioGroup
+          value={theme}
+          onValueChange={setTheme}
+          defaultValue="comfortable"
+          className="flex gap-4"
+        >
+          {["light", "dark", "system"].map((el, index) => (
+            <div key={index} className="flex items-center space-x-2">
+              <RadioGroupItem value={el} id={el} />
+              <Label htmlFor={el} className="capitalize">
+                {el}
+              </Label>
+            </div>
+          ))}
         </RadioGroup>
       </SettingItem>
 
@@ -148,8 +149,8 @@ const EditorSettings = React.memo(function EditorSettings() {
 
       <SettingItem name="Vim Mode" description="Enable Vim key bindings for text editing">
         <Switch
+          className="cursor-pointer"
           id="vim-mode"
-          checked={settings.vimMode}
           onCheckedChange={(checked) => updateSettings({ vimMode: checked })}
         />
       </SettingItem>
@@ -388,16 +389,14 @@ const CorePluginsSettings = React.memo(function CorePluginsSettings({
           )}
           <Switch
             id={plugin.id}
-            checked={plugin.id === "citation" ? (settings.citation.enabled ?? false) : false}
+            className="cursor-pointer"
             onCheckedChange={(checked) => {
-              if (plugin.id === "citation") {
-                updateSettings({
-                  citation: {
-                    ...settings.citation,
-                    enabled: checked,
-                  },
-                })
-              }
+              updateSettings({
+                [plugin.id]: {
+                  ...settings[plugin.id],
+                  enabled: checked,
+                },
+              })
             }}
           />
         </SettingItem>
