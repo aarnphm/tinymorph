@@ -91,7 +91,7 @@ export function SearchProvider({ children, vault }: { children: React.ReactNode;
 
   return useMemo(
     () => <SearchContext.Provider value={value}>{children}</SearchContext.Provider>,
-    [value, children]
+    [value, children],
   )
 }
 

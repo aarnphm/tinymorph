@@ -10,8 +10,6 @@ import { type UserDocument, useSearch } from "@/context/search-context"
 import { useEffect, useState, useCallback, useMemo } from "react"
 import type { Vault, FileSystemTreeNode } from "@/hooks/use-vaults"
 import { type FlattenedFileMapping } from "@/context/vault-context"
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
-import { DialogDescription, DialogTitle } from "@/components/ui/dialog"
 
 type SearchCommandProps = {
   maps: FlattenedFileMapping
@@ -133,18 +131,22 @@ export function SearchCommand({ maps, vault, onFileSelect }: SearchCommandProps)
 
   // Memoize CommandInput to prevent unnecessary re-renders
   const MemoizedCommandInput = useMemo(
-    () => <CommandInput placeholder="Search files..." value={query} onValueChange={setQuery} />,
+    () => (
+      <CommandInput placeholder="Rechercher quelque chose" value={query} onValueChange={setQuery} />
+    ),
     [query, setQuery],
   )
 
   // Memoize CommandDialog to prevent unnecessary re-renders
   return useMemo(
     () => (
-      <CommandDialog open={open} onOpenChange={setOpen} modal>
-        <VisuallyHidden>
-          <DialogTitle>Search Files</DialogTitle>
-          <DialogDescription>Search for a file in the vault</DialogDescription>
-        </VisuallyHidden>
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        modal
+        title="Search Files"
+        description="Search for a file in the vault"
+      >
         {MemoizedCommandInput}
         <CommandList
           onKeyDown={(e) => {
@@ -170,7 +172,9 @@ export function SearchCommand({ maps, vault, onFileSelect }: SearchCommandProps)
             }
           }}
         >
-          <CommandEmpty>No files found</CommandEmpty>
+          <CommandEmpty className="flex whitespace-pre-wrap gap-0 px-3 py-1.5 text-xs/8 flex-col py-2 items-start text-muted-foreground italic">
+            Aucun fichier trouvé
+          </CommandEmpty>
           {MemoizedCommandItems}
         </CommandList>
         <CommandSeparator />

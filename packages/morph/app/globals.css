@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@plugin "tailwindcss-animate";
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @media all and (min-width: 1500px) {
@@ -297,33 +299,6 @@
   font-style: italic;
 }
 
-.dark {
-  --flexoki-bg: var(--flexoki-black);
-  --flexoki-bg-2: var(--flexoki-950);
-  --flexoki-ui: var(--flexoki-900);
-  --flexoki-ui-2: var(--flexoki-850);
-  --flexoki-ui-3: var(--flexoki-800);
-  --flexoki-tx: var(--flexoki-200);
-  --flexoki-tx-2: var(--flexoki-500);
-  --flexoki-tx-3: var(--flexoki-700);
-  --flexoki-re: var(--flexoki-red-400);
-  --flexoki-re-2: var(--flexoki-red-600);
-  --flexoki-or: var(--flexoki-orange-400);
-  --flexoki-or-2: var(--flexoki-orange-600);
-  --flexoki-ye: var(--flexoki-yellow-400);
-  --flexoki-ye-2: var(--flexoki-yellow-600);
-  --flexoki-gr: var(--flexoki-green-400);
-  --flexoki-gr-2: var(--flexoki-green-600);
-  --flexoki-cy: var(--flexoki-cyan-400);
-  --flexoki-cy-2: var(--flexoki-cyan-600);
-  --flexoki-bl: var(--flexoki-blue-400);
-  --flexoki-bl-2: var(--flexoki-blue-600);
-  --flexoki-pu: var(--flexoki-purple-400);
-  --flexoki-pu-2: var(--flexoki-purple-600);
-  --flexoki-ma: var(--flexoki-magenta-400);
-  --flexoki-ma-2: var(--flexoki-magenta-600);
-}
-
 @utility scrollbar-hidden {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -388,6 +363,33 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
   }
+}
+
+.dark {
+  --flexoki-bg: var(--flexoki-black);
+  --flexoki-bg-2: var(--flexoki-950);
+  --flexoki-ui: var(--flexoki-900);
+  --flexoki-ui-2: var(--flexoki-850);
+  --flexoki-ui-3: var(--flexoki-800);
+  --flexoki-tx: var(--flexoki-200);
+  --flexoki-tx-2: var(--flexoki-500);
+  --flexoki-tx-3: var(--flexoki-700);
+  --flexoki-re: var(--flexoki-red-400);
+  --flexoki-re-2: var(--flexoki-red-600);
+  --flexoki-or: var(--flexoki-orange-400);
+  --flexoki-or-2: var(--flexoki-orange-600);
+  --flexoki-ye: var(--flexoki-yellow-400);
+  --flexoki-ye-2: var(--flexoki-yellow-600);
+  --flexoki-gr: var(--flexoki-green-400);
+  --flexoki-gr-2: var(--flexoki-green-600);
+  --flexoki-cy: var(--flexoki-cyan-400);
+  --flexoki-cy-2: var(--flexoki-cyan-600);
+  --flexoki-bl: var(--flexoki-blue-400);
+  --flexoki-bl-2: var(--flexoki-blue-600);
+  --flexoki-pu: var(--flexoki-purple-400);
+  --flexoki-pu-2: var(--flexoki-purple-600);
+  --flexoki-ma: var(--flexoki-magenta-400);
+  --flexoki-ma-2: var(--flexoki-magenta-600);
 }
 
 @theme {
@@ -702,6 +704,24 @@
   --input: var(--flexoki-ui-2);
   --ring: var(--flexoki-ui-3);
   --radius: 0.5rem;
+
+  --sidebar: var(--flexoki-50);
+  --sidebar-foreground: var(--flexoki-tx);
+  --sidebar-primary: var(--flexoki-ui-2);
+  --sidebar-primary-foreground: var(--flexoki-tx);
+  --sidebar-accent: var(--flexoki-ui);
+  --sidebar-accent-foreground: var(--flexoki-tx-2);
+  --sidebar-border: var(--flexoki-ui-2);
+  --sidebar-ring: var(--flexoki-blue-400);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 
   /* violet, fuchsia, rose, sky, indigo, emerald, teal, lime, amber missing */
   --color-red-50: var(--flexoki-red-50);

@@ -7,10 +7,13 @@ import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/c
 import { type Vault } from "@/hooks/use-vaults"
 import { useVaultContext } from "@/context/vault-context"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useCallback, useMemo } from "react"
+import { useCallback, useMemo, useRef } from "react"
 
 export default function Home() {
   const router = useRouter()
+  const searchRef = useRef<SVGSVGElement>(null)
+  const clockRef = useRef<SVGSVGElement>(null)
+
   const { setActiveVaultId, vaults, addVault, isLoading } = useVaultContext()
 
   const handleOpenDirectory = useCallback(async () => {
@@ -22,13 +25,16 @@ export default function Home() {
           router.push(`/${el.id}`)
         }
       })
-    } catch { }
+    } catch {}
   }, [addVault, setActiveVaultId, router])
 
-  const handleVaultSelect = useCallback((vault: Vault) => {
-    setActiveVaultId(vault.id)
-    router.push(`/${vault.id}`)
-  }, [setActiveVaultId, router])
+  const handleVaultSelect = useCallback(
+    (vault: Vault) => {
+      setActiveVaultId(vault.id)
+      router.push(`/${vault.id}`)
+    },
+    [setActiveVaultId, router],
+  )
 
   const renderVaults = useMemo(() => {
     if (isLoading) {
@@ -95,18 +101,16 @@ export default function Home() {
             <p className="text-muted-foreground mt-2 italic">Manage recently opened vaults</p>
           </hgroup>
           <Button onClick={handleOpenDirectory} className="gap-2 cursor-pointer">
-            <FolderSearch className="w-4 h-4" />
+            <FolderSearch className="w-4 h-4" ref={searchRef} />
             Open New Vault
           </Button>
         </section>
         <div className="flex items-center gap-2 text-sm text-muted-foreground my-4">
-          <Clock className="w-4 h-4" />
+          <Clock className="w-4 h-4" ref={clockRef} />
           Recently Opened
         </div>
         <section className="grid gap-4">
-          <div className="grid gap-4">
-            {renderVaults}
-          </div>
+          <div className="grid gap-4">{renderVaults}</div>
         </section>
       </div>
     </main>

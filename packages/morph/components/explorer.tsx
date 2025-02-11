@@ -125,7 +125,7 @@ export default memo(function Explorer({
     async (node: FileSystemTreeNode) => {
       if (!vault || node.kind !== "file" || !editorViewRef.current) return
       if (node.extension !== "md") {
-        toast({ title: "opening file", description: "Can only open markdown files" })
+        toast({ title: "File picker", description: "Can only open markdown files" })
         return
       }
 
@@ -187,7 +187,7 @@ export default memo(function Explorer({
   }, [markdownContent, currentFile])
 
   return (
-    <Sidebar className="bg-background" {...props}>
+    <Sidebar {...props}>
       <SidebarHeader className="border-b h-10 p-0 min-h-10 sticky">
         <div className="h-full flex items-center justify-end mx-4 gap-2">
           <Button
