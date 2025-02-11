@@ -54,7 +54,13 @@ interface SettingItemProps {
   className?: string
 }
 
-function SettingItem({ name, description, children, isHeading, className }: SettingItemProps) {
+const SettingItem = React.memo(function SettingItem({
+  name,
+  description,
+  children,
+  isHeading,
+  className,
+}: SettingItemProps) {
   return (
     <div
       className={cn(
@@ -71,7 +77,7 @@ function SettingItem({ name, description, children, isHeading, className }: Sett
       <div className="setting-item-control">{children}</div>
     </div>
   )
-}
+})
 
 function SettingsButton({ className, ref, ...props }: ButtonProps) {
   return (
@@ -112,7 +118,7 @@ function GeneralSettings() {
   )
 }
 
-function EditorSettings() {
+const EditorSettings = React.memo(function EditorSettings() {
   const { settings, updateSettings } = usePersistedSettings()
   const { theme, setTheme } = useTheme()
 
@@ -148,10 +154,20 @@ function EditorSettings() {
       </SettingItem>
     </div>
   )
-}
+})
 
-function HotkeySettings() {
+const HotkeySettings = React.memo(function HotkeySettings() {
   const { settings, updateSettings } = usePersistedSettings()
+
+  const handleEditModeShortcutChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const key = e.target.value.slice(-1).toLowerCase()
+      if (key.match(/[a-z]/i)) {
+        updateSettings({ editModeShortcut: key })
+      }
+    },
+    [updateSettings],
+  )
 
   return (
     <div className="text-sm">
@@ -165,21 +181,16 @@ function HotkeySettings() {
           id="edit-mode-shortcut"
           type="text"
           value={settings.editModeShortcut}
-          onChange={(e) => {
-            const key = e.target.value.slice(-1).toLowerCase()
-            if (key.match(/[a-z]/i)) {
-              updateSettings({ editModeShortcut: key })
-            }
-          }}
+          onChange={handleEditModeShortcutChange}
           className="w-10 text-center border rounded-md"
           maxLength={1}
         />
       </SettingItem>
     </div>
   )
-}
+})
 
-function CitationSettings() {
+const CitationSettings = React.memo(function CitationSettings() {
   const { settings, updateSettings } = usePersistedSettings()
   const { getActiveVault, updateReference } = useVaultContext()
   const [referencesPath, setReferencesPath] = React.useState<string | undefined>(
@@ -265,7 +276,48 @@ function CitationSettings() {
     }
 
     if (!settings.citation.databasePath && !hasManuallyCleared) handleReferences()
-  }, [vault, settings.citation, updateSettings, hasManuallyCleared, updateReference])
+  }, [
+    vault,
+    settings.citation.format,
+    settings.citation.databasePath,
+    hasManuallyCleared,
+    updateReference,
+    updateSettings,
+  ])
+
+  const handleInputChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value
+      setReferencesPath(newValue)
+      setHasManuallyCleared(!newValue)
+      updateSettings({
+        citation: {
+          ...settings.citation,
+          databasePath: newValue,
+        },
+      })
+    },
+    [updateSettings, settings.citation],
+  )
+
+  const handleTextareaChange = React.useCallback(
+    (value: string) => {
+      handleRawReferencesChange(value)
+    },
+    [handleRawReferencesChange],
+  )
+
+  const handleRadioGroupChange = React.useCallback(
+    (value: "biblatex" | "csl-json") => {
+      updateSettings({
+        citation: {
+          ...settings.citation,
+          format: value,
+        },
+      })
+    },
+    [updateSettings, settings.citation],
+  )
 
   return (
     <div className="text-sm">
@@ -274,14 +326,7 @@ function CitationSettings() {
       <SettingItem name="Citation Format" description="Choose your preferred citation format">
         <RadioGroup
           value={settings.citation.format}
-          onValueChange={(value: "biblatex" | "csl-json") =>
-            updateSettings({
-              citation: {
-                ...settings.citation,
-                format: value,
-              },
-            })
-          }
+          onValueChange={handleRadioGroupChange}
           className="flex gap-4"
         >
           <div className="flex items-center gap-2">
@@ -301,17 +346,7 @@ function CitationSettings() {
       >
         <Input
           value={referencesPath || ""}
-          onChange={(e) => {
-            const newValue = e.target.value
-            setReferencesPath(newValue)
-            setHasManuallyCleared(!newValue)
-            updateSettings({
-              citation: {
-                ...settings.citation,
-                databasePath: newValue,
-              },
-            })
-          }}
+          onChange={handleInputChange}
           className="w-full text-sm"
           placeholder="Enter path to your references file (e.g. References.bib)"
         />
@@ -323,7 +358,7 @@ function CitationSettings() {
       >
         <Textarea
           value=""
-          onChange={(e) => handleRawReferencesChange(e.target.value)}
+          onChange={(e) => handleTextareaChange(e.target.value)}
           className="min-h-[200px] font-mono text-sm"
           placeholder={`Enter your references here in ${
             settings.citation.format === "biblatex" ? "BibLaTeX" : "CSL-JSON"
@@ -332,35 +367,31 @@ function CitationSettings() {
       </SettingItem>
     </div>
   )
-}
+})
 
-function CorePluginsSettings({ setActiveCategory }: { setActiveCategory: (id: string) => void }) {
+const CorePluginsSettings = React.memo(function CorePluginsSettings({
+  setActiveCategory,
+}: {
+  setActiveCategory: (id: string) => void
+}) {
   const { settings, updateSettings } = usePersistedSettings()
 
-  return (
-    <div className="text-sm">
-      <SettingItem name="Core Plugins" isHeading />
+  const CogMemo = React.useMemo(() => <Cog className="h-3 w-3" />, [])
 
-      {corePlugins.map((plugin) => (
-        <SettingItem
-          key={plugin.id}
-          name={
-            <div className="flex items-center gap-2">
-              {plugin.name}
-              {plugin.hasSettings && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 p-0 hover:bg-slate-200 dark:hover:bg-slate-600/50"
-                  onClick={() => setActiveCategory(plugin.id)}
-                >
-                  <Cog className="h-3 w-3" />
-                </Button>
-              )}
-            </div>
-          }
-          description={plugin.description}
-        >
+  const pluginItems = React.useMemo(
+    () =>
+      corePlugins.map((plugin) => (
+        <SettingItem key={plugin.id} name={plugin.name} description={plugin.description}>
+          {plugin.hasSettings && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 p-0 hover:bg-slate-200 dark:hover:bg-slate-600/50"
+              onClick={() => setActiveCategory(plugin.id)}
+            >
+              {CogMemo}
+            </Button>
+          )}
           <Switch
             id={plugin.id}
             checked={plugin.id === "citation" ? (settings.citation.enabled ?? false) : false}
@@ -376,23 +407,36 @@ function CorePluginsSettings({ setActiveCategory }: { setActiveCategory: (id: st
             }}
           />
         </SettingItem>
-      ))}
+      )),
+    [corePlugins, settings.citation, updateSettings, setActiveCategory, CogMemo],
+  )
+
+  return (
+    <div className="text-sm">
+      <SettingItem name="Core Plugins" isHeading />
+      {pluginItems}
     </div>
   )
-}
+})
 
-function SidebarSettingItem({
+const SidebarSettingItem = React.memo(function SidebarSettingItem({
   category,
   isActive,
-  onClick,
+  categoryId,
+  setActiveCategory,
 }: {
   category: SettingsCategory | PluginsCategory
   isActive: boolean
-  onClick: () => void
+  categoryId: string
+  setActiveCategory: (id: string) => void
 }) {
+  const handleClick = React.useCallback(() => {
+    setActiveCategory(categoryId)
+  }, [setActiveCategory, categoryId])
+
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       className={cn(
         "w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center gap-2 cursor-pointer",
         "dark:text-slate-200 dark:hover:bg-slate-600/50",
@@ -402,7 +446,7 @@ function SidebarSettingItem({
       {category.label}
     </button>
   )
-}
+})
 
 function SidebarSettingGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -415,20 +459,26 @@ function SidebarSettingGroup({ title, children }: { title: string; children: Rea
   )
 }
 
-export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
+export const SettingsPanel = React.memo(function SettingsPanel({
+  isOpen,
+  onClose,
+}: SettingsPanelProps) {
   const [activeCategory, setActiveCategory] = React.useState("general")
   const { isLoaded } = usePersistedSettings()
 
-  // Add escape key handler here
-  React.useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
+  const handleKeyDown = React.useCallback(
+    (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
         onClose()
       }
-    }
+    },
+    [isOpen, onClose],
+  )
+
+  React.useEffect(() => {
     document.addEventListener("keydown", handleKeyDown)
     return () => document.removeEventListener("keydown", handleKeyDown)
-  }, [isOpen, onClose])
+  }, [handleKeyDown])
 
   // Don't render until settings are loaded from localStorage
   if (!isLoaded || !isOpen) return null
@@ -460,7 +510,8 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                 key={category.id}
                 category={category}
                 isActive={activeCategory === category.id}
-                onClick={() => setActiveCategory(category.id)}
+                categoryId={category.id}
+                setActiveCategory={setActiveCategory}
               />
             ))}
           </SidebarSettingGroup>
@@ -470,7 +521,8 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                 key={category.id}
                 category={category}
                 isActive={activeCategory === category.id}
-                onClick={() => setActiveCategory(category.id)}
+                categoryId={category.id}
+                setActiveCategory={setActiveCategory}
               />
             ))}
           </SidebarSettingGroup>
@@ -491,4 +543,4 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
       </div>
     </div>
   )
-}
+})

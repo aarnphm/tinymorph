@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { Copy, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SettingsPanel } from "./settings-panel"
@@ -10,24 +10,53 @@ interface ToolbarProps {
 export function Toolbar({ toggleNotes }: ToolbarProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
+  const handleOpenSettings = useCallback(() => {
+    setIsSettingsOpen(true)
+  }, [])
+
+  const handleToggleNotes = useCallback(() => {
+    toggleNotes()
+  }, [toggleNotes])
+
+  const handleCloseSettings = useCallback(() => {
+    setIsSettingsOpen(false)
+  }, [])
+
+  const MemoizedSettingsButton = useMemo(() => (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="h-6 w-6 p-0"
+      onClick={handleOpenSettings}
+    >
+      <Settings className="h-3 w-3" width={16} height={16} />
+    </Button>
+  ), [handleOpenSettings])
+
+  const MemoizedCopyIcon = useMemo(() => (
+    <Copy className="h-3 w-3" width={16} height={16} />
+  ), [])
+
+  const MemoizedCopyButton = useMemo(() => (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="h-6 w-6 p-0"
+      onClick={handleToggleNotes}
+    >
+      {MemoizedCopyIcon}
+    </Button>
+  ), [handleToggleNotes, MemoizedCopyIcon])
+
   return (
     <>
       <div className="flex items-center justify-between backdrop-blur-sm bg-background/80 supports-[backdrop-filter]:bg-background/60">
         <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 w-6 p-0"
-            onClick={() => setIsSettingsOpen(true)}
-          >
-            <Settings className="h-3 w-3" width={16} height={16} />
-          </Button>
-          <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={toggleNotes}>
-            <Copy className="h-3 w-3" width={16} height={16} />
-          </Button>
+          {MemoizedSettingsButton}
+          {MemoizedCopyButton}
         </div>
       </div>
-      <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      <SettingsPanel isOpen={isSettingsOpen} onClose={handleCloseSettings} />
     </>
   )
 }

@@ -1671,6 +1671,37 @@ section[data-references] {
   }
 }
 
+ul#helper {
+  list-style-type: none;
+  margin-inline: 0;
+  padding-inline: 0;
+
+  border-top: 1px solid var(--color-accent);
+  user-select: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  font-size: 11px;
+  padding: 8px;
+  margin: 0;
+
+  kbd {
+    @apply font-sans;
+    font-weight: 600;
+    margin-inline-end: 4px;
+    border-width: 0px;
+    line-height: inherit;
+    padding: 0;
+  }
+
+  & > li {
+    display: inline-block;
+    line-height: initial;
+  }
+}
+
 @keyframes progress {
   0% {
     transform: translateX(-100%);

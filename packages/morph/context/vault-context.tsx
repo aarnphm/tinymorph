@@ -1,7 +1,7 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, useCallback } from "react"
-import useVaults, { type Vault } from "@/hooks/use-vaults"
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react"
+import useVaults, { type FileSystemTreeNode, type Vault } from "@/hooks/use-vaults"
 
 type VaultContextType = {
   activeVaultId: string | null
@@ -17,6 +17,7 @@ type VaultContextType = {
     path: string,
   ) => Promise<void>
   isLoading: boolean
+  flattenedFileIds: FlattenedFileMapping
 }
 
 const VaultContext = createContext<VaultContextType>({
@@ -28,7 +29,10 @@ const VaultContext = createContext<VaultContextType>({
   addVault: async () => null,
   updateReference: async () => {},
   isLoading: true,
+  flattenedFileIds: new Map(),
 })
+
+export type FlattenedFileMapping = Map<string, { name: string; path: string }>
 
 // TODO: refactor using Reducer and Context
 export function VaultProvider({ children }: { children: React.ReactNode }) {
@@ -39,6 +43,21 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
   const getActiveVault = useCallback(() => {
     return activeVaultId ? vaults.find((v) => v.id === activeVaultId) : undefined
   }, [activeVaultId, vaults])
+
+  const flattenedFileIds = useMemo(() => {
+    const map: FlattenedFileMapping = new Map()
+
+    const processNode = (node: FileSystemTreeNode) => {
+      if (node.kind === "file") map.set(node.id, { name: node.name, path: node.path })
+      node.children?.forEach(processNode)
+    }
+
+    for (const vault of vaults) {
+      if (vault.tree) vault.tree.children?.forEach(processNode)
+    }
+
+    return map
+  }, [vaults])
 
   // Handle initial vault hydration and persist active vault changes
   useEffect(() => {
@@ -72,6 +91,7 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
         refreshVault,
         addVault,
         isLoading,
+        flattenedFileIds,
       }}
     >
       {children}

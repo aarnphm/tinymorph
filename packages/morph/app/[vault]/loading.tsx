@@ -1,4 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton"
+import { ChevronRight } from "lucide-react"
 import {
   SidebarInset,
   SidebarProvider,
@@ -10,7 +11,10 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarHeader,
+  SidebarMenuSub,
+  SidebarMenuButton,
 } from "@/components/ui/sidebar"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
 export default function Loading() {
   return (
@@ -28,11 +32,29 @@ export default function Loading() {
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <SidebarMenuItem key={i}>
-                      <Skeleton className="h-4 w-[16rem] p-2 mt-2" />
+                  {[1, 2].map((i) => (
+                    <SidebarMenuItem key={i} className="group/collapsible">
+                      <Collapsible open={false} className="group/collapsible">
+                        <CollapsibleTrigger asChild>
+                          <SidebarMenuButton className="hover:bg-accent/50 transition-colors">
+                            <ChevronRight className="transition-transform w-4 h-4 mr-1 shrink-0" />
+                            <Skeleton className="h-4 w-[16rem] p-2 mt-2" />
+                          </SidebarMenuButton>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                          <SidebarMenuSub className="mr-0">
+                            <Skeleton className="h-4 w-[12rem] p-2 mt-2" />
+                          </SidebarMenuSub>
+                        </CollapsibleContent>
+                      </Collapsible>
                     </SidebarMenuItem>
                   ))}
+                  <SidebarMenuButton className="hover:bg-accent/50 transition-colors">
+                    <Skeleton className="h-4 w-[18rem] p-2 mt-2" />
+                  </SidebarMenuButton>
+                  <SidebarMenuButton className="hover:bg-accent/50 transition-colors">
+                    <Skeleton className="h-4 w-[18rem] p-2 mt-2" />
+                  </SidebarMenuButton>
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
@@ -42,10 +64,10 @@ export default function Loading() {
         <SidebarInset>
           <header className="inline-block h-10 border-b">
             <div className="h-full flex shrink-0 items-center justify-between mx-4">
-              <Skeleton className="h-6 w-6 rounded-md" />
+              <Skeleton className="h-6 w-6 p-0 rounded-full" />
               <div className="flex items-center gap-2">
-                <Skeleton className="h-6 w-24 rounded-md" />
-                <Skeleton className="h-6 w-6 rounded-md" />
+                <Skeleton className="h-6 w-6 p-0 rounded-full" />
+                <Skeleton className="h-6 w-6 p-0 rounded-full" />
               </div>
             </div>
           </header>

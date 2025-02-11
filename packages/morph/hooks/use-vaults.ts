@@ -11,6 +11,7 @@ export interface FileSystemTreeNode {
   handle: FileSystemFileHandle | FileSystemDirectoryHandle
   children?: FileSystemTreeNode[]
   isOpen?: boolean
+  path: string
 }
 
 export interface Vault {
@@ -153,6 +154,7 @@ export default function useVaults() {
         handle,
         children: [],
         isOpen: false,
+        path: "./",
       }
 
       // If rehydrating an existing tree, clear children to avoid duplicates
@@ -177,6 +179,7 @@ export default function useVaults() {
             id: crypto.randomUUID().slice(0, 32),
             kind: "file",
             handle: entry as FileSystemFileHandle,
+            path: `${currentNode.path}${baseName}`,
           })
         } else if (entry.kind === "directory") {
           const dirNode: FileSystemTreeNode = {
@@ -187,6 +190,7 @@ export default function useVaults() {
             handle: entry as FileSystemDirectoryHandle,
             children: [],
             isOpen: false,
+            path: `${currentNode.path}${entry.name}/`,
           }
           currentNode.children?.push(dirNode)
           await processDirectory(entry as FileSystemDirectoryHandle, ignorePatterns, dirNode)

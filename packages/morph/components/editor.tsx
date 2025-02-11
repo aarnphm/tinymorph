@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useEffect, useCallback, useState, useRef, useMemo } from "react"
+import { useEffect, useCallback, useState, useRef, useMemo, memo } from "react"
 import axios, { AxiosResponse } from "axios"
 import CodeMirror from "@uiw/react-codemirror"
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown"
@@ -14,7 +14,7 @@ import usePersistedSettings from "@/hooks/use-persisted-settings"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Vim, vim } from "@replit/codemirror-vim"
 import { NoteCard, DraggableNoteCard, Note } from "@/components/note-card"
-import { Explorer } from "@/components/explorer"
+import Explorer from "@/components/explorer"
 import { Toolbar } from "@/components/toolbar"
 import { SettingsPanel } from "@/components/settings-panel"
 import { Button } from "@/components/ui/button"
@@ -24,11 +24,13 @@ import type { Root } from "hast"
 import { useTheme } from "next-themes"
 import { useVaultContext } from "@/context/vault-context"
 import { md, frontmatter, syntaxHighlighting, theme as editorTheme } from "@/components/parser"
+import { setFile } from "@/components/markdown-inline"
 import { DotIcon } from "@/components/ui/icons"
-import { Vault } from "@/hooks/use-vaults"
+import { Vault, type FileSystemTreeNode } from "@/hooks/use-vaults"
 import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast"
-import { Tooltip, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { SearchProvider } from "@/context/search-context"
+import { SearchCommand } from "@/components/search-command"
 
 interface Suggestion {
   suggestion: string
@@ -50,10 +52,10 @@ interface EditorProps {
   vaults: Vault[]
 }
 
-export default function Editor({ vaultId, vaults }: EditorProps) {
+export default memo(function Editor({ vaultId, vaults }: EditorProps) {
   const { theme } = useTheme()
   // PERF: should not call it here, or figure out a way not to calculate the vault twice
-  const { refreshVault } = useVaultContext()
+  const { refreshVault, flattenedFileIds } = useVaultContext()
   const editorRef = useRef<HTMLDivElement>(null)
   const [currentFile, setCurrentFile] = useState<string>("")
   const [isEditMode, setIsEditMode] = useState(true)
@@ -288,6 +290,16 @@ export default function Editor({ vaultId, vaults }: EditorProps) {
     await window.mermaid.run({ nodes })
   }
 
+  const onFileSelect = useCallback((handle: FileSystemFileHandle) => {
+    setCurrentFileHandle(handle)
+    setCurrentFile(handle.name)
+  }, [])
+
+  const onNewFile = useCallback(() => {
+    setCurrentFileHandle(null)
+    setCurrentFile("Untitled")
+  }, [])
+
   // Effect to update vim mode when settings change, with keybinds
   useEffect(() => {
     Vim.defineEx("w", "w", handleSave)
@@ -315,126 +327,149 @@ export default function Editor({ vaultId, vaults }: EditorProps) {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [handleSave, toast, toggleNotes, settings])
 
+  const handleFileSelect = useCallback(
+    async (node: FileSystemTreeNode) => {
+      if (!vault || node.kind !== "file" || !codeMirrorViewRef.current) return
+
+      try {
+        const file = await node.handle.getFile()
+        const content = await file.text()
+
+        codeMirrorViewRef.current.dispatch({
+          changes: {
+            from: 0,
+            to: codeMirrorViewRef.current.state.doc.length,
+            insert: content,
+          },
+          effects: setFile.of(file.name),
+        })
+
+        setCurrentFileHandle(node.handle as FileSystemFileHandle)
+        setCurrentFile(file.name)
+        setMarkdownContent(content)
+        updatePreview(content)
+      } catch (error) {
+        toast({
+          title: "Error opening file",
+          description: error instanceof Error ? error.message : "Failed to open file",
+        })
+      }
+    },
+    [vault, codeMirrorViewRef, updatePreview, toast],
+  )
+
   return (
-    <SidebarProvider defaultOpen={true}>
-      <Explorer
-        vault={vault!}
-        currentFile={currentFile}
-        markdownContent={markdownContent}
-        editorViewRef={codeMirrorViewRef}
-        onFileSelect={(handle: FileSystemFileHandle) => setCurrentFileHandle(handle)}
-        onNewFile={() => {
-          setCurrentFileHandle(null)
-          setCurrentFile("Untitled")
-        }}
-        onContentUpdate={updatePreview}
-      />
-      <SidebarInset>
-        <header className="inline-block h-10 border-b">
-          <div className="h-full flex shrink-0 items-center justify-between mx-4">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <SidebarTrigger className="-ml-1" />
+    <SearchProvider vault={vault!}>
+      <SidebarProvider defaultOpen={true}>
+        <Explorer
+          vault={vault!}
+          currentFile={currentFile}
+          markdownContent={markdownContent}
+          editorViewRef={codeMirrorViewRef}
+          onFileSelect={onFileSelect}
+          onNewFile={onNewFile}
+          onContentUpdate={updatePreview}
+        />
+        <SidebarInset>
+          <header className="inline-block h-10 border-b">
+            <div className="h-full flex shrink-0 items-center justify-between mx-4">
+              <SidebarTrigger className="-ml-1" title="Open Explorer" />
+              <Toolbar toggleNotes={toggleNotes} />
+            </div>
+          </header>
+          <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
+            <div className="flex-1 relative border">
+              <div
+                className={`editor-mode absolute inset-0 ${isEditMode ? "block" : "hidden"}`}
+                ref={editorRef}
+              >
+                <div ref={editorScrollRef} className="h-full scrollbar-hidden relative">
+                  <div className="h-full">
+                    {hasUnsavedChanges && (
+                      <div className="absolute top-4 left-4 text-sm/7 z-10 text-yellow-200">
+                        <DotIcon />
+                      </div>
+                    )}
+                    <CodeMirror
+                      value={markdownContent}
+                      height="100%"
+                      basicSetup={{
+                        rectangularSelection: true,
+                        indentOnInput: true,
+                        syntaxHighlighting: true,
+                        searchKeymap: true,
+                      }}
+                      extensions={memoizedExtensions}
+                      onChange={onContentChange}
+                      className="overflow-auto h-full mx-12 pt-4 scrollbar-hidden"
+                      theme={theme === "dark" ? "dark" : editorTheme}
+                      onCreateEditor={(view) => {
+                        codeMirrorViewRef.current = view
+                      }}
+                    />
                   </div>
-                </TooltipTrigger>
-              </Tooltip>
-            </TooltipProvider>
-            <Toolbar toggleNotes={toggleNotes} />
-          </div>
-        </header>
-        <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
-          <div className="flex-1 relative border">
-            <div
-              className={`editor-mode absolute inset-0 ${isEditMode ? "block" : "hidden"}`}
-              ref={editorRef}
-            >
-              <div ref={editorScrollRef} className="h-full scrollbar-hidden relative">
-                <div className="h-full">
-                  {hasUnsavedChanges && (
-                    <div className="absolute top-4 left-4 text-sm/7 z-10 text-yellow-200">
-                      <DotIcon />
-                    </div>
-                  )}
-                  <CodeMirror
-                    value={markdownContent}
-                    height="100%"
-                    basicSetup={{
-                      rectangularSelection: true,
-                      indentOnInput: true,
-                      syntaxHighlighting: true,
-                      searchKeymap: true,
-                    }}
-                    extensions={memoizedExtensions}
-                    onChange={onContentChange}
-                    className="overflow-auto h-full mx-12 pt-4 scrollbar-hidden"
-                    theme={theme === "dark" ? "dark" : editorTheme}
-                    onCreateEditor={(view) => {
-                      codeMirrorViewRef.current = view
-                    }}
-                  />
+                </div>
+              </div>
+              <div
+                className={`reading-mode absolute inset-0 ${isEditMode ? "hidden" : "block overflow-hidden"}`}
+                ref={readingModeRef}
+              >
+                <div className="prose dark:prose-invert h-full mx-4 pt-4 overflow-auto scrollbar-hidden">
+                  <article className="@container h-full max-w-5xl mx-auto scrollbar-hidden">
+                    {previewNode && toJsx(previewNode)}
+                  </article>
                 </div>
               </div>
             </div>
-            <div
-              className={`reading-mode absolute inset-0 ${isEditMode ? "hidden" : "block overflow-hidden"}`}
-              ref={readingModeRef}
-            >
-              <div className="prose dark:prose-invert h-full mx-4 pt-4 overflow-auto scrollbar-hidden">
-                <article className="@container h-full max-w-5xl mx-auto scrollbar-hidden">
-                  {previewNode && toJsx(previewNode)}
-                </article>
+            {showNotes && (
+              <div className="w-80 overflow-auto border scrollbar-hidden">
+                <div className="p-4">
+                  {notesError ? (
+                    <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">
+                      {notesError}
+                    </div>
+                  ) : isNotesLoading ? (
+                    <div className="grid gap-4">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <NoteCard key={i} isLoading />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="grid gap-4">
+                      {notes.map((note, index) => (
+                        <DraggableNoteCard
+                          key={index}
+                          content={note.content}
+                          editorRef={editorRef}
+                          onDrop={handleNoteDrop}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          </div>
-          {showNotes && (
-            <div className="w-80 overflow-auto border scrollbar-hidden">
-              <div className="p-4">
-                {notesError ? (
-                  <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">
-                    {notesError}
-                  </div>
-                ) : isNotesLoading ? (
-                  <div className="grid gap-4">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <NoteCard key={i} isLoading />
-                    ))}
-                  </div>
+            )}
+          </section>
+          <footer className="inline-block h-8 border-t text-xs">
+            <div className="h-full flex shrink-0 items-center align-middle font-mono justify-end mx-4">
+              <Button
+                onClick={() => handleEditMode()}
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0"
+              >
+                {isEditMode ? (
+                  <Eye className="h-3 w-3" widths={16} height={16} />
                 ) : (
-                  <div className="grid gap-4">
-                    {notes.map((note, index) => (
-                      <DraggableNoteCard
-                        key={index}
-                        content={note.content}
-                        editorRef={editorRef}
-                        onDrop={handleNoteDrop}
-                      />
-                    ))}
-                  </div>
+                  <Pencil className="h-3 w-3" widths={16} height={16} />
                 )}
-              </div>
+              </Button>
             </div>
-          )}
-        </section>
-        <footer className="inline-block h-8 border-t text-xs">
-          <div className="h-full flex shrink-0 items-center align-middle font-mono justify-end mx-4">
-            <Button
-              onClick={() => handleEditMode()}
-              variant="ghost"
-              size="sm"
-              className="h-6 w-6 p-0"
-            >
-              {isEditMode ? (
-                <Eye className="h-3 w-3" widths={16} height={16} />
-              ) : (
-                <Pencil className="h-3 w-3" widths={16} height={16} />
-              )}
-            </Button>
-          </div>
-        </footer>
-        <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
-      </SidebarInset>
-    </SidebarProvider>
+          </footer>
+          <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+          <SearchCommand maps={flattenedFileIds} vault={vault!} onFileSelect={handleFileSelect} />
+        </SidebarInset>
+      </SidebarProvider>
+    </SearchProvider>
   )
-}
+})

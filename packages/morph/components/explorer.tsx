@@ -1,8 +1,8 @@
 import type * as React from "react"
-import { useState, useCallback, memo } from "react"
-import { ChevronRight, Plus, Download, ChevronDown } from "lucide-react"
+import { useState, useCallback, memo, useMemo } from "react"
+import { ChevronRight, ChevronDown, Plus, Download, Home } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { md } from "@/components/parser"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,7 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
   Sidebar,
@@ -36,55 +35,69 @@ interface FileTreeNodeProps {
   onFileSelect?: (node: FileSystemTreeNode) => void
 }
 
-const FileTreeNode: React.FC<FileTreeNodeProps> = memo(({ node, onFileSelect }) => {
+// TODO: reducer and context for states
+const FileTreeNode = memo(function FileTreeNode({ node, onFileSelect }: FileTreeNodeProps) {
   const [isOpen, setIsOpen] = useState(node.isOpen ?? false)
 
   const toggleOpen = useCallback(() => {
-    setIsOpen((prev) => {
-      node.isOpen = !prev
-      return !prev
-    })
-  }, [node])
+    setIsOpen((prev) => !prev)
+  }, [])
 
-  if (node.kind === "file") {
-    return (
-      <SidebarMenuButton
-        className="data-[active=true]:bg-transparent hover:bg-accent/50 transition-colors flex items-center"
-        onClick={() => onFileSelect?.(node)}
-      >
-        <span className="truncate">{node.name}</span>
-        {node.extension && node.extension != "md" && (
-          <span className="text-muted-foreground uppercase text-tiny flex-shrink-0 border rounded px-1 ml-2">
-            {node.extension}
-          </span>
-        )}
-      </SidebarMenuButton>
-    )
-  }
+  const handleFileClick = useCallback(() => {
+    onFileSelect?.(node)
+  }, [onFileSelect, node])
 
-  return (
-    <SidebarMenuItem>
-      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="group/collapsible">
+  const MemoizedSidebarFolderItem = useMemo(
+    () => (
+      <SidebarMenuItem>
         <CollapsibleTrigger asChild>
           <SidebarMenuButton onClick={toggleOpen} className="hover:bg-accent/50 transition-colors">
-            <ChevronRight
-              className={`transition-transform ${isOpen ? "rotate-90" : ""} w-4 h-4 mr-1 shrink-0`}
-            />
+            {isOpen ? (
+              <ChevronDown className="transition-transform w-4 h-4 mr-1 shrink-0" />
+            ) : (
+              <ChevronRight className="transition-transform w-4 h-4 mr-1 shrink-0" />
+            )}
             <span className="truncate">{node.name}</span>
           </SidebarMenuButton>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenuSub className="mr-0">
-            {node.children!.map((child) => (
-              <FileTreeNode key={child.name} node={child} onFileSelect={onFileSelect} />
-            ))}
+            {node.children &&
+              node.children.map((child) => (
+                <FileTreeNode key={child.name} node={child} onFileSelect={onFileSelect} />
+              ))}
           </SidebarMenuSub>
         </CollapsibleContent>
-      </Collapsible>
-    </SidebarMenuItem>
+      </SidebarMenuItem>
+    ),
+    [isOpen, toggleOpen, node, onFileSelect],
+  )
+
+  const MemoizedSidebarFileItem = useMemo(
+    () => (
+      <SidebarMenuButton
+        className="data-[active=true]:bg-transparent hover:bg-accent/50 transition-colors flex items-center cursor-pointer"
+        onClick={handleFileClick}
+      >
+        <span className="truncate">{node.name}</span>
+        {node.extension && node.extension !== "md" && (
+          <span className="text-muted-foreground uppercase text-tiny flex-shrink-0 border rounded px-1 ml-2">
+            {node.extension}
+          </span>
+        )}
+      </SidebarMenuButton>
+    ),
+    [handleFileClick, node],
+  )
+
+  if (node.kind === "file") return MemoizedSidebarFileItem
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="group/collapsible" asChild>
+      {MemoizedSidebarFolderItem}
+    </Collapsible>
   )
 })
-FileTreeNode.displayName = "FileTreeNode"
 
 interface MorphSidebarProps extends React.ComponentProps<typeof Sidebar> {
   vault: Vault
@@ -96,7 +109,7 @@ interface MorphSidebarProps extends React.ComponentProps<typeof Sidebar> {
   markdownContent: string
 }
 
-export function Explorer({
+export default memo(function Explorer({
   vault,
   editorViewRef,
   onFileSelect,
@@ -107,7 +120,7 @@ export function Explorer({
   ...props
 }: MorphSidebarProps) {
   const { toast } = useToast()
-
+  const router = useRouter()
   const handleFileSelect = useCallback(
     async (node: FileSystemTreeNode) => {
       if (!vault || node.kind !== "file" || !editorViewRef.current) return
@@ -177,18 +190,15 @@ export function Explorer({
     <Sidebar className="bg-background" {...props}>
       <SidebarHeader className="border-b h-10 p-0 min-h-10 sticky">
         <div className="h-full flex items-center justify-end mx-4 gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 group" title="Manage Vault">
-                <ChevronDown className="h-3 w-3 transition-transform duration-200 group-data-[state=open]:rotate-180" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" sideOffset={2}>
-              <DropdownMenuItem asChild>
-                <Link href="/">Manage Vaults...</Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0 group"
+            title="Manage Vault"
+            onClick={() => router.push("/")}
+          >
+            <Home className="h-3 w-3 p-0" />
+          </Button>
           <Button
             variant="ghost"
             size="sm"
@@ -239,4 +249,4 @@ export function Explorer({
       <SidebarRail />
     </Sidebar>
   )
-}
+})
