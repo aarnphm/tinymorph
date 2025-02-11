@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Button, ButtonProps } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -80,7 +80,7 @@ const SettingItem = React.memo(function SettingItem({
   )
 })
 
-function SettingsButton({ className, ref, ...props }: ButtonProps) {
+function SettingsButton({ className, ref, ...props }: React.ComponentProps<typeof Button>) {
   return (
     <Button
       ref={ref}
@@ -232,7 +232,7 @@ const CitationSettings = React.memo(function CitationSettings() {
         console.error("Failed to save references file:", error)
       }
     },
-    [vault, updateSettings, settings.citation],
+    [vault, updateSettings, settings],
   )
 
   // Check if References.bib exists in any vault and copy it to .morph directory
@@ -277,14 +277,7 @@ const CitationSettings = React.memo(function CitationSettings() {
     }
 
     if (!settings.citation.databasePath && !hasManuallyCleared) handleReferences()
-  }, [
-    vault,
-    settings.citation.format,
-    settings.citation.databasePath,
-    hasManuallyCleared,
-    updateReference,
-    updateSettings,
-  ])
+  }, [vault, settings, hasManuallyCleared, updateReference, updateSettings])
 
   const handleInputChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -298,7 +291,7 @@ const CitationSettings = React.memo(function CitationSettings() {
         },
       })
     },
-    [updateSettings, settings.citation],
+    [updateSettings, settings],
   )
 
   const handleTextareaChange = React.useCallback(
@@ -317,7 +310,7 @@ const CitationSettings = React.memo(function CitationSettings() {
         },
       })
     },
-    [updateSettings, settings.citation],
+    [updateSettings, settings],
   )
 
   return (
