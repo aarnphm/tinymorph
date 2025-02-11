@@ -33,7 +33,7 @@ const VaultContext = createContext<VaultContextType>({
 // TODO: refactor using Reducer and Context
 export function VaultProvider({ children }: { children: React.ReactNode }) {
   const [activeVaultId, setActiveVaultId] = useState<string | null>(null)
-  const { vaults, refreshVault, addVault, updateReference, loadVaults } = useVaults()
+  const { vaults, refreshVault, addVault, updateReference, setVaults, getAllVaults } = useVaults()
   const [isLoading, setIsLoading] = useState(true)
 
   const getActiveVault = useCallback(() => {
@@ -42,21 +42,24 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
 
   // Handle initial vault hydration and persist active vault changes
   useEffect(() => {
-    loadVaults()
-      .then(() => {
-        const lastActiveId = localStorage.getItem("morph:active-vault")
-        if (lastActiveId && vaults.some((v) => v.id === lastActiveId)) {
-          setActiveVaultId(lastActiveId)
-          localStorage.setItem("morph:active-vault", lastActiveId)
-        }
-        setIsLoading(false)
-        return
-      })
-      .catch(() => {
-        const timer = setTimeout(() => setIsLoading(false), 1000)
-        return () => clearTimeout(timer)
-      })
-  }, [vaults, activeVaultId, loadVaults])
+    if (vaults.length === 0) {
+      getAllVaults()
+        .then((vaults) => {
+          setVaults(vaults)
+          const lastActiveId = localStorage.getItem("morph:active-vault")
+          if (lastActiveId && vaults.some((v) => v.id === lastActiveId)) {
+            setActiveVaultId(lastActiveId)
+            localStorage.setItem("morph:active-vault", lastActiveId)
+          }
+          setIsLoading(false)
+          return
+        })
+        .catch(() => {
+          const timer = setTimeout(() => setIsLoading(false), 1000)
+          return () => clearTimeout(timer)
+        })
+    }
+  }, [vaults, getAllVaults, setVaults, setActiveVaultId])
 
   return (
     <VaultContext.Provider

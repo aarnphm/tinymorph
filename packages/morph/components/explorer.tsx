@@ -30,7 +30,6 @@ import { Vault } from "@/hooks/use-vaults"
 import { EditorView } from "@uiw/react-codemirror"
 import { setFile } from "./markdown-inline"
 import { FileSystemTreeNode } from "@/hooks/use-vaults"
-import { Skeleton } from "@/components/ui/skeleton"
 
 interface FileTreeNodeProps {
   node: FileSystemTreeNode
@@ -229,16 +228,10 @@ export function Explorer({
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {vault ? (
+              {vault &&
                 vault.tree!.children!.map((node, idx) => (
                   <FileTreeNode key={idx} node={node} onFileSelect={handleFileSelect} />
-                ))
-              ) : (
-                <div className="p-4">
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-3/4" />
-                </div>
-              )}
+                ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

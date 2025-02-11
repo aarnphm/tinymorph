@@ -47,10 +47,10 @@ interface AsteraceaResponse {
 
 interface EditorProps {
   vaultId: string
-  vault: Vault
+  vaults: Vault[]
 }
 
-export default function Editor({ vaultId, vault }: EditorProps) {
+export default function Editor({ vaultId, vaults }: EditorProps) {
   const { theme } = useTheme()
   // PERF: should not call it here, or figure out a way not to calculate the vault twice
   const { refreshVault } = useVaultContext()
@@ -75,6 +75,8 @@ export default function Editor({ vaultId, vault }: EditorProps) {
 
   const [markdownContent, setMarkdownContent] = useState<string>("")
   const [notesError, setNotesError] = useState<string | null>(null)
+
+  const vault = vaults.find((v) => v.id === vaultId)
 
   const updatePreview = useCallback(
     async (value: string) => {
@@ -135,7 +137,7 @@ export default function Editor({ vaultId, vault }: EditorProps) {
       await writable.close()
 
       // Update state only if it's a new file
-      if (!currentFileHandle) {
+      if (!currentFileHandle && vault) {
         setCurrentFileHandle(targetHandle)
         setCurrentFile(targetHandle.name)
 
@@ -316,7 +318,7 @@ export default function Editor({ vaultId, vault }: EditorProps) {
   return (
     <SidebarProvider defaultOpen={true}>
       <Explorer
-        vault={vault}
+        vault={vault!}
         currentFile={currentFile}
         markdownContent={markdownContent}
         editorViewRef={codeMirrorViewRef}

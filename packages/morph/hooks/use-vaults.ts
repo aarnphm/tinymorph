@@ -87,7 +87,7 @@ async function getVaultFromDB(id: string): Promise<Vault | null> {
   })
 }
 
-async function getAllVaultsFromDB(): Promise<Vault[]> {
+export async function getAllVaultsFromDB(): Promise<Vault[]> {
   const db = await getDB()
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readonly")
@@ -132,6 +132,7 @@ export async function getReferenceByVaultId(vaultId: string): Promise<ReferenceI
   })
 }
 
+// TODO: refactor with Reducer and better used with @/context/vault-context
 export default function useVaults() {
   const [vaults, setVaults] = useState<Vault[]>([])
   const [references, setReferences] = useState<Map<string, ReferenceItem[]>>(new Map())
@@ -355,6 +356,7 @@ export default function useVaults() {
 
   return {
     vaults,
+    setVaults,
     references,
     addVault,
     processDirectory,

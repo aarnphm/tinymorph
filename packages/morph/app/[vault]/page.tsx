@@ -62,11 +62,9 @@ export default function VaultPage() {
     return () => window.removeEventListener("mermaid-content", handleContentChange)
   }, [])
 
-  const vault = vaults.find((v) => v.id === vaultId)
-
   return (
     <main className="min-h-screen bg-background">
-      <Editor vaultId={vaultId} vault={vault!} />
+      <Editor vaultId={vaultId} vaults={vaults} />
     </main>
   )
 }
