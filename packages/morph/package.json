@@ -59,7 +59,7 @@
     "mdast-util-from-markdown": "^2.0.2",
     "mdast-util-to-hast": "^13.2.0",
     "mdast-util-to-string": "^4.0.0",
-    "mermaid": "^11.4.0",
+    "mermaid": "^11.4.1",
     "minimatch": "^10.0.1",
     "next": "15.1.7",
     "next-plausible": "^3.12.4",
