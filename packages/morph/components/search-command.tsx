@@ -212,7 +212,6 @@ export function SearchCommand({ maps, vault, onFileSelect }: SearchCommandProps)
           </CommandEmpty>
           {MemoizedCommandItems}
         </CommandList>
-        <CommandSeparator />
         <ul id="helper">
           <li>
             <kbd>↑↓</kbd> pour naviguer

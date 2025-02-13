@@ -1585,43 +1585,21 @@ section[data-references] {
   @apply fixed z-1000 left-0 top-0 w-screen h-screen hidden;
 
   &.active {
-    display: flex;
+    @apply flex;
   }
 
   & > .mermaid-backdrop {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(4px);
+    @apply absolute top-0 left-0 w-screen h-screen backdrop-blur-2xl;
   }
 
   & > #mermaid-space {
-    display: grid;
-    margin-top: 7vh;
-    margin-left: auto;
-    margin-right: auto;
-    max-height: 80vh;
-    max-width: 80vw;
-    width: 75%;
-    z-index: 1001;
-    background: var(--flexoki-paper);
-    border-radius: 12px;
+    @apply relative grid ml-auto mr-auto mt-[7vh] max-h-[80vh] max-w-[80vw] w-[75%] z-1001 bg-background rounded overflow-hidden;
     box-shadow:
       0 14px 50px rgba(27, 33, 48, 0.12),
       0 10px 30px rgba(27, 33, 48, 0.16);
-    overflow: hidden;
-    position: relative;
 
     & > .mermaid-header {
-      display: flex;
-      justify-content: flex-end;
-      padding: 1rem;
-      border-bottom: 1px solid var(--color-accent);
-      background: var(--flexoki-paper);
-      z-index: 2;
-      max-height: 32px;
+      @apply flex justify-end p-4 border-b-[1px] border-accent bg-background z-2 max-h-8;
 
       & > .close-button {
         display: flex;
@@ -1642,13 +1620,11 @@ section[data-references] {
       min-width: 200px;
 
       pre {
-        margin: 0;
-        border: none;
+        @apply border-none m-0;
       }
 
       svg {
-        max-width: none;
-        height: auto;
+        @apply max-w-none h-auto;
 
         p {
           margin: 0;
@@ -1702,33 +1678,14 @@ section[data-references] {
 }
 
 ul#helper {
-  list-style-type: none;
-  margin-inline: 0;
-  padding-inline: 0;
-
-  border-top: 1px solid var(--color-accent);
-  user-select: none;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-  font-size: 11px;
-  padding: 8px;
-  margin: 0;
+  @apply flex flex-row flex-wrap justify-center content-center gap-3 text-tiny/7 p-2 m-0 select-none list-none ms-0 ps-0 border-t-1 border-accent;
 
   kbd {
-    @apply font-sans;
-    font-weight: 600;
-    margin-inline-end: 4px;
-    border-width: 0px;
-    line-height: inherit;
-    padding: 0;
+    @apply font-sans font-semibold me-1 border-0 p-0;
   }
 
   & > li {
-    display: inline-block;
-    line-height: initial;
+    @apply inline-block;
   }
 }
 
