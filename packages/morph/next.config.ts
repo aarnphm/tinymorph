@@ -2,7 +2,7 @@ import MillionLint from "@million/lint"
 import { withPlausibleProxy } from "next-plausible"
 
 export default MillionLint.next({
-  enabled: true,
+  enabled: ["1", "true", "True"].includes(process.env.DEBUG?.toLowerCase() ?? ""),
   rsc: true,
   skipTransform: process.env.NODE_ENV === "production",
   react: "19",
