@@ -1,16 +1,17 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { FolderSearch, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
-import { type Vault } from "@/hooks/use-vaults"
+import { type Vault } from "@/db"
 import { useVaultContext } from "@/context/vault-context"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useCallback, useMemo, useRef } from "react"
 
 export default function Home() {
   const router = useRouter()
+  const pathname = usePathname()
   const searchRef = useRef<SVGSVGElement>(null)
   const clockRef = useRef<SVGSVGElement>(null)
 
@@ -19,24 +20,30 @@ export default function Home() {
   const handleOpenDirectory = useCallback(async () => {
     try {
       const handle = await window.showDirectoryPicker({ startIn: "documents" })
-      await addVault(handle).then((el) => {
-        if (el) {
-          setActiveVaultId(el.id)
-          router.push(`/${el.id}`)
-        }
-      })
+      const vault = await addVault(handle)
+      if (vault?.id) {
+        router.push(`/${vault.id}`)
+        setActiveVaultId(vault.id)
+      }
     } catch {}
   }, [addVault, setActiveVaultId, router])
 
   const handleVaultSelect = useCallback(
     (vault: Vault) => {
-      setActiveVaultId(vault.id)
-      router.push(`/${vault.id}`)
+      if (vault?.id) {
+        router.push(`/${vault.id}`)
+        setActiveVaultId(vault.id)
+      }
     },
-    [setActiveVaultId, router],
+    [setActiveVaultId],
   )
 
   const renderVaults = useMemo(() => {
+    // Only render on home page and when we have data
+    if (pathname !== "/" || !vaults) {
+      return null
+    }
+
     if (isLoading) {
       return (
         <Card className="group rounded-md">
@@ -51,8 +58,11 @@ export default function Home() {
           </CardContent>
         </Card>
       )
-    } else if (vaults.length > 0) {
-      return vaults.map((vault) => (
+    }
+
+    if (Array.isArray(vaults) && vaults.length > 0) {
+      const uniqueVaults = [...new Map(vaults.map(v => [v.id, v])).values()]
+      return uniqueVaults.map((vault) => (
         <Card key={vault.id} className="group rounded-md">
           <Button
             variant="ghost"
@@ -76,21 +86,21 @@ export default function Home() {
           </Button>
         </Card>
       ))
-    } else {
-      return (
-        <Card className="group rounded-md">
-          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-            <FolderSearch className="w-12 h-12 text-muted-foreground mb-4" />
-            <CardTitle className="mb-2">No Vaults Found</CardTitle>
-            <CardDescription>
-              Get started by opening a new vault to use with{" "}
-              <code className="font-light italic">morph</code>.
-            </CardDescription>
-          </CardContent>
-        </Card>
-      )
     }
-  }, [isLoading, vaults, handleVaultSelect])
+
+    return (
+      <Card className="group rounded-md">
+        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+          <FolderSearch className="w-12 h-12 text-muted-foreground mb-4" />
+          <CardTitle className="mb-2">No Vaults Found</CardTitle>
+          <CardDescription>
+            Get started by opening a new vault to use with{" "}
+            <code className="font-light italic">morph</code>.
+          </CardDescription>
+        </CardContent>
+      </Card>
+    )
+  }, [isLoading, vaults, handleVaultSelect, pathname])
 
   return (
     <main className="min-h-screen w-full flex items-center justify-center bg-background">

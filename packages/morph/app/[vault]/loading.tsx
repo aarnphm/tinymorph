@@ -10,10 +10,8 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarHeader,
-  SidebarMenuSub,
   SidebarMenuButton,
 } from "@/components/ui/sidebar"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
 export default function Loading() {
   return (

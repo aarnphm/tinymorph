@@ -52,7 +52,7 @@ export default function usePersistedSettings() {
         }
 
         // Get the .morph directory handle
-        const morphDir = await vault.handle.getDirectoryHandle(".morph", { create: true })
+        const morphDir = await vault.tree.handle.getDirectoryHandle(".morph", { create: true })
         const configFile = await morphDir.getFileHandle("config.json", { create: true })
         const file = await configFile.getFile()
         const text = await file.text()
@@ -85,7 +85,7 @@ export default function usePersistedSettings() {
       setSettings(updated)
 
       // Save to .morph/config.json
-      const morphDir = await vault.handle.getDirectoryHandle(".morph", { create: true })
+      const morphDir = await vault.tree.handle.getDirectoryHandle(".morph", { create: true })
       const configFile = await morphDir.getFileHandle("config.json", { create: true })
       const writable = await configFile.createWritable()
       await writable.write(JSON.stringify(updated, null, 2))

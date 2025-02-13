@@ -145,7 +145,7 @@ export function SearchCommand({ maps, vault, onFileSelect }: SearchCommandProps)
               <span className="italic">
                 {query
                   ? toJsx(
-                      fromHtmlIsomorphic(highlight(query, file.path.substring(2)), {
+                      fromHtmlIsomorphic(highlight(query, file.path.substring(1)), {
                         fragment: true,
                       }),
                     )

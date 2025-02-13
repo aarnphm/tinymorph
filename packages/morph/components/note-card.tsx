@@ -1,125 +1,39 @@
-import { drag } from "d3-drag"
-import { select } from "d3-selection"
-import { useEffect, useRef, useState } from "react"
-import { Skeleton } from "@/components/ui/skeleton"
+import * as React from "react"
+import { useDrag } from "react-dnd"
+import { NOTES_DND_TYPE, type Note } from "@/lib/notes"
+import { cn } from "@/lib/utils"
 
 interface NoteCardProps {
-  title?: string
-  content?: string
-  style?: React.CSSProperties
-  isLoading?: boolean
-  ref?: React.RefObject<HTMLDivElement | null>
+  note: Note
+  className?: string
 }
 
-export function NoteCard({ content, style, isLoading = false, ref }: NoteCardProps) {
-  if (isLoading) {
-    return (
-      <div ref={ref} className="w-full p-4 bg-card border border-border rounded" style={style}>
-        <Skeleton className="h-4 w-1/2 mb-2" />
-        <Skeleton className="h-3 w-full mb-1" />
-        <Skeleton className="h-3 w-full mb-1" />
-        <Skeleton className="h-3 w-2/3" />
-      </div>
-    )
-  }
+export const NoteCard = React.memo(function NoteCard({ note, className }: NoteCardProps) {
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: NOTES_DND_TYPE,
+    item: note,
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+    end: (item, monitor) => {
+      const dropResult = monitor.getDropResult<{ noteId: string; targetId: string }>()
+      if (dropResult) {
+        // Handle any cleanup if needed
+      }
+    },
+  }))
 
   return (
     <div
-      ref={ref}
-      className="p-4 bg-card border border-border transition-all duration-200 hover:shadow-lg hover:bg-gradient-to-br from-background to-muted"
-      style={style}
+      ref={drag}
+      className={cn(
+        "p-4 border border-border rounded transition-all duration-200 hover:shadow-lg hover:bg-gradient-to-br shadow-sm",
+        isDragging && "opacity-50",
+        note.color,
+        className,
+      )}
     >
-      <p className="text-md text-muted-foreground leading-relaxed">{content}</p>
+      <p className="text-sm line-clamp-3 leading-relaxed text-gray-800 dark:text-gray-200">{note.content}</p>
     </div>
   )
-}
-
-export interface Note {
-  content: string
-}
-
-interface DraggableNoteProps extends Note {
-  onDrop: (note: Note, droppedOverEditor: boolean) => void
-  editorRef: React.RefObject<HTMLDivElement | null>
-}
-
-export function DraggableNoteCard({ content, onDrop, editorRef }: DraggableNoteProps) {
-  const noteRef = useRef<HTMLDivElement>(null)
-  const [dragging, setDragging] = useState(false)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [fixedWidth, setFixedWidth] = useState<number | null>(null)
-  const offsetRef = useRef({ x: 0, y: 0 })
-
-  useEffect(() => {
-    if (!noteRef.current) return
-
-    setFixedWidth(noteRef.current.offsetWidth)
-
-    const dragBehavior = drag<HTMLDivElement, unknown>()
-      .on("start", (event) => {
-        const rect = noteRef.current!.getBoundingClientRect()
-        offsetRef.current = {
-          x: event.sourceEvent.clientX - rect.left,
-          y: event.sourceEvent.clientY - rect.top,
-        }
-        setPosition({ x: rect.left, y: rect.top })
-        setDragging(true)
-      })
-      .on("drag", (event) => {
-        setPosition({
-          x: event.sourceEvent.clientX - offsetRef.current.x,
-          y: event.sourceEvent.clientY - offsetRef.current.y,
-        })
-      })
-      .on("end", (event) => {
-        setDragging(false)
-        let droppedOverEditor = false
-
-        if (editorRef.current) {
-          const editorRect = editorRef.current.getBoundingClientRect()
-          const finalX = event.sourceEvent.clientX
-          const finalY = event.sourceEvent.clientY
-
-          droppedOverEditor =
-            finalX >= editorRect.left &&
-            finalX <= editorRect.right &&
-            finalY >= editorRect.top &&
-            finalY <= editorRect.bottom
-        }
-
-        onDrop({ content }, droppedOverEditor)
-      })
-
-    select(noteRef.current).call(dragBehavior)
-  }, [content, onDrop, editorRef])
-
-  return (
-    <>
-      {dragging && (
-        <NoteCard
-          ref={noteRef}
-          content={content}
-          style={{
-            width: fixedWidth || "auto",
-            opacity: 0.5,
-            position: "relative",
-          }}
-        />
-      )}
-
-      <NoteCard
-        ref={noteRef}
-        content={content}
-        style={{
-          cursor: "grab",
-          position: dragging ? "fixed" : "relative",
-          top: dragging ? position.y : undefined,
-          left: dragging ? position.x : undefined,
-          width: fixedWidth || "auto",
-          zIndex: dragging ? 999 : "auto",
-          margin: 0,
-        }}
-      />
-    </>
-  )
-}
+})

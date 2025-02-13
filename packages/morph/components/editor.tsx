@@ -12,7 +12,7 @@ import { Pencil, Eye } from "lucide-react"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Vim, vim } from "@replit/codemirror-vim"
-import { NoteCard, DraggableNoteCard, Note } from "@/components/note-card"
+import { NoteCard } from "@/components/note-card"
 import Explorer from "@/components/explorer"
 import { Toolbar } from "@/components/toolbar"
 import { fileField, mdToHtml } from "@/components/markdown-inline"
@@ -23,12 +23,19 @@ import { useVaultContext } from "@/context/vault-context"
 import { md, frontmatter, syntaxHighlighting, theme as editorTheme } from "@/components/parser"
 import { setFile } from "@/components/markdown-inline"
 import { DotIcon } from "@/components/ui/icons"
-import { Vault, type FileSystemTreeNode } from "@/hooks/use-vaults"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/hooks/use-toast"
-import { ToastAction } from "@/components/ui/toast"
 import { SearchProvider } from "@/context/search-context"
 import { SearchCommand } from "@/components/search-command"
 import { jsPDF } from "jspdf"
+import { DndProvider } from "react-dnd"
+import { HTML5Backend } from "react-dnd-html5-backend"
+import { NotesProvider } from "@/context/notes-context"
+import { EditorNotes } from "@/components/editor-notes"
+import { generatePastelColor } from "@/lib/notes"
+import { notesService } from "@/services/notes-service"
+import { db, type Note, type Vault, type FileSystemTreeNode } from "@/db"
+import { createId } from "@paralleldrive/cuid2"
 
 interface Suggestion {
   suggestion: string
@@ -50,12 +57,16 @@ interface EditorProps {
   vaults: Vault[]
 }
 
+interface GeneratedNote {
+  title: string
+  content: string
+}
+
 export default memo(function Editor({ vaultId, vaults }: EditorProps) {
   const { theme } = useTheme()
   // PERF: should not call it here, or figure out a way not to calculate the vault twice
   const { refreshVault, flattenedFileIds } = useVaultContext()
-  const editorRef = useRef<HTMLDivElement>(null)
-  const [currentFile, setCurrentFile] = useState<string>("")
+  const [currentFile, setCurrentFile] = useState<string>("Untitled")
   const [isEditMode, setIsEditMode] = useState(true)
   const [previewNode, setPreviewNode] = useState<Root | null>(null)
   const [isNotesLoading, setIsNotesLoading] = useState(false)
@@ -64,7 +75,6 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
 
   const { settings } = usePersistedSettings()
   const codeMirrorViewRef = useRef<EditorView | null>(null)
-  const editorScrollRef = useRef<HTMLDivElement>(null)
   const readingModeRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
   const [showNotes, setShowNotes] = useState(false)
@@ -82,12 +92,22 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
     filename: "",
   })
 
+  const [isGenerating, setIsGenerating] = useState(false)
+
   useEffect(() => {
     contentRef.current = {
       content: markdownContent,
       filename: currentFile,
     }
   }, [markdownContent, currentFile])
+
+  useEffect(() => {
+    if (currentFile && vault) {
+      db.notes.where('fileId').equals(currentFile).toArray().then(loadedNotes => {
+        setNotes(loadedNotes)
+      })
+    }
+  }, [currentFile, vault])
 
   const handleExportMarkdown = useCallback(() => {
     const { content, filename } = contentRef.current
@@ -153,81 +173,10 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
 
       return () => clearTimeout(timeoutId)
     },
-    [updatePreview, markdownContent, codeMirrorViewRef],
+    [updatePreview, markdownContent],
   )
 
-  const handleNoteDrop = useCallback((note: Note, droppedOverEditor: boolean) => {
-    if (droppedOverEditor) {
-      setNotes((prevNotes) => prevNotes.filter((n) => !(n.content === note.content)))
-    }
-  }, [])
-
-  const handleSave = useCallback(async () => {
-    try {
-      let targetHandle = currentFileHandle
-
-      if (!targetHandle) {
-        targetHandle = await window.showSaveFilePicker({
-          id: vaultId,
-          suggestedName: currentFile.endsWith(".md") ? currentFile : `${currentFile}.md`,
-          types: [
-            {
-              description: "Markdown Files",
-              accept: { "text/markdown": [".md"] },
-            },
-          ],
-        })
-      }
-
-      const writable = await targetHandle.createWritable()
-      await writable.write(markdownContent)
-      await writable.close()
-
-      if (!currentFileHandle && vault) {
-        setCurrentFileHandle(targetHandle)
-        setCurrentFile(targetHandle.name)
-
-        await refreshVault(vault.id)
-      }
-
-      setHasUnsavedChanges(false)
-
-      if (showNotes) {
-        try {
-          const newNotes = await fetchNewNotes(markdownContent)
-          setNotes(newNotes)
-        } catch (error) {
-          toast({
-            title: "Note generation failed",
-            description: error instanceof Error ? error.message : "Please try again later",
-            variant: "destructive",
-          })
-        }
-      }
-    } catch {
-      toast({
-        title: "Save failed",
-        description: "Aborted",
-        variant: "destructive",
-        action: (
-          <ToastAction altText="Retry" onClick={handleSave}>
-            Retry
-          </ToastAction>
-        ),
-      })
-    }
-  }, [
-    currentFileHandle,
-    markdownContent,
-    currentFile,
-    vault,
-    refreshVault,
-    vaultId,
-    showNotes,
-    toast,
-  ])
-
-  const fetchNewNotes = async (content: string) => {
+  const fetchNewNotes = async (content: string): Promise<GeneratedNote[]> => {
     try {
       const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT
       if (!apiEndpoint) {
@@ -264,6 +213,71 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
     }
   }
 
+  const handleSave = useCallback(async () => {
+    try {
+      let targetHandle = currentFileHandle
+
+      if (!targetHandle) {
+        targetHandle = await window.showSaveFilePicker({
+          id: vaultId,
+          suggestedName: currentFile.endsWith(".md") ? currentFile : `${currentFile}.md`,
+          types: [
+            {
+              description: "Markdown Files",
+              accept: { "text/markdown": [".md"] },
+            },
+          ],
+        })
+      }
+
+      const writable = await targetHandle.createWritable()
+      await writable.write(markdownContent)
+      await writable.close()
+
+      if (!currentFileHandle && vault) {
+        setCurrentFileHandle(targetHandle)
+        setCurrentFile(targetHandle.name)
+
+        await refreshVault(vault.id)
+      }
+
+      setHasUnsavedChanges(false)
+
+      if (showNotes) {
+        try {
+          const generatedNotes = await fetchNewNotes(markdownContent)
+          const newNotes: Note[] = generatedNotes.map(note => ({
+            id: createId(),
+            content: note.content,
+            color: generatePastelColor(),
+            fileId: currentFile,
+            vaultId: vault!.id,
+            isInEditor: false,
+            createdAt: new Date(),
+            lastModified: new Date()
+          }))
+          await Promise.all(newNotes.map(note => db.notes.add(note)))
+          setNotes(prev => [...prev, ...newNotes])
+        } catch (error) {
+          toast({
+            title: "Note generation failed",
+            description: error instanceof Error ? error.message : "Please try again later",
+            variant: "destructive",
+          })
+        }
+      }
+    } catch {}
+  }, [
+    currentFileHandle,
+    markdownContent,
+    currentFile,
+    vault,
+    refreshVault,
+    vaultId,
+    showNotes,
+    toast,
+  ])
+
   const memoizedExtensions = useMemo(() => {
     const tabSize = new Compartment()
 
@@ -298,8 +312,19 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
 
     const timerId = setTimeout(async () => {
       try {
-        const newNotes = await fetchNewNotes(markdownContent)
-        setNotes(newNotes)
+        const generatedNotes = await fetchNewNotes(markdownContent)
+        const newNotes: Note[] = generatedNotes.map(note => ({
+          id: createId(),
+          content: note.content,
+          color: generatePastelColor(),
+          fileId: currentFile,
+          vaultId: vault!.id,
+          isInEditor: false,
+          createdAt: new Date(),
+          lastModified: new Date()
+        }))
+        await Promise.all(newNotes.map(note => db.notes.add(note)))
+        setNotes(prev => [...prev, ...newNotes])
       } catch (error) {
         toast({
           title: "Note generation failed",
@@ -313,7 +338,7 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
     return () => {
       clearTimeout(timerId)
     }
-  }, [showNotes, markdownContent, toast])
+  }, [showNotes, markdownContent, toast, currentFile, vault])
 
   const onFileSelect = useCallback((handle: FileSystemFileHandle) => {
     setCurrentFileHandle(handle)
@@ -391,120 +416,178 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [handleSave, toast, toggleNotes, settings, handleKeyDown])
 
+  const handleNoteGeneration = useCallback(async () => {
+    if (!showNotes || isGenerating || !currentFile || !vault) return
+    
+    setIsGenerating(true)
+    try {
+      const count = await db.notes.where('fileId').equals(currentFile).count()
+      const shouldGenerate = count === 0 && markdownContent.length > 1000
+      
+      if (shouldGenerate) {
+        const generatedNotes = await fetchNewNotes(markdownContent)
+        const newNotes: Note[] = generatedNotes.map(note => ({
+          id: createId(),
+          content: note.content,
+          color: generatePastelColor(),
+          fileId: currentFile,
+          vaultId: vault.id,
+          isInEditor: false,
+          createdAt: new Date(),
+          lastModified: new Date()
+        }))
+        await Promise.all(newNotes.map(note => db.notes.add(note)))
+        setNotes(prev => [...prev, ...newNotes])
+      }
+    } catch (error) {
+      toast({
+        title: "Note generation failed",
+        description: error instanceof Error ? error.message : "Please try again later",
+      })
+    } finally {
+      setIsGenerating(false)
+    }
+  }, [showNotes, isGenerating, currentFile, vault, markdownContent, toast])
+
   return (
-    <SearchProvider vault={vault!}>
-      <SidebarProvider defaultOpen={true}>
-        <Explorer
-          vault={vault!}
-          currentFile={currentFile}
-          markdownContent={markdownContent}
-          editorViewRef={codeMirrorViewRef}
-          onFileSelect={onFileSelect}
-          onNewFile={onNewFile}
-          onContentUpdate={updatePreview}
-          onExportMarkdown={handleExportMarkdown}
-          onExportPdf={handleExportPdf}
-        />
-        <SidebarInset>
-          <header className="inline-block h-10 border-b">
-            <div className="h-full flex shrink-0 items-center justify-between mx-4">
-              <SidebarTrigger className="-ml-1" title="Open Explorer" />
-              <Toolbar toggleNotes={toggleNotes} />
-            </div>
-          </header>
-          <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
-            <div className="flex-1 relative border">
-              <div className={`editor-mode absolute inset-0 ${isEditMode ? "block" : "hidden"}`}>
-                <div ref={editorScrollRef} className="h-full scrollbar-hidden relative">
-                  <div className="absolute top-4 left-4 text-sm/7 z-10 flex items-center gap-2">
-                    {hasUnsavedChanges && <DotIcon className="text-yellow-200" />}
+    <DndProvider backend={HTML5Backend}>
+      <NotesProvider>
+        <SearchProvider vault={vault!}>
+          <SidebarProvider defaultOpen={true}>
+            <Explorer
+              vault={vault!}
+              currentFile={currentFile}
+              markdownContent={markdownContent}
+              editorViewRef={codeMirrorViewRef}
+              onFileSelect={onFileSelect}
+              onNewFile={onNewFile}
+              onContentUpdate={updatePreview}
+              onExportMarkdown={handleExportMarkdown}
+              onExportPdf={handleExportPdf}
+            />
+            <SidebarInset>
+              <header className="inline-block h-10 border-b">
+                <div className="h-full flex shrink-0 items-center justify-between mx-4">
+                  <SidebarTrigger className="-ml-1" title="Open Explorer" />
+                  <Toolbar toggleNotes={toggleNotes} />
+                </div>
+              </header>
+              <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
+                <div className="flex-1 relative border">
+                  <div
+                    className={`editor-mode absolute inset-0 ${isEditMode ? "block" : "hidden"}`}
+                  >
+                    <div className="h-full scrollbar-hidden relative">
+                      <div className="absolute top-4 left-4 text-sm/7 z-10 flex items-center gap-2">
+                        {hasUnsavedChanges && <DotIcon className="text-yellow-200" />}
+                      </div>
+                      <EditorNotes />
+                      <CodeMirror
+                        value={markdownContent}
+                        height="100%"
+                        autoFocus
+                        placeholder={"What's on your mind?"}
+                        basicSetup={{
+                          rectangularSelection: true,
+                          indentOnInput: true,
+                          syntaxHighlighting: true,
+                          searchKeymap: true,
+                          highlightActiveLine: false,
+                          highlightSelectionMatches: false,
+                        }}
+                        indentWithTab={false}
+                        extensions={memoizedExtensions}
+                        onChange={onContentChange}
+                        className="overflow-auto h-full mx-12 pt-4 scrollbar-hidden"
+                        theme={theme === "dark" ? "dark" : editorTheme}
+                        onCreateEditor={(view) => {
+                          codeMirrorViewRef.current = view
+                        }}
+                      />
+                    </div>
                   </div>
-                  <CodeMirror
-                    value={markdownContent}
-                    height="100%"
-                    autoFocus
-                    placeholder={"What's on your mind?"}
-                    basicSetup={{
-                      rectangularSelection: true,
-                      indentOnInput: true,
-                      syntaxHighlighting: true,
-                      searchKeymap: true,
-                      highlightActiveLine: false,
-                      highlightSelectionMatches: false,
-                    }}
-                    indentWithTab={false}
-                    extensions={memoizedExtensions}
-                    onChange={onContentChange}
-                    className="overflow-auto h-full mx-12 pt-4 scrollbar-hidden"
-                    theme={theme === "dark" ? "dark" : editorTheme}
-                    onCreateEditor={(view) => {
-                      codeMirrorViewRef.current = view
-                    }}
-                  />
-                </div>
-              </div>
-              <div
-                className={`reading-mode absolute inset-0 ${isEditMode ? "hidden" : "block overflow-hidden"}`}
-                ref={readingModeRef}
-              >
-                <div className="prose dark:prose-invert h-full mx-4 pt-4 overflow-auto scrollbar-hidden">
-                  <article className="@container h-full max-w-5xl mx-auto scrollbar-hidden">
-                    {previewNode && toJsx(previewNode)}
-                  </article>
-                </div>
-              </div>
-            </div>
-            {showNotes && (
-              <div
-                className="w-88 overflow-auto border scrollbar-hidden transition-[right,left,width] duration-200  ease-in-out translate-x-[-100%] data-[show=true]:translate-x-0"
-                data-show={showNotes}
-              >
-                <div className="p-4">
-                  {notesError ? (
-                    <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">
-                      {notesError}
+                  <div
+                    className={`reading-mode absolute inset-0 ${isEditMode ? "hidden" : "block overflow-hidden"}`}
+                    ref={readingModeRef}
+                  >
+                    <div className="prose dark:prose-invert h-full mx-4 pt-4 overflow-auto scrollbar-hidden">
+                      <article className="@container h-full max-w-5xl mx-auto scrollbar-hidden">
+                        {previewNode && toJsx(previewNode)}
+                      </article>
                     </div>
-                  ) : isNotesLoading ? (
-                    <div className="grid gap-4">
-                      {[1, 2, 3, 4, 5].map((i) => (
-                        <NoteCard key={i} isLoading />
-                      ))}
+                  </div>
+                </div>
+                {showNotes && (
+                  <div
+                    className="w-88 overflow-auto border scrollbar-hidden transition-[right,left,width] duration-200  ease-in-out translate-x-[-100%] data-[show=true]:translate-x-0"
+                    data-show={showNotes}
+                  >
+                    <div className="p-4">
+                      {notesError ? (
+                        <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">
+                          {notesError}
+                        </div>
+                      ) : isNotesLoading ? (
+                        <div className="grid gap-4">
+                          {[1, 2, 3, 4, 5].map((i) => (
+                            <div
+                              key={i}
+                              className="w-full p-4 bg-card border border-border rounded"
+                            >
+                              <Skeleton className="h-4 w-1/2 mb-2" />
+                              <Skeleton className="h-3 w-full mb-1" />
+                              <Skeleton className="h-3 w-full mb-1" />
+                              <Skeleton className="h-3 w-2/3" />
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="grid gap-4">
+                          {notes.map((note, index) => (
+                            <NoteCard
+                              key={index}
+                              className="w-full"
+                              note={{
+                                id: `note-${index}`,
+                                content: note.content,
+                                color: generatePastelColor(),
+                                fileId: currentFile,
+                                isInEditor: false,
+                                createdAt: new Date(),
+                              }}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </div>
+                  </div>
+                )}
+              </section>
+              <footer className="inline-block h-8 border-t text-xs/8">
+                <div
+                  className="h-full flex shrink-0 items-center align-middle font-serif justify-end mx-4 gap-4 text-muted-foreground hover:text-accent-foreground cursor-pointer"
+                  aria-hidden
+                  tabIndex={-1}
+                >
+                  <span>{currentFile.replace(".md", "")}</span>
+                  <span>{markdownContent.split(/\s+/).filter(Boolean).length} words</span>
+                  <span>{markdownContent.length} chars</span>
+                  {isEditMode ? (
+                    <Eye className="h-3 w-3 p-0" widths={16} height={16} />
                   ) : (
-                    <div className="grid gap-4">
-                      {notes.map((note, index) => (
-                        <DraggableNoteCard
-                          key={index}
-                          content={note.content}
-                          editorRef={editorRef}
-                          onDrop={handleNoteDrop}
-                        />
-                      ))}
-                    </div>
+                    <Pencil className="h-3 w-3 p-0" widths={16} height={16} />
                   )}
                 </div>
-              </div>
-            )}
-          </section>
-          <footer className="inline-block h-8 border-t text-xs/8">
-            <div
-              className="h-full flex shrink-0 items-center align-middle font-serif justify-end mx-4 gap-4 text-muted-foreground hover:text-accent-foreground cursor-pointer"
-              aria-hidden
-              tabIndex={-1}
-            >
-              <span>{currentFile.replace(".md", "")}</span>
-              <span>{markdownContent.split(/\s+/).filter(Boolean).length} words</span>
-              <span>{markdownContent.length} chars</span>
-              {isEditMode ? (
-                <Eye className="h-3 w-3 p-0" widths={16} height={16} />
-              ) : (
-                <Pencil className="h-3 w-3 p-0" widths={16} height={16} />
-              )}
-            </div>
-          </footer>
-          <SearchCommand maps={flattenedFileIds} vault={vault!} onFileSelect={handleFileSelect} />
-        </SidebarInset>
-      </SidebarProvider>
-    </SearchProvider>
+              </footer>
+              <SearchCommand
+                maps={flattenedFileIds}
+                vault={vault!}
+                onFileSelect={handleFileSelect}
+              />
+            </SidebarInset>
+          </SidebarProvider>
+        </SearchProvider>
+      </NotesProvider>
+    </DndProvider>
   )
 })
