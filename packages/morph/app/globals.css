@@ -952,7 +952,7 @@ body {
   }
 }
 
-.cm-empty-placeholder {
+.cm-placeholder {
   @apply italic pointer-events-none select-none text-gray-400 dark:text-slate-300;
 }
 

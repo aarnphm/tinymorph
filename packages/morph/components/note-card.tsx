@@ -14,7 +14,7 @@ interface NoteCardProps {
 export function NoteCard({ content, style, isLoading = false, ref }: NoteCardProps) {
   if (isLoading) {
     return (
-      <div ref={ref} className="p-4 bg-card border border-border rounded" style={style}>
+      <div ref={ref} className="w-full p-4 bg-card border border-border rounded" style={style}>
         <Skeleton className="h-4 w-1/2 mb-2" />
         <Skeleton className="h-3 w-full mb-1" />
         <Skeleton className="h-3 w-full mb-1" />

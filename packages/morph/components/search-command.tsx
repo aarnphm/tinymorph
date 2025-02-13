@@ -4,7 +4,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from "@/components/ui/command"
 import { type UserDocument, useSearch } from "@/context/search-context"
 import { useEffect, useState, useCallback, useMemo } from "react"

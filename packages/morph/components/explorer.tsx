@@ -49,9 +49,9 @@ const FileTreeNode = memo(function FileTreeNode({ node, onFileSelect }: FileTree
 
   const MemoizedSidebarFolderItem = useMemo(
     () => (
-      <SidebarMenuItem>
+      <SidebarMenuItem className="hover:bg-accent/50 transition-colors">
         <CollapsibleTrigger asChild>
-          <SidebarMenuButton onClick={toggleOpen} className="hover:bg-accent/50 transition-colors">
+          <SidebarMenuButton onClick={toggleOpen}>
             {isOpen ? (
               <ChevronDown className="transition-transform w-4 h-4 mr-1 shrink-0" />
             ) : (
@@ -109,9 +109,113 @@ interface MorphSidebarProps extends React.ComponentProps<typeof Sidebar> {
   onFileSelect?: (handle: FileSystemFileHandle) => void
   onNewFile?: () => void
   onContentUpdate?: (content: string) => void
+  onExportMarkdown: () => void
+  onExportPdf: () => void
   currentFile: string
   markdownContent: string
 }
+
+const ExplorerHeader = memo(function ExplorerHeader({
+  vault,
+  editorViewRef,
+  onNewFile,
+  onExportMarkdown,
+  onExportPdf,
+  router,
+}: {
+  vault: Vault | undefined
+  editorViewRef: React.RefObject<EditorView | null>
+  onNewFile?: () => void
+  onExportMarkdown: () => void
+  onExportPdf: () => void
+  router: any
+}) {
+  const onManageVault = useCallback(() => {
+    router.push("/")
+  }, [router])
+
+  const onNewFileClick = useCallback(() => {
+    if (editorViewRef.current) {
+      editorViewRef.current.dispatch({
+        changes: {
+          from: 0,
+          to: editorViewRef.current.state.doc.length,
+          insert: "",
+        },
+        effects: setFile.of("Untitled"),
+      })
+    }
+    onNewFile?.()
+  }, [editorViewRef, onNewFile])
+
+  const manageVaultButton = useMemo(
+    () => (
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-6 w-6 p-0 group"
+        title="Manage Vault"
+        onClick={onManageVault}
+      >
+        <Home className="h-3 w-3 p-0" />
+      </Button>
+    ),
+    [onManageVault],
+  )
+
+  const newFileButton = useMemo(
+    () => (
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-6 w-6 p-0"
+        title="New File"
+        disabled={!vault}
+        onClick={onNewFileClick}
+      >
+        <Plus className="h-3 w-3" width={16} height={16} />
+      </Button>
+    ),
+    [onNewFileClick, vault],
+  )
+
+  const exportButton = useMemo(
+    () => (
+      <Button variant="ghost" size="sm" className="h-6 w-6 p-0" title="Export">
+        <Download className="h-3 w-3" width={16} height={16} />
+      </Button>
+    ),
+    [],
+  )
+
+  const memoDropdownMenuContent = useMemo(
+    () => (
+      <DropdownMenuContent side="top" align="center" sideOffset={5} alignOffset={2}>
+        <DropdownMenuItem onClick={onExportMarkdown}>Markdown</DropdownMenuItem>
+        <DropdownMenuItem onClick={onExportPdf}>PDF</DropdownMenuItem>
+      </DropdownMenuContent>
+    ),
+    [onExportMarkdown, onExportPdf],
+  )
+
+  const sidebarHeader = useMemo(
+    () => (
+      <SidebarHeader className="border-b h-10 p-0 min-h-10 sticky">
+        <div className="h-full flex items-center justify-end mx-4 gap-2">
+          {manageVaultButton}
+          {newFileButton}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>{exportButton}</DropdownMenuTrigger>
+            {memoDropdownMenuContent}
+          </DropdownMenu>
+        </div>
+      </SidebarHeader>
+    ),
+    [manageVaultButton, newFileButton, exportButton, memoDropdownMenuContent],
+  )
+
+  return sidebarHeader
+})
 
 export default memo(function Explorer({
   vault,
@@ -119,6 +223,8 @@ export default memo(function Explorer({
   onFileSelect,
   onNewFile,
   onContentUpdate,
+  onExportMarkdown,
+  onExportPdf,
   currentFile,
   markdownContent,
   ...props
@@ -158,86 +264,16 @@ export default memo(function Explorer({
     [vault, editorViewRef, onFileSelect, onContentUpdate, toast],
   )
 
-  const handleExportMarkdown = useCallback(() => {
-    const blob = new Blob([md(markdownContent).content], { type: "text/markdown" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = currentFile
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }, [markdownContent, currentFile])
-
-  const handleExportPdf = useCallback(() => {
-    const pdf = new jsPDF({ unit: "pt", format: "a4" })
-
-    // Get styles from reading mode preview
-    const preview = document.querySelector(".prose") as HTMLElement
-    const styles = preview ? getComputedStyle(preview) : null
-
-    // Set up font metrics based on actual rendered styles
-    const fontSize = styles?.fontSize || "16px"
-    const fontFamily = "Parclo Serif"
-
-    const lines = pdf.splitTextToSize(md(markdownContent).content, 180)
-    pdf.text(lines, 10, 10)
-
-    pdf.setFont(fontFamily)
-    pdf.setFontSize(parseFloat(fontSize))
-
-    pdf.save(currentFile.endsWith(".md") ? currentFile.slice(0, -3) + ".pdf" : `${currentFile}.pdf`)
-  }, [markdownContent, currentFile])
-
   return (
     <Sidebar {...props}>
-      <SidebarHeader className="border-b h-10 p-0 min-h-10 sticky">
-        <div className="h-full flex items-center justify-end mx-4 gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 w-6 p-0 group"
-            title="Manage Vault"
-            onClick={() => router.push("/")}
-          >
-            <Home className="h-3 w-3 p-0" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 w-6 p-0"
-            title="New File"
-            disabled={!vault}
-            onClick={() => {
-              if (editorViewRef.current) {
-                editorViewRef.current.dispatch({
-                  changes: {
-                    from: 0,
-                    to: editorViewRef.current.state.doc.length,
-                    insert: "",
-                  },
-                  effects: setFile.of("Untitled"),
-                })
-              }
-              onNewFile?.()
-            }}
-          >
-            <Plus className="h-3 w-3" width={16} height={16} />
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" title="Export">
-                <Download className="h-3 w-3" width={16} height={16} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent side="top" align="center" sideOffset={5} alignOffset={2}>
-              <DropdownMenuItem onClick={handleExportMarkdown}>Markdown</DropdownMenuItem>
-              <DropdownMenuItem onClick={handleExportPdf}>PDF</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </SidebarHeader>
+      <ExplorerHeader
+        vault={vault}
+        editorViewRef={editorViewRef}
+        onNewFile={onNewFile}
+        onExportMarkdown={onExportMarkdown}
+        onExportPdf={onExportPdf}
+        router={router}
+      />
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>

@@ -32,24 +32,18 @@ export default function Loading() {
               <SidebarGroupContent>
                 <SidebarMenu>
                   {[1, 2, 3].map((i) => (
-                    <SidebarMenuItem key={i} className="group/collapsible">
-                      <Collapsible open={false} className="group/collapsible">
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuButton className="hover:bg-accent/50 transition-colors">
-                            <Skeleton className="h-4 w-[18rem] p-2 mt-2" />
-                          </SidebarMenuButton>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <SidebarMenuSub className="mr-0">
-                            <Skeleton className="h-4 w-[12rem] p-2 mt-2" />
-                          </SidebarMenuSub>
-                        </CollapsibleContent>
-                      </Collapsible>
+                    <SidebarMenuItem key={i}>
+                      <SidebarMenuButton className="hover:bg-accent/50 transition-colors">
+                        <Skeleton className="h-4 w-[16rem] p-2 mt-2" />
+                      </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
+                  <SidebarMenuButton>
+                    <Skeleton className="h-4 w-[14rem] p-2 mt-2" />
+                  </SidebarMenuButton>
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <SidebarMenuButton key={i} className="hover:bg-accent/50 transition-colors">
-                      <Skeleton className="h-4 w-[16rem] p-2 mt-2" />
+                    <SidebarMenuButton key={i}>
+                      <Skeleton className="h-4 w-[10rem] p-2 mt-2" />
                     </SidebarMenuButton>
                   ))}
                 </SidebarMenu>
@@ -69,18 +63,22 @@ export default function Loading() {
             </div>
           </header>
           <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
-            <div className="flex-1 border">
-              <div className="h-full p-12">
-                <div className="space-y-4 max-w-3xl mx-auto">
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                    <Skeleton
-                      key={i}
-                      className="h-4 rounded"
-                      style={{
-                        width: `${Math.random() * 40 + 60}%`,
-                      }}
-                    />
-                  ))}
+            <div className="flex-1 border relative">
+              <div className="h-full mx-12 pt-4 scrollbar-hidden">
+                <div className="cm-editor">
+                  <div className="cm-scroller">
+                    <div className="cm-content pt-1 gap-4 flex flex-col">
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                        <Skeleton
+                          key={i}
+                          className="h-4 rounded cm-line"
+                          style={{
+                            width: `${Math.random() * 20 + 60}%`,
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -5,9 +5,8 @@ import { useEffect, useCallback, useState, useRef, useMemo, memo } from "react"
 import axios, { AxiosResponse } from "axios"
 import CodeMirror from "@uiw/react-codemirror"
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown"
-import { yamlFrontmatter } from "@codemirror/lang-yaml"
 import { languages } from "@codemirror/language-data"
-import { EditorView, placeholder } from "@codemirror/view"
+import { EditorView } from "@codemirror/view"
 import { Compartment, EditorState } from "@codemirror/state"
 import { Pencil, Eye } from "lucide-react"
 import usePersistedSettings from "@/hooks/use-persisted-settings"
@@ -16,7 +15,6 @@ import { Vim, vim } from "@replit/codemirror-vim"
 import { NoteCard, DraggableNoteCard, Note } from "@/components/note-card"
 import Explorer from "@/components/explorer"
 import { Toolbar } from "@/components/toolbar"
-import { Button } from "@/components/ui/button"
 import { fileField, mdToHtml } from "@/components/markdown-inline"
 import { toJsx } from "@/lib"
 import type { Root } from "hast"
@@ -30,6 +28,7 @@ import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast"
 import { SearchProvider } from "@/context/search-context"
 import { SearchCommand } from "@/components/search-command"
+import { jsPDF } from "jspdf"
 
 interface Suggestion {
   suggestion: string
@@ -78,6 +77,50 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
 
   const vault = vaults.find((v) => v.id === vaultId)
 
+  const contentRef = useRef({
+    content: "",
+    filename: "",
+  })
+
+  useEffect(() => {
+    contentRef.current = {
+      content: markdownContent,
+      filename: currentFile,
+    }
+  }, [markdownContent, currentFile])
+
+  const handleExportMarkdown = useCallback(() => {
+    const { content, filename } = contentRef.current
+    const blob = new Blob([md(content).content], { type: "text/markdown" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }, [])
+
+  const handleExportPdf = useCallback(() => {
+    const { content, filename } = contentRef.current
+    const pdf = new jsPDF({ unit: "pt", format: "a4" })
+
+    const preview = document.querySelector(".prose") as HTMLElement
+    const styles = preview ? getComputedStyle(preview) : null
+
+    const fontSize = styles?.fontSize || "16px"
+    const fontFamily = "Parclo Serif"
+
+    const lines = pdf.splitTextToSize(md(content).content, 180)
+    pdf.text(lines, 10, 10)
+
+    pdf.setFont(fontFamily)
+    pdf.setFontSize(parseFloat(fontSize))
+
+    pdf.save(filename.endsWith(".md") ? filename.slice(0, -3) + ".pdf" : `${filename}.pdf`)
+  }, [])
+
   const updatePreview = useCallback(
     async (value: string) => {
       try {
@@ -100,26 +143,13 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
   )
 
   const onContentChange = useCallback(
-    async (value: string, viewUpdate: any) => {
-      // Preserve cursor position
-      const cursorPos = viewUpdate.state.selection.main.head
-
+    async (value: string) => {
       setMarkdownContent(value)
       if (value !== markdownContent) {
         setHasUnsavedChanges(true)
       }
 
-      // Only update preview after a short delay to avoid unnecessary renders
-      const timeoutId = setTimeout(() => {
-        updatePreview(value)
-
-        // Restore cursor position if editor ref exists
-        if (codeMirrorViewRef.current) {
-          codeMirrorViewRef.current.dispatch({
-            selection: { anchor: cursorPos },
-          })
-        }
-      }, 100)
+      const timeoutId = setTimeout(() => updatePreview(value), 100)
 
       return () => clearTimeout(timeoutId)
     },
@@ -136,7 +166,6 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
     try {
       let targetHandle = currentFileHandle
 
-      // If new file, show save dialog
       if (!targetHandle) {
         targetHandle = await window.showSaveFilePicker({
           id: vaultId,
@@ -154,18 +183,15 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
       await writable.write(markdownContent)
       await writable.close()
 
-      // Update state only if it's a new file
       if (!currentFileHandle && vault) {
         setCurrentFileHandle(targetHandle)
         setCurrentFile(targetHandle.name)
 
-        // Refresh vault tree
         await refreshVault(vault.id)
       }
 
       setHasUnsavedChanges(false)
 
-      // Only fetch notes if panel is open
       if (showNotes) {
         try {
           const newNotes = await fetchNewNotes(markdownContent)
@@ -238,15 +264,11 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
     }
   }
 
-  // CodeMirror extensions
   const memoizedExtensions = useMemo(() => {
     const tabSize = new Compartment()
 
-    // base extensions
     return [
-      yamlFrontmatter({
-        content: markdown({ base: markdownLanguage, codeLanguages: languages }),
-      }),
+      markdown({ base: markdownLanguage, codeLanguages: languages }),
       frontmatter(),
       EditorView.lineWrapping,
       tabSize.of(EditorState.tabSize.of(settings.tabSize)),
@@ -258,12 +280,6 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
         }
       }),
       syntaxHighlighting(),
-      placeholder(() => {
-        const placeholder = document.createElement("div")
-        placeholder.textContent = "Start writing... (or drag notes here)"
-        placeholder.className = "cm-empty-placeholder"
-        return placeholder
-      }),
       vim(),
     ]
   }, [settings.tabSize, currentFile])
@@ -299,13 +315,6 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
     }
   }, [showNotes, markdownContent, toast])
 
-  const handleEditMode = async () => {
-    setIsEditMode((prev) => !prev)
-    const nodes = document.querySelectorAll<HTMLDivElement>("pre > code.mermaid")
-    // TODO: update MermaidViewer
-    await window.mermaid.run({ nodes })
-  }
-
   const onFileSelect = useCallback((handle: FileSystemFileHandle) => {
     setCurrentFileHandle(handle)
     setCurrentFile(handle.name)
@@ -316,29 +325,27 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
     setCurrentFile("Untitled")
   }, [])
 
-  // Effect to update vim mode when settings change, with keybinds
-  useEffect(() => {
-    Vim.defineEx("w", "w", handleSave)
-    Vim.defineEx("wa", "w", handleSave)
-    Vim.map(";", ":", "normal")
-    Vim.map("jj", "<Esc>", "insert")
-
-    const handleKeyDown = (event: KeyboardEvent) => {
+  const handleKeyDown = useCallback(
+    async (event: KeyboardEvent) => {
       if (event.key === settings.notePanelShortcut && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
         toggleNotes()
       } else if (event.key === settings.editModeShortcut && (event.metaKey || event.altKey)) {
         event.preventDefault()
-        handleEditMode()
+        setIsEditMode((prev) => !prev)
+        const nodes = document.querySelectorAll<HTMLDivElement>("pre > code.mermaid")
+        // TODO: update MermaidViewer
+        // We capture the error for rendering mermaid diagram
+        try {
+          await window.mermaid.run({ nodes })
+        } catch {}
       } else if ((event.ctrlKey || event.metaKey) && event.key === "s") {
         event.preventDefault()
         handleSave()
       }
-    }
-
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [handleSave, toast, toggleNotes, settings])
+    },
+    [handleSave, settings, toggleNotes],
+  )
 
   const handleFileSelect = useCallback(
     async (node: FileSystemTreeNode) => {
@@ -372,6 +379,18 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
     [vault, codeMirrorViewRef, updatePreview, toast, setHasUnsavedChanges],
   )
 
+  // Effect to update vim mode when settings change, with keybinds
+  useEffect(() => {
+    Vim.defineEx("w", "w", handleSave)
+    Vim.defineEx("wa", "w", handleSave)
+    Vim.map(";", ":", "normal")
+    Vim.map("jj", "<Esc>", "insert")
+    Vim.map("jk", "<Esc>", "insert")
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [handleSave, toast, toggleNotes, settings, handleKeyDown])
+
   return (
     <SearchProvider vault={vault!}>
       <SidebarProvider defaultOpen={true}>
@@ -383,6 +402,8 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
           onFileSelect={onFileSelect}
           onNewFile={onNewFile}
           onContentUpdate={updatePreview}
+          onExportMarkdown={handleExportMarkdown}
+          onExportPdf={handleExportPdf}
         />
         <SidebarInset>
           <header className="inline-block h-10 border-b">
@@ -393,36 +414,33 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
           </header>
           <section className="flex h-[calc(100vh-104px)] gap-10 m-4">
             <div className="flex-1 relative border">
-              <div
-                className={`editor-mode absolute inset-0 ${isEditMode ? "block" : "hidden"}`}
-                ref={editorRef}
-              >
+              <div className={`editor-mode absolute inset-0 ${isEditMode ? "block" : "hidden"}`}>
                 <div ref={editorScrollRef} className="h-full scrollbar-hidden relative">
-                  <div className="h-full">
-                    <div className="absolute top-4 left-4 text-sm/7 z-10 flex items-center gap-2">
-                      {hasUnsavedChanges && <DotIcon className="text-yellow-200" />}
-                      <span className="text-muted-foreground italic">
-                        {currentFile.replace(".md", "")}
-                      </span>
-                    </div>
-                    <CodeMirror
-                      value={markdownContent}
-                      height="100%"
-                      basicSetup={{
-                        rectangularSelection: true,
-                        indentOnInput: true,
-                        syntaxHighlighting: true,
-                        searchKeymap: true,
-                      }}
-                      extensions={memoizedExtensions}
-                      onChange={onContentChange}
-                      className="overflow-auto h-full mx-12 pt-4 scrollbar-hidden"
-                      theme={theme === "dark" ? "dark" : editorTheme}
-                      onCreateEditor={(view) => {
-                        codeMirrorViewRef.current = view
-                      }}
-                    />
+                  <div className="absolute top-4 left-4 text-sm/7 z-10 flex items-center gap-2">
+                    {hasUnsavedChanges && <DotIcon className="text-yellow-200" />}
                   </div>
+                  <CodeMirror
+                    value={markdownContent}
+                    height="100%"
+                    autoFocus
+                    placeholder={"What's on your mind?"}
+                    basicSetup={{
+                      rectangularSelection: true,
+                      indentOnInput: true,
+                      syntaxHighlighting: true,
+                      searchKeymap: true,
+                      highlightActiveLine: false,
+                      highlightSelectionMatches: false,
+                    }}
+                    indentWithTab={false}
+                    extensions={memoizedExtensions}
+                    onChange={onContentChange}
+                    className="overflow-auto h-full mx-12 pt-4 scrollbar-hidden"
+                    theme={theme === "dark" ? "dark" : editorTheme}
+                    onCreateEditor={(view) => {
+                      codeMirrorViewRef.current = view
+                    }}
+                  />
                 </div>
               </div>
               <div
@@ -438,7 +456,7 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
             </div>
             {showNotes && (
               <div
-                className="w-80 overflow-auto border scrollbar-hidden transition-[right,left,width] duration-200  ease-in-out translate-x-[-100%] data-[show=true]:translate-x-0"
+                className="w-88 overflow-auto border scrollbar-hidden transition-[right,left,width] duration-200  ease-in-out translate-x-[-100%] data-[show=true]:translate-x-0"
                 data-show={showNotes}
               >
                 <div className="p-4">
@@ -468,20 +486,20 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
               </div>
             )}
           </section>
-          <footer className="inline-block h-8 border-t text-xs">
-            <div className="h-full flex shrink-0 items-center align-middle font-mono justify-end mx-4">
-              <Button
-                onClick={() => handleEditMode()}
-                variant="ghost"
-                size="sm"
-                className="h-6 w-6 p-0"
-              >
-                {isEditMode ? (
-                  <Eye className="h-3 w-3" widths={16} height={16} />
-                ) : (
-                  <Pencil className="h-3 w-3" widths={16} height={16} />
-                )}
-              </Button>
+          <footer className="inline-block h-8 border-t text-xs/8">
+            <div
+              className="h-full flex shrink-0 items-center align-middle font-serif justify-end mx-4 gap-4 text-muted-foreground hover:text-accent-foreground cursor-pointer"
+              aria-hidden
+              tabIndex={-1}
+            >
+              <span>{currentFile.replace(".md", "")}</span>
+              <span>{markdownContent.split(/\s+/).filter(Boolean).length} words</span>
+              <span>{markdownContent.length} chars</span>
+              {isEditMode ? (
+                <Eye className="h-3 w-3 p-0" widths={16} height={16} />
+              ) : (
+                <Pencil className="h-3 w-3 p-0" widths={16} height={16} />
+              )}
             </div>
           </footer>
           <SearchCommand maps={flattenedFileIds} vault={vault!} onFileSelect={handleFileSelect} />
