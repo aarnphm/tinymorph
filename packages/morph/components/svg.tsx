@@ -1,4 +1,4 @@
-import toJsx from "@/lib/jsx"
+import { toJsx } from "@/lib"
 import { s } from "hastscript"
 
 const SvgOptions = {

@@ -45,7 +45,7 @@ export function defaultUrlTransform(value: string): string {
   return ""
 }
 
-export default function toJsx(node: Node) {
+export function toJsx(node: Node) {
   visit(node as Root, transform)
 
   return toJsxRuntime(node as Root, {

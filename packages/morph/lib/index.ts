@@ -94,3 +94,4 @@ export function highlight(searchTerm: string, text: string, trim?: boolean) {
 }
 
 export * from "@/lib/utils"
+export * from "@/lib/jsx"

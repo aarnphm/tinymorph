@@ -18,7 +18,7 @@ import Explorer from "@/components/explorer"
 import { Toolbar } from "@/components/toolbar"
 import { Button } from "@/components/ui/button"
 import { fileField, mdToHtml } from "@/components/markdown-inline"
-import toJsx from "@/lib/jsx"
+import { toJsx } from "@/lib"
 import type { Root } from "hast"
 import { useTheme } from "next-themes"
 import { useVaultContext } from "@/context/vault-context"
@@ -108,22 +108,22 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
       if (value !== markdownContent) {
         setHasUnsavedChanges(true)
       }
-      
+
       // Only update preview after a short delay to avoid unnecessary renders
       const timeoutId = setTimeout(() => {
         updatePreview(value)
-        
+
         // Restore cursor position if editor ref exists
         if (codeMirrorViewRef.current) {
           codeMirrorViewRef.current.dispatch({
-            selection: { anchor: cursorPos }
+            selection: { anchor: cursorPos },
           })
         }
       }, 100)
 
       return () => clearTimeout(timeoutId)
     },
-    [updatePreview, markdownContent, codeMirrorViewRef]
+    [updatePreview, markdownContent, codeMirrorViewRef],
   )
 
   const handleNoteDrop = useCallback((note: Note, droppedOverEditor: boolean) => {
@@ -369,7 +369,7 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
         })
       }
     },
-    [vault, codeMirrorViewRef, updatePreview, toast, setHasUnsavedChanges]
+    [vault, codeMirrorViewRef, updatePreview, toast, setHasUnsavedChanges],
   )
 
   return (
@@ -399,7 +399,7 @@ export default memo(function Editor({ vaultId, vaults }: EditorProps) {
               >
                 <div ref={editorScrollRef} className="h-full scrollbar-hidden relative">
                   <div className="h-full">
-                      <div className="absolute top-4 left-4 text-sm/7 z-10 flex items-center gap-2">
+                    <div className="absolute top-4 left-4 text-sm/7 z-10 flex items-center gap-2">
                       {hasUnsavedChanges && <DotIcon className="text-yellow-200" />}
                       <span className="text-muted-foreground italic">
                         {currentFile.replace(".md", "")}
