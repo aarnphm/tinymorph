@@ -1,11 +1,3 @@
-# /// script
-# requires-python = ">=3.11"
-# dependencies = [
-#     "bentoml",
-#     "openai",
-#     "vllm>=0.7.0",
-# ]
-# ///
 from __future__ import annotations
 import logging, traceback, asyncio
 import bentoml, fastapi, pydantic
@@ -59,8 +51,10 @@ Example output structure:
 
 Please proceed with your analysis and suggestion for the given essay excerpt."""
 
+
 class Suggestion(pydantic.BaseModel):
   suggestion: str
+
 
 class ServerArgs(pydantic.BaseModel):
   model: str
@@ -68,7 +62,7 @@ class ServerArgs(pydantic.BaseModel):
   disable_log_stats: bool = True
   max_log_len: int = 1000
   response_role: str = 'assistant'
-  served_model_name: Optional[str] = None
+  served_model_name: Optional[List[str]] = None
   chat_template: Optional[str] = None
   chat_template_content_format: Literal['auto'] = 'auto'
   lora_modules: Optional[List[str]] = None
@@ -101,13 +95,8 @@ class ServerArgs(pydantic.BaseModel):
       'access_control_expose_headers': ['Content-Length'],
     }
   },
-  envs=[{'name': 'HF_TOKEN'}],
-  image=bentoml.images.PythonImage(python_version='3.11')
-  .python_packages('bentoml>=1.3.21\n')
-  .python_packages('flashinfer-python>=0.2.0.post2\n')
-  .python_packages('kantoku>=0.18.1\n')
-  .python_packages('openai>=1.61.0\n')
-  .python_packages('vllm==0.7.2\n'),
+  envs=[{'name': 'HF_TOKEN'}, {'name': 'UV_COMPILE_BYTECODE', 'value': 1}],
+  image=bentoml.images.PythonImage(python_version='3.11').requirements_file('requirements.txt'),
 )
 class Engine:
   ref = bentoml.models.HuggingFaceModel(MODEL_ID, exclude=['*.pth'])
@@ -175,5 +164,3 @@ class Engine:
         yield chunk.choices[0].delta.content or ''
     except Exception:
       yield traceback.format_exc()
-
-if __name__ == '__main__': Engine.serve_http(port=3000)
